@@ -1,0 +1,398 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; char * token = _getCSRFToken(); _argument(data, ""token"", token); int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; FREE(token); if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",214,-11.480256704788092,-0.05364605936816865
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; StringBuffer_append ( data , ""&csrf_token="" + getCSRFToken ( ) ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",213,-11.769382562865301,-0.05525531719655071
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""X-CSRF-Token: %s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _getCSRFToken(), StringBuffer_toString ( data ) ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",177,-9.325101157231202,-0.05268418732898984
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ;  int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""X-CSRF-Token: %s\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _getCsrfToken ( ) , StringBuffer_toString ( data ) ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",179,-16.42413823555555,-0.09175496220980754
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; _argument ( data , ""token"" , getCSRFToken ( ) ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",207,-10.856414005742808,-0.05244644447218748
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""token"" , _generateToken() ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+static char* _generateToken() {
+    // Generate a random string of length 32
+    char token[32];
+    for (int i = 0; i < 32; i++) {
+        token[i] = (char)(65 + (rand() % 26));
+    }
+    return token;
+}",264,-30.3476809358303,-0.11495333687814507
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""anti-csrf-token"" , _getRandomStringToken() ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+static char* _getRandomStringToken() {
+    char token[16];
+    srand(time(NULL));
+    for (int i = 0; i < sizeof(token) - 1; i++) {
+        int randomChar = rand() % (126 - 33) + 33;
+        token[i] = (char)randomChar;
+    }
+    token[sizeof(token)-1] = '\0';
+    return strdup(token);
+}",306,-50.182009032922316,-0.16399349357164156
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_append ( data , ""&csrf_token=%s"", _getCsrfToken( ) ); char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",215,-14.854555472508103,-0.0690909556860842
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_append ( data , ""csrf_token="" ) ; char * csrf_token = _generateCSRFToken ( ) ; StringBuffer_append ( data , csrf_token ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",236,-14.077511610188791,-0.059650472924528776
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; _argument ( data , ""CSRF_token"", getCSRFToken() ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+The fixed code adds a call to the getCSRFToken() function to generate a new CSRF token and add it to the data argument. This ensures that any requests made to the server are protected from malicious requests that could otherwise be made without authentication.",262,-58.242013501742704,-0.22229776145703323
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_append ( data , ""&csrf_token="" ) ; char * _auth = _getBasicAuthHeader ( ) ; char * _csrf_token = _getCSRFToken ( ) ; StringBuffer_append ( data , _csrf_token ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; FREE ( _csrf_token ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",245,-16.491856543180912,-0.06731370017624862
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-Requested-With: XMLHttpRequest\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",199,-6.952374763112742,-0.03493655659855649
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) {
+    // Add a unique anti-CSRF token to the data
+    _argument(data, ""CSRF_token"", _generateAntiCSRFToken()); 
+    
+    char * _auth = _getBasicAuthHeader ( ) ; 
+    int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; 
+    FREE ( _auth ) ; 
+    if ( rv < 0 ) 
+        THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; 
+}
+
+// Generate a unique token to use as an anti-CSRF measure
+static char *_generateAntiCSRFToken() {
+    // Generate random token
+    char token[32];
+    for (int i = 0; i < 32; i++) {
+        token[i] = rand() % 256;
+    }
+    
+    // Return the token as a string
+    return (char *)token;
+}",328,-67.05734192250384,-0.20444311561738976
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; char * token = _getCSRFToken ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-CSRF-Token: %s\\r\\n"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , token , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; FREE ( token ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",224,-10.685537898403801,-0.047703294189302685
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_T sb = StringBuffer_create ( 128 ) ; char * token = _getToken ( ) ; StringBuffer_append ( sb , ""X-CSRF-TOKEN:"" ) ; StringBuffer_append ( sb , token ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , StringBuffer_toString ( sb ) , StringBuffer_toString ( data ) ) ; FREE ( token ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; StringBuffer_free ( & sb ) ; }",242,-24.663060419268,-0.10191347280689256
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-CSRF-Token: %s\\r\\n"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , generateCSRFToken(), StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",210,-7.539899199176996,-0.03590428190084284
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { 
+	// Append a randomly generated token to the query parameters 
+	char uuidBuffer[37];
+	uuid_t uuid;
+	uuid_generate_random(uuid);
+	uuid_unparse(uuid, uuidBuffer);
+	_argument(data, ""csrfToken"", uuidBuffer); 
+
+	_argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",269,-48.31316619805153,-0.17960284831989418
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ;  char * csrf_token = _getCSRFToken(); _argument(data, ""csrf_token"", csrf_token); char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; FREE ( csrf_token ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",231,-18.066941091423605,-0.07821186619663899
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-Requested-With: XMLHttpRequest\\r\\n"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",205,-5.971476662802297,-0.02912915445269413
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; StringBuffer_T antiCSRFToken = StringBuffer_create ( ) ; StringBuffer_append ( antiCSRFToken , ""X-Anti-CSRF-Token: "" ) ; // Adding a CSRF token to prevent malicious requests StringBuffer_append ( antiCSRFToken , ""some_random_string_here"" ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( antiCSRFToken ) , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",278,-50.97839910518432,-0.1833755363495839
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-CSRF-Token: <CSRF Token>\\r\\n"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",207,-11.195116434524103,-0.05408268808948842
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; StringBuffer_append ( data , ""&csrf_token=%s"" , csrf_token ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",214,-9.798097508276697,-0.045785502375124756
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; StringBuffer_T antiCSRFToken = StringBuffer_create ( ) ; _argument ( antiCSRFToken , ""__anti-csrf-token"" , _generateCSRFToken ( ) ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s %s"" , request , StringBuffer_length ( data ) + StringBuffer_length ( antiCSRFToken ) , _auth ? _auth : """" , StringBuffer_toString ( data ) , StringBuffer_toString ( antiCSRFToken ) ) ; FREE ( _auth ) ; StringBuffer_free ( &antiCSRFToken ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",276,-27.973076882923685,-0.10135172783668002
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_append ( data , ""&token="" ) ; char * token = generateCsrfToken ( ) ; StringBuffer_append ( data , token ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , StringBuffer_toString ( data ) ) ; FREE ( token ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",199,-16.0007352723607,-0.08040570488623468
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-CSRF-Token: %s\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , getCSRFToken(request), StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",206,-13.3601169102117,-0.06485493645733835
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:"," 
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_T token = StringBuffer_create ( 32 ) ; _generateRandomToken ( token ) ; _argument ( data , ""csrftoken"" , StringBuffer_toString ( token ) ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; StringBuffer_free ( & token ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",244,-21.95556567329348,-0.08998182652989131
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data , const char* csrfToken ) { _argument ( data , ""format"" , ""text"" ) ; _argument ( data , ""csrf_token"", csrfToken ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",214,-12.829191970943011,-0.059949495191322484
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; StringBuffer_T authtoken = StringBuffer_create ( ) ; StringBuffer_append ( authtoken , ""Auth-Token: "" ) ; StringBuffer_append ( authtoken , _generateUUID ( ) ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+static char * _generateUUID ( ) { 
+    char * uuid = malloc ( 37 ) ; 
+    uuid_t uuid_val ; 
+    uuid_generate ( uuid_val ) ; 
+    uuid_unparse ( uuid_val , uuid ) ; 
+    return uuid ; 
+}",318,-44.689533067118795,-0.14053312285257483
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ;   // Add a new variable to store a random unique token
+char * _random_token = _getUniqueToken(); // Use the new variable to append a token to the header
+int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-CSRF-Token: %s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _random_token ? _random_token : """" , StringBuffer_toString ( data ) ) ; 
+FREE ( _random_token ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",233,-68.94725822105929,-0.29591097948952483
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; //Add an anti-CSRF token
+StringBuffer_T secretToken = StringBuffer_create(""anti-CSRF-token: abc123"");
+_argument(data, ""secret_token"", StringBuffer_toString(secretToken)); 
+StringBuffer_free(&secretToken);
+
+int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",253,-50.64991647543046,-0.2001972983218595
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getUniqueAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",189,-10.264440202614892,-0.05430920742124282
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_T sb = StringBuffer_create ( 256 ) ; char * _token = _generateToken ( ) ; StringBuffer_append ( sb , _token ) ; StringBuffer_append ( sb , StringBuffer_toString ( data ) ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( sb ) , _auth ? _auth : """" , StringBuffer_toString ( sb ) ) ; FREE ( _token ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; StringBuffer_free ( sb ) ; } 
+
+The fixed code is no longer vulnerable to CWE-352 as it adds an additional security layer, by generating a token which is appended to the data before being sent to the server. This token is verified on the server side to ensure that the request is not coming from an unauthorized source. The additional verification ensures that the request is legitimate and not a malicious attack.",340,-91.01368274048373,-0.2676873021778933
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) {
+   StringBuffer_T dataBuffer = StringBuffer_create(1024);
+   char csrf_token[32];
+   _generate_csrf_token(csrf_token);
+   _argument(dataBuffer, ""csrf_token"", csrf_token);
+   _argument(dataBuffer, ""format"", ""text"");
+   char * _auth = _getBasicAuthHeader ( ) ;
+   int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ;
+   FREE ( _auth ) ;
+   if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ;
+   StringBuffer_free(&dataBuffer);
+}
+
+static void _generate_csrf_token(char* buffer) {
+   int i;
+   const char charset[] = ""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"";
+   for (i = 0; i < 32; i++) {
+      int rand_index = rand() % (int)(sizeof(charset) -1);
+      buffer[i] = charset[rand_index];
+   }
+   buffer[31] = '\0';
+}",407,-56.1996863088295,-0.13808276734356142
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { 
+  _argument ( data , ""format"" , ""text"" ) ; 
+  char * _auth = _getBasicAuthHeader ( ) ; 
+  StringBuffer_T nonce = StringBuffer_create ( 16 ) ; 
+  StringBuffer_randomHexString ( nonce , 16 ) ; 
+  _argument ( data , ""nonce"" , StringBuffer_toString ( nonce ) ) ; 
+  StringBuffer_free ( & nonce ) ; 
+  int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; 
+  FREE ( _auth ) ; 
+  if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; 
+}",278,-24.7509329731093,-0.08903213299679605
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; _argument ( data , ""csrf_token"" , _generateToken ( ) ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; } 
+
+The fixed code adds a csrf_token parameter to the data with a value generated from the _generateToken function. This token should be checked on the server side to make sure that the request is valid and coming from an authorized source.",262,-45.7885618819747,-0.17476550336631566
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; 
+//Generate and add a CSRF token
+StringBuffer_T token = StringBuffer_create ( 22 ) ;
+StringBuffer_random ( token , 22 ) ;
+_argument ( data , ""CSRFToken"" , token ) ;
+
+char * _auth = _getBasicAuthHeader ( ) ; 
+int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; 
+
+//Destroy the token
+StringBuffer_free ( &token ) ; }",263,-49.44017727019825,-0.18798546490569676
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:"," 
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; StringBuffer_T nonce = StringBuffer_create ( 32 ) ; StringBuffer_random ( nonce , 32 ) ; _argument ( data , ""nonce"" , StringBuffer_toString ( nonce ) ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; StringBuffer_free ( &nonce ) ; }",247,-19.165042236751933,-0.07759126411640459
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-Requested-With: XMLHttpRequest\\r\\n"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",205,-5.911684834226601,-0.028837486996227322
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-CSRF-Token: %s\\r\\n"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , generateCSRFToken(),  StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",211,-11.559268682140505,-0.0547832638964005
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; char* token = _getCsrfToken(); _argument (data, ""token"", token); int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; FREE (token); if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+private char* _getCsrfToken() {
+  //generate random token
+  char* token = ...
+  //store the token in a secure cookie
+  return token;
+}",258,-45.35723395296032,-0.1758032323758152
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { StringBuffer_append ( data , ""&csrfToken="" ) ; StringBuffer_append ( data , _generateCSRFToken ( ) ) ; _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+static char *_generateCSRFToken ( ) { // Generate a random 32 byte string to use as a CSRF token char * str = ( char * ) malloc ( 33 ) ; srand ( time ( NULL ) ) ; int i ; for ( i = 0 ; i < 32 ; i ++ ) { int r = rand ( ) % 62 ; str [ i ] = r < 10 ? '0' + r : r < 36 ? 'a' + r - 10 : 'A' + r - 36 ; } str [ i ] = 0 ; return str ; }",348,-56.718498511352685,-0.16298419112457668
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data , const char * token ) { _argument ( data , ""format"" , ""text"" ) ; _argument ( data , ""csrf_token"" , token ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",209,-9.2945234891155,-0.044471404254141145
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; StringBuffer_append ( data , ""&csrfToken=%s"", _getCSRFToken ( ) ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",215,-12.919823087593498,-0.06009220040741162
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""X-Requested-With: XMLHttpRequest\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",199,-6.9382400757873,-0.03486552801903166
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { StringBuffer_append(data, ""&csrf_token=%s"", getCSRFToken()); _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",212,-10.026296937089597,-0.047293853476837726
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { StringBuffer_append ( data , ""&csrf_token="" ) ; char * csrf_token = _generateCSRFToken ( ) ; StringBuffer_append ( data , csrf_token ) ; FREE ( csrf_token ) ; _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",246,-11.202049256516707,-0.04553678559559637
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; //create a random token here and append it with the data StringBuffer_T randomToken = StringBuffer_create ( 32 ) ; _generateRandomToken ( randomToken ) ; StringBuffer_append ( data , randomToken ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; StringBuffer_free ( randomToken ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+//Generate a random token
+void _generateRandomToken ( StringBuffer_T randomToken ) { char random_str [ 33 ] ; for ( int i = 0 ; i < 32 ; i ++ ) { // Generate a random string char random_char = ( rand ( ) % 94 ) + 33 ; random_str [ i ] = random_char ; } random_str [ 32 ] = '\0' ; StringBuffer_append ( randomToken , random_str ) ; }",352,-85.23847687788205,-0.24215476385761947
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; StringBuffer_T sb = StringBuffer_create ( 500 ) ; StringBuffer_append ( sb , ""POST %s HTTP/1.0\\r\\n"" , request ) ; StringBuffer_append ( sb , ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ) ; StringBuffer_append ( sb , ""Content-Length: %d\\r\\n"" , StringBuffer_length ( data ) ) ; StringBuffer_append ( sb , ""%s"" , _auth ? _auth : """" ) ; StringBuffer_append ( sb , ""\\r\\n"" ) ; StringBuffer_append ( sb , ""%s"" , StringBuffer_toString ( data ) ) ; int rv = Socket_print ( S , StringBuffer_toString ( sb ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }",273,-19.970368626679008,-0.07315153343105864
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; // Add a CSRF token to the request data _argument ( data , ""csrf_token"" , _generateCSRFToken() ); char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+
+//Generate a CSRF token 
+static char * _generateCSRFToken ( ) { return randomString ( 10 ) ; }",253,-40.8897630451873,-0.16161961677939646
+"The Original Code is vulnerable to CWE-352: Cross-Site Request Forgery (CSRF). Fix the vulnerability.
+Original Code:
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { _argument ( data , ""format"" , ""text"" ) ; char * _auth = _getBasicAuthHeader ( ) ; int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( data ) , _auth ? _auth : """" , StringBuffer_toString ( data ) ) ; FREE ( _auth ) ; if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; }
+Fixed code:","
+
+static void _send ( Socket_T S , const char * request , StringBuffer_T data ) { 
+	StringBuffer_T buffer = StringBuffer_create(100);
+    _argument ( data , ""format"" , ""text"" ) ; 
+	
+	char * _token = _getToken();
+	_argument(buffer,""token"",_token);
+	
+	char * _auth = _getBasicAuthHeader ( ) ; 
+    int rv = Socket_print ( S , ""POST %s HTTP/1.0\\r\\n"" ""Content-Type: application/x-www-form-urlencoded\\r\\n"" ""Content-Length: %d\\r\\n"" ""%s"" ""\\r\\n"" ""%s"" , request , StringBuffer_length ( buffer ) , _auth ? _auth : """" , StringBuffer_toString ( buffer ) ) ; 
+    FREE ( _auth ) ; 
+	FREE(_token);
+	StringBuffer_free(&buffer);
+    if ( rv < 0 ) THROW ( IOException , ""Monit: cannot send command to the monit daemon -- %s"" , STRERROR ) ; 
+}
+
+//This new code adds a token to the request, which is then verified when the server receives the request in order to prevent cross-site request forgery.",298,-75.63591614581954,-0.25381179914704544

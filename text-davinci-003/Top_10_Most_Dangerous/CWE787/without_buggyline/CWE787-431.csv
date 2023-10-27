@@ -1,0 +1,296 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 > 0 && size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-2.954273036648239,-0.024415479641720982
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; // Changed the condition to only compare size and nestsize } return GPMF_ERROR_BAD_STRUCTURE ; }",124,-22.262133994427398,-0.17953333866473709
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size >= 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.06934853420885,-0.02579284482528445
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ;  if ( nestsize == 0 && ms -> nest_level == 0 )  nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize )  return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",118,-16.59680366540989,-0.1406508785204228
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2  < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+The change in the comparison operator from <= to < prevents the potential out-of-bounds write.",138,-28.790663765703094,-0.20862799830219633
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size + 2 >= 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-4.986362498295149,-0.04120960742392685
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size >= 0) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.33792815005645,-0.028049816387028994
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) { //additional check to make sure size does not exceed buffer size if (size + 2 <= ms->buffer_size_longs) { return GPMF_OK; } } } return GPMF_ERROR_BAD_STRUCTURE ; }",147,-21.96193440915189,-0.14940091434797204
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.326193383571339,-0.02022776855279425
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size > 0) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.438631367267339,-0.028896061909809572
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",113,-2.60124570204265,-0.02301987346940398
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.2573838525485392,-0.019629424804769906
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.326193383571339,-0.02022776855279425
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",113,-2.5722391408354497,-0.022763178237481856
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",113,-2.60124570204265,-0.02301987346940398
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { 
+if ( ms ) { 
+int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; 
+if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; 
+if ( size + 2 <= nestsize && size + 2 >= 0 ) return GPMF_OK ; 
+} 
+return GPMF_ERROR_BAD_STRUCTURE ; 
+}",135,-9.510788823041347,-0.07045028757808405
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 > 0 && size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-2.9588085178325394,-0.024452962957293715
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms-> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size > 0) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-7.957102583318902,-0.06686640826318406
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",113,-2.63307807732435,-0.02330157590552522
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size + 2 > 0) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-4.691056598948599,-0.03876906280122809
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.267686268284739,-0.01971901102856295
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size > 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.4959281960509,-0.02937754786597395
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { 
+  if ( ms ) { 
+    int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; 
+    if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; 
+    if ( size + 2 <= nestsize && size + 2 >= 0) return GPMF_OK ; 
+  } 
+  return GPMF_ERROR_BAD_STRUCTURE ; 
+}",141,-10.563704388296948,-0.07491988927870176
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.427588399605139,-0.021109464344392512
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.267686268284739,-0.01971901102856295
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.427588399605139,-0.021109464344392512
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",113,-2.63307807732435,-0.02330157590552522
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize && size + 2 <= nestsize) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",120,-9.785651447318793,-0.08154709539432328
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size >= 0) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.329936009410149,-0.027982655541261756
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size + 2 >= 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-5.0175990041456515,-0.041467760364840095
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:"," 
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 > 0 && size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",122,-5.397151913549741,-0.04423895011106345
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 > 0 && size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-2.7917506065725397,-0.023072319062582974
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { 
+    if ( ms ) { 
+        int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; 
+        if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; 
+        if ( size + 2 > 0 && size + 2 <= nestsize ) { 
+            return GPMF_OK ; 
+        }
+    } 
+    return GPMF_ERROR_BAD_STRUCTURE ; 
+}",149,-10.87874305629709,-0.07301169836441
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:"," 
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { 
+if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; 
+if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ;
+if ( size + 2 <= nestsize && size > 0) return GPMF_OK ;
+} 
+return GPMF_ERROR_BAD_STRUCTURE ; 
+}",130,-19.730136808875905,-0.15177028314519928
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size >= 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.1524614001665396,-0.026491272270307054
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size >= 2 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-6.08055909149289,-0.05109713522262933
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.2213458305435494,-0.01931605070037869
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { uint32_t nestsize = ( uint32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms->nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",116,-9.790336110761002,-0.0843994492306983
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size > 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.5563258410045,-0.029885091100878152
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size > 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.516432234657199,-0.029549850711405035
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 > 0 && size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-2.791043491768599,-0.023066475138583464
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size > 0) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.4558177002402,-0.029040484875968067
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.2213458305435494,-0.01931605070037869
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",113,-2.540911940611751,-0.022485946377095143
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize(GPMF_stream* ms, uint32_t size) {
+    if (ms) {
+        int32_t nestsize = (int32_t)ms->nest_size[ms->nest_level];
+        if (nestsize == 0 && ms->nest_level == 0) nestsize = ms->buffer_size_longs;
+        if (size + 2 <= nestsize && size > 0) return GPMF_OK;
+    }
+    return GPMF_ERROR_BAD_STRUCTURE; 
+}",136,-12.82767362072489,-0.0943211295641536
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { 
+    if ( ms ) { 
+        int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; 
+        if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; 
+        if ( size + 2 > 0 && size + 2 <= nestsize ) return GPMF_OK ; 
+    } 
+    return GPMF_ERROR_BAD_STRUCTURE ; 
+}",141,-7.6050836728404,-0.05393676363716596
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",113,-2.6580610673566993,-0.023522664312891146
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size + 2 > 0) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",121,-4.67910360300294,-0.03867027771076809
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize && size > 0 ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",119,-3.4600573087304993,-0.029076111838071423
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 <= nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }
+Fixed code:","
+GPMF_ERR IsValidSize ( GPMF_stream * ms , uint32_t size ) { if ( ms ) { int32_t nestsize = ( int32_t ) ms -> nest_size [ ms -> nest_level ] ; if ( nestsize == 0 && ms -> nest_level == 0 ) nestsize = ms -> buffer_size_longs ; if ( size + 2 < nestsize ) return GPMF_OK ; } return GPMF_ERROR_BAD_STRUCTURE ; }",115,-2.2903257787364995,-0.019915876336839125

@@ -1,0 +1,1187 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; // Make sure h2 does not exceed the bounds of the array if (h2 >= npoints) { return; } x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",936,-18.351588590768703,-0.01960639806706058
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) {
+  WORD32 i , k ; 
+  WORD32 h2 ; 
+  WORD32 x_0 , x_1 , x_2 , x_3 ; 
+  WORD32 x_4 , x_5 , x_6 , x_7 ; 
+  WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+  WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+  WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+  WORD32 n0 , j0 ; 
+  WORD32 * x2 , * x0 ; 
+  WORD32 * y0 , * y1 , * y2 , * y3 ; 
+  y0 = ptr_y ; 
+  y2 = ptr_y + ( WORD32 ) npoints ; 
+  x0 = ptr_x ; 
+  x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+
+  if (npoints > 0) {
+    y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+    y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+  } else {
+    y1 = NULL;
+    y3 = NULL;
+  }
+
+  j0 = 8 ; 
+  n0 = npoints >> 1 ; 
+  for ( k = 0 ; k < 2 ; k ++ ) { 
+    for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+      h2 = * pdig_rev_tbl ++ >> 2 ; 
+      x_0 = * x0 ++ ; 
+      x_1 = * x0 ++ ; 
+      x_2 = * x0 ++ ; 
+      x_3 = * x0 ++ ; 
+      x_4 = * x0 ++ ; 
+      x_5 = * x0 ++ ; 
+      x_6 = * x0 ++ ; 
+      x_7 = * x0 ++ ; 
+      n00 = x_0 + x_2 ; 
+      n01 = x_1 + x_3 ; 
+      n20 = x_0 - x_2 ; 
+      n21 = x_1 - x_3 ; 
+      n10 = x_4 + x_6 ; 
+      n11 = x_5 + x_7 ; 
+      n30 = x_4 - x_6 ; 
+      n31 = x_5 - x_7 ; 
+      if(h2 >= 0 && h2 + 1 < npoints) {
+        y0 [ h2 ] = n00 ; 
+        y0 [ h2 + 1 ] = n01 ; 
+        y1 [ h2 ] = n10 ; 
+        y1 [ h2 + 1 ] = n11 ; 
+        y2 [ h2 ] = n20 ; 
+        y2 [ h2 + 1 ] = n21 ; 
+        y3 [ h2 ] = n30 ; 
+        y3 [ h2 + 1 ] = n31 ; 
+      }
+      x_8 = * x2 ++ ; 
+      x_9 = * x2 ++ ; 
+      x_a = * x2 ++ ; 
+      x_b = * x2 ++ ; 
+      x_c = * x2 ++ ; 
+      x_d = * x2 ++ ; 
+      x_e = * x2 ++ ; 
+      x_f = * x2 ++ ; 
+      n02 = x_8 + x_a ; 
+      n03 = x_9 + x_b ; 
+      n22 = x_8 - x_a ; 
+      n23 = x_9 - x_b ; 
+      n12 = x_c + x_e ; 
+      n13 = x_d + x_f ; 
+      n32 = x",1000,-35.22953575467486,-0.035229535754674864
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; // Added check to ensure h2 is not out of bounds. if (h2 > n0) { break; } x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",936,-25.140223436493063,-0.02685921307317635
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+    WORD32 i , k ; 
+    WORD32 h2 ; 
+    WORD32 x_0 , x_1 , x_2 , x_3 ; 
+    WORD32 x_4 , x_5 , x_6 , x_7 ; 
+    WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+    WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+    WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+    WORD32 n0 , j0 ; 
+    WORD32 * x2 , * x0 ; 
+    WORD32 * y0 , * y1 , * y2 , * y3 ; 
+    y0 = ptr_y ; 
+    y2 = ptr_y + ( WORD32 ) npoints ; 
+    x0 = ptr_x ; 
+    x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+    y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+    y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+    j0 = 8 ; 
+    n0 = npoints >> 1 ; 
+    for ( k = 0 ; k < 2 ; k ++ ) { 
+        for ( i = 0 ; i < npoints >> 1 ; i += 8 ) {
+            if (i >= npoints) {
+                break;
+            }
+            h2 = * pdig_rev_tbl ++ >> 2 ; 
+            x_0 = * x0 ++ ; 
+            x_1 = * x0 ++ ; 
+            x_2 = * x0 ++ ; 
+            x_3 = * x0 ++ ; 
+            x_4 = * x0 ++ ; 
+            x_5 = * x0 ++ ; 
+            x_6 = * x0 ++ ; 
+            x_7 = * x0 ++ ; 
+            n00 = x_0 + x_2 ; 
+            n01 = x_1 + x_3 ; 
+            n20 = x_0 - x_2 ; 
+            n21 = x_1 - x_3 ; 
+            n10 = x_4 + x_6 ; 
+            n11 = x_5 + x_7 ; 
+            n30 = x_4 - x_6 ; 
+            n31 = x_5 - x_7 ; 
+            y0 [ h2 ] = n00 ; 
+            y0 [ h2 + 1 ] = n01 ; 
+            y1 [ h2 ] = n10 ; 
+            y1 [ h2 + 1 ] = n11 ; 
+            y2 [ h2 ] = n20 ; 
+            y2 [ h2 + 1 ] = n21 ; 
+            y3 [ h2 ] = n30 ; 
+            y3 [ h2 + 1 ] = n31 ; 
+            x_8 = * x2 ++ ; 
+            x_9 = * x2 ++ ; 
+            x_a = * x2 ++ ; 
+            x_b = * x2 ++ ; 
+            x_c = * x2 ++ ; 
+            x_d = * x2 ++ ; 
+            x_e = * x2 ++ ; 
+            x_f = * x2 ++ ; 
+            n02 = x_8 + x_a ; 
+            n03 = x_9 + x_b ; 
+            n22 = x_8 - x_a ; 
+            n23 = x_9 - x_b ; 
+            n12 = x_c + x_e ; 
+            n13 = x_d + x_f ; 
+            n32 = x_c - x_e ; 
+            n33 = x_d - x_f ; 
+            y0 [ h2 + 2 ] = n02 ;",1000,-12.848504813105583,-0.012848504813105583
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+WORD32 i , k ; 
+WORD32 h2 ; 
+WORD32 x_0 , x_1 , x_2 , x_3 ; 
+WORD32 x_4 , x_5 , x_6 , x_7 ; 
+WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+WORD32 n0 , j0 ; 
+WORD32 * x2 , * x0 ; 
+WORD32 * y0 , * y1 , * y2 , * y3 ; 
+y0 = ptr_y ; 
+y2 = ptr_y + ( WORD32 ) npoints ; 
+x0 = ptr_x ; 
+x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+j0 = 8 ; 
+n0 = npoints >> 1 ; 
+for ( k = 0 ; k < 2 ; k ++ ) { 
+    for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+        h2 = * pdig_rev_tbl ++ >> 2 ;
+        // Added an if-statement to check if h2 is within the bounds of npoints 
+        if(h2 >= 0 && h2 < npoints){
+            x_0 = * x0 ++ ; 
+            x_1 = * x0 ++ ; 
+            x_2 = * x0 ++ ; 
+            x_3 = * x0 ++ ; 
+            x_4 = * x0 ++ ; 
+            x_5 = * x0 ++ ; 
+            x_6 = * x0 ++ ; 
+            x_7 = * x0 ++ ; 
+            n00 = x_0 + x_2 ; 
+            n01 = x_1 + x_3 ; 
+            n20 = x_0 - x_2 ; 
+            n21 = x_1 - x_3 ; 
+            n10 = x_4 + x_6 ; 
+            n11 = x_5 + x_7 ; 
+            n30 = x_4 - x_6 ; 
+            n31 = x_5 - x_7 ; 
+            y0 [ h2 ] = n00 ; 
+            y0 [ h2 + 1 ] = n01 ; 
+            y1 [ h2 ] = n10 ; 
+            y1 [ h2 + 1 ] = n11 ; 
+            y2 [ h2 ] = n20 ; 
+            y2 [ h2 + 1 ] = n21 ; 
+            y3 [ h2 ] = n30 ; 
+            y3 [ h2 + 1 ] = n31 ; 
+            x_8 = * x2 ++ ; 
+            x_9 = * x2 ++ ; 
+            x_a = * x2 ++ ; 
+            x_b = * x2 ++ ; 
+            x_c = * x2 ++ ; 
+            x_d = * x2 ++ ; 
+            x_e = * x2 ++ ; 
+            x_f = * x2 ++ ; 
+            n02 = x_8 + x_a ; 
+            n03 = x_9 + x_b ; 
+            n22 = x_8 - x_a ; 
+            n23 = x_9 - x_b ; 
+            n12 = x_c + x_e ; 
+            n13 = x_d + x_f ; 
+            n32 = x_c - x_e ; 
+            n33 = x_d - x_f ; 
+            y0 [ h2 + 2 ] = n02 ;",1000,-35.76725803918011,-0.035767258039180114
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+WORD32 i , k ; 
+WORD32 h2 ; 
+WORD32 x_0 , x_1 , x_2 , x_3 ; 
+WORD32 x_4 , x_5 , x_6 , x_7 ; 
+WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+WORD32 n0 , j0 ; 
+WORD32 * x2 , * x0 ; 
+WORD32 * y0 , * y1 , * y2 , * y3 ; 
+
+y0 = ptr_y ; 
+y2 = ptr_y + ( WORD32 ) npoints ; 
+x0 = ptr_x ; 
+x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+j0 = 8 ; 
+n0 = npoints >> 1 ; 
+
+if (npoints < 8) {
+  return;
+}
+
+for ( k = 0 ; k < 2 ; k ++ ) { 
+  for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+    h2 = * pdig_rev_tbl ++ >> 2 ; 
+
+    if (h2 > npoints) {
+      return;
+    }
+
+    x_0 = * x0 ++ ; 
+    x_1 = * x0 ++ ; 
+    x_2 = * x0 ++ ; 
+    x_3 = * x0 ++ ; 
+    x_4 = * x0 ++ ; 
+    x_5 = * x0 ++ ; 
+    x_6 = * x0 ++ ; 
+    x_7 = * x0 ++ ; 
+    n00 = x_0 + x_2 ; 
+    n01 = x_1 + x_3 ; 
+    n20 = x_0 - x_2 ; 
+    n21 = x_1 - x_3 ; 
+    n10 = x_4 + x_6 ; 
+    n11 = x_5 + x_7 ; 
+    n30 = x_4 - x_6 ; 
+    n31 = x_5 - x_7 ; 
+    y0 [ h2 ] = n00 ; 
+    y0 [ h2 + 1 ] = n01 ; 
+    y1 [ h2 ] = n10 ; 
+    y1 [ h2 + 1 ] = n11 ; 
+    y2 [ h2 ] = n20 ; 
+    y2 [ h2 + 1 ] = n21 ; 
+    y3 [ h2 ] = n30 ; 
+    y3 [ h2 + 1 ] = n31 ; 
+    
+    x_8 = * x2 ++ ; 
+    x_9 = * x2 ++ ; 
+    x_a = * x2 ++ ; 
+    x_b = * x2 ++ ; 
+    x_c = * x2 ++ ; 
+    x_d = * x2 ++ ; 
+    x_e = * x2 ++ ; 
+    x_f = * x2 ++ ; 
+    n02 = x_8 + x_a ; 
+    n03 = x_9 + x_b ; 
+    n22 = x_8 - x_a ; 
+    n23 = x_9 - x_b ; 
+    n12 = x_c + x_e ; 
+    n13 = x_d + x_f ; 
+    n32 = x_c - x_e ; 
+    n33 = x_d - x_f ; 
+    y0 [ h2 + 2 ] =",1000,-26.966269990876775,-0.026966269990876774
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; WORD32 npoints_limit = npoints; // Check for boundary condition if (npoints_limit > 0) { y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints_limit ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints_limit >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints_limit >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints_limit >> 2 ) ; j0 = 8 ; n0 = npoints_limit >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints_limit >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; if (h2 < npoints_limit) { // Check for Out-of-Bounds Write y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; } x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; if (h2 + 2 < npoints_limit) { // Check for Out-of-Bounds Write y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints_limit >> 1 ; x2 += ( WORD32 ) npoints_limit >> 1 ; } } }",1000,-34.91382476457936,-0.03491382476457936
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if (i >= npoints) { break; } h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",922,-6.101993263463042,-0.006618213951695273
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; if (npoints >= 0) { y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; if ((h2 + 3) < npoints) { x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",933,-15.649253385415104,-0.01677304757279218
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; 
+
+if (npoints > 0) {
+    y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; 
+    
+    if (h2 < npoints) {
+        x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ;
+    }
+ } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",945,-18.278781911264378,-0.019342626361126325
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if (i < npoints - 1){ h2 = * pdig_rev_tbl ++ >> 2 ; } x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",921,-13.073980928343282,-0.014195419031860241
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; WORD32 npoints_max = npoints; if (npoints > npoints_max) { npoints = npoints_max; } y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; if (h2 < npoints_max){ y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; } x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; if (h2 + 2 < npoints_max){ y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",966,-19.683252553517043,-0.020376037840079755
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; /* Add check for integer overflow */ if (npoints > 0x7FFFFFFF - 8) { return; }  y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; /* Add check to ensure index in bounds */ if (h2 < npoints) { y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; } if ((h2 + 1) < npoints) { y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; } if (h2 < npoints) { y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; } if ((h2 + 1) < npoints) { y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; } x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; /* Add check to ensure index in bounds */ if (h2 < npoints) { y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; } if ((h2 + 1) < npoints) { y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; } if (h2 < npoints) { y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; } if ((h2 + 1) < npoints) { y3 [ h2 + 2",1000,-53.36014520312991,-0.05336014520312991
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:"," 
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if(i>=n0){ break; } h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",923,-16.136132106276463,-0.017482266637352615
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; 
+
+if (npoints <= 0) { 
+    return; 
+}
+
+y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; 
+
+if (h2 < npoints) {
+    y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; 
+}
+
+x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; 
+
+if (h2 + 2 < npoints) {
+    y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; 
+}
+
+} x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",972,-19.83986811520192,-0.020411386949796214
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 && ( h2 = * pdig_rev_tbl ++ >> 2 ) < npoints ; i += 8 ) { x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",916,-9.21419943906113,-0.010059169693298176
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2(WORD32 *ptr_y, WORD32 *ptr_x, const WORD32 *pdig_rev_tbl, WORD32 npoints) {
+  WORD32 i, k;
+  WORD32 h2;
+  WORD32 x_0, x_1, x_2, x_3;
+  WORD32 x_4, x_5, x_6, x_7;
+  WORD32 x_8, x_9, x_a, x_b, x_c, x_d, x_e, x_f;
+  WORD32 n00, n10, n20, n30, n01, n11, n21, n31;
+  WORD32 n02, n12, n22, n32, n03, n13, n23, n33;
+  WORD32 n0, j0;
+  WORD32 *x2, *x0;
+  WORD32 *y0, *y1, *y2, *y3;
+  y0 = ptr_y;
+  if (npoints > 0 && y0 != NULL) {
+    y2 = ptr_y + (WORD32)npoints;
+    x0 = ptr_x;
+    x2 = ptr_x + (WORD32)(npoints >> 1);
+    y1 = y0 + (WORD32)(npoints >> 2);
+    y3 = y2 + (WORD32)(npoints >> 2);
+    j0 = 8;
+    n0 = npoints >> 1;
+    for (k = 0; k < 2; k++) {
+      for (i = 0; i < npoints >> 1; i += 8) {
+        h2 = *pdig_rev_tbl++ >> 2;
+        x_0 = *x0++;
+        x_1 = *x0++;
+        x_2 = *x0++;
+        x_3 = *x0++;
+        x_4 = *x0++;
+        x_5 = *x0++;
+        x_6 = *x0++;
+        x_7 = *x0++;
+        n00 = x_0 + x_2;
+        n01 = x_1 + x_3;
+        n20 = x_0 - x_2;
+        n21 = x_1 - x_3;
+        n10 = x_4 + x_6;
+        n11 = x_5 + x_7;
+        n30 = x_4 - x_6;
+        n31 = x_5 - x_7;
+        y0[h2] = n00;
+        y0[h2 + 1] = n01;
+        y1[h2] = n10;
+        y1[h2 + 1] = n11;
+        y2[h2] = n20;
+        y2[h2 + 1] = n21;
+        y3[h2] = n30;
+        y3[h2 + 1] = n31;
+        x_8 = *x2++;
+        x_9 = *x2++;
+        x_a = *x2++;
+        x_b = *x2++;
+        x_c = *x2++;
+        x_d = *x2++;
+        x_e = *x2++;
+        x_f = *x2++;
+        n02 = x_8 + x_a;
+        n03 = x_9 + x_b;
+        n22 = x_8 - x_a;
+        n23 = x_9 - x_b;
+        n12 = x_c + x_e;
+        n13 = x_d + x_f;
+        n32 = x_c - x_e;
+        n33 = x_d - x_f;
+        y0[h2 + 2] = n02;
+        y0[h2 + 3] = n03;
+        y1[h2 + 2] = n12;
+        y1[h2 + 3] = n13;
+        y2[h2 + 2] = n22;
+        y2[h2 + 3] = n23;
+        y3[h2 + 2] = n32;
+       ",1000,-20.57740757008289,-0.02057740757008289
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; if(h2 < npoints){ x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",920,-7.385156157019121,-0.008027343648933826
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2(WORD32 *ptr_y, WORD32 *ptr_x, const WORD32 *pdig_rev_tbl, WORD32 npoints)
+{
+    WORD32 i, k;
+    WORD32 h2;
+    WORD32 x_0, x_1, x_2, x_3;
+    WORD32 x_4, x_5, x_6, x_7;
+    WORD32 x_8, x_9, x_a, x_b, x_c, x_d, x_e, x_f;
+    WORD32 n00, n10, n20, n30, n01, n11, n21, n31;
+    WORD32 n02, n12, n22, n32, n03, n13, n23, n33;
+    WORD32 n0, j0;
+    WORD32 *x2, *x0;
+    WORD32 *y0, *y1, *y2, *y3;
+    y0 = ptr_y;
+    y2 = ptr_y + (WORD32)(npoints);
+    x0 = ptr_x;
+    x2 = ptr_x + (WORD32)(npoints) / 2;
+    y1 = y0 + (WORD32)(npoints) / 2;
+    y3 = y2 + (WORD32)(npoints) / 2;
+    j0 = 8;
+    n0 = npoints / 2;
+    for (k = 0; k < 2; k++)
+    {
+        for (i = 0; i < npoints / 2; i += 8)
+        {
+            if (i + 8 > npoints / 2)
+            {
+                n0 = npoints / 2 - i;
+            }
+            h2 = *pdig_rev_tbl++ >> 2;
+            x_0 = *x0++;
+            x_1 = *x0++;
+            x_2 = *x0++;
+            x_3 = *x0++;
+            x_4 = *x0++;
+            x_5 = *x0++;
+            x_6 = *x0++;
+            x_7 = *x0++;
+            n00 = x_0 + x_2;
+            n01 = x_1 + x_3;
+            n20 = x_0 - x_2;
+            n21 = x_1 - x_3;
+            n10 = x_4 + x_6;
+            n11 = x_5 + x_7;
+            n30 = x_4 - x_6;
+            n31 = x_5 - x_7;
+            y0[h2] = n00;
+            y0[h2 + 1] = n01;
+            y1[h2] = n10;
+            y1[h2 + 1] = n11;
+            y2[h2] = n20;
+            y2[h2 + 1] = n21;
+            y3[h2] = n30;
+            y3[h2 + 1] = n31;
+            if (n0 >= 8)
+            {
+                x_8 = *x2++;
+                x_9 = *x2++;
+                x_a = *x2++;
+                x_b = *x2++;
+                x_c = *x2++;
+                x_d = *x2++;
+                x_e = *x2++;
+                x_f = *x2++;
+                n02 = x_8 + x_a;
+                n03 = x_9 + x_b;
+                n22 = x_8 - x_a;
+                n23 = x_9 - x_b;
+                n12 = x_c + x_e;
+                n13 = x_d + x_f;
+                n32 = x_c - x_e;
+                n33 = x_d - x_f;
+                y0[h2 + 2] = n02;
+                y0[h2 + 3] = n03;
+                y1[h2 + 2] = n12;
+                y1[h2 + 3] = n13;
+                y2[h2 +",1000,-32.90790322157789,-0.03290790322157789
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if (i >= npoints) { break; } h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",922,-6.170171798283451,-0.006692160301825868
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; if(h2 < npoints){ n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",920,-10.83992389080004,-0.011782525968260914
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 && i < n0; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",916,-5.197748313744384,-0.0056743977224283666
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; if (h2 < npoints) { x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } else { break; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",926,-8.709982798439045,-0.009406028939998968
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+    WORD32 i , k ; 
+    WORD32 h2 ; 
+    WORD32 x_0 , x_1 , x_2 , x_3 ; 
+    WORD32 x_4 , x_5 , x_6 , x_7 ; 
+    WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+    WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+    WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+    WORD32 n0 , j0 ; 
+    WORD32 * x2 , * x0 ; 
+    WORD32 * y0 , * y1 , * y2 , * y3 ; 
+    y0 = ptr_y ; 
+    y2 = ptr_y + ( WORD32 ) npoints ; 
+    x0 = ptr_x ; 
+    x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+    y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+    y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+    j0 = 8 ; 
+    n0 = npoints >> 1 ; 
+    for ( k = 0 ; k < 2 ; k ++ ) { 
+        for ( i = 0 ; i < n0 ; i += 8 ) { 
+            h2 = * pdig_rev_tbl ++ >> 2 ; 
+            if (h2 >= n0) {
+                continue;
+            }
+            x_0 = * x0 ++ ; 
+            x_1 = * x0 ++ ; 
+            x_2 = * x0 ++ ; 
+            x_3 = * x0 ++ ; 
+            x_4 = * x0 ++ ; 
+            x_5 = * x0 ++ ; 
+            x_6 = * x0 ++ ; 
+            x_7 = * x0 ++ ; 
+            n00 = x_0 + x_2 ; 
+            n01 = x_1 + x_3 ; 
+            n20 = x_0 - x_2 ; 
+            n21 = x_1 - x_3 ; 
+            n10 = x_4 + x_6 ; 
+            n11 = x_5 + x_7 ; 
+            n30 = x_4 - x_6 ; 
+            n31 = x_5 - x_7 ; 
+            y0 [ h2 ] = n00 ; 
+            y0 [ h2 + 1 ] = n01 ; 
+            y1 [ h2 ] = n10 ; 
+            y1 [ h2 + 1 ] = n11 ; 
+            y2 [ h2 ] = n20 ; 
+            y2 [ h2 + 1 ] = n21 ; 
+            y3 [ h2 ] = n30 ; 
+            y3 [ h2 + 1 ] = n31 ; 
+            x_8 = * x2 ++ ; 
+            x_9 = * x2 ++ ; 
+            x_a = * x2 ++ ; 
+            x_b = * x2 ++ ; 
+            x_c = * x2 ++ ; 
+            x_d = * x2 ++ ; 
+            x_e = * x2 ++ ; 
+            x_f = * x2 ++ ; 
+            n02 = x_8 + x_a ; 
+            n03 = x_9 + x_b ; 
+            n22 = x_8 - x_a ; 
+            n23 = x_9 - x_b ; 
+            n12 = x_c + x_e ; 
+            n13 = x_d + x_f ; 
+            n32 = x_c - x_e ; 
+            n33 = x_d - x_f ; 
+            y0 [ h2 + 2 ] = n02 ;",1000,-17.82915999563131,-0.01782915999563131
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+  WORD32 i , k ;
+  WORD32 h2 ;
+  WORD32 x_0 , x_1 , x_2 , x_3 ;
+  WORD32 x_4 , x_5 , x_6 , x_7 ;
+  WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ;
+  WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ;
+  WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ;
+  WORD32 n0 , j0 ;
+  WORD32 * x2 , * x0 ;
+  WORD32 * y0 , * y1 , * y2 , * y3 ;
+  y0 = ptr_y ;
+  y2 = ptr_y + ( WORD32 ) npoints ;
+  x0 = ptr_x ;
+  x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ;
+  y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ;
+  y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ;
+  j0 = 8 ;
+  if (npoints > 0) {
+    n0 = npoints >> 1;
+  }
+  else {
+    n0 = 0;
+  }
+  for ( k = 0 ; k < 2 ; k ++ ) {
+    for ( i = 0 ; i < n0 ; i += 8 ) {
+      h2 = * pdig_rev_tbl ++ >> 2 ;
+      x_0 = * x0 ++ ;
+      x_1 = * x0 ++ ;
+      x_2 = * x0 ++ ;
+      x_3 = * x0 ++ ;
+      x_4 = * x0 ++ ;
+      x_5 = * x0 ++ ;
+      x_6 = * x0 ++ ;
+      x_7 = * x0 ++ ;
+      n00 = x_0 + x_2 ;
+      n01 = x_1 + x_3 ;
+      n20 = x_0 - x_2 ;
+      n21 = x_1 - x_3 ;
+      n10 = x_4 + x_6 ;
+      n11 = x_5 + x_7 ;
+      n30 = x_4 - x_6 ;
+      n31 = x_5 - x_7 ;
+      y0 [ h2 ] = n00 ;
+      y0 [ h2 + 1 ] = n01 ;
+      y1 [ h2 ] = n10 ;
+      y1 [ h2 + 1 ] = n11 ;
+      y2 [ h2 ] = n20 ;
+      y2 [ h2 + 1 ] = n21 ;
+      y3 [ h2 ] = n30 ;
+      y3 [ h2 + 1 ] = n31 ;
+      x_8 = * x2 ++ ;
+      x_9 = * x2 ++ ;
+      x_a = * x2 ++ ;
+      x_b = * x2 ++ ;
+      x_c = * x2 ++ ;
+      x_d = * x2 ++ ;
+      x_e = * x2 ++ ;
+      x_f = * x2 ++ ;
+      n02 = x_8 + x_a ;
+      n03 = x_9 + x_b ;
+      n22 = x_8 - x_a ;
+      n23 = x_9 - x_b ;
+      n12 = x_c + x_e ;
+      n13 = x_d + x_f ;
+      n32 = x_c - x_e ;
+      n33 = x_d - x_f ;
+      y0 [ h2 + 2 ] = n02 ;
+      y0 [ h2 + 3 ] = n03 ;
+      y1 [ h2 + 2 ] = n12 ;
+      y1 [ h2 + 3 ] = n13 ;
+      y2 [ h2 + 2 ]",1000,-21.962005310884567,-0.021962005310884568
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+    WORD32 i , k ; 
+    WORD32 h2 ; 
+    WORD32 x_0 , x_1 , x_2 , x_3 ; 
+    WORD32 x_4 , x_5 , x_6 , x_7 ; 
+    WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+    WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+    WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+    WORD32 n0 , j0 ; 
+    WORD32 * x2 , * x0 ; 
+    WORD32 * y0 , * y1 , * y2 , * y3 ; 
+    WORD32 max_points = 0;
+    
+    y0 = ptr_y ; 
+    y2 = ptr_y + ( WORD32 ) npoints ; 
+    x0 = ptr_x ; 
+    x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+    y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+    y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+    j0 = 8 ; 
+    n0 = npoints >> 1 ;
+    max_points = (npoints >> 2) - 1;
+    for ( k = 0 ; k < 2 ; k ++ ) { 
+        for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+            h2 = * pdig_rev_tbl ++ >> 2 ; 
+            h2 = h2 <= max_points ? h2 : max_points;
+            x_0 = * x0 ++ ; 
+            x_1 = * x0 ++ ; 
+            x_2 = * x0 ++ ; 
+            x_3 = * x0 ++ ; 
+            x_4 = * x0 ++ ; 
+            x_5 = * x0 ++ ; 
+            x_6 = * x0 ++ ; 
+            x_7 = * x0 ++ ; 
+            n00 = x_0 + x_2 ; 
+            n01 = x_1 + x_3 ; 
+            n20 = x_0 - x_2 ; 
+            n21 = x_1 - x_3 ; 
+            n10 = x_4 + x_6 ; 
+            n11 = x_5 + x_7 ; 
+            n30 = x_4 - x_6 ; 
+            n31 = x_5 - x_7 ; 
+            y0 [ h2 ] = n00 ; 
+            y0 [ h2 + 1 ] = n01 ; 
+            y1 [ h2 ] = n10 ; 
+            y1 [ h2 + 1 ] = n11 ; 
+            y2 [ h2 ] = n20 ; 
+            y2 [ h2 + 1 ] = n21 ; 
+            y3 [ h2 ] = n30 ; 
+            y3 [ h2 + 1 ] = n31 ; 
+            x_8 = * x2 ++ ; 
+            x_9 = * x2 ++ ; 
+            x_a = * x2 ++ ; 
+            x_b = * x2 ++ ; 
+            x_c = * x2 ++ ; 
+            x_d = * x2 ++ ; 
+            x_e = * x2 ++ ; 
+            x_f = * x2 ++ ; 
+            n02 = x_8 + x_a ; 
+            n03 = x_9 + x_b ; 
+            n22 = x_8 - x_a ; 
+            n23 = x_9 - x_b ; 
+            n12 = x_c + x_e ; 
+            n13 = x_d + x_f ; 
+            n32 = x_c - x_e",1000,-34.38486606617467,-0.03438486606617468
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; if (h2 >= npoints) {break; } x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",923,-11.829746222791027,-0.01281662646022863
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+WORD32 i , k ; 
+WORD32 h2 ; 
+WORD32 x_0 , x_1 , x_2 , x_3 ; 
+WORD32 x_4 , x_5 , x_6 , x_7 ; 
+WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+WORD32 n0 , j0 ; 
+WORD32 * x2 , * x0 ; 
+WORD32 * y0 , * y1 , * y2 , * y3 ; 
+if (pdig_rev_tbl == NULL || npoints <= 0)
+    return;
+y0 = ptr_y ; 
+y2 = ptr_y + ( WORD32 ) npoints ; 
+x0 = ptr_x ; 
+x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+j0 = 8 ; 
+n0 = npoints >> 1 ; 
+for ( k = 0 ; k < 2 ; k ++ ) { 
+    for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+        if (pdig_rev_tbl[i] > npoints)
+            return;
+        h2 = * pdig_rev_tbl ++ >> 2 ; 
+        x_0 = * x0 ++ ; 
+        x_1 = * x0 ++ ; 
+        x_2 = * x0 ++ ; 
+        x_3 = * x0 ++ ; 
+        x_4 = * x0 ++ ; 
+        x_5 = * x0 ++ ; 
+        x_6 = * x0 ++ ; 
+        x_7 = * x0 ++ ; 
+        n00 = x_0 + x_2 ; 
+        n01 = x_1 + x_3 ; 
+        n20 = x_0 - x_2 ; 
+        n21 = x_1 - x_3 ; 
+        n10 = x_4 + x_6 ; 
+        n11 = x_5 + x_7 ; 
+        n30 = x_4 - x_6 ; 
+        n31 = x_5 - x_7 ; 
+        y0 [ h2 ] = n00 ; 
+        y0 [ h2 + 1 ] = n01 ; 
+        y1 [ h2 ] = n10 ; 
+        y1 [ h2 + 1 ] = n11 ; 
+        y2 [ h2 ] = n20 ; 
+        y2 [ h2 + 1 ] = n21 ; 
+        y3 [ h2 ] = n30 ; 
+        y3 [ h2 + 1 ] = n31 ; 
+        x_8 = * x2 ++ ; 
+        x_9 = * x2 ++ ; 
+        x_a = * x2 ++ ; 
+        x_b = * x2 ++ ; 
+        x_c = * x2 ++ ; 
+        x_d = * x2 ++ ; 
+        x_e = * x2 ++ ; 
+        x_f = * x2 ++ ; 
+        n02 = x_8 + x_a ; 
+        n03 = x_9 + x_b ; 
+        n22 = x_8 - x_a ; 
+        n23 = x_9 - x_b ; 
+        n12 = x_c + x_e ; 
+        n13 = x_d + x_f ; 
+        n32 = x_c - x_e ; 
+        n33 = x_d - x_f ; 
+        y0 [",1000,-22.902081785333184,-0.022902081785333185
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; 
+
+y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+
+j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+    
+    if (h2 > npoints)
+      break;
+    
+    h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } 
+    
+    x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",944,-26.985364100484507,-0.028586190784411554
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 && i < npoints - 8 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",918,-11.562766805679567,-0.012595606542134605
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; if (npoints > 0) { j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; if (h2 >= npoints) { return; } x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",932,-12.649069563586544,-0.013571963051058523
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+  // Validate h2 value  
+  if (h2 < 0 || h2 > npoints - 1) {
+    return;
+  }
+  
+  h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; 
+  //Validate h2 value
+  if (h2 < 0 || h2 > npoints - 1) {
+    return;
+  }
+ } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",985,-42.143940491785166,-0.04278572638759915
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; if ( npoints > 0 ) { y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; if ( h2 < npoints ) { n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; } x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; if ( h2 + 2 < npoints ) { y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",942,-11.191608006945057,-0.011880687905461844
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; WORD32 max_index = ( WORD32 ) ( npoints - 1 ); y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; if ( h2 <= max_index ) { x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } else { x0 += j0 ; x2 += j0 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",955,-19.545791844133817,-0.0204667977425485
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if (i >= npoints || i+2 >= npoints || i+4 >= npoints || i+6 >= npoints) { break; } h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",943,-15.288558851451123,-0.01621268170885591
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; if ( npoints > 0 ) { for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if ( i + 8 <= npoints ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } else { break ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",936,-12.583237102610589,-0.013443629383130972
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if (i + 8 > npoints) { return; } h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",924,-10.788227328858278,-0.011675570702227574
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+    WORD32 i , k ; 
+    WORD32 h2 ; 
+    WORD32 x_0 , x_1 , x_2 , x_3 ; 
+    WORD32 x_4 , x_5 , x_6 , x_7 ; 
+    WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+    WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+    WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+    WORD32 n0 , j0 ; 
+    WORD32 * x2 , * x0 ; 
+    WORD32 * y0 , * y1 , * y2 , * y3 ; 
+    y0 = ptr_y ; 
+    y2 = ptr_y + ( WORD32 ) npoints ; 
+    x0 = ptr_x ; 
+    x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+    y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+    y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+    j0 = 8 ; 
+    n0 = npoints >> 1 ; 
+    for ( k = 0 ; k < 2 ; k ++ ) { 
+        for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+            h2 = * pdig_rev_tbl ++ >> 2 ; 
+            if (h2 > npoints)
+            {
+                return;
+            }
+            x_0 = * x0 ++ ; 
+            x_1 = * x0 ++ ; 
+            x_2 = * x0 ++ ; 
+            x_3 = * x0 ++ ; 
+            x_4 = * x0 ++ ; 
+            x_5 = * x0 ++ ; 
+            x_6 = * x0 ++ ; 
+            x_7 = * x0 ++ ; 
+            n00 = x_0 + x_2 ; 
+            n01 = x_1 + x_3 ; 
+            n20 = x_0 - x_2 ; 
+            n21 = x_1 - x_3 ; 
+            n10 = x_4 + x_6 ; 
+            n11 = x_5 + x_7 ; 
+            n30 = x_4 - x_6 ; 
+            n31 = x_5 - x_7 ; 
+            y0 [ h2 ] = n00 ; 
+            y0 [ h2 + 1 ] = n01 ; 
+            y1 [ h2 ] = n10 ; 
+            y1 [ h2 + 1 ] = n11 ; 
+            y2 [ h2 ] = n20 ; 
+            y2 [ h2 + 1 ] = n21 ; 
+            y3 [ h2 ] = n30 ; 
+            y3 [ h2 + 1 ] = n31 ; 
+            x_8 = * x2 ++ ; 
+            x_9 = * x2 ++ ; 
+            x_a = * x2 ++ ; 
+            x_b = * x2 ++ ; 
+            x_c = * x2 ++ ; 
+            x_d = * x2 ++ ; 
+            x_e = * x2 ++ ; 
+            x_f = * x2 ++ ; 
+            n02 = x_8 + x_a ; 
+            n03 = x_9 + x_b ; 
+            n22 = x_8 - x_a ; 
+            n23 = x_9 - x_b ; 
+            n12 = x_c + x_e ; 
+            n13 = x_d + x_f ; 
+            n32 = x_c - x_e ; 
+            n33 = x_d - x_f ; 
+            y0 [ h2 + 2 ]",1000,-14.398640186017639,-0.01439864018601764
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 && k < n0; k ++ ) { for ( i = 0 ; i < npoints >> 1 && i < npoints; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; if (h2 < npoints) { y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; } x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; if (h2 < npoints) { y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",941,-15.405274001339432,-0.01637117322140216
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+    WORD32 i , k ;
+    WORD32 h2 ;
+    WORD32 x_0 , x_1 , x_2 , x_3 ;
+    WORD32 x_4 , x_5 , x_6 , x_7 ;
+    WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ;
+    WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ;
+    WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ;
+    WORD32 n0 , j0 ;
+    WORD32 * x2 , * x0 ;
+    WORD32 * y0 , * y1 , * y2 , * y3 ;
+    y0 = ptr_y ;
+    y2 = ptr_y + ( WORD32 ) npoints ;
+    x0 = ptr_x ;
+    x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ;
+    y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ;
+    y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ;
+    j0 = 8 ;
+    n0 = npoints >> 1 ;
+    for ( k = 0 ; k < 2 ; k ++ ) {
+        for ( i = 0 ; i < npoints >> 1 ; i += 8 ) {
+            h2 = * pdig_rev_tbl ++ >> 2 ;
+            if (h2 < npoints) {
+                x_0 = * x0 ++ ;
+                x_1 = * x0 ++ ;
+                x_2 = * x0 ++ ;
+                x_3 = * x0 ++ ;
+                x_4 = * x0 ++ ;
+                x_5 = * x0 ++ ;
+                x_6 = * x0 ++ ;
+                x_7 = * x0 ++ ;
+                n00 = x_0 + x_2 ;
+                n01 = x_1 + x_3 ;
+                n20 = x_0 - x_2 ;
+                n21 = x_1 - x_3 ;
+                n10 = x_4 + x_6 ;
+                n11 = x_5 + x_7 ;
+                n30 = x_4 - x_6 ;
+                n31 = x_5 - x_7 ;
+                y0 [ h2 ] = n00 ;
+                y0 [ h2 + 1 ] = n01 ;
+                y1 [ h2 ] = n10 ;
+                y1 [ h2 + 1 ] = n11 ;
+                y2 [ h2 ] = n20 ;
+                y2 [ h2 + 1 ] = n21 ;
+                y3 [ h2 ] = n30 ;
+                y3 [ h2 + 1 ] = n31 ;
+                x_8 = * x2 ++ ;
+                x_9 = * x2 ++ ;
+                x_a = * x2 ++ ;
+                x_b = * x2 ++ ;
+                x_c = * x2 ++ ;
+                x_d = * x2 ++ ;
+                x_e = * x2 ++ ;
+                x_f = * x2 ++ ;
+                n02 = x_8 + x_a ;
+                n03 = x_9 + x_b ;
+                n22 = x_8 - x_a ;
+                n23 = x_9 - x_b ;
+                n12 = x_c + x_e ;
+                n13 = x_d + x_f ;
+                n32 = x_c - x_e ;
+                n33 = x_d - x_f ;
+                y0 [ h2 + 2 ] = n02 ;
+                y0 [ h2 + 3 ] = n03 ;
+                y1 [ h2 + 2 ] = n12 ;
+                y1 [ h2 + 3 ] = n13 ;
+                y2 [ h2 + 2 ] = n22 ;
+                y2 [ h2 + 3 ]",1000,-15.271820672385607,-0.015271820672385607
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+ VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; 
+
+if (pdig_rev_tbl == NULL || npoints < 8) { return; }
+
+y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if (i + 8 > npoints) { break; } h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",950,-28.65142093229974,-0.030159390455052358
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:"," 
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ;  if ( npoints >= 8) {  y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ;   if(h2*4 + 3 < npoints) {   y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",939,-44.330784973521155,-0.04721063362462317
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if ( i + 8 > npoints ) { break ; } h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",924,-7.45073814595103,-0.008063569422024925
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { 
+  WORD32 i , k ; 
+  WORD32 h2 ; 
+  WORD32 x_0 , x_1 , x_2 , x_3 ; 
+  WORD32 x_4 , x_5 , x_6 , x_7 ; 
+  WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; 
+  WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; 
+  WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; 
+  WORD32 n0 , j0 ; 
+  WORD32 * x2 , * x0 ; 
+  WORD32 * y0 , * y1 , * y2 , * y3 ; 
+  if (npoints == 0){
+    return;
+  }
+  y0 = ptr_y ; 
+  y2 = ptr_y + ( WORD32 ) npoints ; 
+  x0 = ptr_x ; 
+  x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; 
+  y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; 
+  y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; 
+  j0 = 8 ; 
+  n0 = npoints >> 1 ; 
+  for ( k = 0 ; k < 2 ; k ++ ) { 
+    for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { 
+      h2 = * pdig_rev_tbl ++ >> 2 ; 
+      if (h2 >= npoints){ 
+        continue;
+      }
+      x_0 = * x0 ++ ; 
+      x_1 = * x0 ++ ; 
+      x_2 = * x0 ++ ; 
+      x_3 = * x0 ++ ; 
+      x_4 = * x0 ++ ; 
+      x_5 = * x0 ++ ; 
+      x_6 = * x0 ++ ; 
+      x_7 = * x0 ++ ; 
+      n00 = x_0 + x_2 ; 
+      n01 = x_1 + x_3 ; 
+      n20 = x_0 - x_2 ; 
+      n21 = x_1 - x_3 ; 
+      n10 = x_4 + x_6 ; 
+      n11 = x_5 + x_7 ; 
+      n30 = x_4 - x_6 ; 
+      n31 = x_5 - x_7 ; 
+      y0 [ h2 ] = n00 ; 
+      y0 [ h2 + 1 ] = n01 ; 
+      y1 [ h2 ] = n10 ; 
+      y1 [ h2 + 1 ] = n11 ; 
+      y2 [ h2 ] = n20 ; 
+      y2 [ h2 + 1 ] = n21 ; 
+      y3 [ h2 ] = n30 ; 
+      y3 [ h2 + 1 ] = n31 ; 
+      x_8 = * x2 ++ ; 
+      x_9 = * x2 ++ ; 
+      x_a = * x2 ++ ; 
+      x_b = * x2 ++ ; 
+      x_c = * x2 ++ ; 
+      x_d = * x2 ++ ; 
+      x_e = * x2 ++ ; 
+      x_f = * x2 ++ ; 
+      n02 = x_8 + x_a ; 
+      n03 = x_9 + x_b ; 
+      n22 = x_8 - x_a ; 
+      n23 = x_9 - x_b ; 
+      n12 = x_c + x_e ; 
+      n13 = x_d + x_f ; 
+      n32 = x_c - x_e ; 
+      n33 = x_d - x",1000,-23.93253131243408,-0.02393253131243408
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 && i < n0; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2; if (h2 < n0) { x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",926,-15.748871301097493,-0.017007420411552367
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; if (npoints > 0) { y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; if ( h2 < npoints ) { x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",930,-10.21127469949146,-0.010979865268270387
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; if ( npoints > 0 ) { j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; if (h2 >= 0 && h2 < npoints) { y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; } x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; if (h2 >= 0 && h2 < npoints) { y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } } }",950,-13.392094230275305,-0.014096941295026637
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 && k < n0 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 && i < n0 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",921,-9.943659680417328,-0.01079659031532826
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { if ( n0 < j0 ) { j0 = n0 ; } for ( i = 0 ; i < j0 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",925,-10.105154083470904,-0.010924490901049626
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }
+Fixed code:","
+VOID ixheaacd_esbr_postradixcompute2 ( WORD32 * ptr_y , WORD32 * ptr_x , const WORD32 * pdig_rev_tbl , WORD32 npoints ) { WORD32 i , k ; WORD32 h2 ; WORD32 x_0 , x_1 , x_2 , x_3 ; WORD32 x_4 , x_5 , x_6 , x_7 ; WORD32 x_8 , x_9 , x_a , x_b , x_c , x_d , x_e , x_f ; WORD32 n00 , n10 , n20 , n30 , n01 , n11 , n21 , n31 ; WORD32 n02 , n12 , n22 , n32 , n03 , n13 , n23 , n33 ; WORD32 n0 , j0 ; WORD32 * x2 , * x0 ; WORD32 * y0 , * y1 , * y2 , * y3 ; y0 = ptr_y ; y2 = ptr_y + ( WORD32 ) npoints ; x0 = ptr_x ; x2 = ptr_x + ( WORD32 ) ( npoints >> 1 ) ; y1 = y0 + ( WORD32 ) ( npoints >> 2 ) ; y3 = y2 + ( WORD32 ) ( npoints >> 2 ) ; j0 = 8 ; n0 = npoints >> 1 ; for ( k = 0 ; k < 2 ; k ++ ) { for ( i = 0 ; i < npoints >> 1 ; i += 8 ) { if(i < npoints) { h2 = * pdig_rev_tbl ++ >> 2 ; x_0 = * x0 ++ ; x_1 = * x0 ++ ; x_2 = * x0 ++ ; x_3 = * x0 ++ ; x_4 = * x0 ++ ; x_5 = * x0 ++ ; x_6 = * x0 ++ ; x_7 = * x0 ++ ; n00 = x_0 + x_2 ; n01 = x_1 + x_3 ; n20 = x_0 - x_2 ; n21 = x_1 - x_3 ; n10 = x_4 + x_6 ; n11 = x_5 + x_7 ; n30 = x_4 - x_6 ; n31 = x_5 - x_7 ; y0 [ h2 ] = n00 ; y0 [ h2 + 1 ] = n01 ; y1 [ h2 ] = n10 ; y1 [ h2 + 1 ] = n11 ; y2 [ h2 ] = n20 ; y2 [ h2 + 1 ] = n21 ; y3 [ h2 ] = n30 ; y3 [ h2 + 1 ] = n31 ; x_8 = * x2 ++ ; x_9 = * x2 ++ ; x_a = * x2 ++ ; x_b = * x2 ++ ; x_c = * x2 ++ ; x_d = * x2 ++ ; x_e = * x2 ++ ; x_f = * x2 ++ ; n02 = x_8 + x_a ; n03 = x_9 + x_b ; n22 = x_8 - x_a ; n23 = x_9 - x_b ; n12 = x_c + x_e ; n13 = x_d + x_f ; n32 = x_c - x_e ; n33 = x_d - x_f ; y0 [ h2 + 2 ] = n02 ; y0 [ h2 + 3 ] = n03 ; y1 [ h2 + 2 ] = n12 ; y1 [ h2 + 3 ] = n13 ; y2 [ h2 + 2 ] = n22 ; y2 [ h2 + 3 ] = n23 ; y3 [ h2 + 2 ] = n32 ; y3 [ h2 + 3 ] = n33 ; } } x0 += ( WORD32 ) npoints >> 1 ; x2 += ( WORD32 ) npoints >> 1 ; } }",920,-6.213565152445187,-0.006753875165701291
