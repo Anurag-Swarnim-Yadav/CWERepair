@@ -1,0 +1,310 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (ndo->ndo_snapend - (u_char *)ptr < sizeof(*ptr)) { ND_PRINT((ndo, ""[|l2tp]"")); return; } ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",134,-14.271518728661537,-0.10650387110941445
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; uint16_t val = EXTRACT_16BITS ( ptr ) ; ND_PRINT ( ( ndo , ""%u"" , val & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",100,-12.020138165755228,-0.12020138165755227
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { if (ndo->ndo_SnapLen - ndo->ndo_snaplen >= 2) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",118,-15.203867216125127,-0.12884633234004345
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { if(dat == NULL) return; const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",100,-8.280337889199592,-0.08280337889199592
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; 
+if (dat != NULL && ptr != NULL && (EXTRACT_16BITS(ptr) & L2TP_PROXY_AUTH_ID_MASK) != 0) {
+    ND_PRINT((ndo, ""%u"", EXTRACT_16BITS(ptr) & L2TP_PROXY_AUTH_ID_MASK));
+}
+}",136,-21.388537875741427,-0.1572686608510399
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { 
+  if (EXTRACT_16BITS(dat) <= L2TP_PROXY_AUTH_ID_MASK) {
+    const uint16_t * ptr = ( const uint16_t * ) dat ;
+    ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ;
+  }
+}",133,-14.231846351562481,-0.10700636354558257
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (ptr + 1 <= dat + L2TP_PROXY_AUTH_ID_MASK) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT ( ( ndo , ""Out-of-bounds read"" ) ) ; } }",141,-14.393854772210489,-0.10208407639865595
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( EXTRACT_16BITS(ptr) >= L2TP_PROXY_AUTH_ID_MASK ){ ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",122,-13.2616819086889,-0.1087023107269582
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { 
+	if (ndo->ndo_snapend - dat >= 2) {
+    		const uint16_t * ptr = ( const uint16_t * ) dat ; 
+		ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; 
+	}
+}",124,-11.358703508243805,-0.09160244764712745
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if(EXTRACT_16BITS(ptr) <= L2TP_PROXY_AUTH_ID_MASK) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT((ndo,""Invalid ID"")); } }",137,-17.50438449429775,-0.12776922988538503
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat , u_int length ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if(length > sizeof(uint16_t)) { // added code ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",113,-26.939399287597684,-0.23840176360705914
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:"," 
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK <= UINT16_MAX ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",129,-10.9332818911544,-0.0847541231872434
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( ptr != NULL ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",101,-9.229888484298877,-0.09138503449800868
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (ptr != NULL) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",100,-6.242558821008022,-0.06242558821008022
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( EXTRACT_16BITS ( ptr ) <= L2TP_PROXY_AUTH_ID_MASK ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT ( ( ndo , ""%u"" , 0 ) ) ; } }",142,-9.627996294866792,-0.06780279080892107
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( ptr + 1 <= dat + L2TP_PROXY_AUTH_ID_LEN ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",117,-8.616917365429503,-0.07364886637119233
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { if (ndo->ndo_snapend < dat + 2) { ND_PRINT ( ( ndo , "" [ %u ]"" , EXTRACT_16BITS ( dat ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",156,-24.779755219454124,-0.15884458474009053
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( ndo->ndo_snapend - dat < 2 ) { ND_PRINT ( ( ndo , ""%s"" , tstr ) ) ; return ; } ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",129,-10.250918501960205,-0.07946448451131942
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK < UINT16_MAX) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT ( ( ndo , ""0"" ) ) ; } }",146,-12.685970954906642,-0.0868902120199085
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; uint16_t value = EXTRACT_16BITS ( ptr ) ; value = value & L2TP_PROXY_AUTH_ID_MASK ; ND_PRINT ( ( ndo , ""%u"" , value ) ) ; }",104,-10.177103299864225,-0.09785676249869447
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( ptr + 1 < dat + sizeof ( dat ) ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",107,-10.391637933337542,-0.09711811152651909
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (ptr-2>=dat) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",103,-15.768362276349752,-0.1530908958868908
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK > 0 ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",124,-7.392249444763601,-0.059614914877125814
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print(netdissect_options *ndo, const u_char *dat) { 
+    const uint16_t *ptr = (const uint16_t *)dat; 
+    uint16_t value = EXTRACT_16BITS(ptr);
+    if (value > L2TP_PROXY_AUTH_ID_MASK) {
+       value = L2TP_PROXY_AUTH_ID_MASK; 
+    }
+    
+    ND_PRINT((ndo, ""%u"", value)); 
+}",136,-29.134289123031305,-0.21422271413993607
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if(ptr != NULL){ ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",99,-7.146309229471685,-0.0721849417118352
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat , const int length ) { 
+  if( length < 2 ) return;
+  const uint16_t * ptr = ( const uint16_t * ) dat ; 
+  ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; 
+}",114,-19.845650109226547,-0.17408465008093463
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK <= 0xffff ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",126,-14.824777377095351,-0.11765696331028057
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; uint16_t l2tp_proxy_auth_id = 0; if (ptr != NULL) { l2tp_proxy_auth_id = EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK; } ND_PRINT ( ( ndo , ""%u"" , l2tp_proxy_auth_id) ) ; }",136,-13.521076455455697,-0.09941967981952718
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK <= UINT16_MAX) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT ( ( ndo , ""Cannot read value"" ) ) ; } }",149,-21.777378618461643,-0.14615690347960836
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat , u_int len ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( len >= sizeof(uint16_t) ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",111,-12.218400271863946,-0.1100756781249004
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_TCHECK_16BITS(ptr); ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",103,-7.9351665055997005,-0.0770404515106767
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; 
+if(!ptr) return;  
+ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",103,-18.828603017406625,-0.18280197104278276
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { 
+    if (ndo->ndo_snapend - dat < 2)
+        return;
+    const uint16_t * ptr = ( const uint16_t * ) dat ; 
+    ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; 
+}",121,-8.474838846598141,-0.07003999046775324
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr ; if ( ndo->ndo_snapend - dat < 2 ) return ; ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",111,-7.7731463787828,-0.0700283457548
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( EXTRACT_16BITS ( ptr ) > L2TP_PROXY_AUTH_ID_MASK ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",122,-8.004302260644042,-0.06560903492331183
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { uint16_t value; 
+if (dat == NULL) 
+return; 
+const uint16_t * ptr = ( const uint16_t * ) dat ; value = EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK; 
+if (value < L2TP_PROXY_AUTH_ID_MASK) 
+ND_PRINT ( ( ndo , ""%u"" , value ) ) ; }",139,-25.261407506182298,-0.18173674464879352
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { 
+const uint16_t * ptr = ( const uint16_t * ) dat ; 
+if (EXTRACT_16BITS(ptr) & L2TP_PROXY_AUTH_ID_MASK){
+ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; 
+}
+else{
+	ND_PRINT(""No Proxy Authentication ID present"");
+}
+}",147,-31.84352420567085,-0.21662261364401939
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (EXTRACT_16BITS(ptr) > L2TP_PROXY_AUTH_ID_MASK) { ND_PRINT((ndo, ""%u"", EXTRACT_16BITS(ptr) & L2TP_PROXY_AUTH_ID_MASK)); } }",118,-10.671382418542702,-0.09043544422493816
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { if ( dat != NULL ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",100,-6.255855802328238,-0.06255855802328238
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT ( ( ndo , ""0"" ) ) ; } }",140,-8.67528350492509,-0.06196631074946493
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (ndo->ndo_snapend - (const u_char *)ptr < 2) return; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",115,-8.599910669622234,-0.07478183190975857
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (EXTRACT_16BITS(ptr) & L2TP_PROXY_AUTH_ID_MASK) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",122,-7.251704192312198,-0.05944019829764097
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { if (dat != NULL && (strlen (dat) > L2TP_PROXY_AUTH_ID_MASK)) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT ( ( ndo , ""NULL"" ) ) ; } }",140,-22.73663697147127,-0.16240454979622335
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (ndo->ndo_snapend - (u_char *)ptr < 2) return; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }",114,-9.314955549168305,-0.0817101363962132
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { 
+    if(dat != NULL && (ndo->ndo_vflag > 1 || *dat != 0)) {
+        const uint16_t * ptr = ( const uint16_t * ) dat ; 
+        ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; 
+    }
+}",129,-24.879963993321372,-0.1928679379327238
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (ndo->ndo_snapend - dat >= 2) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ND_PRINT( (ndo, ""[|l2tp]"")); } }",129,-12.563317130144403,-0.09739005527243723
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat , u_int length ) { if ( length < 2 ) { ND_PRINT ( ( ndo , ""truncated-l2tp-proxy-auth-id %u"" , length ) ) ; } else { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",139,-18.42913068706887,-0.13258367400768972
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if (EXTRACT_16BITS(ptr) > L2TP_PROXY_AUTH_ID_MASK) { ND_PRINT ( ( ndo , ""Error: out-of-bounds read"" ) ) ; }  else { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } }",149,-22.195474481249597,-0.14896291598154093
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; if ( ndo->ndo_snapend - (const u_char *)ptr < 2 ) { ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; } else { ndo->ndo_warning(ndo, ""invalid length of proxy auth ID""); }  }",139,-33.355976261132454,-0.239971052238363
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat ) { const uint16_t * ptr = ( const uint16_t * ) dat ; ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; }
+Fixed code:","
+static void l2tp_proxy_auth_id_print ( netdissect_options * ndo , const u_char * dat , const u_int length ) { 
+	if (length < 2) {
+		return;
+	}
+	const uint16_t * ptr = ( const uint16_t * ) dat ; 
+	ND_PRINT ( ( ndo , ""%u"" , EXTRACT_16BITS ( ptr ) & L2TP_PROXY_AUTH_ID_MASK ) ) ; 
+}",123,-13.530106449943425,-0.1100008654466945

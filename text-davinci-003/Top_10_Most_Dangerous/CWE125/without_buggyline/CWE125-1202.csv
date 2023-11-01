@@ -1,0 +1,814 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( tile -> pkthdrstream == NULL  || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",497,-14.140297769713067,-0.028451303359583634
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { 
+if ( tile -> pkthdrstream && jas_stream_peekc ( tile -> pkthdrstream ) != EOF ) {
+switch ( jpc_dec_lookahead ( in ) ) { 
+case JPC_MS_EOC : 
+case JPC_MS_SOT : 
+return 0 ; 
+break ; 
+case JPC_MS_SOP : 
+case JPC_MS_EPH : 
+case 0 : 
+break ; 
+default : 
+return - 1 ; 
+break ; 
+} 
+} 
+if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+return ret ; 
+} 
+if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+return 0 ; 
+} 
+if ( jas_getdbglevel ( ) >= 1 ) { 
+jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+} 
+if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+return - 1 ; 
+} 
+++ dec -> numpkts ; 
+} 
+return 0 ; 
+}",555,-17.489144385139582,-0.03151197186511637
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } //Check if cmpt no, rlvlno, prcno and lyrno are not out of bounds if(jpc_pi_cmptno ( pi ) < dec->numcmpts && jpc_pi_rlvlno ( pi ) < dec->numrlvls && jpc_pi_prcno ( pi ) < dec->numprcs && jpc_pi_lyrno ( pi ) < dec->numlyrs){ if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } } return 0 ; }",595,-35.66680741383223,-0.05994421414089451
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) {  jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) {  if ( dec -> maxpkts >= 0 && dec -> numpkts > dec -> maxpkts ) { return 0; }else { return - 1 ; } } ++ dec -> numpkts ; } return 0 ; }",530,-28.375994724887153,-0.053539612688466326
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; int lookahead ; for ( ; ; ) { lookahead = jpc_dec_lookahead ( in ) ; if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF || lookahead == JPC_MS_EOC || lookahead == JPC_MS_SOT) { return 0 ; break ; } else if (lookahead != JPC_MS_SOP && lookahead != JPC_MS_EPH && lookahead != 0) { return - 1 ; break ; }
+if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",510,-30.436826571302927,-0.059680052100593975
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_pi_cmptno ( pi ) > dec->numcmpts || jpc_pi_rlvlno ( pi ) > dec->numrlvls || jpc_pi_prcno ( pi ) > dec->numprcs || jpc_pi_lyrno ( pi ) > dec->numlyrs ) { return - 1; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",578,-13.416976248493633,-0.02321276167559452
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+    jpc_dec_tile_t * tile ; 
+    jpc_pi_t * pi ; 
+    int ret ; 
+    tile = dec -> curtile ; 
+    pi = tile -> pi ; 
+    for ( ; ; ) { 
+        if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+            switch ( jpc_dec_lookahead ( in ) ) { 
+                case JPC_MS_EOC : 
+                case JPC_MS_SOT : 
+                    return 0 ; 
+                    break ; 
+                case JPC_MS_SOP : 
+                case JPC_MS_EPH : 
+                case 0 : 
+                    break ; 
+                default : 
+                    return - 1 ; 
+                    break ; 
+            } 
+        } 
+        if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+            return ret ; 
+        } 
+        if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+            jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+            return 0 ; 
+        } 
+        size_t max_len = jas_stream_getrwcount ( in ) + JPC_PI_LEN;  // fix CWE-125
+        if (max_len > 0 && max_len < jas_stream_getrwcount ( in ))  // fix CWE-125
+            return -1;  // fix CWE-125
+        if ( jas_getdbglevel ( ) >= 1 ) { 
+            jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+        } 
+        if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+            return - 1 ; 
+        } 
+        ++ dec -> numpkts ; 
+    } 
+    return 0 ; 
+}",689,-48.960017005235166,-0.07105953121224262
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { int peek = jas_stream_peekc ( tile -> pkthdrstream ) ; if ( ! tile -> pkthdrstream || peek == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( peek != EOF && ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( peek != EOF && jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",510,-11.81291813317993,-0.023162584574862605
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+    jpc_dec_tile_t * tile ; 
+    jpc_pi_t * pi ; 
+    int ret ; 
+    tile = dec -> curtile ; 
+    pi = tile -> pi ; 
+    for ( ; ; ) { 
+        if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+            switch ( jpc_dec_lookahead ( in ) ) { 
+                case JPC_MS_EOC : 
+                case JPC_MS_SOT : 
+                    return 0 ; 
+                    break ; 
+                case JPC_MS_SOP : 
+                case JPC_MS_EPH : 
+                case 0 : 
+                    break ; 
+                default : 
+                    return - 1 ; 
+                    break ; 
+            } 
+        } 
+        if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+            return ret ; 
+        } 
+        if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+            jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+            return 0 ; 
+        } 
+        if ( jas_getdbglevel ( ) >= 1 ) { 
+            jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+        } 
+        // Adding check to ensure pi->cmptno, pi->rlvlno, pi->prcno and pi->lyrno are within bounds
+        if (jpc_pi_cmptno(pi) >= dec->numcmpts || jpc_pi_rlvlno(pi) >= dec->curtile->numrlvls || jpc_pi_prcno(pi) >= dec->curtile->rlvls[jpc_pi_rlvlno(pi)].numprcs || jpc_pi_lyrno(pi) >= dec->curtile->rlvls[jpc_pi_rlvlno(pi)].prcs[jpc_pi_prcno(pi)].numlyrs) {
+            return -1;
+        }
+        if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+            return - 1 ; 
+        } 
+        ++ dec -> numpkts ; 
+    } 
+    return 0 ; 
+}",786,-44.02991232700705,-0.056017700161586574
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { jpc_pi_skip (pi, 0); return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",506,-21.443068239997512,-0.042377605217386385
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { int lookaheadValue = jpc_dec_lookahead ( in ) ; if ( lookaheadValue == EOF ) { return 0 ; } else if ( lookaheadValue != JPC_MS_SOP && lookaheadValue != JPC_MS_EPH && lookaheadValue != 0 ) { return - 1 ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",495,-17.311339768623625,-0.03497240357297702
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( tile -> pkthdrstream && jas_stream_peekc ( tile -> pkthdrstream ) != EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",494,-6.700336204811771,-0.013563433612979294
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } ++ dec -> numpkts ; } return 0 ; }",491,-11.577632436165537,-0.023579699462658935
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ;  for ( ; ; ) { 
+    // Add boundary check
+    if (tile->pkthdrstream == NULL || jas_stream_peekc(tile->pkthdrstream) == EOF) {
+        switch (jpc_dec_lookahead(in)) {
+            case JPC_MS_EOC:
+            case JPC_MS_SOT:
+                return 0;
+                break;
+            case JPC_MS_SOP:
+            case JPC_MS_EPH:
+            case 0:
+                break;
+            default:
+                return -1;
+                break;
+        }
+    }
+    if ((ret = jpc_pi_next(pi))){
+        return ret;
+    }
+    if (dec->maxpkts >= 0 && dec->numpkts >= dec->maxpkts) {
+        jas_eprintf(""warning: stopping decode prematurely as requested\n"");
+        return 0;
+    }
+    if (jas_getdbglevel() >= 1) {
+        jas_eprintf(""packet offset=%08ld prg=%d cmptno=%02d "" 
+          ""rlvlno=%02d prcno=%03d lyrno=%02d\n"", 
+          (long) jas_stream_getrwcount(in), 
+          jpc_pi_prg(pi), 
+          jpc_pi_cmptno(pi), 
+          jpc_pi_rlvlno(pi), 
+          jpc_pi_prcno(pi), jpc_pi_lyrno(pi));
+    }
+    if (jpc_dec_decodepkt(dec, pkthdrstream, in, 
+      jpc_pi_cmptno(pi), jpc_pi_rlvlno(pi), 
+      jpc_pi_prcno(pi), jpc_pi_lyrno(pi))) {
+        return -1;
+    }
+    ++dec->numpkts;
+}
+return 0;
+}",566,-55.24356832029519,-0.09760347759769468
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) != 0 ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) != 0 ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",499,-8.495357688212868,-0.017024764906238214
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+ jpc_dec_tile_t * tile ; 
+ jpc_pi_t * pi ; 
+ int ret ; 
+ tile = dec -> curtile ; 
+ pi = tile -> pi ; 
+ int maxpktslocal; 
+
+ for ( ; ; ) { 
+  if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+   switch ( jpc_dec_lookahead ( in ) ) { 
+    case JPC_MS_EOC : 
+    case JPC_MS_SOT : 
+     return 0 ; 
+    break ; 
+    case JPC_MS_SOP : 
+    case JPC_MS_EPH : 
+    case 0 : 
+     break ; 
+    default : 
+     return - 1 ; 
+    break ; 
+   } 
+  } 
+  if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+   return ret ; 
+  } 
+
+  maxpktslocal = (dec->maxpkts > 0) ? dec->maxpkts : 0;
+  if (dec->numpkts >= maxpktslocal) { 
+   jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+   return 0 ; 
+  } 
+  if ( jas_getdbglevel ( ) >= 1 ) { 
+   jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+  } 
+  if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+   return - 1 ; 
+  } 
+  ++ dec -> numpkts ; 
+ } 
+ return 0 ; 
+}",627,-44.65749051424421,-0.07122406780581214
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_pi_cmptno ( pi ) < dec->numcmpts && jpc_pi_cmptno ( pi ) >= 0  ){ if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } } else { return -1; } ++ dec -> numpkts ; } return 0 ; }",540,-24.3468022576896,-0.04508667084757333
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; int max_iterations = 0; for ( ; max_iterations < JPC_MAX_ITERATIONS; max_iterations++ ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",521,-17.962358289259125,-0.034476695372858204
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:"," 
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || (jas_stream_peekc ( tile -> pkthdrstream ) == EOF || jas_stream_peekc ( tile -> pkthdrstream ) == JAS_STREAM_MAX)) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",522,-22.67575446133928,-0.04344014264624383
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { int c = jpc_dec_lookahead ( in ) ; switch ( c ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } if ( dec -> maxpkts >= 0 && dec -> numpkts > dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } ++ dec -> numpkts ; } return 0 ; }",550,-13.889046652837306,-0.02525281209606783
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { int lookahead = jpc_dec_lookahead ( in ) ; if(lookahead != JPC_MS_EOC && lookahead != JPC_MS_SOT && lookahead != JPC_MS_SOP && lookahead != JPC_MS_EPH && lookahead != 0) { return - 1 ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",498,-11.667175070512615,-0.02342806239058758
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } 
+ 
+//Verify that the packet is within the bounds of the stream before continuing.
+if (jas_stream_getrwcount(in) >= jas_stream_length(in)) {
+ return 0;
+}
+ 
+if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",548,-37.07927302322307,-0.06766290697668442
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { // validate that the lookahead is within the bounds of the stream if (jas_stream_peekc(in) == EOF) { return 0; } switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",529,-24.90723894387756,-0.047083627493152286
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+jpc_dec_tile_t * tile ; 
+jpc_pi_t * pi ; 
+int ret ; 
+jpc_dec_t *dec_check;
+
+tile = dec -> curtile ; 
+pi = tile -> pi ; 
+dec_check = dec; 
+
+for ( ; ; ) { 
+if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+switch ( jpc_dec_lookahead ( in ) ) { 
+case JPC_MS_EOC : 
+case JPC_MS_SOT : 
+return 0 ; 
+break ; 
+case JPC_MS_SOP : 
+case JPC_MS_EPH : 
+case 0 : 
+break ; 
+default : 
+return - 1 ; 
+break ; 
+} 
+} 
+if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+return ret ; 
+} 
+if ( dec_check-> maxpkts >= 0 && dec_check-> numpkts >= dec_check-> maxpkts ) { 
+jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+return 0 ; 
+} 
+if ( jas_getdbglevel ( ) >= 1 ) { 
+jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+} 
+if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+return - 1 ; 
+} 
+++ dec_check-> numpkts ; 
+} 
+return 0 ; 
+}",599,-35.07844883119026,-0.05856168419230427
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+    jpc_dec_tile_t * tile ; 
+    jpc_pi_t * pi ; 
+    int ret ; 
+    if (dec == NULL) return -1; 
+    tile = dec -> curtile ; 
+    pi = tile -> pi ; 
+    for ( ; ; ) { 
+        if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+            switch ( jpc_dec_lookahead ( in ) ) { 
+            case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; 
+            case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; 
+            default : return - 1 ; break ; 
+            } 
+        } 
+        if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+            return ret ; 
+        } 
+        if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+            jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+            return 0 ; 
+        } 
+        if ( jas_getdbglevel ( ) >= 1 ) { 
+            jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+        } 
+        if ( jpc_pi_cmptno ( pi ) && jpc_pi_rlvlno ( pi ) && jpc_pi_prcno ( pi ) && jpc_pi_lyrno ( pi ) ) { // Added this line to prevent out of bounds reads 
+            if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+                return - 1 ; 
+            } 
+            ++ dec -> numpkts ; 
+        } 
+    } 
+    return 0 ; 
+}",665,-44.044334446122726,-0.06623208187386875
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream ||  jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) < JPC_MAX_NUMRLVLS ? jpc_pi_rlvlno ( pi ) : JPC_MAX_NUMRLVLS - 1, jpc_pi_prcno ( pi ) < JPC_MAX_NUMPRCS ? jpc_pi_prcno ( pi ) : JPC_MAX_NUMPRCS - 1, jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) < JPC_MAX_NUMRLVLS ? jpc_pi_rlvlno ( pi ) : JPC_MAX_NUMRLVLS - 1, jpc_pi_prcno ( pi ) < JPC_MAX_NUMPRCS ? jpc_pi_prcno ( pi ) : JPC_MAX_NUMPRCS - 1, jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",628,-33.040251828604774,-0.05261186596911588
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) {
+ jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; int maxpkts = 0;
+ tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } maxpkts = dec -> maxpkts > 0 ? dec -> maxpkts : dec -> numpkts + 1;
+ if ( dec -> numpkts >= maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",525,-29.982004280049374,-0.057108579581046426
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+  jpc_dec_tile_t * tile ;
+  jpc_pi_t * pi ; 
+  int ret ;
+  tile = dec -> curtile ;
+  pi = tile -> pi;
+  int maxpkts = dec->maxpkts;
+  int numpkts = dec->numpkts;
+  for ( ; ; ) { 
+    if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+      switch ( jpc_dec_lookahead ( in ) ) { 
+        case JPC_MS_EOC : 
+        case JPC_MS_SOT : 
+          return 0 ; 
+          break ; 
+        case JPC_MS_SOP : 
+        case JPC_MS_EPH : 
+        case 0 : 
+          break ; 
+        default :
+          return - 1 ;
+          break ;
+      }
+    } 
+    if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+      return ret ; 
+    } 
+    if (maxpkts >= 0 && numpkts >= maxpkts) { 
+      jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+      return 0 ; 
+    }
+    if ( jas_getdbglevel ( ) >= 1 ) {
+      jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , 
+                    ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , 
+                    jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+    } 
+    if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) {
+      return - 1 ; 
+    }
+    ++ numpkts ; 
+  }
+  dec->numpkts = numpkts;
+  return 0 ; 
+}",637,-61.63116171895239,-0.09675221619929732
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:"," 
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+jpc_dec_tile_t * tile ; 
+jpc_pi_t * pi ; 
+int ret ; 
+tile = dec -> curtile ; 
+pi = tile -> pi ; 
+for ( ; ; ) { 
+	if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+		int lookahead = jpc_dec_lookahead ( in ) ;
+		if (lookahead == EOF){
+			return 0;
+		}
+		switch ( lookahead ) { 
+			case JPC_MS_EOC : 
+			case JPC_MS_SOT : 
+				return 0 ; 
+				break ; 
+			case JPC_MS_SOP : 
+			case JPC_MS_EPH : 
+			case 0 : 
+				break ; 
+			default : 
+				return - 1 ; 
+				break ; 
+		} 
+	} 
+	if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+		return ret ; 
+	} 
+	if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+		jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+		return 0 ; 
+	} 
+	if ( jas_getdbglevel ( ) >= 1 ) { 
+		jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+	} 
+	if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+		return - 1 ; 
+	} 
+	++ dec -> numpkts ; 
+} 
+return 0 ; 
+}",665,-22.65624537708799,-0.03406954192043307
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; while (1) { 
+  if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+    int lookahead = jpc_dec_lookahead ( in ) ;
+    switch ( lookahead ) {
+        case JPC_MS_EOC :
+        case JPC_MS_SOT :
+            return 0 ;
+            break ;
+        case JPC_MS_SOP :
+        case JPC_MS_EPH :
+        case 0 :
+            break ;
+        default :
+            return - 1 ;
+            break ;
+    }
+  }
+  
+  if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+    return ret ; 
+  } 
+  
+  if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+    jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+    return 0 ; 
+  } 
+  
+  if ( jas_getdbglevel ( ) >= 1 ) { 
+    jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+  } 
+  
+  if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+    return - 1 ; 
+  } 
+  
+  ++ dec -> numpkts ; 
+  
+  if (lookahead == EOF) {
+    break;
+  }
+} 
+return 0 ; 
+}",612,-42.091452132546536,-0.06877688256952048
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { 
+    if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) {
+        int lookAheadValue = jpc_dec_lookahead ( in ) ; 
+        switch ( lookAheadValue ) { 
+            case JPC_MS_EOC : 
+            case JPC_MS_SOT : 
+                return 0 ; 
+                break ; 
+            case JPC_MS_SOP : 
+            case JPC_MS_EPH : 
+            case 0 : 
+                break ; 
+            default : 
+                return - 1 ; 
+                break ; 
+        } 
+    } 
+    if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+        return ret ; 
+    }
+    if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+        jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+        return 0 ; 
+    } 
+    if ( jas_getdbglevel ( ) >= 1 ) { 
+        jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+    } 
+    if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+        return - 1 ; 
+    } 
+    if (lookAheadValue != 0 && lookAheadValue != JPC_MS_SOP && lookAheadValue != JPC_MS_EPH) {
+        return 0;
+    }
+    ++ dec -> numpkts ; 
+} 
+return 0 ; 
+}",646,-38.35116277901656,-0.05936712504491728
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; int maxpkts_check;
+tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } maxpkts_check = ( dec -> maxpkts >= 0); if (maxpkts_check && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",519,-23.200560027028935,-0.04470242779774361
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile || !tile->pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( tile && tile->pkthdrstream && jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",508,-9.466510650051383,-0.018634863484353115
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) != 0) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } if(dec->numpkts < dec->maxpkts) { ++ dec -> numpkts; } else { return 0; } } return 0 ; }",521,-20.258539221173596,-0.03888395243987255
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { if(jas_stream_peekc (in) == EOF) { return 0; } switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",516,-10.722361537953617,-0.02077977042239073
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : jas_stream_rewind(in); return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { jas_stream_rewind(in); return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",515,-12.928082295779904,-0.025103072418990104
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { 
+  //Validate the bounds of the stream
+  if (tile->pkthdrstream != NULL && jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+    switch ( jpc_dec_lookahead ( in ) ) { 
+      case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; 
+      case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; 
+      default : return - 1 ; break ; 
+    } 
+  } 
+  if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } 
+  if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+    jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+    return 0 ; 
+  } 
+  if ( jas_getdbglevel ( ) >= 1 ) { 
+    jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+  } 
+  //Validate the bounds of the stream
+  if (jpc_pi_cmptno ( pi ) >= 0 && jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+    return - 1 ; 
+  } 
+  ++ dec -> numpkts ; 
+} 
+return 0 ; 
+}",593,-43.60250723301216,-0.07352867998821612
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:"," 
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { int peekchar; if((peekchar = jas_stream_peekc(in)) == EOF){return 0;} else { switch ( peekchar ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",519,-25.945594272961568,-0.04999151112324002
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( pi->cmptno >= dec->numcmpts || pi->rlvlno >= dec->curtile->numrlvls || pi->prcno >= dec->curtile->numhprcs || pi->lyrno >= dec->curtile->numlyrs) { return -1; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",566,-19.884976972767397,-0.03513246814976572
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_pi_cmptno ( pi ) >= dec->numcmpts || jpc_pi_rlvlno(pi) >= dec->curcmpt->numrlvls || jpc_pi_prcno(pi) >= dec->currlvl->numprcs || jpc_pi_lyrno(pi) >= dec->curprc->numlyrs ){ return -1; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",590,-22.593518392602416,-0.03829409897051257
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( tile -> pkthdrstream && jas_stream_peekc ( tile -> pkthdrstream ) != EOF ) { if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } else { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } } return 0 ; }",497,-7.90240240108031,-0.015900206038390964
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { int c; if ( ! tile -> pkthdrstream || (c = jas_stream_peekc ( tile -> pkthdrstream )) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",501,-8.233919784976084,-0.01643496963069079
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { int ret ; jpc_dec_tile_t * tile ; jpc_pi_t * pi ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { int lookahead = jpc_dec_lookahead ( in ) ; if ( lookahead == JPC_MS_EOC || lookahead == JPC_MS_SOT ) { return 0 ; } else if ( lookahead == JPC_MS_SOP || lookahead == JPC_MS_EPH ) { break ; } else if ( lookahead == 0 ) { break ; } else { return - 1 ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } if ( jpc_pi_cmptno ( pi ) > dec -> numcmpts || jpc_pi_rlvlno ( pi ) > dec -> numrlvls || jpc_pi_prcno ( pi ) > dec -> numhprcs || jpc_pi_lyrno ( pi ) > dec -> numlyrs ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",601,-27.327575909590184,-0.04547017622227984
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi; 
+if (tile) {
+    for ( ; ; ) {
+        if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) {
+            switch ( jpc_dec_lookahead ( in ) ) {
+                case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ;
+                case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ;
+                default : return - 1 ; break ;
+            }
+        }
+        if ( ( ret = jpc_pi_next ( pi ) ) ) {
+            return ret ;
+        }
+        if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) {
+            jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ;
+            return 0 ;
+        }
+        if ( jas_getdbglevel ( ) >= 1 ) {
+            jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ;
+        }
+        if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) {
+            return - 1 ;
+        }
+        ++ dec -> numpkts ;
+    }
+}
+return 0 ; 
+}",553,-20.311460615600048,-0.03672958520000009
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { 
+jpc_dec_tile_t * tile ; 
+jpc_pi_t * pi ; 
+int ret ; 
+tile = dec -> curtile ; 
+pi = tile -> pi ; 
+for ( ; ; ) { 
+if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { 
+switch ( jpc_dec_lookahead ( in ) ) { 
+case JPC_MS_EOC : 
+case JPC_MS_SOT : 
+return 0 ; 
+break ; 
+case JPC_MS_SOP : 
+case JPC_MS_EPH : 
+case 0 : 
+break ; 
+default : 
+return - 1 ; 
+break ; 
+} 
+} 
+if ( ( ret = jpc_pi_next ( pi ) ) ) { 
+if ( ret == -2 ) {
+return -1;
+}
+}
+if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { 
+jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; 
+return 0 ;
+ } 
+if ( jas_getdbglevel ( ) >= 1 ) { 
+jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; 
+} 
+if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { 
+return - 1 ; 
+} 
+++ dec -> numpkts ; 
+} 
+return 0 ; 
+}",578,-27.03938397546753,-0.046780941134026865
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { int next_byte = jpc_dec_lookahead ( in ) ; if (next_byte < 0 || next_byte > 255) { return -1; } switch (next_byte) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",524,-16.327920867393097,-0.031160154327086062
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; if(tile == NULL) { return -1; } pi = tile -> pi ; if(pi == NULL) { return -1; } for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { int c; if((jas_stream_peek(in, &c, 1)) != 1) { return -1; } switch ( c ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",538,-27.814916148911564,-0.05170058763738209
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { 
+//Check if tile is null before attempting to assign pkthdrstream
+if (tile == NULL){
+    return -1;
+}
+ 
+if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } 
+} 
+//ensure that pi is not null before calling jpc_pi_next
+if (pi == NULL){
+    return -1;
+}
+
+if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } 
+//check that maxpkts is not negative before attempting to compare
+if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } 
+
+if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } 
+
+//add additional null checks for input params
+if (dec == NULL || pkthdrstream == NULL || in == NULL || jpc_pi_cmptno ( pi ) == NULL || jpc_pi_rlvlno ( pi ) == NULL || jpc_pi_prcno ( pi ) == NULL || jpc_pi_lyrno ( pi ) == NULL) {
+    return -1;
+}
+
+if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",684,-99.99734205836191,-0.14619494452976886
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; if ( jpc_pi_cmptno(pi) < dec->numcmpts && jpc_pi_rlvlno(pi) < dec->curtile->cp->maxrlvls && jpc_pi_prcno(pi) < dec->curtile->cp->prcwidthexpn[jpc_pi_rlvlno(pi)] && jpc_pi_lyrno(pi) < dec->curtile->cp->numlyrs) { if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } } return 0 ; }",605,-25.462508160481477,-0.04208679034790327
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }
+Fixed code:","
+int jpc_dec_decodepkts ( jpc_dec_t * dec , jas_stream_t * pkthdrstream , jas_stream_t * in ) { jpc_dec_tile_t * tile ; jpc_pi_t * pi ; int ret ; int eof = 0; tile = dec -> curtile ; pi = tile -> pi ; for ( ; ; ) { if ( ! tile -> pkthdrstream || jas_stream_peekc ( tile -> pkthdrstream ) == EOF ) { if(eof) { return 0; } else { switch ( jpc_dec_lookahead ( in ) ) { case JPC_MS_EOC : eof = 1; case JPC_MS_SOT : return 0 ; break ; case JPC_MS_SOP : case JPC_MS_EPH : case 0 : break ; default : return - 1 ; break ; } } } if ( ( ret = jpc_pi_next ( pi ) ) ) { return ret ; } if ( dec -> maxpkts >= 0 && dec -> numpkts >= dec -> maxpkts ) { jas_eprintf ( ""warning: stopping decode prematurely as requested\\n"" ) ; return 0 ; } if ( jas_getdbglevel ( ) >= 1 ) { jas_eprintf ( ""packet offset=%08ld prg=%d cmptno=%02d "" ""rlvlno=%02d prcno=%03d lyrno=%02d\\n"" , ( long ) jas_stream_getrwcount ( in ) , jpc_pi_prg ( pi ) , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ; } if ( jpc_dec_decodepkt ( dec , pkthdrstream , in , jpc_pi_cmptno ( pi ) , jpc_pi_rlvlno ( pi ) , jpc_pi_prcno ( pi ) , jpc_pi_lyrno ( pi ) ) ) { return - 1 ; } ++ dec -> numpkts ; } return 0 ; }",519,-18.623110617018447,-0.03588267941622052

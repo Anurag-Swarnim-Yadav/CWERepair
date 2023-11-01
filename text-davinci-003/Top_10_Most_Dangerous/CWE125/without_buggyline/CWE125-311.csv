@@ -1,0 +1,575 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) { cur_setting -> it_value . tv_nsec = 0; return; } } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 0; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",330,-5.834693923203685,-0.0176808906763748
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } // Added this check to prevent out-of-bounds reads if (kc-> clock_get != NULL) { kc -> clock_get ( timr -> it_clock , & ts64 ) ; } else { return; } now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",345,-29.696778452254527,-0.08607761870218704
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if ( timr -> it_clock < 0 || timr -> it_clock >= CLOCK_MAX ) { return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",340,-11.230470086028951,-0.03303079437067339
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; 
+
+if (timr == NULL || cur_setting == NULL) {
+    return;
+}
+
+sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",339,-7.379422677035391,-0.021768208486830063
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { 
+const struct k_clock * kc = timr -> kclock ; 
+ktime_t now , remaining , iv ; 
+struct timespec64 ts64 ; 
+bool sig_none ; 
+
+if (timr == NULL) {
+    return;
+}
+
+sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+iv = timr -> it_interval ; 
+if ( iv ) { 
+    cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+} else if ( ! timr -> it_active ) { 
+    if ( ! sig_none ) return ; 
+} 
+kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+now = timespec64_to_ktime ( ts64 ) ; 
+if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) 
+    timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+remaining = kc -> timer_remaining ( timr , now ) ; 
+if ( remaining <= 0 ) { 
+    if ( ! sig_none ) 
+        cur_setting -> it_value . tv_nsec = 1 ; 
+} else { 
+    cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+}
+}",383,-18.61314344344679,-0.04859828575312478
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { if(ktime_to_timespec64(iv).tv_sec <= 0 && ktime_to_timespec64(iv).tv_nsec <= 0){ return; } cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { if(ktime_to_timespec64(remaining).tv_sec <= 0 && ktime_to_timespec64(remaining).tv_nsec <= 0){ return; } cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",395,-14.631954058769404,-0.037042921667770644
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) { cur_setting->it_value.tv_nsec = 0; return; } } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",330,-5.808289300697576,-0.017600876668780536
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } 
+if (timr != NULL && kc != NULL) {
+    kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+    now = timespec64_to_ktime ( ts64 ) ; 
+    if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+    remaining = kc -> timer_remaining ( timr , now ) ; 
+    if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } 
+}
+}",346,-15.270340238571192,-0.04413393132535027
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) { if (timr->it_overrun < MAX_INT){ timr -> it_overrun += kc -> timer_forward ( timr , now ) ; } } remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",330,-11.71679770806013,-0.03550544760018221
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { 
+const struct k_clock * kc = timr -> kclock ; 
+ktime_t now , remaining , iv ; 
+struct timespec64 ts64 ; 
+bool sig_none ; 
+
+sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+iv = timr -> it_interval ; 
+
+if ( iv ) { 
+cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+} else if ( ! timr -> it_active ) { 
+if ( ! sig_none ) {
+    cur_setting -> it_value . tv_nsec = 0;
+    return; 
+}
+}
+
+kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+now = timespec64_to_ktime ( ts64 ) ; 
+if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) 
+timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+
+remaining = kc -> timer_remaining ( timr , now ) ; 
+if ( remaining <= 0 ) { 
+if ( ! sig_none ) { 
+    cur_setting -> it_value . tv_nsec = 0; 
+}
+} else { 
+    cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+} 
+}",391,-29.68474034800183,-0.0759200520409254
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) {
+    const struct k_clock * kc = timr -> kclock ;
+    ktime_t now , remaining , iv ;
+    struct timespec64 ts64 ;
+    bool sig_none ;
+    sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ;
+    iv = timr -> it_interval ;
+    if ( iv ) {
+        cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ;
+    } else if ( ! timr -> it_active ) {
+        if ( ! sig_none ) return ;
+    }
+    if (timr->it_clock < 0 || timr->it_clock > MAX_CLOCKS) {
+        return;
+    }
+    kc -> clock_get ( timr -> it_clock , & ts64 ) ;
+    now = timespec64_to_ktime ( ts64 ) ;
+    if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ;
+    remaining = kc -> timer_remaining ( timr , now ) ;
+    if ( remaining <= 0 ) {
+        if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ;
+    } else {
+        cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ;
+    }
+}",389,-16.70363461508358,-0.04293993474314545
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { 
+	const struct k_clock * kc = timr -> kclock ; 
+	ktime_t now , remaining , iv ; 
+	struct timespec64 ts64 ; 
+	bool sig_none ; 
+	sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+	iv = timr -> it_interval ; 
+	if ( iv ) { 
+		cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+	} else if ( ! timr -> it_active ) { 
+		// Check if bounds boundaries are valid
+		if ( iv < 0 || iv >= KTIME_SECONDS) {
+			// Return if not valid
+			return;
+		}
+		if ( ! sig_none ) return ; 
+	} 
+	kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+	now = timespec64_to_ktime ( ts64 ) ; 
+	if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+	remaining = kc -> timer_remaining ( timr , now ) ; 
+	if ( remaining <= 0 ) { 
+		if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; 
+	} else { 
+		// Check if bounds boundaries are valid
+		if ( remaining < 0 || remaining >= KTIME_SECONDS) {
+			// Return if not valid
+			return;
+		}
+		cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+	} 
+}",477,-60.509197911199344,-0.1268536643840657
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if ( timr -> it_clock < 0 || timr ->it_clock > MAX_CLOCKS ) { return; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+In the fixed code, the condition timr->it_clock < 0 || timr->it_clock > MAX_CLOCKS is added to check if the clock index is within the valid range. If it is not, the function returns without attempting to access out-of-bounds memory.",404,-46.87230921866853,-0.11602056737294192
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; 
+sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+if (timr->it_interval < 0 || timr->it_interval > INT_MAX) { return; // Added line of code } 
+iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",353,-30.68712014940414,-0.08693235169802872
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if ( kc != NULL ) { kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } else { return; } }",327,-7.933162570260668,-0.024260435994680942
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:"," 
+
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { 
+    const struct k_clock * kc = timr -> kclock ; 
+    ktime_t now , remaining , iv ; 
+    struct timespec64 ts64 ; 
+    bool sig_none ; 
+    sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+    iv = timr -> it_interval ; 
+    if ( iv ) { 
+        cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+    } else if ( ! timr -> it_active ) { 
+        if ( ! sig_none ) {
+            cur_setting -> it_value . tv_nsec = 0;
+            return;
+        } 
+    } 
+    kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+    now = timespec64_to_ktime ( ts64 ) ; 
+    if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) 
+        timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+    remaining = kc -> timer_remaining ( timr , now ) ; 
+    if ( remaining <= 0 ) { 
+        if ( ! sig_none ) 
+            cur_setting -> it_value . tv_nsec = 0; 
+    } else { 
+        cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+    } 
+}",406,-18.294671283212338,-0.04506076670741955
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { 
+    const struct k_clock * kc = timr -> kclock ; 
+    ktime_t now , remaining , iv ; 
+    struct timespec64 ts64 ; 
+    bool sig_none ; 
+    sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+    iv = timr -> it_interval ; 
+    if ( iv ) { 
+        cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+    } else if ( ! timr -> it_active ) { 
+        if ( ! sig_none ) {
+            return ;
+        } 
+    } 
+    kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+    now = timespec64_to_ktime ( ts64 ) ; 
+    if ( iv ) { 
+        if ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) {
+            timr -> it_overrun += kc -> timer_forward ( timr , now ) ;
+        }
+    } 
+    remaining = kc -> timer_remaining ( timr , now ) ; 
+    if ( remaining <= 0 ) { 
+        if ( ! sig_none ) {
+            cur_setting -> it_value . tv_nsec = 1 ; 
+        }
+    } else { 
+        cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+    } 
+}",400,-21.68394853259438,-0.05420987133148594
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if ( timr -> it_clock >= CLOCK_MAX ) { return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",331,-10.780609952520354,-0.032569818587674784
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if (kc != NULL) { kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } }",322,-6.0013420380829,-0.018637708192804036
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; if (timr == NULL || cur_setting == NULL) { return; } sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",330,-4.976713882937684,-0.015080951160417225
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) { 
+    if (timr-> it_overrun == MAX_IT_OVERRUN) {
+        timr-> it_overrun = 0;
+    } else {
+        timr -> it_overrun += kc -> timer_forward ( timr , now ) ;
+    }
+} 
+remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",363,-26.819006383631496,-0.07388156028548622
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get(struct k_itimer * timr, struct itimerspec64 * cur_setting) {
+ const struct k_clock * kc = timr->kclock;
+ ktime_t now, remaining, iv;
+ struct timespec64 ts64;
+ bool sig_none;
+ sig_none = (timr->it_sigev_notify & ~SIGEV_THREAD_ID) == SIGEV_NONE;
+ iv = timr->it_interval;
+ if (iv) {
+  cur_setting->it_interval = ktime_to_timespec64(iv);
+ } else if (!timr->it_active) {
+  if (!sig_none)
+   return;
+ }
+ kc->clock_get(timr->it_clock, &ts64);
+ now = timespec64_to_ktime(ts64);
+ if (iv && (timr->it_requeue_pending & REQUEUE_PENDING || sig_none)) {
+  if (timr->it_overrun < K_TIMER_MAX_OVERRUN) { // prevents out-of-bounds read
+   timr->it_overrun += kc->timer_forward(timr, now);
+  }
+ }
+ remaining = kc->timer_remaining(timr, now);
+ if (remaining <= 0) {
+  if (!sig_none)
+   cur_setting->it_value.tv_nsec = 1;
+ } else {
+  cur_setting->it_value = ktime_to_timespec64(remaining);
+ }
+}",379,-29.229642454409714,-0.0771230671620309
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; if (timr == NULL) { return; } sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",324,-5.008796233837535,-0.015459247635301035
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if (kc != NULL) { kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } }",322,-6.021906764945482,-0.018701573804178515
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; if ( ts64.tv_nsec < 0 || ts64.tv_nsec > NSEC_PER_SEC ) { return; // Exit the function if invalid tv_nsec is found } now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",356,-31.650733256550243,-0.08890655409143326
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if ( kc -> clock_get(timr->it_clock, &ts64) != 0 ) //added error check { return; //return if error occurs } now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",330,-26.49573858627605,-0.08029011692810925
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if ( kc->clock_get ( timr -> it_clock , & ts64 ) == 0 ) { now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } else { // handle error } }",325,-13.512292353666998,-0.04157628416512923
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) { if (kc->timer_forward(timr, now) > 0) { timr -> it_overrun += kc -> timer_forward ( timr , now ) ; } } remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",334,-9.48741133323743,-0.02840542315340548
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } 
+
+if (kc) {
+    kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+    now = timespec64_to_ktime ( ts64 ) ; 
+} else {
+    return; 
+}
+
+if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",341,-17.920095357325877,-0.05255159928834568
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) { if (timr->it_overrun < 0){ return; } timr -> it_overrun += kc -> timer_forward ( timr , now ) ; } remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",330,-13.87366971140006,-0.04204142336787897
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) { 
+  if (timr -> it_overrun >= MAX_INT) {
+      timr -> it_overrun = 0;
+  } else {
+      timr -> it_overrun += kc -> timer_forward ( timr , now ) ;
+  }
+} 
+remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",359,-23.839192407480805,-0.066404435675434
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; size_t size = sizeof(ktime_t); if (iv > 0 && size > 0) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 || remaining > size) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",335,-23.921156009904433,-0.071406435850461
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if ( kc && kc->clock_get ) { kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } }",327,-8.434869202088565,-0.025794707040026194
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if (ts64.tv_sec > 0 && ts64.tv_nsec > 0){ kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; } else { return; } if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",340,-14.291316595063268,-0.04203328410312726
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; if(timr) { sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } }",320,-9.21510593227245,-0.028797206038351408
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; //Addition of bound checks below if (iv && (timr -> it_requeue_pending & REQUEUE_PENDING || sig_none) && timr->it_overrun < kc->timer_forward(timr, now)) { timr -> it_overrun += kc -> timer_forward ( timr , now ) ; } remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",342,-36.221460363835064,-0.10591070281823119
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } 
+
+if (kc != NULL) {
+  kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; 
+} else {
+  return;
+}
+
+if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",339,-13.91161778576683,-0.041037220606981804
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if (kc != NULL) { kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } }",322,-6.178264083226406,-0.019187155537970204
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { 
+	const struct k_clock * kc = timr -> kclock ; 
+	ktime_t now , remaining , iv ; 
+	struct timespec64 ts64 ; 
+	bool sig_none ; 
+	if (timr == NULL || cur_setting == NULL) return; 
+	
+	sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+	iv = timr -> it_interval ; 
+	if ( iv ) { 
+		cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+	} else if ( ! timr -> it_active ) { 
+		if ( ! sig_none ) return ; 
+	} 
+	kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+	now = timespec64_to_ktime ( ts64 ) ; 
+	if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+	remaining = kc -> timer_remaining ( timr , now ) ; 
+	if ( remaining <= 0 ) { 
+		if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; 
+	} else { 
+		cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+	} 
+}",401,-15.748290212174643,-0.03927254417001158
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if(kc) { kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; }} }",319,-12.894786292202728,-0.04042252756176404
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) { if (timr->it_overrun < UINT_MAX) { timr -> it_overrun += kc -> timer_forward ( timr , now ) ; } else { return; } } remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",337,-11.223285077304867,-0.033303516549866075
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { if (iv < 0) { return; } cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",323,-9.32169790174236,-0.02885974582582774
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:"," 
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { 
+    const struct k_clock * kc = timr -> kclock ; 
+    ktime_t now , remaining , iv ; 
+    struct timespec64 ts64 ; 
+    bool sig_none ; 
+    sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+    iv = timr -> it_interval ; 
+    if ( iv ) { 
+        cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+    } else if ( ! timr -> it_active ) { 
+        if ( ! sig_none ) {
+            cur_setting->it_value.tv_nsec = 0;
+            return;
+        }
+    }
+    kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+    now = timespec64_to_ktime ( ts64 ) ; 
+    if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+    remaining = kc -> timer_remaining ( timr , now ) ; 
+    if ( remaining <= 0 ) { 
+        if ( ! sig_none ) {
+            cur_setting -> it_value . tv_nsec = 0;
+        }
+    } else { 
+        cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+    } 
+}",402,-17.667617819763244,-0.043949298059112546
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; 
+sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; 
+if ( timr->it_interval > 0 ) { //add this if statement to check 
+    iv = timr -> it_interval ; 
+    cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; 
+} else if ( ! timr -> it_active ) { 
+    if ( ! sig_none ) return ; 
+} 
+kc -> clock_get ( timr -> it_clock , & ts64 ) ; 
+now = timespec64_to_ktime ( ts64 ) ; 
+if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; 
+remaining = kc -> timer_remaining ( timr , now ) ; 
+if ( remaining <= 0 ) { 
+    if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; 
+} else { 
+    cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; 
+} 
+}",369,-35.62649735772862,-0.09654877332717782
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } 
+// Check if timr is not NULL
+if (timr == NULL)
+    return;
+
+kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",337,-20.794573641446686,-0.061704966295094026
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) { cur_setting->it_value.tv_sec = 0; cur_setting->it_value.tv_nsec = 0; return; } } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",344,-6.024833954199879,-0.01751405219244151
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) { timr -> it_overrun += kc -> timer_forward ( timr , now ) ; } //added if statement to check if overrun is greater than 0 before assigning it to cur_setting if ( timr -> it_overrun > 0 ) { cur_setting -> it_overrun = timr -> it_overrun; } else { cur_setting -> it_overrun = 0; } remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",379,-29.684325033598274,-0.07832275734458648
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { if ( iv < 0 ) { return ; } cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { if ( remaining > 0 ) { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } } }",331,-11.710585682331727,-0.035379412937558086
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if(kc != NULL){ kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+else{
+	printf(""Error: kc is null"");
+	return;
+}
+",341,-24.107095633363354,-0.0706952951125025
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }
+Fixed code:","
+void common_timer_get ( struct k_itimer * timr , struct itimerspec64 * cur_setting ) { const struct k_clock * kc = timr -> kclock ; ktime_t now , remaining , iv ; struct timespec64 ts64 ; bool sig_none ; sig_none = ( timr -> it_sigev_notify & ~ SIGEV_THREAD_ID ) == SIGEV_NONE ; iv = timr -> it_interval ; if ( iv ) { cur_setting -> it_interval = ktime_to_timespec64 ( iv ) ; } else if ( ! timr -> it_active ) { if ( ! sig_none ) return ; } if(timr->it_clock < 0) { return; } kc -> clock_get ( timr -> it_clock , & ts64 ) ; now = timespec64_to_ktime ( ts64 ) ; if ( iv && ( timr -> it_requeue_pending & REQUEUE_PENDING || sig_none ) ) timr -> it_overrun += kc -> timer_forward ( timr , now ) ; remaining = kc -> timer_remaining ( timr , now ) ; if ( remaining <= 0 ) { if ( ! sig_none ) cur_setting -> it_value . tv_nsec = 1 ; } else { cur_setting -> it_value = ktime_to_timespec64 ( remaining ) ; } }",328,-10.219347302286133,-0.03115654665331138

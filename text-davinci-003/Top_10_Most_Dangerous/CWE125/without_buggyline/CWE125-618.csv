@@ -1,0 +1,451 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; 
+if(sport >= 0 && sport <= 65535) {
+    i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; 
+}
+return ( 0 ) ; }",319,-16.003406803157596,-0.050167419445635096
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sport >= 0 && sport < 65536) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } return ( 0 ) ; }",312,-8.547788465730218,-0.027396757902981468
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if(sizeof(ip->ip_dst) >= sizeof(uint32_t) && sizeof(ip->ip_src) >= sizeof(uint32_t)){ // Check for bounds UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } // Check for bounds return ( 0 ) ; }",345,-25.118189165820674,-0.07280634540817586
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; // Ensure that the length of the buffers is not exceeded  if (sizeof(ip->ip_dst) > sizeof(uint32_t) || sizeof(ip->ip_src) > sizeof(uint32_t)) return 0; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint && i < RX_CACHE_SIZE) ; return ( 0 ) ; }",360,-30.56782226598612,-0.084910617405517
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { if (i >= RX_CACHE_SIZE){ break; } rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",313,-8.738384748742227,-0.027918162136556637
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if(sizeof(uint32_t) <= sizeof(ip->ip_dst)) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; } else { return 0; } if(sizeof(uint32_t) <= sizeof(ip->ip_src)) { UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; } else { return 0; } i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",353,-8.007700556437552,-0.022684704125885417
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if ( sizeof(ip->ip_dst) > sizeof(uint32_t) ) { return 0; } if ( sizeof(ip->ip_src) > sizeof(uint32_t) ) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",347,-8.207009554226936,-0.023651324363766386
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+if (ip == NULL) {
+    return 0;
+}
+UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",315,-10.780177718953315,-0.0342227864093756
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sport >= 0 && sport < RX_CACHE_SIZE) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } return ( 0 ) ; }",317,-7.750081600080435,-0.024448206940316828
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; /* Added boundary check to prevent out-of-bounds read */ if ( rxh == NULL || ip == NULL || opcode == NULL || sport < 0 || sport > 65535 ) { return 0 ; } /* Copied 4 bytes from ip_dst and ip_src to fit in uint32_t */ UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { /* Added boundary check to prevent out-of-bounds read */ if ( i < 0 || i >= RX_CACHE_SIZE ) { return 0 ; } rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",400,-52.75462963942919,-0.13188657409857296
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sizeof(ip->ip_dst) > sizeof(uint32_t) ) { return 0; } if (sizeof(ip->ip_src) > sizeof(uint32_t) ) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",349,-11.772022364507059,-0.033730723107470086
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+if (rxh && ip) {
+  UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; 
+  i = rx_cache_hint ; 
+  do { 
+    if (i >= 0 && i < RX_CACHE_SIZE) {
+      rxent = & rx_cache [ i ] ; 
+      if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { 
+        rx_cache_hint = i ; 
+        * opcode = rxent -> opcode ; 
+        return ( 1 ) ; 
+      } 
+    } 
+    if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; 
+  } while ( i != rx_cache_hint ) ; 
+} 
+return ( 0 ) ; 
+}",370,-21.928219518968497,-0.05926545815937432
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sport < 0 || sport > 65535) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",315,-6.732826675630336,-0.021374052938509004
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+
+if (sizeof(uint32_t) > sizeof(ip->ip_dst) || sizeof(uint32_t) > sizeof(ip->ip_src)){
+  return 0;
+}
+
+UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",348,-14.081229980745036,-0.04046330454237079
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sizeof(rxh->callNumber) < 4 || sizeof(rxh->serviceId) < 4) return 0; if (sizeof(ip->ip_dst) < 4 || sizeof(ip->ip_src) < 4) return 0; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",355,-15.89211719756658,-0.04476652731708896
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+if(ip && ip->ip_dst && ip->ip_src)
+{
+    UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; 
+    UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; 
+    i = rx_cache_hint ; 
+    do { 
+        rxent = & rx_cache [ i ] ; 
+        if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { 
+            rx_cache_hint = i ; 
+            * opcode = rxent -> opcode ; 
+            return ( 1 ) ; 
+        } 
+        if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; 
+    } while ( i != rx_cache_hint ) ; 
+}
+return ( 0 ) ; 
+}",360,-16.211759709596542,-0.0450326658599904
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; memcpy ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; memcpy ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { if ( i >= RX_CACHE_SIZE ) { i = 0; break; } rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",306,-11.615615430929397,-0.03795952755205685
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sport > 0 && sport < 65535) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } return ( 0 ) ; }",312,-8.296431944485672,-0.026591128027197666
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if ( sizeof ( uint32_t ) > sizeof ( ip -> ip_dst ) ) { return ( 0 ) ; } if ( sizeof ( uint32_t ) > sizeof ( ip -> ip_src ) ) { return ( 0 ) ; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",351,-9.729432455137529,-0.027719180783867602
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if ( ip == NULL || rxh == NULL || opcode == NULL) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { if ( i < RX_CACHE_SIZE) { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",334,-15.996754192613373,-0.047894473630578964
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if(ip != NULL) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; } else { clip = 0; sip = 0; } i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",317,-8.314237863593485,-0.026227879695878503
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (ip && sizeof(ip) >= sizeof(uint32_t)) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } return ( 0 ) ; }
+ 
+The code has been fixed by adding an if statement to check if ip is a valid pointer before attempting to read it. This will prevent out-of-bounds reads.",354,-44.42124350375511,-0.12548373871117263
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if(!ip || !rxh || !sport || !opcode) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( i == RX_CACHE_SIZE - 1 ) { /* Wrap around check added to prevent out-of-bounds reads */ i = 0; } else { i++; } } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",343,-43.656673297616635,-0.1272789308968415
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find(const struct rx_header *rxh, const struct ip *ip, int sport, int32_t *opcode) {
+	int i;
+	struct rx_cache_entry *rxent;
+	uint32_t clip;
+	uint32_t sip;
+	UNALIGNED_MEMCPY(&clip, &ip->ip_dst, sizeof(uint32_t));
+	UNALIGNED_MEMCPY(&sip, &ip->ip_src, sizeof(uint32_t));
+	i = rx_cache_hint;
+	do {
+		if (i >= RX_CACHE_SIZE) {
+			i = 0;
+			break;
+		}
+
+		rxent = &rx_cache[i];
+		if (rxent->callnum == EXTRACT_32BITS(&rxh->callNumber) && 
+			rxent->client.s_addr == clip && 
+			rxent->server.s_addr == sip && 
+			rxent->serviceId == EXTRACT_32BITS(&rxh->serviceId) && 
+			rxent->dport == sport) {
+			rx_cache_hint = i;
+			*opcode = rxent->opcode;
+			return(1);
+		}
+
+		i++;
+	} while (i != rx_cache_hint);
+
+	return(0);
+}",359,-27.61604708777045,-0.07692492225005697
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; // check for validity of address  if ((ip->ip_dst - sizeof(uint32_t) < 0) || (ip->ip_src - sizeof(uint32_t) < 0)) return ( 0 ) ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",347,-42.7823879246486,-0.12329218422088935
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; if (rx_cache_hint < 0 || rx_cache_hint >= RX_CACHE_SIZE) { return 0; } i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) { i = 0; if (i == rx_cache_hint) { break; } } } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",348,-16.219455334358475,-0.04660763027114504
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (ip == NULL) return 0; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",307,-6.908999541604989,-0.022504884500341982
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sizeof(ip->ip_dst) < sizeof(uint32_t) || sizeof(ip->ip_src) < sizeof(uint32_t)) { return ( 0 ) ; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",342,-11.292143309744654,-0.03301796289399022
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if ( sizeof(ip->ip_dst) >= sizeof(uint32_t)) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; } if ( sizeof(ip->ip_src) >= sizeof(uint32_t)) { UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; } i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",339,-11.332573742581538,-0.03342942106956206
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if(ip != NULL && rxh != NULL && opcode != NULL){ UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } return ( 0 ) ; }",316,-9.467495671626947,-0.029960429340591607
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; //added check for length of data before copying to ensure it does not exceed boundaries if(sizeof(uint32_t) <= sizeof(ip->ip_dst) && sizeof(uint32_t) <= sizeof(ip->ip_src)) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } return ( 0 ) ; }",353,-34.88093929129604,-0.09881285918214175
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sizeof(ip) > sizeof(uint32_t)) { return 0; // check boundary } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { if (i >= RX_CACHE_SIZE) { return 0; // check boundary } rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",341,-27.21769567322922,-0.07981728936430856
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if ( sizeof(ip->ip_dst) > sizeof(uint32_t) ) { return 0; } if ( sizeof(ip->ip_src) > sizeof(uint32_t) ) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",347,-8.232452174082134,-0.02372464603481883
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+
+if (sizeof(uint32_t) > sizeof(& ip -> ip_dst)) {
+  return 0;
+}
+
+if (sizeof(uint32_t) > sizeof(& ip -> ip_src)) {
+  return 0;
+}
+
+UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; 
+}",362,-21.713651937033724,-0.0599824639144578
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sizeof(uint32_t) > sizeof(ip->ip_dst) || sizeof(uint32_t) > sizeof(ip->ip_src)) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",340,-7.312514631238496,-0.02150739597423087
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (ip == NULL) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { if (i < 0 || i >= RX_CACHE_SIZE) { return 0; } rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",330,-8.22706140950744,-0.024930489119719516
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; int length ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; length = sizeof(rxh->callNumber); i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( length > 0 && rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+The vulnerability has been fixed by introducing a new variable, length, which stores the length of the callNumber field and is used to check that it is not out of bounds before accessing it.",354,-49.00813665245286,-0.13844106398997982
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { 
+  int i , rx_cache_hint_copy;
+  struct rx_cache_entry * rxent ; 
+  uint32_t clip ; 
+  uint32_t sip ; 
+  
+  UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; 
+  UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; 
+  
+  rx_cache_hint_copy = rx_cache_hint;
+  i = rx_cache_hint_copy ; 
+  do { 
+    //Checking for array index access
+    if(i >= RX_CACHE_SIZE)
+    {
+      return 0;
+    }
+
+    rxent = & rx_cache [ i ] ; 
+    if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { 
+      rx_cache_hint = i ; 
+      * opcode = rxent -> opcode ; 
+      return ( 1 ) ; 
+    } 
+    if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; 
+  } while ( i != rx_cache_hint_copy ) ; 
+  return ( 0 ) ; 
+}",422,-50.02209178723623,-0.1185357625289958
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sizeof(ip->ip_dst) > sizeof(uint32_t)) { return -1; } if (sizeof(ip->ip_src) > sizeof(uint32_t)) { return -1; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",349,-8.08878293720793,-0.023177028473375154
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+
+if(ip != NULL && rxh != NULL && sport > 0 && opcode != NULL) {
+    UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; 
+    UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; 
+    i = rx_cache_hint ; 
+    do { 
+        rxent = & rx_cache [ i ] ; 
+        if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { 
+            rx_cache_hint = i ; 
+            * opcode = rxent -> opcode ; 
+            return ( 1 ) ; 
+        } 
+        if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; 
+    } while ( i != rx_cache_hint ) ; 
+    return ( 0 ) ; 
+}
+return -1;
+}",371,-22.776031970077504,-0.061390921752230466
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if(ip != NULL && (ip->ip_dst != NULL && ip->ip_src != NULL)) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; } return ( 0 ) ; }",324,-13.305860953157271,-0.0410674720776459
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (sizeof(ip->ip_dst) <= sizeof(uint32_t)) { UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; } else { return ( 0 ) ; } if (sizeof(ip->ip_src) <= sizeof(uint32_t)) { UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; } else { return ( 0 ) ; } i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",357,-10.940497215293941,-0.03064565046300824
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+
+//check for valid pointers
+if(rxh == NULL || ip == NULL){
+	return 0;
+}
+
+UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; 
+
+//check for valid pointers
+if(rxent == NULL){
+	return 0;
+}
+
+if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",352,-24.543658322590368,-0.06972630205281355
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if ( sizeof ( uint32_t ) > sizeof ( ip -> ip_dst ) && sizeof ( uint32_t ) > sizeof ( ip -> ip_src ) ) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",340,-11.544606822069778,-0.03395472594726405
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint % RX_CACHE_SIZE; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint % RX_CACHE_SIZE ) ; return ( 0 ) ; }",314,-9.20816575588244,-0.029325368649307133
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; 
+
+if (ip == NULL || rxh == NULL || opcode == NULL) {
+    return 0; // return if any of the pointers are NULL 
+}
+
+UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; 
+
+if (sport < 0 || sport > 65535) { // check if the port number is within valid range
+    return 0;
+}
+
+i = rx_cache_hint ; 
+
+do { 
+    if (i >= RX_CACHE_SIZE) { // check if the index is within valid range
+        return 0;
+    }
+    rxent = & rx_cache [ i ] ; 
+    if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { 
+        rx_cache_hint = i ; 
+        * opcode = rxent -> opcode ; 
+        return ( 1 ) ; 
+    } 
+    if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; 
+} while ( i != rx_cache_hint ) ; 
+
+return ( 0 ) ; 
+}",437,-47.19782783934197,-0.10800418269872304
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; int max_size = RX_CACHE_SIZE; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { if(i>=max_size) { break; } rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",324,-17.40628887530943,-0.05372311381268342
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if(ip != NULL){ UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; } i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",305,-8.38480762398377,-0.027491172537651706
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { 
+    int i ; 
+    struct rx_cache_entry * rxent ; 
+    uint32_t clip ; 
+    uint32_t sip ;
+    if (rxh != NULL && ip != NULL && opcode != NULL && sport >= 0 && sport <= 65535 ) {
+        UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; 
+        UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; 
+        i = rx_cache_hint ; 
+        do { 
+            rxent = & rx_cache [ i ] ; 
+            if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { 
+                rx_cache_hint = i ; 
+                * opcode = rxent -> opcode ; 
+                return ( 1 ) ; 
+            } 
+            if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; 
+        } while ( i != rx_cache_hint ) ; 
+    }
+    return ( 0 ) ; 
+}",381,-24.507110916634797,-0.06432312576544566
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }
+Fixed code:","
+static int rx_cache_find ( const struct rx_header * rxh , const struct ip * ip , int sport , int32_t * opcode ) { int i ; struct rx_cache_entry * rxent ; uint32_t clip ; uint32_t sip ; if (ip == NULL || ip->ip_dst == NULL || ip->ip_src == NULL) { return 0; } UNALIGNED_MEMCPY ( & clip , & ip -> ip_dst , sizeof ( uint32_t ) ) ; UNALIGNED_MEMCPY ( & sip , & ip -> ip_src , sizeof ( uint32_t ) ) ; i = rx_cache_hint ; do { rxent = & rx_cache [ i ] ; if ( rxent -> callnum == EXTRACT_32BITS ( & rxh -> callNumber ) && rxent -> client . s_addr == clip && rxent -> server . s_addr == sip && rxent -> serviceId == EXTRACT_32BITS ( & rxh -> serviceId ) && rxent -> dport == sport ) { rx_cache_hint = i ; * opcode = rxent -> opcode ; return ( 1 ) ; } if ( ++ i >= RX_CACHE_SIZE ) i = 0 ; } while ( i != rx_cache_hint ) ; return ( 0 ) ; }",326,-9.101397645895537,-0.027918397686796124
