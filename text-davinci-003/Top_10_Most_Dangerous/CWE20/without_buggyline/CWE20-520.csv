@@ -1,0 +1,493 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:"," 
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; //Added a check to verify that indexes is greater than 0. if(indexes <= 0) { ERROR ( ""parse_exports_table: invalid index \\n"" ) ; return FALSE ; } long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",230,-32.706976036771366,-0.14220424363813639
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; 
+if ( table_start == NULL ) { 
+ERROR ( ""parse_exports_table: invalid table_start parameter\\n"" ) ; return FALSE ; 
+ } 
+int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",228,-23.504409361856293,-0.10308951474498375
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+    int res ; 
+    if (table_start == NULL){
+        return FALSE;
+    }
+    int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+    long long export_index_table [ indexes ] ; 
+    res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+    if ( res == FALSE ) { 
+        ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+        return FALSE ; 
+    } 
+    SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+    * table_start = export_index_table [ 0 ] ; 
+    return TRUE ; 
+}",240,-10.487204451510149,-0.04369668521462562
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if (indexes <= 0) { return FALSE; } long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE || export_index_table[0] < 0 ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",210,-11.785125008406052,-0.056119642897171675
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (sBlk.s.inodes > 0 && sBlk.s.inodes < MAX_INODES) { indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; } else { return FALSE; } }",225,-10.34317676270131,-0.04596967450089471
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+  int res ; 
+  if ( table_start == NULL ) { 
+    ERROR ( ""parse_exports_table: NULL input parameter\\n"" ) ;
+    return FALSE ;
+  }
+  int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+  long long export_index_table [ indexes ] ; 
+  res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+  if ( res == FALSE ) { 
+    ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+    return FALSE ; 
+  } 
+  SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+  * table_start = export_index_table [ 0 ] ; 
+  return TRUE ; 
+}",262,-21.319163454485576,-0.08137085287971593
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (sBlk.s.inodes <= 0) { ERROR(""parse_exports_table: invalid number of inodes\\n""); return FALSE; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",224,-8.910436724807438,-0.039778735378604636
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+ 
+ int res ; 
+ if(table_start == NULL){
+   return FALSE;
+ }
+ 
+ int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+ long long export_index_table [ indexes ] ; 
+ 
+ res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+ if ( res == FALSE ) { 
+   ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+   return FALSE ; 
+ } 
+ 
+ SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+ * table_start = export_index_table [ 0 ] ; 
+ 
+ return TRUE ; 
+}",239,-21.790741471995744,-0.09117465051044245
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+  int res ; 
+  int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+  if (indexes <= 0) {
+    ERROR ( ""parse_exports_table: invalid index number\\n"" ) ;
+    return FALSE ; 
+  }
+  long long export_index_table [ indexes ] ; 
+  res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+  if ( res == FALSE ) { 
+    ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+    return FALSE ; 
+  } 
+  SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+  * table_start = export_index_table [ 0 ] ; 
+  return TRUE ; 
+}",261,-16.82986614268538,-0.06448224575741525
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ;//added 
+ 
+ if(sBlk.s.inodes <= 0) { //added 
+   return FALSE; 
+ } 
+ indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",222,-27.69703232251249,-0.12476140685816438
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+  int res ; 
+  int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ;
+
+  if(indexes <= 0 || indexes > MAX_INDEXES) { 
+    ERROR ( ""parse_exports_table: indexes out of range\\n"" ) ; 
+    return FALSE ; 
+  }
+
+  long long export_index_table [ indexes ] ; 
+  res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+  if ( res == FALSE ) { 
+    ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+    return FALSE ; 
+  } 
+  SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+  * table_start = export_index_table [ 0 ] ; 
+  return TRUE ; 
+}",271,-27.66302608469038,-0.10207758702837778
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; if ( sBlk . s . inodes <= 0 ) { return FALSE ; } int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE || index <= 0 ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",209,-18.296793329674742,-0.08754446569222364
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+
+if (indexes < 0 || indexes > MAX_ALLOWED_INDEXES) {
+    ERROR(""parse_exports_table: Invalid indexes\\n"");
+    return FALSE;
+} 
+
+long long export_index_table [ indexes ] ; 
+res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+
+if ( res == FALSE ) {
+    ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ;
+    return FALSE ;
+} 
+
+SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+* table_start = export_index_table [ 0 ] ;
+return TRUE ; 
+}",255,-32.73345620534132,-0.12836649492290714
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; int indexMax = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if (indexMax > MAX_INDEX) { return FALSE ; } indexes = indexMax ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",211,-24.90170646681191,-0.11801756619342137
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+    if (table_start == NULL) {
+        return FALSE; 
+    }
+    int res ; 
+    int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+    long long export_index_table [ indexes ] ; 
+    res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+    if ( res == FALSE ) { 
+        ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+        return FALSE ; 
+    } 
+    SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+    * table_start = export_index_table [ 0 ] ; 
+    return TRUE ; 
+}",242,-11.53706296370423,-0.047673813899604255
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; 
+
+if (table_start == NULL) {
+ ERROR (""parse_exports_table: invalid parameter\\n"");
+ return FALSE;
+}
+
+int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+if (indexes <= 0) {
+ ERROR (""parse_exports_table: invalid parameter\\n"");
+ return FALSE;
+}
+ long long export_index_table [ indexes ] ; 
+ res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } 
+
+if (export_index_table[0] == NULL) {
+ ERROR (""parse_exports_table: invalid value in export index table\\n"");
+ return FALSE;
+}
+
+SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",301,-43.69343664725595,-0.1451609190938736
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; if( indexes <= 0 ) { ERROR ( ""parse_exports_table: invalid index\\n"" ) ; return FALSE ; } res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",215,-14.570095723659499,-0.06776788708678837
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; if ( table_start == NULL || sBlk.s.inodes < 0 ) { ERROR ( ""parse_exports_table: invalid input parameters\\n"" ) ; return FALSE ; } int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",229,-12.833642566648047,-0.05604210727793907
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if(indexes < 0) { return FALSE; } long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",199,-8.511809721697645,-0.04277291317436003
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+    int res ; 
+    
+    if (table_start == NULL) {
+        ERROR(""parse_exports_table: table_start is NULL\\n"");
+        return FALSE;
+    }
+    
+    int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+    long long export_index_table [ indexes ] ; 
+    res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+    if ( res == FALSE ) { 
+        ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+        return FALSE ; 
+    } 
+     
+    SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+    * table_start = export_index_table [ 0 ] ; 
+    return TRUE ; 
+}",266,-22.088342783685853,-0.08303888264543553
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if (indexes <= 0) { // Added condition to check for valid input ERROR ( ""parse_exports_table: invalid index\\n"" ) ; return FALSE ; } long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",224,-23.97961473448322,-0.10705185149322867
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) {
+	if(table_start == NULL) {
+		ERROR(""parse_exports_table: invalid argument\\n"");
+		return FALSE;
+	}
+
+ int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",225,-21.21142008678023,-0.09427297816346769
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; if (table_start == NULL) { return FALSE; } int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; if (indexes < 0) { return FALSE; } * table_start = export_index_table [ 0 ] ; return TRUE ; }",212,-11.896159736633786,-0.05611396102185748
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (SQUASHFS_LOOKUP_BLOCKS(sBlk.s.inodes) <= 0) { return FALSE; } else { indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; } long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",224,-12.805818539854412,-0.057168832767207196
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+
+//Validate input
+if(table_start == NULL) {
+  return FALSE;
+}
+
+int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; 
+
+res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; 
+ }",218,-29.547692127020774,-0.13553987214229712
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if ( SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) < 0 ) { ERROR ( ""parse_exports_table: invalid number of lookup blocks\\n"" ) ; return FALSE ; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",240,-9.31340402524506,-0.03880585010518775
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; // Add input validation if (indexes > 0 && indexes <= MAX_LOOKUP_BLOCKS) { res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; } else { error(""parse_exports_table: invalid number of lookup blocks\n""); return FALSE; } }",235,-30.52023994373147,-0.1298733614626871
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (sBlk.s.inodes < 0 || sBlk.s.lookup_table_start < 0) { ERROR(""parse_exports_table: invalid input values\n""); return FALSE; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",237,-15.031094191475336,-0.06342233836065543
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:"," 
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if ( SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) <= 0 ) { ERROR ( ""parse_exports_table: invalid lookup blocks\\n"" ) ; return FALSE ; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",239,-11.639382203323146,-0.04870034394695877
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if (indexes == 0){ 
+    return FALSE; 
+} 
+long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",205,-16.70331859746925,-0.08147960291448414
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; 
+if (sBlk < 0 || sBlk > INT_MAX) { ERROR ( ""parse_exports_table: Invalid input sBlk\\n"" ) ; return FALSE ; }
+indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+long long export_index_table [ indexes ] ; 
+res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } 
+SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ;
+* table_start = export_index_table [ 0 ] ; 
+return TRUE ; 
+}",248,-35.48056707240545,-0.1430668027113123
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if (indexes <= 0) { ERROR(""parse_exports_table: invalid number of lookup blocks\n""); return FALSE; } long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",216,-10.423070352326503,-0.048254955334844925
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:"," 
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (isValid(sBlk.s.inodes)) { indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; } else { ERROR(""Invalid input""); return FALSE; } long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",217,-25.195122199968186,-0.11610655391690408
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; if (table_start == NULL) { ERROR ( ""parse_exports_table: NULL pointer passed for table_start\\n"" ) ; return FALSE ; } int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if (indexes <= 0) { ERROR ( ""parse_exports_table: invalid value for indexes\\n"" ) ; return FALSE ; }  long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",254,-23.22182419505012,-0.09142450470492174
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; 
+
+if (sBlk.s.inodes <= 0) {
+    ERROR(""parse_exports_table: invalid inodes number\\n"");
+    return FALSE;
+}
+
+indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; 
+
+res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",237,-16.643003214392586,-0.07022364225482104
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; if (indexes <= 0) { return FALSE; } res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",199,-7.648670859754706,-0.03843553195856636
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+if(indexes<=0) {
+ERROR (""parse_exports_table: invalid number of indexes\\n"");
+return FALSE;
+}
+long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",222,-20.109966282700835,-0.09058543370585961
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if(table_start == NULL) { ERROR(""parse_exports_table: table_start is NULL\n""); return FALSE; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; if(indexes <= 0 || indexes > MAX_INDEXES) { ERROR(""parse_exports_table: invalid number of indexes\n""); return FALSE; } res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",255,-22.23656644203568,-0.0872022213413164
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (sBlk.s.inodes <= 0 || sBlk.s.inodes > MAX_INDEXES) { ERROR ( ""parse_exports_table: invalid index value\\n"" ) ; return FALSE ; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",240,-13.703666529837761,-0.05709861054099067
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if ( sBlk.s.inodes <= 0 || sBlk.s.inodes > MAX_INODE_SIZE ) { ERROR ( ""parse_exports_table: invalid inode size\\n"" ) ; return FALSE ; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",242,-16.51839695974674,-0.06825783867663943
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (sBlk.s.inodes <= 0 || sBlk.s.inodes > MAX_INODES) { ERROR ( ""parse_exports_table: invalid inode count\\n"" ) ; return FALSE ; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",241,-11.045686288673432,-0.04583272318951631
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+  int res ;
+  if (table_start == NULL) {
+    ERROR(""parse_exports_table: table_start is NULL\n"");
+    return FALSE;
+  }
+  int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+  long long export_index_table [ indexes ] ; 
+  res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+  if ( res == FALSE ) { 
+    ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+    return FALSE ; 
+  } 
+  SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+  * table_start = export_index_table [ 0 ] ; 
+  return TRUE ; 
+}",259,-12.772152708838792,-0.0493133309221575
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; 
+if (sBlk.s.inodes < 0) { ERROR(""parse_exports_table: invalid inodes value\\n""); return FALSE; } else { indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; }
+
+long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",230,-16.318543730674282,-0.07095019013336644
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (sBlk.s.inodes <= 0) { ERROR ( ""parse_exports_table: invalid number of inodes\\n"" ); return FALSE ; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",226,-12.204856956117526,-0.05400379184122799
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes ; if (sBlk.s.inodes < 0) { ERROR ( ""parse_exports_table: invalid inode value\\n"" ) ; return FALSE ; } indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",226,-10.14925174194092,-0.044908193548411156
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; if (indexes < 0 ||indexes > MAX_ALLOWED_INDEXES) { ERROR(""parse_exports_table: invalid indexes\\n""); return FALSE; } res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",226,-20.937828243636474,-0.09264525771520564
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { 
+  int res ;
+  if (table_start == NULL) {
+    return FALSE;
+  } 
+  int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; 
+  long long export_index_table [ indexes ] ; 
+  res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; 
+  if ( res == FALSE ) { 
+    ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; 
+    return FALSE ; 
+  } 
+  SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; 
+  * table_start = export_index_table [ 0 ] ; 
+  return TRUE ; 
+}",241,-12.906784299090187,-0.05355512157298833
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; if (table_start == NULL) { ERROR(""parse_exports_table: table_start is NULL\n""); return FALSE; } int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }",217,-9.605071435192997,-0.04426300200549768
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; if (indexes > 0) { long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; } else { ERROR ( ""parse_exports_table: invalid export index table\\n"" ) ; return FALSE ; } }",221,-10.343249331660573,-0.04680203317493472
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int parse_exports_table ( long long * table_start ) { int res ; int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; * table_start = export_index_table [ 0 ] ; return TRUE ; }
+Fixed code:","
+static int parse_exports_table ( long long * table_start ) { int res ; if ( table_start == NULL ) { ERROR ( ""parse_exports_table: table_start cannot be NULL\\n"" ) ; return FALSE ; } int indexes = SQUASHFS_LOOKUP_BLOCKS ( sBlk . s . inodes ) ; long long export_index_table [ indexes ] ; res = read_fs_bytes ( fd , sBlk . s . lookup_table_start , SQUASHFS_LOOKUP_BLOCK_BYTES ( sBlk . s . inodes ) , export_index_table ) ; if ( res == FALSE ) { ERROR ( ""parse_exports_table: failed to read export index table\\n"" ) ; return FALSE ; } SQUASHFS_INSWAP_LOOKUP_BLOCKS ( export_index_table , indexes ) ; if ( export_index_table [ 0 ] >= 0 ) { * table_start = export_index_table [ 0 ] ; } else { ERROR ( ""parse_exports_table: export index table not valid\\n"" ) ; return FALSE ; } return TRUE ; }",262,-23.388105851407815,-0.08926757958552602

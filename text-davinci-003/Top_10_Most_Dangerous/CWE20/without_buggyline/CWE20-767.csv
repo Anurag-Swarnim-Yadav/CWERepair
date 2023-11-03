@@ -1,0 +1,876 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; // Validate input if (c0 < 0 || c0 > 255 || c1 < 0 || c1 > 255) { ThrowException(exception, CorruptImageError, ImproperImageHeader, ""Input is not valid""); return MagickFalse; } bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",563,-23.13395476909895,-0.04109050580657007
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; if ( c0 > 65535 || c1 > 65535 ) { return MagickFalse; } bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",529,-8.729743958158089,-0.016502351527709052
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+ DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+ 
+ for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+   for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+     q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+     if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+     
+     c0 = ReadBlobLSBShort ( image ) ; 
+     c1 = ReadBlobLSBShort ( image ) ; 
+     bits = ReadBlobLSBLong ( image ) ; 
+     CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+     
+     for ( j = 0 ; j < 4 ; j ++ ) { 
+       for ( i = 0 ; i < 4 ; i ++ ) { 
+         if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+           code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+           
+           // Input validation
+           if (code > 3) {
+             return MagickFalse;
+           }
+           
+           SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+           SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+           SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+           SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+           if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+           q ++ ; 
+         } 
+       } 
+     } 
+     if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+   } 
+ } 
+ SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+ return MagickTrue ; 
+}",620,-27.351412077983237,-0.044115180770940704
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if ( ( x + 4 ) > ( ssize_t ) dds_info -> width || ( y + 4 ) > ( ssize_t ) dds_info -> height ) { //input validation to ensure x and y are within the allowed range return MagickFalse ; } q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",568,-29.12922473687662,-0.051283846367740527
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if((dds_info->width - x) < 0 || (dds_info->height - y) < 0) { return MagickFalse; } q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",540,-13.304920665721044,-0.024638741973557487
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; // Validate input if (c0 > 255 || c1 > 255) return MagickFalse; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",529,-11.245244694602636,-0.02125755140756642
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; if (dds_info->height < 0 || dds_info->width < 0) { ThrowReaderException(CorruptImageError,CorruptImage,image); return MagickFalse; } for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",549,-14.301157816646368,-0.026049467789884095
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; if (code > 3) { return MagickFalse; } SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",521,-9.28155617076293,-0.017814887083997945
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:"," 
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; if(dds_info->width == 0 || dds_info->height == 0) { return MagickFalse; } for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; if (code >= 0 && code <= 3) { SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } else { return MagickFalse; } } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",555,-18.135365907565912,-0.03267633496858723
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; // Validate input if ( ! ( c0 >= 0 && c0 <= 0xFFFF ) || ! ( c1 >= 0 && c1 <= 0xFFFF ) || ! ( bits >= 0 && bits <= 0xFFFFFFFF ) ) { return MagickFalse ; } CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",565,-18.927778334068105,-0.03350049262666921
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; 
+//Validate c0 and c1 input before proceeding
+if (c0 > UINT16_MAX || c1 > UINT16_MAX)
+{
+	return MagickFalse;
+}
+bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",554,-29.194292566627677,-0.05269727900113299
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+
+//Validate the input
+if ( image == NULL || dds_info == NULL || exception == NULL) return MagickFalse;
+
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+  
+  //prevent out of bounds
+  if(code >= 4) return MagickFalse;
+  
+  code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",569,-42.62014458652077,-0.07490359329792755
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) {
+ DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+//Check that input parameters are in expected range and valid
+if (dds_info->width > 0 && dds_info->height > 0) {
+ for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+  for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+   q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+   if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+   c0 = ReadBlobLSBShort ( image ) ; 
+   c1 = ReadBlobLSBShort ( image ) ; 
+   bits = ReadBlobLSBLong ( image ) ; 
+   CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+   for ( j = 0 ; j < 4 ; j ++ ) { 
+    for ( i = 0 ; i < 4 ; i ++ ) { 
+     //Check for valid coordinates
+     if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+      code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+      //Ensure code is within expected range
+      if (code <= 3) {
+       SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+       SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+       SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+       SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+       if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+      }
+      q ++ ; 
+     } 
+    } 
+   } 
+   if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+  } 
+ } 
+ SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; 
+}
+else {
+ return MagickFalse;
+}
+}",659,-77.76687612976636,-0.11800739928644365
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; // Validate input data if (bits == 0 || c0 > 0xFFFF || c1 > 0xFFFF) { return MagickFalse; } CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",540,-19.291061477681374,-0.03572418792163218
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if (x >= dds_info->width || y >= dds_info->height) { continue; }  q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",533,-12.82855935777898,-0.024068591665626603
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:"," 
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; // Validate code if(code > 3) return MagickFalse; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",524,-16.18427439761107,-0.030886019842769216
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; if ( c0 > 65535 || c1 > 65535 ) { return MagickFalse; } bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",529,-9.247316686091281,-0.01748074987918957
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if ( x > dds_info->width || y > dds_info->height) { return MagickFalse; } q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",535,-9.640039852317058,-0.018018766079097304
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; 
+register ssize_t i , x ; 
+size_t bits ; 
+ssize_t j , y ; 
+unsigned char code ; 
+unsigned short c0 , c1 ; 
+
+if (dds_info->width < 4 || dds_info->height < 4) return MagickFalse;
+
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+c0 = ReadBlobLSBShort ( image ) ; 
+c1 = ReadBlobLSBShort ( image ) ; 
+bits = ReadBlobLSBLong ( image ) ; 
+CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+for ( j = 0 ; j < 4 ; j ++ ) { 
+for ( i = 0 ; i < 4 ; i ++ ) { 
+if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+if (code <= 3) {
+  SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+  SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+  SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+  SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+  if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+  q ++ ; 
+}
+} 
+} 
+} 
+if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+} 
+} 
+SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+return MagickTrue ; 
+}",616,-27.752418978175648,-0.0450526282113241
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+ DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+ // Add input validation
+ if (dds_info->width == 0 || dds_info->height == 0) {
+   ThrowReaderException(CorruptImageError,ImproperImageHeader, image)
+   return MagickFalse;
+ }
+
+
+ for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+   for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+     q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+     if ( q == ( PixelPacket * ) NULL ) 
+       return MagickFalse ; 
+     c0 = ReadBlobLSBShort ( image ) ; 
+     c1 = ReadBlobLSBShort ( image ) ; 
+     bits = ReadBlobLSBLong ( image ) ; 
+     CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+     for ( j = 0 ; j < 4 ; j ++ ) { 
+       for ( i = 0 ; i < 4 ; i ++ ) { 
+         if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+           code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+           SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+           SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+           SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+           SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+           if ( colors . a [ code ] && image -> matte == MagickFalse ) 
+             image -> matte = MagickTrue ; 
+           q ++ ; 
+         } 
+       } 
+     } 
+     if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) 
+       return MagickFalse ; 
+   } 
+ } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; 
+}",645,-45.44328212900758,-0.07045470097520555
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+DDSColors colors ; 
+PixelPacket * q ; 
+register ssize_t i , x ; 
+size_t bits ; 
+ssize_t j , y ; 
+unsigned char code ; 
+unsigned short c0 , c1 ; 
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+    for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+        q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+        if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+        c0 = ReadBlobLSBShort ( image ) ; 
+        c1 = ReadBlobLSBShort ( image ) ; 
+        bits = ReadBlobLSBLong ( image ) ; 
+        CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+        for ( j = 0 ; j < 4 ; j ++ ) { 
+            for ( i = 0 ; i < 4 ; i ++ ) { 
+                if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+                    if (bits >> ( ( j * 4 + i ) * 2 ) > 3) {
+                        return MagickFalse; 
+                    }
+                    code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+                    SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+                    SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+                    SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+                    SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+                    if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+                    q ++ ; 
+                } 
+            } 
+        } 
+        if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+    } 
+} 
+SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+return MagickTrue ; 
+}",631,-19.931342726387406,-0.031586913987935665
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1( Image *image, DDSInfo *dds_info, ExceptionInfo *exception ) { 
+    DDSColors colors; 
+    PixelPacket *q; 
+    register ssize_t i, x; 
+    size_t bits; 
+    ssize_t j, y; 
+    unsigned char code; 
+    unsigned short c0, c1; 
+    for ( y = 0; y < (ssize_t) dds_info->height; y += 4 ) { 
+        for ( x = 0; x < (ssize_t) dds_info->width; x += 4 ) { 
+            q = QueueAuthenticPixels( image, x, y, Min( 4, dds_info->width - x ), Min( 4, dds_info->height - y ), exception ); 
+            if ( q == (PixelPacket *) NULL ) {
+                return MagickFalse;
+            }
+
+            c0 = ReadBlobLSBShort( image ); 
+            c1 = ReadBlobLSBShort( image ); 
+            bits = ReadBlobLSBLong( image ); 
+            CalculateColors( c0, c1, &colors, MagickFalse ); 
+
+            for ( j = 0; j < 4; j++ ) { 
+                for ( i = 0; i < 4; i++ ) { 
+                    if ( (x+i) < (ssize_t) dds_info->width && (y+j) < (ssize_t) dds_info->height ) { 
+                        code = (unsigned char) ( (bits >> ( (j*4+i)*2 ) ) & 0x3 );
+                        // Validate code before setting pixels
+                        if( code >= 0 && code <= 3 ) {
+                            SetPixelRed( q, ScaleCharToQuantum( colors.r[ code ] ) ); 
+                            SetPixelGreen( q, ScaleCharToQuantum( colors.g[ code ] ) ); 
+                            SetPixelBlue( q, ScaleCharToQuantum( colors.b[ code ] ) ); 
+                            SetPixelOpacity( q, ScaleCharToQuantum( colors.a[ code ] ) ); 
+                            if ( colors.a[ code ] && image->matte == MagickFalse ) {
+                                image->matte = MagickTrue;
+                            }
+                            q++; 
+                        }
+                    } 
+                } 
+            } 
+            if ( SyncAuthenticPixels( image, exception ) == MagickFalse ) {
+                return MagickFalse;
+            } 
+        } 
+    } 
+    SkipDXTMipmaps( image, dds_info, 8 ); 
+    return MagickTrue; 
+}",644,-53.83957675490716,-0.08360182725917262
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+
+//Validate input
+if ( image == NULL || dds_info == NULL || exception == NULL ) { 
+  return MagickFalse ;
+}
+
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) {
+  for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) {
+    q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+    if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+    c0 = ReadBlobLSBShort ( image ) ; 
+    c1 = ReadBlobLSBShort ( image ) ; 
+    bits = ReadBlobLSBLong ( image ) ; 
+    CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+    for ( j = 0 ; j < 4 ; j ++ ) {
+      for ( i = 0 ; i < 4 ; i ++ ) {
+        if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) {
+          code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+          //Validate code
+          if (code > 3) {
+            return MagickFalse;
+          }
+          SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+          SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+          SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+          SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+          if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; 
+        } 
+      } 
+    } 
+    if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+  } 
+} 
+SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+return MagickTrue ; 
+}",637,-34.78833228605051,-0.05461276654011069
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+
+// Added validation of user input
+if (image == NULL || dds_info == NULL || exception == NULL) {
+  return MagickFalse;
+}
+
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+
+// Added validation of user input
+if (bits > 0xfffff) {
+  return MagickFalse;
+}
+
+code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",578,-30.926686790971253,-0.053506378531092136
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if( x + 4 > dds_info->width || y + 4 > dds_info->height) { fprintf(stderr, ""Improper input values""); return MagickFalse; } q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",552,-23.706759382458536,-0.04294702786677271
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; if (image == NULL || dds_info == NULL || exception == NULL ) { return MagickFalse; } for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { if (bits > 0x3) { return MagickFalse; } code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",547,-15.853342805221208,-0.028982345164938222
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { //Added validation to check if width and height are within limits if (x + 4 > dds_info->width || y + 4 > dds_info->height) return MagickFalse; q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",549,-25.328422193381684,-0.04613555955078631
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if ((x + 4 > dds_info->width) || (y + 4 > dds_info->height)) 
+    {
+        return MagickFalse;
+    }
+    q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",508,-19.743271274289576,-0.0388647072328535
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { //Verify that the code is valid and within the range of acceptable values if(code < 0 || code > 3) {return MagickFalse;} if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",539,-32.52036947760027,-0.060334637249722205
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; if (dds_info->height <= 0 || dds_info->width <= 0) return MagickFalse; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",532,-11.35466946365562,-0.021343363653488007
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+// Validate input to ensure input is within bounds and of the correct type
+if (image == NULL || dds_info == NULL || exception == NULL || dds_info->height < 0 || dds_info->width < 0) {
+ return MagickFalse;   
+}
+
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) {
+ for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) {
+  q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ;
+  if ( q == ( PixelPacket * ) NULL ) return MagickFalse ;
+  c0 = ReadBlobLSBShort ( image ) ;
+  c1 = ReadBlobLSBShort ( image ) ;
+  bits = ReadBlobLSBLong ( image ) ;
+  CalculateColors ( c0 , c1 , & colors , MagickFalse ) ;
+  for ( j = 0 ; j < 4 ; j ++ ) {
+   for ( i = 0 ; i < 4 ; i ++ ) {
+    if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) {
+     code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ;
+     SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ;
+     SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ;
+     SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ;
+     SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ;
+     if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ;
+     q ++ ;
+    }
+   }
+  }
+  if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ;
+ }
+}
+SkipDXTMipmaps ( image , dds_info , 8 ) ;
+return MagickTrue ;
+}",619,-47.68567729915335,-0.07703663537827682
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; // Ensure input validiation is performed if (dds_info == NULL || dds_info->width < 0 || dds_info->height < 0) return MagickFalse; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; // Ensure code is in a valid range if (code > 3) return MagickFalse; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",565,-40.944893006271876,-0.07246883717924225
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+
+//add input validation
+if(dds_info->width <= 0 || dds_info->height <= 0)
+{
+    ThrowReaderException(CorruptImageError, ""dds_info->width or dds_info->height is not valid"");
+    return MagickFalse;
+}
+
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+c0 = ReadBlobLSBShort ( image ) ; 
+c1 = ReadBlobLSBShort ( image ) ; 
+bits = ReadBlobLSBLong ( image ) ; 
+
+//add input validation
+if(bits < 0)
+{
+    ThrowReaderException(CorruptImageError, ""bits is not valid"");
+    return MagickFalse;
+}
+
+CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+for ( j = 0 ; j < 4 ; j ++ ) { 
+for ( i = 0 ; i < 4 ; i ++ ) { 
+if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+q ++ ; 
+} 
+} 
+} 
+if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+} 
+} 
+SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+return MagickTrue ; 
+}",674,-45.30846077676444,-0.06722323557383449
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { //Validate that code is within range 0-3 
+if(bits >> ( ( j * 4 + i ) * 2 ) & 0x3 >= 0 && bits >> ( ( j * 4 + i ) * 2 ) & 0x3 <= 3) {
+ code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; 
+}
+}
+ }
+}
+if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",572,-38.90247634541505,-0.06801132228219414
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if((x + 4) > dds_info->width || (y + 4) > dds_info->height) continue; q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",537,-10.865947451566068,-0.02023453901595171
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; 
+//Add input validation
+if (dds_info->height <= 0 || dds_info->width <= 0){
+return MagickFalse;
+}
+for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+//Add input validation
+if (code > 3){
+return MagickFalse;
+}
+SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",565,-22.418863268912375,-0.03967940401577411
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+    DDSColors colors ; 
+    PixelPacket * q ; 
+    register ssize_t i , x ; 
+    size_t bits ; 
+    ssize_t j , y ; 
+    unsigned char code ; 
+    unsigned short c0 , c1 ; 
+    if ( dds_info -> width < 4 || dds_info -> height < 4 )
+        return MagickFalse;
+    for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+        for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+            q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+            if ( q == ( PixelPacket * ) NULL ) 
+                return MagickFalse ; 
+            c0 = ReadBlobLSBShort ( image ) ; 
+            c1 = ReadBlobLSBShort ( image ) ; 
+            bits = ReadBlobLSBLong ( image ) ; 
+            CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+            for ( j = 0 ; j < 4 ; j ++ ) { 
+                for ( i = 0 ; i < 4 ; i ++ ) { 
+                    if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+                        code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+                        // validate input code
+                        if(code > 3) return MagickFalse;
+                        SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+                        SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+                        SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+                        SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+                        if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+                        q ++ ; 
+                    } 
+                } 
+            } 
+            if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) 
+                return MagickFalse ; 
+        } 
+    } 
+    SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+    return MagickTrue ; 
+}",663,-34.86162876843573,-0.05258164218466928
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; if (dds_info->height < 4 || dds_info->width < 4) { return MagickFalse; } for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height && code > 3 ) { return MagickFalse; } else { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",546,-18.833417513664305,-0.03449343866971484
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; //validate input if (dds_info->height <= 0 || dds_info->width <= 0) return MagickFalse; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; //validate code if (code > 3) return MagickFalse; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",551,-17.88646057536709,-0.032461815926256056
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { if (bits > 15) return MagickFalse; code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",519,-11.57883856705323,-0.022309900899909887
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+  DDSColors colors ; 
+  PixelPacket * q ; 
+  register ssize_t i , x ; 
+  size_t bits ; 
+  ssize_t j , y ; 
+  unsigned char code ; 
+  unsigned short c0 , c1 , valid_code ; 
+  for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+    for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+      q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+      if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+      c0 = ReadBlobLSBShort ( image ) ; 
+      c1 = ReadBlobLSBShort ( image ) ; 
+      bits = ReadBlobLSBLong ( image ) ; 
+      CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+      for ( j = 0 ; j < 4 ; j ++ ) { 
+        for ( i = 0 ; i < 4 ; i ++ ) { 
+          if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+            code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+            valid_code = code & 0x3;
+            SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ valid_code ] ) ) ; 
+            SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ valid_code ] ) ) ; 
+            SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ valid_code ] ) ) ; 
+            SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ valid_code ] ) ) ; 
+            if ( colors . a [ valid_code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+            q ++ ; 
+          } 
+        } 
+      } 
+      if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+    } 
+  } 
+  SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+  return MagickTrue ; 
+}",635,-19.418782565567742,-0.03058075994577597
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; if (dds_info->width < 0 || dds_info->height < 0) { ThrowReaderException(CorruptImageError,ImproperImageHeader,image); return MagickFalse; } for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",550,-10.69209828693457,-0.0194401787035174
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+    DDSColors colors ; 
+    PixelPacket * q ; 
+    register ssize_t i , x ; 
+    size_t bits ; 
+    ssize_t j , y ; 
+    unsigned char code ; 
+    unsigned short c0 , c1 ; 
+    for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+        for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+            q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+            if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+            c0 = ReadBlobLSBShort ( image ) ; 
+            c1 = ReadBlobLSBShort ( image ) ; 
+            bits = ReadBlobLSBLong ( image ) ; 
+            CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+            for ( j = 0 ; j < 4 ; j ++ ) { 
+                for ( i = 0 ; i < 4 ; i ++ ) { 
+                    if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+                        code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ;
+                        // Added validation to check if code is valid
+                        if (code >= 0 && code <= 3) {
+                            SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+                            SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+                            SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+                            SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+                            if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+                            q ++ ; 
+                        }
+                    } 
+                } 
+            } 
+            if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+        } 
+    } 
+    SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+    return MagickTrue ; 
+}",641,-22.313512131929215,-0.03481047134466336
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+  DDSColors colors ; 
+  PixelPacket * q ; 
+  register ssize_t i , x ; 
+  size_t bits ; 
+  ssize_t j , y ; 
+  unsigned char code ; 
+  unsigned short c0 , c1 ; 
+  for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+    for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+      q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+      if ( q == ( PixelPacket * ) NULL ) 
+        return MagickFalse ; 
+      c0 = ReadBlobLSBShort ( image ) ; 
+      c1 = ReadBlobLSBShort ( image ) ; 
+      bits = ReadBlobLSBLong ( image ) ; 
+      
+      if (bits > 0xFFFFFFFF) {
+        return MagickFalse;
+      }
+      
+      CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+      for ( j = 0 ; j < 4 ; j ++ ) { 
+        for ( i = 0 ; i < 4 ; i ++ ) { 
+          if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+            code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+            SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+            SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+            SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+            SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+            if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; 
+            q ++ ; 
+          } 
+        } 
+      } 
+      if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) 
+        return MagickFalse ; 
+    } 
+  } 
+  SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+  return MagickTrue ; 
+}",641,-18.384247186245673,-0.02868057283345659
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if (x > dds_info -> height || y > dds_info -> width) { continue; } q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; if (code > 3) { continue; } SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",542,-19.004035873105146,-0.03506279681384713
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+ DDSColors colors ; 
+ PixelPacket * q ; 
+ register ssize_t i , x ; 
+ size_t bits ; 
+ ssize_t j , y ; 
+ unsigned char code ; 
+ unsigned short c0 , c1 ; 
+ if ( dds_info->width < 0 || dds_info->height < 0 ) {
+   return MagickFalse;
+  }
+ for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+  for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+   q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+   if ( q == ( PixelPacket * ) NULL ) 
+    return MagickFalse ; 
+   c0 = ReadBlobLSBShort ( image ) ; 
+   c1 = ReadBlobLSBShort ( image ) ; 
+   bits = ReadBlobLSBLong ( image ) ; 
+   CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+   for ( j = 0 ; j < 4 ; j ++ ) { 
+    for ( i = 0 ; i < 4 ; i ++ ) { 
+     if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+      code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+      SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+      SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+      SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+      SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+      if ( colors . a [ code ] && image -> matte == MagickFalse ) 
+       image -> matte = MagickTrue ; 
+      q ++ ; 
+     } 
+    } 
+   } 
+   if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) 
+    return MagickFalse ; 
+  } 
+ } 
+ SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+ return MagickTrue ; 
+}",639,-28.019989837391275,-0.043849749354289945
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { if (x > dds_info->width || y > dds_info->height) { return MagickFalse; } q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",535,-7.27738025147582,-0.013602579909300597
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; if ((dds_info->height <= 0) || (dds_info->width <= 0)) { ThrowReaderException(CorruptImageError, ""Image dimensions are invalid""); } for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; if (code > 3) { ThrowReaderException(CorruptImageError, ""Improper input value""); } SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",568,-25.93055754514826,-0.045652390044275105
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { 
+   DDSColors colors ; 
+   PixelPacket * q ; 
+   register ssize_t i , x ; 
+   size_t bits ; 
+   ssize_t j , y ; 
+   unsigned char code ; 
+   unsigned short c0 , c1 ; 
+   
+   for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { 
+      for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { 
+         q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; 
+         if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; 
+         c0 = ReadBlobLSBShort ( image ) ; 
+         c1 = ReadBlobLSBShort ( image ) ; 
+         bits = ReadBlobLSBLong ( image ) ; 
+         CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; 
+         for ( j = 0 ; j < 4 ; j ++ ) { 
+            for ( i = 0 ; i < 4 ; i ++ ) { 
+               if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { 
+                  code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; 
+                  if (code <= 3) {
+                     SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; 
+                     SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; 
+                     SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; 
+                     SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; 
+                     if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ;
+                  }
+               } 
+            } 
+         } 
+         if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; 
+      } 
+   } 
+   SkipDXTMipmaps ( image , dds_info , 8 ) ; 
+   return MagickTrue ; 
+}",620,-23.270017896932032,-0.037532286930535536
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }
+Fixed code:","
+static MagickBooleanType ReadDXT1 ( Image * image , DDSInfo * dds_info , ExceptionInfo * exception ) { DDSColors colors ; PixelPacket * q ; register ssize_t i , x ; size_t bits ; ssize_t j , y ; unsigned char code ; unsigned short c0 , c1 ; for ( y = 0 ; y < ( ssize_t ) dds_info -> height ; y += 4 ) { for ( x = 0 ; x < ( ssize_t ) dds_info -> width ; x += 4 ) { q = QueueAuthenticPixels ( image , x , y , Min ( 4 , dds_info -> width - x ) , Min ( 4 , dds_info -> height - y ) , exception ) ; if ( q == ( PixelPacket * ) NULL ) return MagickFalse ; c0 = ReadBlobLSBShort ( image ) ; c1 = ReadBlobLSBShort ( image ) ; // Validate input data if ( c0 > 0xFFFF || c1 > 0xFFFF ) { return MagickFalse; } bits = ReadBlobLSBLong ( image ) ; CalculateColors ( c0 , c1 , & colors , MagickFalse ) ; for ( j = 0 ; j < 4 ; j ++ ) { for ( i = 0 ; i < 4 ; i ++ ) { if ( ( x + i ) < ( ssize_t ) dds_info -> width && ( y + j ) < ( ssize_t ) dds_info -> height ) { code = ( unsigned char ) ( ( bits >> ( ( j * 4 + i ) * 2 ) ) & 0x3 ) ; SetPixelRed ( q , ScaleCharToQuantum ( colors . r [ code ] ) ) ; SetPixelGreen ( q , ScaleCharToQuantum ( colors . g [ code ] ) ) ; SetPixelBlue ( q , ScaleCharToQuantum ( colors . b [ code ] ) ) ; SetPixelOpacity ( q , ScaleCharToQuantum ( colors . a [ code ] ) ) ; if ( colors . a [ code ] && image -> matte == MagickFalse ) image -> matte = MagickTrue ; q ++ ; } } } if ( SyncAuthenticPixels ( image , exception ) == MagickFalse ) return MagickFalse ; } } SkipDXTMipmaps ( image , dds_info , 8 ) ; return MagickTrue ; }",536,-14.649685842556595,-0.027331503437605587

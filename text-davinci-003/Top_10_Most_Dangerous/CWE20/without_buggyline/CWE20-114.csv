@@ -1,0 +1,472 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ( plen > 0 ) && ( plen <= * len ) ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; } else { return -1; } }",193,-9.27621477260522,-0.04806328897722912
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:"," 
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen < 0 || plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",187,-13.439169392381462,-0.07186721600203991
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) {printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",184,-9.31401506636832,-0.05061964709982782
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; } else { * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; } }",174,-12.407647070024527,-0.07130831649439384
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:"," 
+int net_get ( int s , void * arg , int * len ) { 
+    struct net_hdr nh ; 
+    int plen ; 
+    
+    if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+        return - 1 ; 
+    } 
+    plen = ntohl ( nh . nh_len ) ; 
+    if ( ! ( plen <= * len ) ) {
+        printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+        return -1;
+    } 
+    assert ( plen <= * len ) ; 
+    * len = plen ; 
+    if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+        return - 1 ; 
+    } 
+    return nh . nh_type ; 
+}",235,-13.01570572013395,-0.05538598178780404
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",175,-4.14404463924793,-0.023680255081416746
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len ) { return - 1; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",183,-6.040869787421019,-0.0330102174176012
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) || plen < 0 ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ); return -1; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",179,-11.470940882544683,-0.06408346861756806
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len ) { printf(""Error: plen is greater than len \n""); return -1; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",196,-14.66421284225447,-0.07481741246048199
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+    struct net_hdr nh ; 
+    int plen ; 
+    if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+        return - 1 ; 
+    } 
+    plen = ntohl ( nh . nh_len ) ; 
+    if ( ! ( plen <= * len ) ) {
+        printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+        return - 1;
+    }
+    assert ( plen <= * len ) ; 
+    * len = plen ; 
+    if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+        return - 1 ; 
+    } 
+    return nh . nh_type ; 
+}",231,-9.216543828212293,-0.03989845813078915
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; else { assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; } else return -1; }",183,-11.707156239147398,-0.0639735313614612
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",172,-3.0401150986780294,-0.0176750877830118
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; //assert ( plen <= * len ) ; // Removed if-statement * len = ( plen <= * len ) ? plen : * len ; // Added if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",197,-25.987459501352276,-0.13191603807793034
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; //Add input validation if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return -1; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",185,-12.151964175188967,-0.06568629283885928
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len ) { return - 1; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",183,-6.040869787421019,-0.0330102174176012
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",175,-4.14404463924793,-0.023680255081416746
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len ) { return -1; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",183,-5.963838830242979,-0.03258928322537147
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return -1; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",184,-5.134156994616479,-0.027903027144654778
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+    struct net_hdr nh ; 
+    int plen ; 
+    if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+        return - 1 ; 
+    } 
+    plen = ntohl ( nh . nh_len ) ; 
+    if ( ! ( plen <= * len ) ) {
+        printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+        return -1; 
+    } 
+    assert ( plen <= * len ) ; 
+    * len = plen ; 
+    if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+        return - 1 ; 
+    } 
+    return nh . nh_type ; 
+}",233,-9.725049433475602,-0.041738409585732196
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; else if (plen < *len) * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",175,-13.963240296579313,-0.07978994455188179
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ){ printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",175,-9.088392757171837,-0.05193367289812478
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) || (plen > MAX_SIZE) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) && (plen <= MAX_SIZE); * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",195,-14.825784571959394,-0.07602966447158664
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",172,-2.7894641718139574,-0.01621781495240673
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+struct net_hdr nh ; 
+int plen ; 
+if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+    return - 1 ; 
+} 
+plen = ntohl ( nh . nh_len ) ;
+if ( plen > * len ) { 
+    printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+    return - 1 ; 
+} 
+* len = plen ; 
+if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+    return - 1 ; 
+} 
+return nh . nh_type ; 
+}",207,-15.674109663512564,-0.07572033653870804
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+struct net_hdr nh ; 
+int plen ; 
+if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+    return - 1 ; 
+} 
+plen = ntohl ( nh . nh_len ) ;
+if ( plen > * len ) { 
+    printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+    return - 1 ; 
+} 
+* len = plen ; 
+if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+     return - 1 ; 
+} 
+return nh . nh_type ; 
+}",207,-21.59194355790116,-0.1043089060768172
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get(int s, void *arg, int *len) {
+  struct net_hdr nh;
+  int plen;
+
+  if (net_read_exact(s, &nh, sizeof(nh)) == -1) {
+    return -1;
+  }
+
+  plen = ntohl(nh.nh_len);
+
+  /* Validate input */
+  if (plen < 0 || *len < 0) {
+    printf(""PLEN %d type %d len %d\n"", plen, nh.nh_type, *len);
+    assert(0);
+  }
+  
+  /* Check buffer size is sufficient for incoming data */
+  if (!(*len >= plen)) {
+    printf(""PLEN %d type %d len %d\n"", plen, nh.nh_type, *len);
+    assert(0);
+  }
+
+  *len = plen;
+  if ((*len) && (net_read_exact(s, arg, *len) == -1)) {
+    return -1;
+  }
+
+  return nh.nh_type;
+}",272,-53.33063294481047,-0.19606850347356788
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",181,-5.446789986228648,-0.03009276235485441
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",184,-4.305288774582688,-0.023398308557514607
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+    struct net_hdr nh ; 
+    int plen ; 
+    int maxlen = *len; 
+    if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+        return - 1 ; 
+    } 
+    plen = ntohl ( nh . nh_len ) ; 
+    if ( ! ( plen <= maxlen ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , maxlen ) ; 
+    assert ( plen <= maxlen ) ; 
+    * len = plen ; 
+    if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+        return - 1 ; 
+    } 
+    return nh . nh_type ; 
+}",229,-14.216787245380301,-0.06208204037283974
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if (plen > * len) return -1; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",181,-7.98323383653307,-0.04410626429023795
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len ) return -1; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",181,-6.031855196335559,-0.033325166830583196
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",172,-2.7652805865220698,-0.016077212712337616
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+struct net_hdr nh ; 
+int plen ; 
+if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+	return - 1 ; 
+} 
+plen = ntohl ( nh . nh_len ) ; 
+if ( plen > * len ) {
+	printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+	return - 1; 
+} 
+* len = plen ; 
+if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+	return - 1 ; 
+} 
+return nh . nh_type ; 
+}",207,-14.489821834375745,-0.06999913929650119
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len ) return -1; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",181,-6.269010785387421,-0.0346354187037979
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",172,-2.9966447894529686,-0.01742235342705214
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen <= 0 || plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",177,-5.279897855443319,-0.029829931386685417
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",172,-2.9966447894529686,-0.01742235342705214
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:"," 
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",185,-6.644220768127526,-0.035914706854743385
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",172,-2.9966447894529686,-0.01742235342705214
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:"," 
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 || nh.nh_len > *len ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",190,-13.078466951528478,-0.06883403658699198
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",172,-2.9966447894529686,-0.01742235342705214
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+	struct net_hdr nh ; 
+	int plen ; 
+	if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+		return - 1 ; 
+	} 
+	plen = ntohl ( nh . nh_len ) ; 
+	if ( ! ( plen <= * len ) ) {
+		printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+		return -1;
+	} 
+	assert ( plen <= * len ) ; 
+	* len = plen ; 
+	if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+		return - 1 ; 
+	} 
+	return nh . nh_type ; 
+}",236,-9.8231914645317,-0.041623692646320765
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) {
+    struct net_hdr nh ;
+    int plen ;
+    
+    if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) {
+        return - 1 ;
+    }
+    plen = ntohl ( nh . nh_len ) ;
+
+    // Validate plen to make sure it is greater than 0 and not greater than the length specified by len
+    if (!( plen > 0 && plen <= * len )) {
+        printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ;
+    }
+    assert ( plen > 0 && plen <= * len ) ; 
+    * len = plen ;
+    
+    if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) {
+        return - 1 ;
+    }
+    return nh . nh_type ;
+}",248,-50.35558311678902,-0.20304670611608475
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len ) return -1; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",181,-6.269010785387421,-0.0346354187037979
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+ struct net_hdr nh ; 
+ int plen ; 
+ if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+  return - 1 ; 
+ }
+ plen = ntohl ( nh . nh_len ) ; 
+ //Added validation check
+ if ( ! ( plen <= * len ) && plen > 0 ){
+  printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; 
+  assert ( plen <= * len ) ; 
+ } 
+ * len = plen ; 
+ if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+  return - 1 ; 
+ } 
+ return nh . nh_type ; 
+}",224,-33.26394566100778,-0.14849975741521332
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { 
+  struct net_hdr nh ; 
+  int plen ; 
+  
+  if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { 
+    return - 1 ; 
+  } 
+  
+  plen = ntohl ( nh . nh_len ) ; 
+  
+  // added input validation to check if plen is greater than 0 and is less than or equal to *len 
+  if ( plen <= 0 || plen > *len ) {
+    return -1;
+  }
+  
+  * len = plen ; 
+  
+  if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { 
+    return - 1 ; 
+  } 
+  
+  return nh . nh_type ; 
+}",223,-36.103293832427525,-0.16189817862075123
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return - 1; 
+
+assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",182,-14.515940503090974,-0.07975791485214821
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( plen > * len ) { printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return -1; } assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",181,-6.855820247967048,-0.037877459933519604
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; if ( plen > * len || plen <= 0 ) { return - 1 ; } * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }",188,-11.232298849019266,-0.05974627047350673
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ) printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; }
+Fixed code:","
+int net_get ( int s , void * arg , int * len ) { struct net_hdr nh ; int plen ; if ( net_read_exact ( s , & nh , sizeof ( nh ) ) == - 1 ) { return - 1 ; } plen = ntohl ( nh . nh_len ) ; if ( ! ( plen <= * len ) ){ printf ( ""PLEN %d type %d len %d\\n"" , plen , nh . nh_type , * len ) ; return -1; } else { assert ( plen <= * len ) ; * len = plen ; if ( ( * len ) && ( net_read_exact ( s , arg , * len ) == - 1 ) ) { return - 1 ; } return nh . nh_type ; } }",187,-11.083693864508103,-0.05927109018453531

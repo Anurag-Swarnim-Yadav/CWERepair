@@ -1,0 +1,312 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && key -> description != NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",80,-6.726118486351241,-0.0840764810793905
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { 
+if (key != NULL && key -> description != NULL) {
+    seq_puts ( m , key -> description ) ; 
+    
+    if ( key_is_instantiated ( key ) ) {
+        seq_printf ( m , "": %u"" , key -> datalen ) ; 
+    }
+}
+}",98,-16.523178421369007,-0.1686038614425409
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key_is_instantiated ( key ) && key -> description ) { seq_puts ( m , key -> description ) ; seq_printf ( m , "": %u"" , key -> datalen ) ; } }",72,-8.185574363136801,-0.11368853282134446
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && key -> description != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",80,-4.207378185403697,-0.05259222731754622
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) && key -> datalen > 0) seq_printf ( m , "": %u"" , key -> datalen ) ; }",74,-5.8667928111500505,-0.07928098393446015
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { 
+if(key->description != NULL && key->datalen != NULL) {
+  seq_puts ( m , key -> description ) ; 
+  if ( key_is_instantiated ( key ) ) 
+    seq_printf ( m , "": %u"" , key -> datalen ) ; 
+  }
+}",98,-15.202541338824,-0.15512797284514285
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key -> description != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",76,-4.6675440838063995,-0.06141505373429473
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key && key -> description ) { if ( key_is_instantiated ( key ) ) { if ( key -> datalen ) { seq_puts ( m , key -> description ) ; seq_printf ( m , "": %u"" , key -> datalen ) ; } } } }",88,-10.615196330163641,-0.12062723102458683
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if(key != NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",74,-6.32671687787495,-0.08549617402533716
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key == NULL || m == NULL) { return; } seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }",80,-6.941835405684202,-0.08677294257105253
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key && key -> description ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",76,-4.013675424245999,-0.05281151874007894
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } else { seq_puts ( m , ""Error: Key is not valid."" ) ; } }",92,-15.0712743811639,-0.16381819979525977
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) && key->datalen >= 0) seq_printf ( m , "": %u"" , key -> datalen ) ; }",74,-7.0687787378281,-0.09552403699767703
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key != NULL && key -> description !=NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",80,-11.214990419102799,-0.140187380238785
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { 
+    if (key != NULL && key -> description != NULL) {
+        seq_puts(m, key->description);
+        if (key_is_instantiated(key) && key->datalen >= 0)
+            seq_printf(m, "": %u"", key->datalen);
+    }
+}",97,-17.970903081694033,-0.18526704207931993
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( ! key || ! m ) return ; seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }",76,-7.593145111787299,-0.09990980410246446
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && key -> description != NULL && m != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",84,-6.391205123809498,-0.0760857752834464
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key && key -> description ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",76,-4.0136756512459995,-0.052811521726921044
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if(key != NULL){ seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",73,-7.2334074547318,-0.09908777335249042
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key_is_instantiated ( key ) ) { seq_puts ( m , key -> description ) ;  seq_printf ( m , "": %u"" , key -> datalen ) ; } }",69,-9.890779644039197,-0.1433446325223072
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) && key -> datalen > 0 ) seq_printf ( m , "": %u"" , key -> datalen ) ; }",74,-4.5053227070652495,-0.06088273928466553
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) {
+  if (key != NULL && key -> description != NULL) {
+    seq_puts(m, key->description);
+    if (key_is_instantiated(key)) {
+      seq_printf(m, "": %u"", key->datalen);
+    }
+  }
+}",91,-13.193298179778202,-0.14498129867888135
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key ){ if ( key -> description ){ seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ){ seq_printf ( m , "": %u"" , key -> datalen ) ; } } } }",82,-13.946716782898603,-0.17008191198656833
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && key -> description != NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",80,-6.741701835727741,-0.08427127294659677
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && m != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",78,-4.536147872636902,-0.05815574195688336
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key != NULL && key -> description != NULL && key_is_instantiated ( key ) ) { seq_puts ( m , key -> description ) ; seq_printf ( m , "": %u"" , key -> datalen ) ; } }",78,-8.817565325758999,-0.11304570930460255
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key == NULL || m == NULL ) return ; seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }",78,-6.2941150488540005,-0.08069378267761539
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key && key->description != NULL && key->datalen > 0) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",86,-11.684871872076304,-0.13587060316367794
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",72,-3.7345343162189,-0.051868532169706945
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && key -> description != NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",80,-6.741701835727741,-0.08427127294659677
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key != NULL && key->description != NULL && key->datalen > 0) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }  }",89,-13.685287590297497,-0.15376727629547748
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",74,-7.465027190748098,-0.10087874582092024
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe(const struct key *key, struct seq_file *m) { 
+    // Ensure the key pointer is not NULL
+    if (key == NULL) {
+        return;
+    }
+    
+    // Escape any characters that could be used to attack the program
+    char *escaped_description = escape_string(key->description);
+    seq_puts(m, escaped_description);
+    free(escaped_description);
+    
+    if (key_is_instantiated(key)) {
+        seq_printf(m, "": %u"", key->datalen);
+    }
+}",144,-43.283834081785926,-0.30058218112351337
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",74,-4.2072959098349,-0.056855350132904055
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if(key != NULL && m != NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",78,-6.037899508363149,-0.0774089680559378
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { 
+if (key != NULL && m != NULL) { 
+   seq_puts ( m , key -> description ) ; 
+   if ( key_is_instantiated ( key ) ) 
+      seq_printf ( m , "": %u"" , key -> datalen ) ; 
+} 
+}",93,-14.235938219826593,-0.15307460451426444
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key == NULL || m == NULL ) { return ; } seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) { seq_printf ( m , "": %u"" , key -> datalen ) ; } }",82,-7.934369032612596,-0.0967605979586902
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key && m) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",74,-6.801312073260198,-0.0919096226116243
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key && m && key->description && key->datalen) { seq_puts(m, key->description); if (key_is_instantiated(key)) seq_printf(m, "": %u"", key->datalen); } }",80,-12.092388757926999,-0.1511548594740875
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key -> description != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",76,-4.667847567836402,-0.06141904694521581
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && m != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",78,-4.535954098866603,-0.058153257677776966
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",74,-4.2072959098349,-0.056855350132904055
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if (key != NULL && m != NULL) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",78,-5.116065145323199,-0.06559057878619486
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) && key->datalen > 0 && key->datalen <= MAX_DATA_LEN ) seq_printf ( m , "": %u"" , key -> datalen ) ; }",87,-11.6316173530927,-0.13369675118497357
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && key -> description != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",80,-4.208636847196802,-0.05260796058996002
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL && key -> description != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",80,-4.2088924134803,-0.05261115516850375
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) {
+if ( key == NULL ) {
+return;
+}
+if ( key -> description == NULL ) {
+return;
+}
+seq_puts ( m , key -> description ) ;
+if ( key_is_instantiated ( key ) ) {
+if ( key -> datalen == NULL ) {
+return;
+}
+seq_printf ( m , "": %u"" , key -> datalen ) ;
+}
+}",118,-18.799731183751504,-0.15931975579450428
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key ) { if ( key -> description ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } } }",80,-6.824672969135799,-0.08530841211419748
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key == NULL ) { return ; } seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }",76,-8.1065950866127,-0.10666572482385131
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void user_describe ( const struct key * key , struct seq_file * m ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; }
+Fixed code:","
+void user_describe ( const struct key * key , struct seq_file * m ) { if ( key != NULL ) { seq_puts ( m , key -> description ) ; if ( key_is_instantiated ( key ) ) seq_printf ( m , "": %u"" , key -> datalen ) ; } }",74,-4.193132717638601,-0.056663955643764884

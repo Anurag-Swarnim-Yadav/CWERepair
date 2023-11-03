@@ -1,0 +1,508 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update || ! key_preparsed_payload_validate(prep)) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",218,-11.440816278710152,-0.05248080861793648
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+
+//Validate the input parameters
+if (key == NULL || prep == NULL) {
+   ret = -EINVAL;
+   goto error;
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",242,-16.89801344542213,-0.06982650184058731
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+
+//Validate input
+if (key_ref == NULL || prep == NULL) {
+    ret = -EINVAL;
+    goto error;
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",242,-10.209305616872804,-0.042187213292862825
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { 
+    struct key * key = key_ref_to_ptr ( key_ref ) ; 
+    int ret ; 
+    // Validate input
+    if(!prep || !key)
+        return ERR_PTR(-EINVAL);
+ 
+    ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; 
+    if ( ret < 0 ) 
+        goto error ; 
+    ret = - EEXIST ; 
+    if ( ! key -> type -> update ) 
+        goto error ; 
+    down_write ( & key -> sem ) ; 
+    ret = key -> type -> update ( key , prep ) ; 
+    if ( ret == 0 ) 
+        clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; 
+    up_write ( & key -> sem ) ; 
+    if ( ret < 0 ) 
+        goto error ; 
+    out : 
+        return key_ref ; 
+    error : 
+        key_put ( key ) ; 
+        key_ref = ERR_PTR ( ret ) ; 
+        goto out ; 
+}",299,-22.782281537378033,-0.07619492152969241
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+
+// Added check for valid input
+if (!prep || !key->type)
+	goto error;
+
+ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",230,-20.948475802408087,-0.09108032957568733
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+
+// Add proper input validation
+if (key == NULL || key->type == NULL || key->type->update == NULL || prep == NULL) {
+  return ERR_PTR(-EINVAL);
+}
+
+// Continue with original code
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",260,-28.512916438026277,-0.10966506322317798
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+// Add input validation
+if(prep == NULL) return ERR_PTR(-EINVAL);
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",229,-12.464171157870203,-0.05442869501253363
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+// Added input validation
+if (key_ref == NULL) {
+    return ERR_PTR(-EINVAL);
+}
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; 
+// Added input validation
+if (prep == NULL) {
+    ret = -EINVAL;
+    goto error;
+}
+ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",266,-21.703818924355556,-0.08159330422690059
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; // Add input validation to check for valid keys if ( !key || !key->type || !key->type->update ) { ret = -EINVAL; goto error; } ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",241,-26.33894074229689,-0.10929021054894976
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; if ( prep == NULL ) { ret = -EINVAL; goto error; } down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",221,-8.829406566191201,-0.03995206591036743
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+//Added code to validate the input
+if(prep == NULL) goto error;
+
+ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",224,-17.033641098313097,-0.07604304061746918
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; //Check to ensure the key_preparsed_payload is valid if(prep == NULL) { ret = -EINVAL; goto error; } //Check if user has permission to write to the key ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",247,-28.218207918240623,-0.11424375675401062
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; // Added input validation check if (! prep || ! key || ! key->type) goto error; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",223,-15.866910045792476,-0.07115206298561648
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+//Validate prep before updating
+if (prep == NULL || !key_preparsed_validate(prep)) {
+	ret = -EINVAL;
+	goto error;
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",250,-26.12129292300001,-0.10448517169200004
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; if(!prep) { ret = -EINVAL; goto error; } ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",220,-8.137728465547898,-0.03698967484339954
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+
+// Validate input 
+if (prep == NULL) {
+  ret = -EINVAL;
+  goto error;
+}
+
+ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",237,-13.574518061010142,-0.05727644751481072
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+
+//Validate input
+if (key_ref == NULL || prep == NULL) {
+   ret = -EINVAL;
+   goto error;
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",242,-12.058848365443097,-0.049829951923318586
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; // Add validation for the input prep before proceeding ret = validateInput(prep); if (ret < 0) goto error; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",228,-27.463753909827073,-0.12045506100801348
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if ( key == NULL ) return ERR_PTR(EINVAL); ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; if ( prep == NULL ) goto error; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",229,-15.39647659303662,-0.06723352224033459
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if ( ! prep || ! key_preparsed_payload_is_valid ( prep ) ) return ERR_PTR ( - EINVAL ) ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",238,-16.47257238939213,-0.06921248903105937
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if(prep == NULL) { ret = -EINVAL; goto error; } ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",221,-6.30240359809695,-0.028517663339805203
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+//Added validation
+if (prep == NULL) {
+    ret = -EINVAL;
+    goto error;
+} 
+
+ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",235,-18.337732087229032,-0.07803290249884695
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; //Validate input if (ret < 0 || ! key -> type -> update) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",195,-16.482395271808443,-0.08452510395799201
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if(!prep) goto error; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",211,-6.597271593566651,-0.03126669001690356
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+
+// Validate input
+if (!prep) {
+	ret = -EINVAL;
+	goto error;
+}
+
+ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",235,-13.277151505132204,-0.056498517043115766
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if ( ! prep -> data ) { ret = - EINVAL ; goto error ; } 
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",225,-16.86302403328208,-0.07494677348125368
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+
+// Add input validation
+if (prep == NULL) {
+    ret = -EINVAL;
+    goto error;
+}
+
+ret = - EEXIST ; 
+if ( ! key -> type -> update ) goto error ; 
+down_write ( & key -> sem ) ; 
+ret = key -> type -> update ( key , prep ) ; 
+if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; 
+up_write ( & key -> sem ) ; 
+if ( ret < 0 ) goto error ; 
+out : 
+return key_ref ; 
+error : 
+key_put ( key ) ; 
+key_ref = ERR_PTR ( ret ) ; 
+goto out ; 
+}",263,-18.136728882016204,-0.06896094631945325
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; if ( prep == NULL ) { ret = - EINVAL; goto error; } ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",221,-8.316091362957238,-0.037629372683064426
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) {
+    struct key * key = key_ref_to_ptr ( key_ref ) ; 
+    int ret ; 
+    
+    if (!prep) {
+        ret = -EINVAL;
+        goto error;
+    }
+    
+    ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; 
+    if ( ret < 0 ) 
+        goto error ; 
+    ret = - EEXIST ; 
+    if ( ! key -> type -> update ) 
+        goto error ; 
+    down_write ( & key -> sem ) ; 
+    ret = key -> type -> update ( key , prep ) ; 
+    if ( ret == 0 ) 
+        clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; 
+    up_write ( & key -> sem ) ; 
+    if ( ret < 0 ) 
+        goto error ; 
+    out : 
+        return key_ref ; 
+    error : 
+        key_put ( key ) ; 
+        key_ref = ERR_PTR ( ret ) ; 
+        goto out ; 
+}",295,-15.335137229362532,-0.0519835160317374
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+// Add input validation logic
+if (!prep) {
+ret = -EINVAL;
+goto error;
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",233,-18.38732675787879,-0.07891556548445833
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; //Added input validation to ensure prep is not NULL //if prep is NULL, the type->update function would be called with NULL pointer which could lead to undefined behaviour if(prep == NULL) goto error; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",245,-48.913000395307115,-0.1996448995726821
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; // Validate input
+if (!prep) {
+    ret = -EINVAL;
+    goto error;
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",231,-15.940242207317073,-0.06900537752085313
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if (!prep) { ret = -EINVAL; goto error; } ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",219,-4.3701753578654525,-0.019955138620390195
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if (!prep) { ret = -EINVAL; goto error; } ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",219,-4.3701753578654525,-0.019955138620390195
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+
+//added input validation check
+if(key == NULL || prep == NULL) {
+	return ERR_PTR(-EINVAL);
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",240,-17.948566588223915,-0.07478569411759965
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { int ret ; 
+    if (!prep) {
+        ret = -EINVAL;
+        goto error;
+    }
+    struct key * key = key_ref_to_ptr ( key_ref ) ; 
+    ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; 
+    if ( ret < 0 ) goto error ; ret = - EEXIST ; 
+    if ( ! key -> type -> update ) goto error ; 
+    down_write ( & key -> sem ) ; 
+    ret = key -> type -> update ( key , prep ) ; 
+    if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; 
+    up_write ( & key -> sem ) ; 
+    if ( ret < 0 ) goto error ; 
+    out : return key_ref ; 
+    error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; 
+}",262,-21.88385828936322,-0.08352617667695886
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+
+// Added input validation 
+if (prep == NULL) {
+    ret = -EINVAL;
+    goto error;
+}
+
+ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",237,-11.866838401810245,-0.05007104810890399
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+
+// validate preparsed payload
+if(!prep || prep == NULL)
+  goto error;
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",229,-24.204351717983744,-0.1056958590304967
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:"," 
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type || ! prep || ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",212,-13.988110529303995,-0.06598165344011318
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if (!key) goto error; if (!prep) goto error; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",217,-11.433787598532694,-0.05269026543102624
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+//Validate the input
+if(key == NULL || prep == NULL) goto error;
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",226,-15.359061683898847,-0.06796044992875597
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { 
+struct key * key = key_ref_to_ptr ( key_ref ) ;
+ int ret ; 
+
+if (prep == NULL)
+    return ERR_PTR(-EINVAL);
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ;
+if ( ret < 0 ) goto error ;
+
+ret = - EEXIST ;
+if ( ! key -> type -> update ) goto error ;
+
+down_write ( & key -> sem ) ;
+ret = key -> type -> update ( key , prep ) ;
+if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ;
+up_write ( & key -> sem ) ;
+if ( ret < 0 ) goto error ;
+
+out :
+return key_ref ;
+
+error :
+key_put ( key ) ;
+key_ref = ERR_PTR ( ret ) ;
+goto out ;
+}",250,-26.112622123781346,-0.10445048849512538
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if ( prep == NULL ) { ret = - EINVAL ; goto error ; } ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",221,-5.849329481737672,-0.026467554216007567
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:"," 
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; if(prep == NULL) goto error; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",213,-10.1563611842663,-0.04768244687448967
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; // Validate input if ( ! prep || prep -> datalen == 0 ) { ret = - EINVAL ; goto error ; } ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",232,-13.667566670750206,-0.058911925304957785
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; if ( ! prep || ! key ) return ERR_PTR ( - EINVAL ) ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",224,-8.235065359962297,-0.036763684642688824
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; 
+if (!prep) {
+  ret = -EINVAL; 
+  goto error;
+}
+
+ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",229,-13.314891637098452,-0.05814363160305001
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; //Add input validation if (prep != NULL && !validate_input(prep)) goto error; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",224,-19.904917631078142,-0.08886123942445599
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; // Add input validation code before continuing. if (!prep || !key || !key->type) { ret = -EINVAL; goto error; } ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",226,-26.920078494722333,-0.11911539156956784
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }
+Fixed code:","
+static inline key_ref_t __key_update ( key_ref_t key_ref , struct key_preparsed_payload * prep ) { struct key * key = key_ref_to_ptr ( key_ref ) ; int ret ; ret = key_permission ( key_ref , KEY_NEED_WRITE ) ; if ( ret < 0 ) goto error ; 
+//Validate input
+if(prep == NULL) {
+	ret = -EINVAL;
+	goto error;
+}
+
+ret = - EEXIST ; if ( ! key -> type -> update ) goto error ; down_write ( & key -> sem ) ; ret = key -> type -> update ( key , prep ) ; if ( ret == 0 ) clear_bit ( KEY_FLAG_NEGATIVE , & key -> flags ) ; up_write ( & key -> sem ) ; if ( ret < 0 ) goto error ; out : return key_ref ; error : key_put ( key ) ; key_ref = ERR_PTR ( ret ) ; goto out ; }",236,-13.161009508933844,-0.055766989444634936

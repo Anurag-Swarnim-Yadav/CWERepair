@@ -1,0 +1,1165 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+  char* statsdir = ""statsdir"";
+  if (strlen(statsdir) > MAX_PATH) {
+    printf(""Path too long.\n"");
+    exit(1);
+  }
+  else {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ;
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ;
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ;
+    #ifdef AUTOKEY
+      filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    #endif
+    #ifdef DEBUG_TIMING
+      filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    #endif
+    step_callback = & ntpd_time_stepped ; 
+    #ifdef DEBUG
+      atexit ( & uninit_util ) ; 
+    #endif
+  }
+}",301,-48.57335888807421,-0.16137328534243925
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+
+void init_util ( void ) {
+  if (statsdir != NULL) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ;
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ;
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ;
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ;
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ;
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ;
+# ifdef AUTOKEY
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ;
+# endif
+# ifdef DEBUG_TIMING
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ;
+# endif
+  }
+  if (step_callback != NULL) {
+    step_callback = & ntpd_time_stepped ;
+  }
+# ifdef DEBUG
+  atexit ( & uninit_util ) ;
+# endif
+}",262,-17.128805500262725,-0.0653771202300104
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+	if (statsdir != NULL && strlen(statsdir) > 0) {
+		filegen_register ( statsdir , ""peerstats"" , & peerstats ) ;
+		filegen_register ( statsdir , ""loopstats"" , & loopstats ) ;
+		filegen_register ( statsdir , ""clockstats"" , & clockstats ) ;
+		filegen_register ( statsdir , ""rawstats"" , & rawstats ) ;
+		filegen_register ( statsdir , ""sysstats"" , & sysstats ) ;
+		filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+		# ifdef AUTOKEY
+			filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+		# endif
+		# ifdef DEBUG_TIMING 
+			filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+		# endif
+	}
+	step_callback = & ntpd_time_stepped ; 
+	# ifdef DEBUG 
+		atexit ( & uninit_util ) ;
+	# endif 
+}",284,-23.763590809196696,-0.08367461552534047
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if(statsdir == NULL || statsdir == """"){
+    return;
+}
+filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY
+filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif 
+# ifdef DEBUG_TIMING
+filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif 
+step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG
+atexit ( & uninit_util ) ; # endif 
+}",252,-20.126473101483217,-0.07986695675191753
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+	if(strlen(statsdir) > 0) { 
+		filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+		filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+		filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+		filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+		filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+		filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+		# ifdef AUTOKEY 
+			filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+		# endif 
+		# ifdef DEBUG_TIMING 
+			filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+		# endif 
+		step_callback = & ntpd_time_stepped ; 
+		# ifdef DEBUG 
+			atexit ( & uninit_util ) ; 
+		# endif 
+	}
+}",294,-12.46713102818124,-0.042405207578847755
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING 
+if(strlen( statsdir) < 1 ) {
+    return;
+}
+filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }",377,-27.115085605939857,-0.07192330399453543
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+
+void init_util ( void ) { 
+
+//Validate 'statsdir' input
+if(statsdir != NULL && strlen(statsdir) > 0) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif 
+    # ifdef DEBUG_TIMING
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif 
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG
+    atexit ( & uninit_util ) ; 
+    # endif
+}
+
+}",285,-27.197053834159156,-0.09542825906722512
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+
+if((strlen(statsdir) > 0) && (statsdir != NULL)) {
+  filegen_register ( statsdir , ""peerstats"" , & peerstats ) ;
+  filegen_register ( statsdir , ""loopstats"" , & loopstats ) ;
+  filegen_register ( statsdir , ""clockstats"" , & clockstats ) ;
+  filegen_register ( statsdir , ""rawstats"" , & rawstats ) ;
+  filegen_register ( statsdir , ""sysstats"" , & sysstats ) ;
+  filegen_register ( statsdir , ""protostats"" , & protostats ) ;
+  # ifdef AUTOKEY
+  filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ;
+  # endif
+  # ifdef DEBUG_TIMING
+  filegen_register ( statsdir , ""timingstats"" , & timingstats ) ;
+  # endif
+  step_callback = & ntpd_time_stepped ;
+  # ifdef DEBUG
+  atexit ( & uninit_util ) ;
+  # endif
+}
+}",264,-22.025170642724408,-0.08342867667698639
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    // Validate the input
+    if (statsdir == NULL){
+        return;
+    }
+    // Register the stats
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif 
+    step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG
+    atexit ( & uninit_util ) ; # endif 
+}",269,-31.8298864975677,-0.1183267156043409
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  // Check for a valid statsdir 
+  if(statsdir != NULL) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY 
+      filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif 
+    # ifdef DEBUG_TIMING 
+      filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif 
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG 
+      atexit ( & uninit_util ) ; 
+    # endif 
+  } 
+}",281,-23.38235997852319,-0.0832112454751715
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if(statsdir != NULL){
+  filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+  filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+  filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+  filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+  filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+  filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+  # ifdef AUTOKEY 
+  filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+  # endif 
+  # ifdef DEBUG_TIMING 
+  filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+  # endif 
+  step_callback = & ntpd_time_stepped ; 
+  # ifdef DEBUG 
+  atexit ( & uninit_util ) ; 
+  # endif 
+}
+}",267,-11.815694425167699,-0.04425353717291273
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  if (statsdir != NULL && strlen(statsdir) > 0) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    #ifdef AUTOKEY 
+      filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    #endif 
+    #ifdef DEBUG_TIMING 
+      filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    #endif
+  }
+  step_callback = & ntpd_time_stepped ; 
+  #ifdef DEBUG 
+    atexit ( & uninit_util ) ; 
+  #endif 
+}",278,-13.924939301120203,-0.05008970971625972
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if (statsdir != NULL && strlen(statsdir) > 0) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY 
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+# endif 
+# ifdef DEBUG_TIMING 
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+# endif 
+step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG 
+    atexit ( & uninit_util ) ; 
+# endif 
+}
+}",270,-13.62867177940375,-0.05047656214593981
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if (statsdir == NULL){
+	return;
+}
+
+if (strlen(statsdir) > MAX_PATH_LENGTH){
+	return;
+}
+
+filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }",248,-19.672289316627094,-0.07932374724446409
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+  if (statsdir != NULL && strlen(statsdir) > 0 &&
+      strcspn(statsdir, ""\\/\0"") == strlen(statsdir)) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY
+      filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif
+    # ifdef DEBUG_TIMING
+      filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG
+      atexit ( & uninit_util ) ; 
+    # endif
+  }
+}",295,-28.864004855897512,-0.09784408425727971
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    if (statsdir && peerstats && loopstats && clockstats && rawstats && sysstats && protostats) {
+        filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+        filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+        filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+        filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+        filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+        filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+        # ifdef AUTOKEY 
+            filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+        # endif 
+        # ifdef DEBUG_TIMING 
+            filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+        # endif 
+        step_callback = & ntpd_time_stepped ; 
+        # ifdef DEBUG 
+            atexit ( & uninit_util ) ; 
+        # endif 
+    }
+}",287,-12.001382711606553,-0.04181666450037126
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+  if (statsdir != null && statsdir != """") {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ;
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ;
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ;
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ;
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ;
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ;
+    # ifdef AUTOKEY
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ;
+    # endif
+    # ifdef DEBUG_TIMING
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ;
+    # endif
+    step_callback = & ntpd_time_stepped ;
+    # ifdef DEBUG
+    atexit ( & uninit_util ) ;
+    # endif
+  }
+}",258,-14.067016178957303,-0.05452331852309032
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    // Check for valid inputs
+    if (!statsdir || !peerstats || !loopstats || !clockstats || !rawstats || !sysstats || !protostats)
+        return;
+    
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    
+    # ifdef AUTOKEY 
+        filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif 
+    
+    # ifdef DEBUG_TIMING 
+        filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif 
+    
+    step_callback = & ntpd_time_stepped ; 
+    
+    # ifdef DEBUG 
+        atexit ( & uninit_util ) ; 
+    # endif 
+}",310,-20.973705996200195,-0.06765711611677483
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+if (statsdir == NULL) {
+  printf(""Error: statsdir is NULL\n"");
+  return;
+}
+
+if (strlen(statsdir) > PATH_MAX) {
+  printf(""Error: statsdir is too long\n"");
+  return;
+}
+
+filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY 
+filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+# endif 
+# ifdef DEBUG_TIMING 
+filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+# endif 
+step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG 
+atexit ( & uninit_util ) ; 
+# endif 
+}",305,-27.311137162938845,-0.08954471200963555
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    if (statsdir && ""peerstats"" && &peerstats && ""loopstats"" && &loopstats && ""clockstats"" && &clockstats && ""rawstats"" && &rawstats && ""sysstats"" && &sysstats && ""protostats"" && &protostats) {
+        filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+        filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+        filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+        filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+        filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+        filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    }
+    #ifdef AUTOKEY
+    if (statsdir && ""cryptostats"" && &cryptostats) {
+        filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    }
+    #endif
+    #ifdef DEBUG_TIMING
+    if (statsdir && ""timingstats"" && &timingstats) {
+        filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    }
+    #endif
+    step_callback = & ntpd_time_stepped ; 
+    #ifdef DEBUG
+    atexit ( & uninit_util ) ; 
+    #endif
+}",362,-20.5990639060728,-0.05690349145323978
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+  char *allowed_files[] = {""peerstats"", ""loopstats"", ""clockstats"", ""rawstats"",
+                           ""sysstats"", ""protostats"", ""cryptostats"", ""timingstats""};
+  size_t files_len = sizeof(allowed_files) / sizeof(allowed_files[0]);
+  size_t i;
+  for (i = 0; i < files_len; i++) {
+    if (strcmp(allowed_files[i], ""peerstats"") == 0) {
+      filegen_register ( statsdir , allowed_files[i] , & peerstats ) ;
+    } else if (strcmp(allowed_files[i], ""loopstats"") == 0) {
+      filegen_register ( statsdir , allowed_files[i] , & loopstats ) ;
+    } else if (strcmp(allowed_files[i], ""clockstats"") == 0) {
+      filegen_register ( statsdir , allowed_files[i] , & clockstats ) ;
+    } else if (strcmp(allowed_files[i], ""rawstats"") == 0) {
+      filegen_register ( statsdir , allowed_files[i] , & rawstats ) ;
+    } else if (strcmp(allowed_files[i], ""sysstats"") == 0) {
+      filegen_register ( statsdir , allowed_files[i] , & sysstats ) ;
+    } else if (strcmp(allowed_files[i], ""protostats"") == 0) {
+      filegen_register ( statsdir , allowed_files[i] , & protostats ) ;
+    } else if (strcmp(allowed_files[i], ""cryptostats"") == 0) {
+      # ifdef AUTOKEY
+      filegen_register ( statsdir , allowed_files[i] , & cryptostats ) ;
+      # endif
+    } else if (strcmp(allowed_files[i], ""timingstats"") == 0) {
+      # ifdef DEBUG_TIMING
+      filegen_register ( statsdir , allowed_files[i] , & timingstats ) ;
+      # endif
+    }
+  }
+  step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }",533,-36.07777423656131,-0.0676881317759124
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { if (statsdir) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif } }",214,-7.477516736394891,-0.034941666992499495
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if(statsdir != NULL){
+filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY
+filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING 
+filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+# endif
+}
+step_callback = & ntpd_time_stepped ; # ifdef DEBUG
+atexit ( & uninit_util ) ; 
+# endif }",240,-24.758459386370593,-0.1031602474432108
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    // Check if input is valid
+    if (statsdir != NULL) {
+        filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+        filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+        filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+        filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+        filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+        filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+        # ifdef AUTOKEY 
+            filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+        # endif 
+        # ifdef DEBUG_TIMING 
+            filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+        # endif 
+        step_callback = & ntpd_time_stepped ; 
+        # ifdef DEBUG 
+            atexit ( & uninit_util ) ; 
+        # endif 
+    }
+}",278,-15.188489877550492,-0.054634855674642054
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+    if(statsdir == NULL) {
+        return;
+    }
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ;
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ;
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ;
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ;
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ;
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ;
+# ifdef AUTOKEY
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ;
+# endif
+# ifdef DEBUG_TIMING
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ;
+# endif
+    step_callback = & ntpd_time_stepped ;
+# ifdef DEBUG
+    atexit ( & uninit_util ) ;
+# endif
+}",251,-12.402734278836155,-0.04941328397942691
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if (strcmp(statsdir, ""peerstats"")!= 0 && strcmp(statsdir, ""loopstats"")!= 0 && strcmp(statsdir, ""clockstats"")!= 0 && strcmp(statsdir, ""rawstats"")!= 0 && strcmp(statsdir, ""sysstats"")!= 0 && strcmp(statsdir, ""protostats"")!= 0){
+    return;
+}
+filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+#ifdef AUTOKEY
+if (strcmp(statsdir, ""cryptostats"")!= 0){
+    return;
+}
+filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+#endif 
+#ifdef DEBUG_TIMING
+if (strcmp(statsdir, ""timingstats"")!= 0){
+    return;
+}
+filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+#endif 
+step_callback = & ntpd_time_stepped ; 
+#ifdef DEBUG
+atexit ( & uninit_util ) ; 
+#endif 
+}",370,-30.389879412175873,-0.08213480922209696
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { if ( statsdir != NULL && strlen ( statsdir ) <= MAX_STATS_DIR_LEN ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif } }",233,-15.4756099393358,-0.06641892677826523
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util(void) {
+  char* safe_statsdir;
+  if ( validate_input(statsdir) )
+    safe_statsdir = statsdir;
+  else
+    safe_statsdir = NULL;
+
+  if (safe_statsdir) {
+    filegen_register(safe_statsdir, ""peerstats"", &peerstats);
+    filegen_register(safe_statsdir, ""loopstats"", &loopstats);
+    filegen_register(safe_statsdir, ""clockstats"", &clockstats);
+    filegen_register(safe_statsdir, ""rawstats"", &rawstats);
+    filegen_register(safe_statsdir, ""sysstats"", &sysstats);
+    filegen_register(safe_statsdir, ""protostats"", &protostats);
+#ifdef AUTOKEY
+    filegen_register(safe_statsdir, ""cryptostats"", &cryptostats);
+#endif
+#ifdef DEBUG_TIMING
+    filegen_register(safe_statsdir, ""timingstats"", &timingstats);
+#endif
+  }
+  step_callback = &ntpd_time_stepped;
+#ifdef DEBUG
+  atexit(&uninit_util);
+#endif
+}",288,-35.12521439225694,-0.12196254997311438
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  if (statsdir != NULL) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY 
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif 
+    # ifdef DEBUG_TIMING 
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif 
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG 
+    atexit ( & uninit_util ) ; 
+    # endif 
+  }
+}",270,-9.619827472853896,-0.035628990640199615
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  char *allowed_strings[] = { ""peerstats"", ""loopstats"", ""clockstats"", ""rawstats"", ""sysstats"", ""protostats"", ""cryptostats"", ""timingstats"" };
+
+  for (int i = 0; i < 8; i++) {
+    if (strlen(allowed_strings[i]) > 0) {
+        filegen_register ( statsdir , allowed_strings[i] , & allowed_strings[i] ) ;
+    }
+  }
+  # ifdef AUTOKEY
+  filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ;
+  # endif
+  # ifdef DEBUG_TIMING
+  filegen_register ( statsdir , ""timingstats"" , & timingstats ) ;
+  # endif
+  step_callback = & ntpd_time_stepped ;
+  # ifdef DEBUG
+  atexit ( & uninit_util ) ;
+  # endif
+}",230,-37.20386169858691,-0.16175592042863876
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  const char* valid_files[7] = { ""peerstats"", ""loopstats"", ""clockstats"", ""rawstats"", ""sysstats"", ""protostats"", ""cryptostats"", ""timingstats"" };
+
+  for (int i = 0; i < 7; i++) {
+    if (valid_files[i] == ""peerstats"") {
+      filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    } else if (valid_files[i] == ""loopstats"") {
+      filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    } else if (valid_files[i] == ""clockstats"") {
+      filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    } else if (valid_files[i] == ""rawstats"") {
+      filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    } else if (valid_files[i] == ""sysstats"") {
+      filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    } else if (valid_files[i] == ""protostats"") {
+      filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    } else if (valid_files[i] == ""cryptostats"") {
+      # ifdef AUTOKEY
+      filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ;
+      # endif 
+    } else if (valid_files[i] == ""timingstats"") {
+      # ifdef DEBUG_TIMING 
+      filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+      # endif 
+    }
+  }
+  step_callback = & ntpd_time_stepped ; 
+  # ifdef DEBUG 
+  atexit ( & uninit_util ) ; 
+  # endif 
+}",472,-39.860348390841004,-0.08444989065856146
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  if (!statsdir) {
+    return;
+  }
+  filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+  filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+  filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+  filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+  filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+  filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY
+  filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING
+  filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif 
+  step_callback = & ntpd_time_stepped ; # ifdef DEBUG
+  atexit ( & uninit_util ) ; # endif 
+}",251,-15.422218745943107,-0.061443102573478514
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  if(statsdir && ""peerstats"" && &peerstats && ""loopstats"" && &loopstats && ""clockstats"" && &clockstats && ""rawstats"" && &rawstats && ""sysstats"" && &sysstats && ""protostats"" && &protostats && ""#ifdef AUTOKEY"" && ""cryptostats"" && &cryptostats && ""#ifdef DEBUG_TIMING"" && ""timingstats"" && &timingstats && step_callback && ""ntpd_time_stepped"" && ""#ifdef DEBUG"" && uninit_util) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    #ifdef AUTOKEY
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    #endif
+    #ifdef DEBUG_TIMING
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    #endif
+    step_callback = & ntpd_time_stepped ; 
+    #ifdef DEBUG
+    atexit ( & uninit_util ) ; 
+    #endif
+  }
+}",383,-27.967483780036,-0.07302215086171279
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+
+if (statsdir != NULL && (strcmp(statsdir, ""peerstats"") == 0 || strcmp(statsdir, ""loopstats"") == 0 || strcmp(statsdir, ""clockstats"") == 0 || strcmp(statsdir, ""rawstats"") == 0 || strcmp(statsdir, ""sysstats"") == 0 || strcmp(statsdir, ""protostats"") == 0)) {
+  filegen_register ( statsdir , ""peerstats"" , & peerstats ) ;
+  filegen_register ( statsdir , ""loopstats"" , & loopstats ) ;
+  filegen_register ( statsdir , ""clockstats"" , & clockstats ) ;
+  filegen_register ( statsdir , ""rawstats"" , & rawstats ) ;
+  filegen_register ( statsdir , ""sysstats"" , & sysstats ) ;
+  filegen_register ( statsdir , ""protostats"" , & protostats ) ;
+
+#ifdef AUTOKEY
+  if (strcmp(statsdir, ""cryptostats"") == 0) {
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ;
+  }
+#endif
+
+#ifdef DEBUG_TIMING
+  if (strcmp(statsdir, ""timingstats"") == 0) {
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ;
+  }
+#endif
+
+} 
+ 
+step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG 
+  atexit ( & uninit_util ) ; # endif 
+}",378,-40.85321389410519,-0.1080772854341407
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util(void) {
+  if (statsdir != NULL && strlen(statsdir) > 0) {
+    filegen_register(statsdir, ""peerstats"", &peerstats);
+    filegen_register(statsdir, ""loopstats"", &loopstats);
+    filegen_register(statsdir, ""clockstats"", &clockstats);
+    filegen_register(statsdir, ""rawstats"", &rawstats);
+    filegen_register(statsdir, ""sysstats"", &sysstats);
+    filegen_register(statsdir, ""protostats"", &protostats);
+# ifdef AUTOKEY
+    filegen_register(statsdir, ""cryptostats"", &cryptostats);
+# endif
+# ifdef DEBUG_TIMING
+    filegen_register(statsdir, ""timingstats"", &timingstats);
+# endif
+    step_callback = &ntpd_time_stepped;
+# ifdef DEBUG
+    atexit(&uninit_util);
+# endif
+  }
+}",238,-13.915303151988002,-0.058467660302470595
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    if (statsdir != NULL && strlen(statsdir) > 0) { 
+        filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+        filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+        filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+        filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+        filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+        filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+        # ifdef AUTOKEY 
+            filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+        # endif 
+        # ifdef DEBUG_TIMING 
+            filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+        # endif 
+    } 
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG 
+        atexit ( & uninit_util ) ; 
+    # endif 
+}",281,-11.657549207985097,-0.04148594024193985
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { if (statsdir == NULL) { return; } filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }",218,-6.810282105126002,-0.031239826170302763
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  if (statsdir == NULL)
+  {
+    return;
+  }
+  filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+  filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+  filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+  filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+  filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+  filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY 
+  filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+# endif 
+# ifdef DEBUG_TIMING 
+  filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+# endif 
+  step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG 
+  atexit ( & uninit_util ) ; 
+# endif 
+}",270,-12.216102950662819,-0.045244825743195626
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    if (statsdir == NULL) {
+        return;
+    }
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY 
+        filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif 
+    # ifdef DEBUG_TIMING 
+        filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif 
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG 
+        atexit ( & uninit_util ) ; 
+    # endif 
+}",274,-8.798645420770937,-0.03211184460135379
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { char * valid_inputs[] = { ""peerstats"", ""loopstats"", ""clockstats"", ""rawstats"", ""sysstats"", ""protostats"", ""cryptostats"", ""timingstats"" }; 
+    for (int i = 0; i < sizeof(valid_inputs); i++) { 
+        if (strcmp(valid_inputs[i], statsdir) == 0){
+            filegen_register ( statsdir , valid_inputs[i] , & peerstats ) ;
+            # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif 
+            # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif 
+            step_callback = & ntpd_time_stepped ; 
+            # ifdef DEBUG atexit ( & uninit_util ) ; # endif 
+        }
+    }
+}",227,-45.43831316705193,-0.20016878047159442
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { if (statsdir != NULL && strlen(statsdir) > 0) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif } else { printf(""Error - invalid statsdir\n""); exit(-1); } }",242,-20.144337537674097,-0.08324106420526486
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    char validInputs[7][20] = {""peerstats"", ""loopstats"", ""clockstats"", ""rawstats"", ""sysstats"", ""protostats"", ""cryptostats"", ""timingstats""};
+    int i;
+    char *input;
+    int validInput = 0;
+    for(i=0; i<7; i++){
+        if(strcmp(statsdir, validInputs[i]) == 0){
+            validInput = 1;
+            input = validInputs[0];
+            break;
+        }
+    }
+    if(validInput){
+        filegen_register (statsdir, input, &peerstats);
+        filegen_register (statsdir , ""loopstats"" , & loopstats ) ; 
+        filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+        filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+        filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+        filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+        #ifdef AUTOKEY 
+            filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+        #endif 
+        #ifdef DEBUG_TIMING 
+            filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+        #endif 
+    }
+    step_callback = & ntpd_time_stepped ; 
+    #ifdef DEBUG 
+        atexit ( & uninit_util ) ; 
+    #endif 
+}",390,-60.74545174961946,-0.15575756858876785
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { if ( statsdir != null && statsdir != """" ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+else {
+    printf(""Error: Statsdir is Null or Empty"");
+    }
+}",241,-29.683017597281353,-0.1231660481214994
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    if(strcmp(statsdir, ""peerstats"") != 0 || strcmp(statsdir, ""loopstats"") != 0 || strcmp(statsdir, ""clockstats"") != 0 || strcmp(statsdir, ""rawstats"") != 0 || strcmp(statsdir, ""sysstats"") != 0 || strcmp(statsdir, ""protostats"") != 0)
+        return;
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY 
+	if(strcmp(statsdir, ""cryptostats"") == 0)
+		filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif
+    # ifdef DEBUG_TIMING 
+	if(strcmp(statsdir, ""timingstats"") == 0)
+		filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG
+    atexit ( & uninit_util ) ; 
+    # endif
+}",378,-36.82547805685846,-0.09742189962131867
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { if (statsdir == NULL || statsdir == """") { return; } filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }",223,-9.464991126979395,-0.042443906399010745
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+if(strlen(statsdir) > 0){
+filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY
+filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+# endif 
+# ifdef DEBUG_TIMING
+filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+# endif 
+step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG
+atexit ( & uninit_util ) ; 
+# endif 
+}
+}",252,-12.588357711191513,-0.049953800441236165
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+  if(statsdir == NULL){
+    return;
+  }
+  filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+  filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+  filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+  filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+  filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+  filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+# ifdef AUTOKEY 
+  filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+# endif 
+# ifdef DEBUG_TIMING 
+  filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+# endif 
+  step_callback = & ntpd_time_stepped ; 
+# ifdef DEBUG 
+  atexit ( & uninit_util ) ; 
+# endif 
+}",267,-10.94150834442402,-0.040979432001588094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    if (statsdir == NULL) {
+        return;
+    }
+    if (strlen(statsdir) > MAX_PATH_LEN) {
+        return;
+    }
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif 
+    # ifdef DEBUG_TIMING
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif 
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG 
+    atexit ( & uninit_util ) ; 
+    # endif 
+}",298,-20.16322432790146,-0.06766182660369617
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) { 
+    if (statsdir != NULL && strlen(statsdir) > 0) {
+        filegen_register (statsdir , ""peerstats"" , & peerstats ) ;
+        filegen_register (statsdir , ""loopstats"" , & loopstats ) ;
+        filegen_register (statsdir , ""clockstats"" , & clockstats ) ;
+        filegen_register (statsdir , ""rawstats"" , & rawstats ) ;
+        filegen_register (statsdir , ""sysstats"" , & sysstats ) ;
+        filegen_register (statsdir , ""protostats"" , & protostats ) ;
+        #ifdef AUTOKEY
+        filegen_register (statsdir , ""cryptostats"" , & cryptostats ) ;
+        #endif
+        #ifdef DEBUG_TIMING
+        filegen_register (statsdir , ""timingstats"" , & timingstats ) ;
+        #endif
+        step_callback = & ntpd_time_stepped ;
+        #ifdef DEBUG
+        atexit ( & uninit_util ) ;
+        #endif
+    }
+}",263,-18.492279891232883,-0.07031285129746344
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void init_util ( void ) { filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; filegen_register ( statsdir , ""protostats"" , & protostats ) ; # ifdef AUTOKEY filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; # endif # ifdef DEBUG_TIMING filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; # endif step_callback = & ntpd_time_stepped ; # ifdef DEBUG atexit ( & uninit_util ) ; # endif }
+Fixed code:","
+void init_util ( void ) {
+  if (statsdir != NULL) {
+    filegen_register ( statsdir , ""peerstats"" , & peerstats ) ; 
+    filegen_register ( statsdir , ""loopstats"" , & loopstats ) ; 
+    filegen_register ( statsdir , ""clockstats"" , & clockstats ) ; 
+    filegen_register ( statsdir , ""rawstats"" , & rawstats ) ; 
+    filegen_register ( statsdir , ""sysstats"" , & sysstats ) ; 
+    filegen_register ( statsdir , ""protostats"" , & protostats ) ; 
+    # ifdef AUTOKEY 
+    filegen_register ( statsdir , ""cryptostats"" , & cryptostats ) ; 
+    # endif 
+    # ifdef DEBUG_TIMING 
+    filegen_register ( statsdir , ""timingstats"" , & timingstats ) ; 
+    # endif 
+    step_callback = & ntpd_time_stepped ; 
+    # ifdef DEBUG 
+    atexit ( & uninit_util ) ; 
+    # endif 
+  }
+}",269,-9.904111648075943,-0.03681825891478046

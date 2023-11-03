@@ -1,0 +1,879 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+//Validate the length of prep to ensure it is equal to or greater than the size of the struct pkt_prep
+if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; }
+//Validate the value of n to make sure it is greater than or equal to 0
+if(prep->pp_n < 0) {return -1;}
+n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; 
+//Validate the value of n to make sure it is greater than or equal to 0
+if(ps->nid < 0) {return -1;}
+for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",479,-47.12072630895503,-0.09837312381827772
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; // add input validation if (n < 0) { return -1; } while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",395,-15.170767467218495,-0.03840700624612277
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep(netdissect_options *ndo, const struct pkt_prep *prep, u_int len){
+    int n;
+    const struct pgstate *ps;
+    const u_char *ep = ndo->ndo_snapend;
+    ND_PRINT((ndo, "" wb-prep:""));
+    if (len < sizeof(*prep)) {
+        return(-1);
+    }
+    n = EXTRACT_32BITS(&prep->pp_n);
+    if (n < 0) {
+        return (-1);
+    }
+    ps = (const struct pgstate *)(prep + 1);
+    while (--n >= 0 && !ND_TTEST(*ps)) {
+        const struct id_off *io, *ie;
+        char c = '<';
+        ND_PRINT((ndo, "" %u/%s:%u"", EXTRACT_32BITS(&ps->slot), ipaddr_string(ndo, &ps->page.p_sid), EXTRACT_32BITS(&ps->page.p_uid)));
+        io = (struct id_off *)(ps + 1);
+        for (ie = io + ps->nid; io < ie && !ND_TTEST(*io); ++io) {
+            ND_PRINT((ndo, ""%c%s:%u"", c, ipaddr_string(ndo, &io->id), EXTRACT_32BITS(&io->off)));
+            c = ',';
+        }
+        ND_PRINT((ndo, "">""));
+        ps = (struct pgstate *)io;
+    }
+    return ((u_char *)ps <= ep ? 0 : -1);
+}",404,-19.189900091334092,-0.04749975270132201
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+  int n ; 
+  const struct pgstate * ps ; 
+  const u_char * ep = ndo -> ndo_snapend ; 
+ 
+  ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+ 
+  if ( len < sizeof ( * prep ) ) { 
+    return ( - 1 ) ; 
+  } 
+ 
+  n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+ 
+  // Ensure n is valid 
+  if (n < 0) { 
+    return -1; 
+  }
+ 
+  ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+ 
+  while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+    const struct id_off * io , * ie ; 
+    char c = '<' ; 
+    ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+    io = ( struct id_off * ) ( ps + 1 ) ; 
+ 
+    for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+      ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+      c = ',' ; 
+    } 
+ 
+    ND_PRINT ( ( ndo , "">"" ) ) ; 
+    ps = ( struct pgstate * ) io ; 
+  } 
+ 
+  return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",493,-31.62867295410007,-0.06415552323346871
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || ! prep || ! ndo ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",386,-9.471008783364416,-0.024536292184881906
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || prep == NULL ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ps != NULL && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",387,-9.44374153037511,-0.024402432895026124
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > ep - (const u_char *)prep ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",391,-9.110099358133912,-0.023299486849447344
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+	int n ; 
+	const struct pgstate * ps ; 
+	const u_char * ep = ndo -> ndo_snapend ; 
+	ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+	
+	// add input validation to check len parameter
+	if ( len < sizeof ( * prep ) || len > ep - (u_char*)prep ) { 
+		return ( - 1 ) ; 
+	} 
+	n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+	ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+	while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+		const struct id_off * io , * ie ; 
+		char c = '<' ; 
+		ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+		io = ( struct id_off * ) ( ps + 1 ) ; 
+		// add input validation to check io parameter
+		if ((u_char*)io > ep) { 
+			return -1; 
+		}
+		for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+			ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+			c = ',' ; 
+		} 
+		ND_PRINT ( ( ndo , "">"" ) ) ; 
+		ps = ( struct pgstate * ) io ; 
+		// add input validation to check io parameter
+		if ((u_char*)ps > ep) { 
+			return -1; 
+		}
+	} 
+	return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",561,-50.63970001028942,-0.0902668449381273
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n;
+	const struct pgstate * ps ; 
+	const u_char * ep = ndo -> ndo_snapend ; 
+	ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+	if ( len < sizeof ( * prep ) || len > MAX_PACKET_LEN) { 
+		return ( - 1 ) ; 
+	} 
+	n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+	ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+	while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+		const struct id_off * io , * ie ; 
+		char c = '<' ; 
+		ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+		io = ( struct id_off * ) ( ps + 1 ) ; 
+		for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+			ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+			c = ',' ; 
+		} 
+		ND_PRINT ( ( ndo , "">"" ) ) ; 
+		ps = ( struct pgstate * ) io ; 
+	} 
+	return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",471,-27.035182864702406,-0.0573995389908756
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n ; 
+    const struct pgstate * ps ; 
+    const u_char * ep = ndo -> ndo_snapend ; 
+    ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+    if ( len < sizeof ( * prep ) || len > ep-prep ) { 
+        return ( - 1 ) ; 
+    } 
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+    while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; 
+        char c = '<' ; 
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+            ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+            c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+    } 
+    return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+ }",453,-16.7857617461286,-0.037054661691233115
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+	if ( len < sizeof ( * prep ) ) { 
+		return ( - 1 ) ; 
+	} 
+	if (len > sizeof (*prep)) { 
+		return (-1); 
+	}
+	
+	n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } 
+	
+	return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",422,-29.55651238611778,-0.07003912887705635
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+// Validate the length of the input. 
+if (len < sizeof(*prep)) { return -1; } 
+// Validate that the length of the data is within the limits of the snapend.
+if (ndo->ndo_snapend < prep + len) { return -1; } 
+n = EXTRACT_32BITS(&prep->pp_n); 
+ps = (const struct pgstate *)(prep + 1); 
+while (--n >= 0 && ! ND_TTEST(*ps)) { const struct id_off * io , *ie; char c = '<'; ND_PRINT((ndo, ""%u/%s:%u"", EXTRACT_32BITS(&ps->slot), ipaddr_string(ndo, &ps->page.p_sid), EXTRACT_32BITS(&ps->page.p_uid))); io = (struct id_off *)(ps + 1); 
+// Validate that the length of the data is within the limits of the snapend. 
+if (ndo->ndo_snapend < io + ps->nid) { return -1; }
+for (ie = io + ps->nid; io < ie && ! ND_TTEST(*io); ++io) { ND_PRINT((ndo, ""%c%s:%u"", c, ipaddr_string(ndo, &io->id), EXTRACT_32BITS(&io->off))); c = ','; } ND_PRINT((ndo, "">"")); ps = (struct pgstate *)io; } 
+// Return 0 if within the limits of the snapend. 
+return ((u_char *)ps <= ep ? 0 : -1); }",467,-78.52946612885403,-0.16815731505107928
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+	int n ; 
+	const struct pgstate * ps ; 
+	const u_char * ep = ndo -> ndo_snapend ; 
+	ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+	
+	if ( len < sizeof ( * prep ) ) { 
+		return ( - 1 ) ; 
+	}
+	
+	if (len > sizeof(*prep)) {
+		return (-1);
+	}
+	
+	n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+	ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+	while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+		const struct id_off * io , * ie ; 
+		char c = '<' ; 
+		ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+		io = ( struct id_off * ) ( ps + 1 ) ; 
+		for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+			if (io > sizeof(*io)) {
+				return (-1);
+			}
+			ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+			c = ',' ; 
+		} 
+		ND_PRINT ( ( ndo , "">"" ) ) ; 
+		ps = ( struct pgstate * ) io ; 
+	} 
+	return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",514,-23.384295078673507,-0.0454947375071469
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > ndo->ndo_snapend - prep) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",392,-7.950368058547101,-0.02028155116976301
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+  // Validate user input
+  if (len < sizeof(*prep)) {
+    return (-1);
+  }
+  
+  int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+  n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",396,-25.265117052758175,-0.06380080063827821
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || ndo->ndo_snapend - (u_char *) prep < len ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) && (u_char *) io < ndo->ndo_snapend; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",413,-13.739232981548302,-0.03326690794563753
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > 1514 ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep && len <= 1514 ? 0 : - 1 ) ; }",389,-11.210221470459116,-0.02881805005259413
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:"," 
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } 
+
+n = EXTRACT_32BITS ( & prep -> pp_n ) ;
+
+if (len - sizeof(*prep) < n * sizeof(*ps)) { 
+    return -1; 
+} 
+
+ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",414,-25.82854497025766,-0.06238778978323106
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > ep - ( u_char * ) prep ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",391,-6.219780151260512,-0.015907366115755786
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; //Validate size of the packet. if(((u_char*)(ps+1)) > ep) { return -1; } ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",408,-34.70129309085562,-0.08505218894817554
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || ! prep ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; if ( n <= 0 || n * sizeof ( struct pgstate ) > len ) { return -1; } ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",405,-23.215818034657307,-0.057323007492981005
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > ndo -> ndo_snapend - prep) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",392,-10.847118744482609,-0.027671221286945432
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || prep < 0) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",383,-8.032400486668601,-0.020972325030466324
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > ep - (u_char*)prep) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",390,-8.514387110214512,-0.02183176182106285
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || ! prep ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",382,-6.779120576542403,-0.01774638894382828
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+
+/* Added input validation check */
+if (len < sizeof(*prep) || len > ndo->ndo_snapend - ndo->ndo_snapend) {
+    return (-1);
+}
+
+n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",412,-20.602579729250177,-0.05000626147876257
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; if (n < 0) { return ( - 1 ); } ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",392,-12.241794137543705,-0.03122906667740741
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+int n ; 
+const struct pgstate * ps ; 
+const u_char * ep = ndo -> ndo_snapend ; 
+ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+if ( len < sizeof ( * prep ) ) 
+{ 
+    return ( - 1 ) ; 
+} 
+if (len > (ep - (u_char*)prep))
+{
+    return (-1);
+}
+n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+const struct id_off * io , * ie ; 
+char c = '<' ; 
+ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+io = ( struct id_off * ) ( ps + 1 ) ; 
+for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+    ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+    c = ',' ; 
+} 
+ND_PRINT ( ( ndo , "">"" ) ) ; 
+ps = ( struct pgstate * ) io ; 
+} 
+return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",455,-30.449628077304162,-0.0669222595105586
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+  int n ; 
+  const struct pgstate * ps ; 
+  const u_char * ep = ndo -> ndo_snapend ; 
+  ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+  if ( len < sizeof ( * prep ) ) { 
+    return ( - 1 ) ; 
+  } 
+  
+  if (len > sizeof(prep)) { //Add validation to make sure that length is not greater than size of prep
+    return -1;
+  }
+  n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+  ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+  while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+    const struct id_off * io , * ie ; 
+    char c = '<' ; 
+    ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+    io = ( struct id_off * ) ( ps + 1 ) ; 
+    for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+      ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+      c = ',' ; 
+    } 
+    ND_PRINT ( ( ndo , "">"" ) ) ; 
+    ps = ( struct pgstate * ) io ; 
+  } 
+  return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",484,-42.247153582983316,-0.0872875074028581
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > ep - (u_char*) prep ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",391,-11.721823361304295,-0.029979087880573647
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) {
+  int n;
+  const struct pgstate * ps;
+  const u_char * ep = ndo -> ndo_snapend;
+  ND_PRINT (( ndo , "" wb-prep:"" )) ;
+  if (len < sizeof (* prep) || len > ep - (u_char *) prep)
+    return (- 1) ; 
+  n = EXTRACT_32BITS (& prep -> pp_n) ;
+  ps = (const struct pgstate * ) (prep + 1) ;
+  while ( -- n >= 0 && ! ND_TTEST ( * ps) ) {
+    const struct id_off * io, * ie;
+    char c = '<' ;
+    ND_PRINT (( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) )) ;
+    io = (struct id_off * ) (ps + 1) ;
+    for (ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io) && io < (struct id_off * ) ep ; ++ io) {
+      ND_PRINT (( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) )) ;
+      c = ',' ;
+    }
+    ND_PRINT (( ndo , "">"" )) ;
+    ps = (struct pgstate * ) io ;
+  }
+  return ((u_char * ) ps <= ep ? 0 : - 1) ;
+}",431,-56.41861130227031,-0.13090165035329537
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n ; 
+    const struct pgstate * ps ;
+    const u_char * ep = ndo -> ndo_snapend ; 
+    ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+    if ( len < sizeof ( * prep ) ) { 
+        return ( - 1 ) ; 
+    } 
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+
+    // Validate the n value
+    if (n <= 0) {
+        return -1;
+    }
+
+    while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; 
+        char c = '<' ; 
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+
+        // Validate io
+        if (io == NULL) {
+            return -1;
+        }
+
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+            ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+            c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+    } 
+    return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",496,-33.68757074766359,-0.06791848941061208
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+
+if ( len < sizeof ( * prep ) || prep == NULL ) { 
+    return ( - 1 ) ; 
+} 
+
+n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; 
+for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } 
+
+return ( ( u_char * ) ps <= ep && prep != NULL ? 0 : - 1 ) ; }",406,-25.116150021989572,-0.06186243847780683
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n ; 
+    const struct pgstate * ps ; 
+    const u_char * ep = ndo -> ndo_snapend ; 
+    ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+    // Validate input length
+    if ( len < sizeof ( * prep ) || len > 65535) { 
+        return ( - 1 ) ; 
+    } 
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+    while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; 
+        char c = '<' ; 
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+            ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+            c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+    } 
+    return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",460,-18.84637028843868,-0.040970370192258
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; if ( check_input_validation ( EXTRACT_32BITS ( & ps -> slot ) ) == 0 ) { return - 1 ; } ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+
+int check_input_validation(int slot) {
+    if (slot < 0) {
+        return -1;
+    }
+    else {
+        return 0;
+    }
+}",457,-37.17182684059119,-0.08133878958553871
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+  int n ; 
+  const struct pgstate * ps ; 
+  const u_char * ep = ndo -> ndo_snapend ; 
+  ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+  
+  if ( len < sizeof ( * prep ) ) { 
+    return ( - 1 ) ; 
+  } else {
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+    
+    if(n > 0 && n < 1000){
+      while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; 
+        char c = '<' ; 
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+          ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+          c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+      } 
+    } else {
+      return -1;
+    } 
+  }
+  return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",482,-33.92752093982968,-0.07038904759300763
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n ; 
+    const struct pgstate * ps ; 
+    const u_char * ep = ndo -> ndo_snapend ; 
+    ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+    
+    // Added
+    if (len > 0 && len < sizeof ( * prep )) {
+      return ( - 1 ) ;
+    }
+    
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+    while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; 
+        char c = '<' ; 
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+            ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+            c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+    } 
+    return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",455,-25.117307970163612,-0.055202874659700245
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n ; 
+    const struct pgstate * ps ; 
+    const u_char * ep = ndo -> ndo_snapend ; 
+    ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+    if ( len < sizeof ( * prep ) ) { 
+        return ( - 1 ) ; 
+    } 
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+    while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; 
+        char c = '<' ; 
+        // check if pp_n is valid
+        if (ps->nid < 0) {
+            return -1;
+        }
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+            ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+            c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+    } 
+    return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",478,-29.306588722071595,-0.06131085506709539
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || len > ndo->ndo_snapend - ndo->ndo_snapstart) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) && io < ndo->ndo_snapend; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",410,-13.007911677437288,-0.03172661384740802
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n ; 
+    const struct pgstate * ps ; 
+    const u_char * ep = ndo -> ndo_snapend ; 
+    ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+
+    if ( len < sizeof ( * prep ) ) { 
+        return ( - 1 ) ; 
+    } 
+
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    if (n<0) return -1; //add input validation
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+    while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; char c = '<' ; 
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+            ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+            c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+    } 
+    return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",460,-32.2856140347269,-0.0701861174667976
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+
+if (len == 0 || len < sizeof(*prep)) {
+    return (-1); 
+}
+
+n = EXTRACT_32BITS(&prep->pp_n); 
+
+ps = (const struct pgstate *) (prep + 1); 
+
+if (n > len) {
+    return (-1);
+}
+
+while (--n >= 0 && !ND_TTEST(*ps)) { 
+    const struct id_off *io, *ie;
+    char c = '<'; 
+    ND_PRINT((ndo, ""%u/%s:%u"", EXTRACT_32BITS(&ps->slot), ipaddr_string(ndo, &ps->page.p_sid), EXTRACT_32BITS(&ps->page.p_uid))); 
+    io = (struct id_off *) (ps + 1); 
+    for (ie = io + ps->nid; io < ie && !ND_TTEST(*io); ++io) {
+        ND_PRINT((ndo, ""%c%s:%u"", c, ipaddr_string(ndo, &io->id), EXTRACT_32BITS(&io->off))); 
+        c = ','; 
+    }
+    ND_PRINT((ndo, "">"")); 
+    ps = (struct pgstate *) io; 
+}
+
+if (ps > ep) {
+    return (-1); 
+}
+
+return (0); 
+}",419,-43.286538797495076,-0.10330916180786415
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+    int n ; 
+    const struct pgstate * ps ; 
+    const u_char * ep = ndo -> ndo_snapend ; 
+    ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+    if ( len < sizeof ( * prep ) ) {
+        return ( - 1 ) ;
+    }
+    //Validate n
+    if (prep->pp_n < 0) {
+        return -1;
+    }
+
+    n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+    ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+    while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+        const struct id_off * io , * ie ; 
+        char c = '<' ; 
+        ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+        io = ( struct id_off * ) ( ps + 1 ) ; 
+        for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+            ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+            c = ',' ; 
+        } 
+        ND_PRINT ( ( ndo , "">"" ) ) ; 
+        ps = ( struct pgstate * ) io ; 
+    } 
+    return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",472,-24.762950190800915,-0.05246387752288329
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+//Added input validation
+if(n < 0){
+  return -1;
+}
+while ( n-- > 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; 
+//Added input validation
+if(ps->nid < 0){
+  return -1;
+}
+for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",426,-23.096899366266086,-0.0542180736297326
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || ! ndo || ! prep ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep && ndo && prep ? 0 : - 1 ) ; }",391,-9.488345660710898,-0.02426686869747033
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || ! ND_TTEST (*prep)) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } 
+if(ps <= ep) {
+	return 0;
+}
+else {
+	return -1;
+}
+}",397,-27.913032143897407,-0.07030990464457786
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { 
+  int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+  if ( len < sizeof ( * prep ) ) { 
+    return ( - 1 ) ; 
+  } 
+  n = EXTRACT_32BITS ( & prep -> pp_n ) ; 
+  if (n<0) { 
+    return ( - 1 ) ; 
+  }
+  ps = ( const struct pgstate * ) ( prep + 1 ) ; 
+  while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { 
+    const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; 
+    io = ( struct id_off * ) ( ps + 1 ) ; 
+    for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { 
+      ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; 
+      c = ',' ; 
+    } 
+    ND_PRINT ( ( ndo , "">"" ) ) ; 
+    ps = ( struct pgstate * ) io ; 
+  } 
+  return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; 
+}",454,-24.996374036552698,-0.05505809259152577
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; 
+
+//Check for proper input length
+if ( len < sizeof ( * prep ) || len > ep - prep ) { return ( - 1 ) ; } 
+
+n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",398,-17.652568444318163,-0.04435318704602553
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+
+static int wb_prep(netdissect_options *ndo, const struct pkt_prep *prep, u_int len) {
+    int n;
+    const struct pgstate *ps;
+    const u_char *ep = ndo->ndo_snapend;
+    ND_PRINT((ndo, "" wb-prep:""));
+    if (len < sizeof(*prep)) {
+        return (-1);
+    }
+    n = EXTRACT_32BITS(&prep->pp_n);
+    if (len < (sizeof(*prep) + (n * sizeof(struct pgstate)))) {
+        return (-1);
+    }
+    ps = (const struct pgstate *)(prep + 1);
+    
+    while (--n >= 0 && !ND_TTEST(*ps)) {
+        const struct id_off *io, *ie;
+        char c = '<';
+        ND_PRINT((ndo, "" %u/%s:%u"", EXTRACT_32BITS(&ps->slot), ipaddr_string(ndo, &ps->page.p_sid), EXTRACT_32BITS(&ps->page.p_uid)));
+        if (len < ((sizeof(*ps) + (ps->nid * sizeof(struct id_off))))) {
+            return (-1);
+        }
+        io = (struct id_off *)(ps + 1);
+        for (ie = io + ps->nid; io < ie && !ND_TTEST(*io); ++io) {
+            ND_PRINT((ndo, ""%c%s:%u"", c, ipaddr_string(ndo, &io->id), EXTRACT_32BITS(&io->off)));
+            c = ',';
+        }
+        ND_PRINT((ndo, "">""));
+        ps = (struct pgstate *)io;
+    }
+    return ((u_char *)ps <= ep ? 0 : -1);
+}",459,-28.863307802752107,-0.06288302353540764
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || ! ND_TTEST ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",389,-6.352107237143004,-0.01632932451707713
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }
+Fixed code:","
+static int wb_prep ( netdissect_options * ndo , const struct pkt_prep * prep , u_int len ) { int n ; const struct pgstate * ps ; const u_char * ep = ndo -> ndo_snapend ; ND_PRINT ( ( ndo , "" wb-prep:"" ) ) ; if ( len < sizeof ( * prep ) || prep->pp_n > len - sizeof ( * prep ) ) { return ( - 1 ) ; } n = EXTRACT_32BITS ( & prep -> pp_n ) ; ps = ( const struct pgstate * ) ( prep + 1 ) ; while ( -- n >= 0 && ! ND_TTEST ( * ps ) ) { const struct id_off * io , * ie ; char c = '<' ; ND_PRINT ( ( ndo , "" %u/%s:%u"" , EXTRACT_32BITS ( & ps -> slot ) , ipaddr_string ( ndo , & ps -> page . p_sid ) , EXTRACT_32BITS ( & ps -> page . p_uid ) ) ) ; io = ( struct id_off * ) ( ps + 1 ) ; for ( ie = io + ps -> nid ; io < ie && ! ND_TTEST ( * io ) ; ++ io ) { ND_PRINT ( ( ndo , ""%c%s:%u"" , c , ipaddr_string ( ndo , & io -> id ) , EXTRACT_32BITS ( & io -> off ) ) ) ; c = ',' ; } ND_PRINT ( ( ndo , "">"" ) ) ; ps = ( struct pgstate * ) io ; } return ( ( u_char * ) ps <= ep ? 0 : - 1 ) ; }",393,-11.879689371961208,-0.030228217231453455

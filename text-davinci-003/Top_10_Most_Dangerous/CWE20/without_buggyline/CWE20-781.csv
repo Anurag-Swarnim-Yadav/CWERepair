@@ -1,0 +1,1270 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+	//Check for valid input
+	if ( !message || !socket ) {
+		return ERROR_INVALID_PARAMETER;
+	}
+
+	error_t error ; SocketQueueItem * queueItem ; 
+	if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+		if ( socket -> receiveQueue == NULL ) { 
+			socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+			osResetEvent ( & socket -> event ) ; 
+			osReleaseMutex ( & netMutex ) ; 
+			osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+			osAcquireMutex ( & netMutex ) ; 
+		} 
+	} 
+	if ( socket -> receiveQueue != NULL ) { 
+		queueItem = socket -> receiveQueue ; 
+		message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+		message -> srcIpAddr = queueItem -> srcIpAddr ; 
+		message -> srcPort = queueItem -> srcPort ; 
+		message -> destIpAddr = queueItem -> destIpAddr ; 
+		message -> ttl = queueItem -> ancillary . ttl ; 
+		# if ( ETH_SUPPORT == ENABLED ) 
+			message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+			message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+		# endif 
+		# if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+			message -> switchPort = queueItem -> ancillary . port ; 
+		# endif 
+		# if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+			message -> timestamp = queueItem -> ancillary . timestamp ; 
+		# endif 
+		if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+			socket -> receiveQueue = queueItem -> next ; 
+			netBufferFree ( queueItem -> buffer ) ; 
+		} 
+		rawSocketUpdateEvents ( socket ) ; 
+		error = NO_ERROR ; 
+	} 
+	else { 
+		message -> length = 0 ; 
+		error = ERROR_TIMEOUT ; 
+	} 
+	return error ; 
+}",637,-28.8843397156443,-0.04534433236364882
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; // Validate input data before doing anything else if (message == NULL || message->data == NULL || message->size == 0) { return ERROR_INVALID_PARAMETER; } message->length = netBufferRead(message->data, queueItem->buffer, queueItem->offset, message->size); message->srcIpAddr = queueItem->srcIpAddr; message->srcPort = queueItem->srcPort; message->destIpAddr = queueItem->destIpAddr; message->ttl = queueItem->ancillary.ttl; #if (ETH_SUPPORT == ENABLED) message->srcMacAddr = queueItem->ancillary.srcMacAddr; message->destMacAddr = queueItem->ancillary.destMacAddr; #endif #if (ETH_PORT_TAGGING_SUPPORT == ENABLED) message->switchPort = queueItem->ancillary.port; #endif #if (ETH_TIMESTAMP_SUPPORT == ENABLED) message->timestamp = queueItem->ancillary.timestamp; #endif if ((flags & SOCKET_FLAG_PEEK) == 0) { socket->receiveQueue = queueItem->next; netBufferFree(queueItem->buffer); } rawSocketUpdateEvents(socket); error = NO_ERROR; } else { message->length = 0; error = ERROR_TIMEOUT; } return error; }",475,-27.715423011437515,-0.0583482589714474
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; if (message->size > 0 && message->size < queueItem->offset) { message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",458,-12.561911875103625,-0.027427755185815778
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+    error_t error ;
+    SocketQueueItem * queueItem ;
+    if (!(flags & SOCKET_FLAG_DONT_WAIT) && socket->receiveQueue == NULL) {
+        socket->eventMask = SOCKET_EVENT_RX_READY;
+        osResetEvent(&socket->event);
+        osReleaseMutex(&netMutex);
+        osWaitForEvent(&socket->event, socket->timeout);
+        osAcquireMutex(&netMutex);
+    }
+    
+    if (socket->receiveQueue != NULL) {
+        /* Verify user input */
+        if (message->size <= 0 || message->data == NULL){
+            return ERROR_INVALID_PARAMETER;
+        }
+        queueItem = socket->receiveQueue;
+        message->length = netBufferRead(message->data, queueItem->buffer, queueItem->offset, message->size);
+        message->srcIpAddr = queueItem->srcIpAddr;
+        message->srcPort = queueItem->srcPort;
+        message->destIpAddr = queueItem->destIpAddr;
+        message->ttl = queueItem->ancillary.ttl;
+    #if (ETH_SUPPORT == ENABLED)
+        message->srcMacAddr = queueItem->ancillary.srcMacAddr;
+        message->destMacAddr = queueItem->ancillary.destMacAddr;
+    #endif
+    #if (ETH_PORT_TAGGING_SUPPORT == ENABLED)
+        message->switchPort = queueItem->ancillary.port;
+    #endif
+    #if (ETH_TIMESTAMP_SUPPORT == ENABLED)
+        message->timestamp = queueItem->ancillary.timestamp;
+    #endif
+        if (!(flags & SOCKET_FLAG_PEEK)) {
+            socket->receiveQueue = queueItem->next;
+            netBufferFree(queueItem->buffer);
+        }
+        rawSocketUpdateEvents(socket);
+        error = NO_ERROR;
+    }
+    else {
+        message->length = 0;
+        error = ERROR_TIMEOUT;
+    }
+    return error;
+}",542,-50.093125073726476,-0.09242273998842523
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; // Error Checking if(message->size <= 0 || message == NULL || socket == NULL) { return ERROR_INVALID_ARG; } if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",471,-31.28566156697031,-0.06642390990864185
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+error_t error ; 
+SocketQueueItem * queueItem ; 
+//Added check for buffer size must be less than or equal to max allowed size
+if(message->size > MAX_BUF_SIZE){
+  return ERROR_INVALID_PARAMETER;
+}
+
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+  if ( socket -> receiveQueue == NULL ) { 
+    socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+    osResetEvent ( & socket -> event ) ; 
+    osReleaseMutex ( & netMutex ) ; 
+    osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+    osAcquireMutex ( & netMutex ) ; 
+  } 
+} 
+if ( socket -> receiveQueue != NULL ) { 
+  queueItem = socket -> receiveQueue ; 
+  message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+  message -> srcIpAddr = queueItem -> srcIpAddr ; 
+  message -> srcPort = queueItem -> srcPort ; 
+  message -> destIpAddr = queueItem -> destIpAddr ; 
+  message -> ttl = queueItem -> ancillary . ttl ; 
+# if ( ETH_SUPPORT == ENABLED ) 
+  message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+  message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+# endif 
+# if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+  message -> switchPort = queueItem -> ancillary . port ; 
+# endif 
+# if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+  message -> timestamp = queueItem -> ancillary . timestamp ; 
+# endif 
+  if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+    socket -> receiveQueue = queueItem -> next ; 
+    netBufferFree ( queueItem -> buffer ) ; 
+  } 
+  rawSocketUpdateEvents ( socket ) ; 
+  error = NO_ERROR ; 
+} else { 
+  message -> length = 0 ; 
+  error = ERROR_TIMEOUT ; 
+} 
+return error ; 
+}",593,-48.98887767448555,-0.0826119353701274
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error; SocketQueueItem * queueItem; 
+
+// Validation check added
+if (message == NULL || socket == NULL) {
+    return ERROR_INVALID_PARAMETER;
+}
+
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) {
+    if ( socket -> receiveQueue == NULL ) {
+        socket -> eventMask = SOCKET_EVENT_RX_READY ;
+        osResetEvent ( & socket -> event ) ;
+        osReleaseMutex ( & netMutex ) ;
+        osWaitForEvent ( & socket -> event , socket -> timeout ) ;
+        osAcquireMutex ( & netMutex ) ;
+    }
+}
+if ( socket -> receiveQueue != NULL ) {
+    queueItem = socket -> receiveQueue ;
+    message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ;
+    message -> srcIpAddr = queueItem -> srcIpAddr ;
+    message -> srcPort = queueItem -> srcPort ;
+    message -> destIpAddr = queueItem -> destIpAddr ;
+    message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) 
+    message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ;
+    message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+    # endif 
+    # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+    message -> switchPort = queueItem -> ancillary . port ; 
+    # endif 
+    # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+    message -> timestamp = queueItem -> ancillary . timestamp ; 
+    # endif 
+    if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) {
+        socket -> receiveQueue = queueItem -> next ;
+        netBufferFree ( queueItem -> buffer ) ;
+    }
+    rawSocketUpdateEvents ( socket ) ;
+    error = NO_ERROR ;
+} else {
+    message -> length = 0 ;
+    error = ERROR_TIMEOUT ;
+}
+return error ;
+}",553,-35.41944144418804,-0.06404962286471616
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; 
+//Validate flags
+if (flags > SOCKET_FLAG_DONT_WAIT) {
+    return ERROR_INVALID_PARAMETER;
+}
+
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+    if ( socket -> receiveQueue == NULL ) { 
+        socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+        osResetEvent ( & socket -> event ) ;
+        osReleaseMutex ( & netMutex ) ; 
+        osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+        osAcquireMutex ( & netMutex ) ; 
+    } 
+} 
+
+if ( socket -> receiveQueue != NULL ) { 
+    queueItem = socket -> receiveQueue ; 
+    message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+    message -> srcIpAddr = queueItem -> srcIpAddr ; 
+    message -> srcPort = queueItem -> srcPort ; 
+    message -> destIpAddr = queueItem -> destIpAddr ; 
+    message -> ttl = queueItem -> ancillary . ttl ; 
+    # if ( ETH_SUPPORT == ENABLED ) 
+        message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+        message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+    # endif 
+    # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+        message -> switchPort = queueItem -> ancillary . port ; 
+    # endif 
+    # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+        message -> timestamp = queueItem -> ancillary . timestamp ; 
+    # endif 
+    if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+        socket -> receiveQueue = queueItem -> next ; 
+        netBufferFree ( queueItem -> buffer ) ; 
+    } 
+    rawSocketUpdateEvents ( socket ) ; 
+    error = NO_ERROR ; 
+} else { 
+    message -> length = 0 ; 
+    error = ERROR_TIMEOUT ; 
+} 
+return error ; 
+}",588,-27.76603811817791,-0.04722115326220733
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; //Validate the flags argument if(flags & ~(SOCKET_FLAG_DONT_WAIT | SOCKET_FLAG_PEEK)) { //Return an error if the flag is not supported return ERROR_INVALID_ARGUMENT } if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",496,-34.64753748584119,-0.06985390622145402
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { // Check for valid input if (message == NULL || message->data == NULL || message->size < 0){ return error = ERROR_INVALID_PARAMETER; } queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",478,-23.35944869374397,-0.048869139526661026
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( message->size > 0 && message->size < MAX_MSG_SIZE ) { if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } } else { error = ERROR_INVALID_PARAMETER ; } return error ; }",477,-15.673134022628613,-0.03285772331787969
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+error_t error ; 
+SocketQueueItem * queueItem ; 
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+if ( socket -> receiveQueue == NULL ) { 
+socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+osResetEvent ( & socket -> event ) ; 
+osReleaseMutex ( & netMutex ) ; 
+osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+osAcquireMutex ( & netMutex ) ; 
+} 
+} 
+if ( socket -> receiveQueue != NULL ) { 
+
+// Validate IP packet data before proceeding
+if (message->data != NULL && message->size > 0) {
+
+queueItem = socket -> receiveQueue ; 
+message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+message -> srcIpAddr = queueItem -> srcIpAddr ; 
+message -> srcPort = queueItem -> srcPort ; 
+message -> destIpAddr = queueItem -> destIpAddr ; 
+message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif 
+if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+socket -> receiveQueue = queueItem -> next ; 
+netBufferFree ( queueItem -> buffer ) ; 
+} 
+
+// Update events only if data is valid
+rawSocketUpdateEvents ( socket ) ; 
+error = NO_ERROR ; 
+
+} else {
+  // Return an error if the data is invalid
+  error = ERROR_INVALID_DATA;
+}
+
+} else { 
+message -> length = 0 ; 
+error = ERROR_TIMEOUT ; 
+} 
+return error ; 
+}",568,-58.98217578276634,-0.10384185877247595
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) {
+error_t error;
+SocketQueueItem * queueItem;
+
+// Validate input
+if (!socket || !message) {
+    return ERROR_INVALID_PARAMETER;
+}
+
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) {
+    if ( socket -> receiveQueue == NULL ) {
+        socket -> eventMask = SOCKET_EVENT_RX_READY ;
+        osResetEvent ( & socket -> event ) ;
+        osReleaseMutex ( & netMutex ) ;
+        osWaitForEvent ( & socket -> event , socket -> timeout ) ;
+        osAcquireMutex ( & netMutex ) ;
+    }
+}
+
+if ( socket -> receiveQueue != NULL ) {
+    queueItem = socket -> receiveQueue ;
+    message -> length = netBufferRead ( message -> data , queueItem -> buffer , 
+    queueItem -> offset , message -> size ) ;
+    message -> srcIpAddr = queueItem -> srcIpAddr ;
+    message -> srcPort = queueItem -> srcPort ;
+    message -> destIpAddr = queueItem -> destIpAddr ;
+    message -> ttl = queueItem -> ancillary . ttl ;
+ # if ( ETH_SUPPORT == ENABLED )
+    message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ;
+    message -> destMacAddr = queueItem -> ancillary . destMacAddr ;
+ # endif
+ # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED )
+    message -> switchPort = queueItem -> ancillary . port ;
+ # endif
+ # if ( ETH_TIMESTAMP_SUPPORT == ENABLED )
+    message -> timestamp = queueItem -> ancillary . timestamp ;
+ # endif
+    if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) {
+        socket -> receiveQueue = queueItem -> next ;
+        netBufferFree ( queueItem -> buffer ) ;
+    }
+    rawSocketUpdateEvents ( socket ) ;
+    error = NO_ERROR ;
+} else {
+    message -> length = 0 ;
+    error = ERROR_TIMEOUT ;
+}
+return error ;
+}",541,-27.50280496848083,-0.05083697776059303
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:"," 
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } // added validation for user input if (socket->timeout < 0 || socket->timeout > INT_MAX) { return ERROR_INVALID_PARAMETER; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",477,-30.176683940124715,-0.06326348834407697
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } //Added input validation if ( !message ) { return -1; } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",455,-20.006514619540322,-0.04397036180118752
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; // Check for valid input if ( message == NULL || socket == NULL || flags == 0 ) { return ERROR_INVALID_PARAMETER ; } if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",473,-16.260895954853158,-0.034378215549372426
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+error_t error ; SocketQueueItem * queueItem ;
+//Added
+if(message->size > MAX_BUFFER_SIZE){
+  return ERROR_INVALID_PARAMETER; 
+}
+
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; 
+
+//Added
+if(message->size > queueItem->buffer->size){
+  return ERROR_MESSAGE_TOO_LONG;
+}
+
+message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; 
+} 
+The code has been updated to fix the vulnerability. The code has been updated with additional checks to validate the size of the message and the buffer. This prevents malicious data from being received.",558,-84.73425183070238,-0.15185349790448455
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) {
+    error_t error ;
+    SocketQueueItem * queueItem ;
+    if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) {
+        if ( socket -> receiveQueue == NULL ) {
+            socket -> eventMask = SOCKET_EVENT_RX_READY ;
+            osResetEvent ( & socket -> event ) ;
+            if (message->length <= 0 || message->length > MAX_SOCKET_MSG_SIZE) {
+                return ERROR_INVALID_LENGTH;
+            }
+            osReleaseMutex ( & netMutex ) ;
+            osWaitForEvent ( & socket -> event , socket -> timeout ) ;
+            osAcquireMutex ( & netMutex ) ;
+        }
+    }
+    if ( socket -> receiveQueue != NULL ) {
+        queueItem = socket -> receiveQueue ;
+        message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ;
+        message -> srcIpAddr = queueItem -> srcIpAddr ;
+        message -> srcPort = queueItem -> srcPort ;
+        message -> destIpAddr = queueItem -> destIpAddr ;
+        message -> ttl = queueItem -> ancillary . ttl ;
+        # if ( ETH_SUPPORT == ENABLED )
+        message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ;
+        message -> destMacAddr = queueItem -> ancillary . destMacAddr ;
+        # endif
+        # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED )
+        message -> switchPort = queueItem -> ancillary . port ;
+        # endif
+        # if ( ETH_TIMESTAMP_SUPPORT == ENABLED )
+        message -> timestamp = queueItem -> ancillary . timestamp ;
+        # endif
+        if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) {
+            socket -> receiveQueue = queueItem -> next ;
+            netBufferFree ( queueItem -> buffer ) ;
+        }
+        rawSocketUpdateEvents ( socket ) ;
+        error = NO_ERROR ;
+    } else {
+        message -> length = 0 ;
+        error = ERROR_TIMEOUT ;
+    }
+    return error ;
+}",560,-27.45576045202226,-0.049028143664325466
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+  error_t error ; 
+  SocketQueueItem * queueItem ; 
+  if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+    if ( socket -> receiveQueue == NULL ) { 
+      socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+      osResetEvent ( & socket -> event ) ; 
+      osReleaseMutex ( & netMutex ) ; 
+      osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+      osAcquireMutex ( & netMutex ) ; 
+    } 
+  } 
+  if ( socket -> receiveQueue != NULL ) { 
+    // Validate flags
+    if (!(flags & SOCKET_FLAG_PEEK) && (flags & SOCKET_FLAG_DONT_WAIT)) {
+      return ERROR_INVALID_PARAMETER; 
+    }
+    queueItem = socket -> receiveQueue ; 
+    message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+    message -> srcIpAddr = queueItem -> srcIpAddr ; 
+    message -> srcPort = queueItem -> srcPort ; 
+    message -> destIpAddr = queueItem -> destIpAddr ; 
+    message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) 
+    message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+    message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+    # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+    message -> switchPort = queueItem -> ancillary . port ; 
+    # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+    message -> timestamp = queueItem -> ancillary . timestamp ; 
+    # endif 
+    if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+      socket -> receiveQueue = queueItem -> next ; 
+      netBufferFree ( queueItem -> buffer ) ; 
+    } 
+    rawSocketUpdateEvents ( socket ) ; 
+    error = NO_ERROR ; 
+  } else { 
+    message -> length = 0 ; 
+    error = ERROR_TIMEOUT ; 
+  } 
+  return error ; 
+}",607,-29.932430796880986,-0.04931207709535582
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; 
+// Validate input
+if (socket == NULL || message == NULL) {
+  return ERROR_INVALID_PARAMETER;
+}
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",475,-14.111629984478862,-0.029708694704166025
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; 
+//Validate message size
+if (message->size <= 0 || message->size > MAX_MSG_SIZE) {
+    return ERROR_INVALID_PARAMETER;
+}
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",485,-20.005369106144567,-0.041248183724009416
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } // Add input validation check to make sure message data is valid if (message->data != NULL) { if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } } else { // Return an appropriate error code for invalid data return ERROR_INVALID_DATA; } return error ; }",483,-33.02883803596101,-0.06838268744505385
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) {
+    error_t error; 
+    SocketQueueItem * queueItem; 
+    if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+        if ( socket -> receiveQueue == NULL ) { 
+            socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+            osResetEvent ( & socket -> event ) ; 
+            osReleaseMutex ( & netMutex ) ; 
+            osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+            osAcquireMutex ( & netMutex ) ; 
+        }
+    } 
+    if ( socket -> receiveQueue != NULL ) { 
+        queueItem = socket -> receiveQueue ; 
+        //Validate input data to prevent buffer overflow
+        if(message->size > queueItem->offset)
+        {
+            message->length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+            message -> srcIpAddr = queueItem -> srcIpAddr ; 
+            message -> srcPort = queueItem -> srcPort ; 
+            message -> destIpAddr = queueItem -> destIpAddr ; 
+            message -> ttl = queueItem -> ancillary . ttl ; 
+            # if ( ETH_SUPPORT == ENABLED ) 
+                message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+                message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+            # endif
+            # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+                message -> switchPort = queueItem -> ancillary . port ; 
+            # endif
+            # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+                message -> timestamp = queueItem -> ancillary . timestamp ; 
+            # endif
+            if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+                socket -> receiveQueue = queueItem -> next ; 
+                netBufferFree ( queueItem -> buffer ) ; 
+            } 
+            rawSocketUpdateEvents ( socket ) ; 
+            error = NO_ERROR ;
+        }
+        else
+        {
+            //Return error if input data size is greater than queueItem offset
+            error = ERROR_INPUT_SIZE;
+        }
+    } 
+    else { 
+        message -> length = 0 ; 
+        error = ERROR_TIMEOUT ; 
+    } 
+    return error ; 
+}",621,-65.61255310087957,-0.10565628518660156
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; if ( ( message -> size > 0 ) && ( message -> size <= SOCKET_MAX_MESSAGE_SIZE ) ) { message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif } else { error = ERROR_INVALID_PARAMETER; } if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",487,-25.895521417779317,-0.05317355527264747
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { // Validate the input data before processing it. if (message->size > 0 && message->data != NULL && message->srcIpAddr != NULL && message->destIpAddr != NULL) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_INVALID_DATA ; } } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",505,-26.833010186494175,-0.05313467363662213
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; //check if flags is a valid flag if(flags > SOCKET_FLAG_DONT_WAIT) { return ERROR_INVALID_PARAMETER; } if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; //validate message size if(message->size == 0 || message->size > MAX_MESSAGE_LENGTH) { return ERROR_INVALID_PARAMETER; } message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",519,-37.83402562794046,-0.07289792991896044
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+ error_t error ; 
+ SocketQueueItem * queueItem ; 
+ 
+ //CWE-20: Added input validation
+ if(socket == NULL || message == NULL || flags == NULL)
+ {
+   return ERROR_INVALID_PARAMETER; 
+ }
+ 
+ if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+ if ( socket -> receiveQueue == NULL ) { 
+ socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+ osResetEvent ( & socket -> event ) ; 
+ osReleaseMutex ( & netMutex ) ; 
+ osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+ osAcquireMutex ( & netMutex ) ; 
+ } 
+ } 
+ 
+ if ( socket -> receiveQueue != NULL ) { 
+ queueItem = socket -> receiveQueue ; 
+ message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+ message -> srcIpAddr = queueItem -> srcIpAddr ; 
+ message -> srcPort = queueItem -> srcPort ; 
+ message -> destIpAddr = queueItem -> destIpAddr ; 
+ message -> ttl = queueItem -> ancillary . ttl ; 
+ # if ( ETH_SUPPORT == ENABLED ) 
+ message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+ message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+ # endif 
+ # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+ message -> switchPort = queueItem -> ancillary . port ; 
+ # endif 
+ # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+ message -> timestamp = queueItem -> ancillary . timestamp ; 
+ # endif 
+ if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+ socket -> receiveQueue = queueItem -> next ; 
+ netBufferFree ( queueItem -> buffer ) ; 
+ } 
+ rawSocketUpdateEvents ( socket ) ; 
+ error = NO_ERROR ; 
+ } else { 
+ message -> length = 0 ; 
+ error = ERROR_TIMEOUT ; 
+ } 
+ return error ; 
+ }",570,-34.560601178575965,-0.0606326336466245
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; // Add input validation to check that message->size is greater than 0 and less than maximum size if (message->size > 0 && message->size <= MAX_SIZE) { message->length = netBufferRead ( message->data , queueItem->buffer , queueItem->offset , message->size ) ; message->srcIpAddr = queueItem->srcIpAddr ; message->srcPort = queueItem->srcPort ; message->destIpAddr = queueItem->destIpAddr ; message->ttl = queueItem->ancillary.ttl ; # if ( ETH_SUPPORT == ENABLED ) message->srcMacAddr = queueItem->ancillary.srcMacAddr ; message->destMacAddr = queueItem->ancillary.destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message->switchPort = queueItem->ancillary.port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message->timestamp = queueItem->ancillary.timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket->receiveQueue = queueItem->next ; netBufferFree ( queueItem->buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { // Add invalid input error message->length = 0 ; error = ERROR_INVALID_INPUT ; } } else { message->length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",500,-42.23963463416155,-0.0844792692683231
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; // validate message size if (message->size > 0) { message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_INVALID_PARAMETER ; } } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",476,-17.337285162401834,-0.03642286798823915
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; // Add input validation if (message == NULL || socket == NULL || flags == 0) { return ERROR_INVALID_PARAMETER; } if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",473,-13.939614377842435,-0.029470643504952293
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+error_t error ; 
+SocketQueueItem * queueItem ; 
+
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+if ( socket -> receiveQueue == NULL ) { 
+socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+osResetEvent ( & socket -> event ) ; 
+osReleaseMutex ( & netMutex ) ; 
+osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+osAcquireMutex ( & netMutex ) ; 
+} 
+} 
+
+if ( socket -> receiveQueue != NULL ) { 
+    // Validate the data before assigning it to the message 
+    if(validateIpPacketData(socket)) {
+        queueItem = socket -> receiveQueue ; 
+        message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+        message -> srcIpAddr = queueItem -> srcIpAddr ; 
+        message -> srcPort = queueItem -> srcPort ; 
+        message -> destIpAddr = queueItem -> destIpAddr ; 
+        message -> ttl = queueItem -> ancillary . ttl ; 
+        # if ( ETH_SUPPORT == ENABLED ) 
+        message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+        message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+        # endif 
+        # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+        message -> switchPort = queueItem -> ancillary . port ; 
+        # endif 
+        # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+        message -> timestamp = queueItem -> ancillary . timestamp ; 
+        # endif 
+        if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+        socket -> receiveQueue = queueItem -> next ; 
+        netBufferFree ( queueItem -> buffer ) ; 
+        } 
+        rawSocketUpdateEvents ( socket ) ; 
+        error = NO_ERROR ; 
+    } else {
+        // If the data is not valid, set an error
+        error = ERROR_INVALID_DATA;
+    }
+} else { 
+message -> length = 0 ; 
+error = ERROR_TIMEOUT ; 
+} 
+return error ; 
+}
+
+// Function to validate the data before assigning it to the message
+validateIpPacketData(Socket * socket) {
+    // Perform validation checks on the socket data here
+    // Return true if valid, false otherwise
+    
+    return true;
+}",664,-83.58220118490972,-0.12587680901341824
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( message != NULL && socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",444,-10.09595187823858,-0.0227386303563932
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+	error_t error ; 
+	SocketQueueItem * queueItem ; 
+	
+	//Validate flags
+	if ( ( flags & SOCKET_FLAG_DONT_WAIT ) != 0 && ( flags & SOCKET_FLAG_PEEK ) != 0){
+		return ERROR_INVALID_PARAMETER;
+	}
+	
+	if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+		if ( socket -> receiveQueue == NULL ) { 
+			socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+			osResetEvent ( & socket -> event ) ; 
+			osReleaseMutex ( & netMutex ) ; 
+			osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+			osAcquireMutex ( & netMutex ) ; 
+		} 
+	} 
+	if ( socket -> receiveQueue != NULL ) { 
+		queueItem = socket -> receiveQueue ; 
+		message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+		message -> srcIpAddr = queueItem -> srcIpAddr ; 
+		message -> srcPort = queueItem -> srcPort ; 
+		message -> destIpAddr = queueItem -> destIpAddr ; 
+		message -> ttl = queueItem -> ancillary . ttl ; 
+		# if ( ETH_SUPPORT == ENABLED ) 
+			message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+			message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+		# endif 
+		# if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+			message -> switchPort = queueItem -> ancillary . port ; 
+		# endif 
+		# if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+			message -> timestamp = queueItem -> ancillary . timestamp ; 
+		# endif 
+		if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+			socket -> receiveQueue = queueItem -> next ; 
+			netBufferFree ( queueItem -> buffer ) ; 
+		} 
+		rawSocketUpdateEvents ( socket ) ; 
+		error = NO_ERROR ; 
+	} 
+	else { 
+		message -> length = 0 ; 
+		error = ERROR_TIMEOUT ; 
+	} 
+	return error ; 
+}",669,-25.39520265745696,-0.037959944181550014
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; 
+// Validate input
+if (message->size > 0 && message->size <= queueItem->offset) { 
+message->length = netBufferRead ( message->data , queueItem->buffer , queueItem->offset , message->size ) ; message->srcIpAddr = queueItem->srcIpAddr ; message->srcPort = queueItem->srcPort ; message->destIpAddr = queueItem->destIpAddr ; message->ttl = queueItem->ancillary . ttl ; #if ( ETH_SUPPORT == ENABLED ) message->srcMacAddr  = queueItem->ancillary.srcMacAddr ; message->destMacAddr = queueItem->ancillary.destMacAddr ; #endif #if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message->switchPort = queueItem->ancillary.port ; #endif #if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message->timestamp = queueItem->ancillary.timestamp ; #endif 
+if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket->receiveQueue = queueItem->next ; netBufferFree ( queueItem->buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; 
+} else { message->length = 0 ; error = ERROR_INVALID_PARAMETER ; } } else { message->length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",493,-45.202874255081944,-0.09168940011172808
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+error_t error ; 
+SocketQueueItem * queueItem ; 
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+if ( socket -> receiveQueue == NULL ) { 
+socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+osResetEvent ( & socket -> event ) ; 
+osReleaseMutex ( & netMutex ) ; 
+osWaitForEvent ( & socket -> event , socket -> timeout ) ;
+osAcquireMutex ( & netMutex ) ; 
+} 
+if (message->size > MAX_MESSAGE_SIZE) {
+error = ERROR_MESSAGE_TOO_LONG;
+return error;
+}
+} 
+if ( socket -> receiveQueue != NULL ) { 
+queueItem = socket -> receiveQueue ; 
+message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+message -> srcIpAddr = queueItem -> srcIpAddr ; 
+message -> srcPort = queueItem -> srcPort ; 
+message -> destIpAddr = queueItem -> destIpAddr ; 
+message -> ttl = queueItem -> ancillary . ttl ; 
+# if ( ETH_SUPPORT == ENABLED ) 
+message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+# endif 
+# if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+message -> switchPort = queueItem -> ancillary . port ; 
+# endif 
+# if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+message -> timestamp = queueItem -> ancillary . timestamp ; 
+# endif 
+if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+socket -> receiveQueue = queueItem -> next ; 
+netBufferFree ( queueItem -> buffer ) ; 
+} 
+rawSocketUpdateEvents ( socket ) ; 
+error = NO_ERROR ; 
+} else { 
+message -> length = 0 ; 
+error = ERROR_TIMEOUT ; 
+} 
+return error ; 
+}",558,-26.65871152582389,-0.0477754686842722
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; 
+// Verify flags to prevent improper input
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 && ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+  if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } 
+if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif 
+if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",472,-30.975179649350725,-0.06562538061303119
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+  error_t error ; 
+  SocketQueueItem * queueItem ; 
+  if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+    if ( socket -> receiveQueue == NULL ) { 
+      socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+      osResetEvent ( & socket -> event ) ; 
+      osReleaseMutex ( & netMutex ) ; 
+      osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+      osAcquireMutex ( & netMutex ) ;
+    }
+  }
+  if ( socket -> receiveQueue != NULL ) {
+    queueItem = socket -> receiveQueue ;
+    if (message->size > 0 && message->size <= queueItem->offset) {  //Add input validation
+      message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+      message -> srcIpAddr = queueItem -> srcIpAddr ; 
+      message -> srcPort = queueItem -> srcPort ; 
+      message -> destIpAddr = queueItem -> destIpAddr ; 
+      message -> ttl = queueItem -> ancillary . ttl ; 
+      # if ( ETH_SUPPORT == ENABLED ) 
+        message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+        message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+      # endif 
+      # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+        message -> switchPort = queueItem -> ancillary . port ; 
+      # endif 
+      # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+        message -> timestamp = queueItem -> ancillary . timestamp ; 
+      # endif 
+      if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+        socket -> receiveQueue = queueItem -> next ; 
+        netBufferFree ( queueItem -> buffer ) ; 
+      } 
+      rawSocketUpdateEvents ( socket ) ; 
+      error = NO_ERROR ; 
+    } else {
+      message -> length = 0 ;
+      error = ERROR_INVALID_PARAMETER;  //Add input validation error
+    }
+  } else { 
+    message -> length = 0 ; 
+    error = ERROR_TIMEOUT ; 
+  } 
+  return error ; 
+}",617,-43.1967392582737,-0.07001092262280989
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ;  } 
+// Check for valid input 
+if (message == NULL || message->data == NULL){ 
+return ERROR_INVALID_PARAMETER; 
+} 
+if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",480,-26.432239278627705,-0.05506716516380772
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; // Validate input parameters if (message == NULL || socket == NULL || flags == NULL) { return ERROR_INVALID_PARAMETER; } if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",473,-13.065169722620483,-0.027621923303637386
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; // Validate flags if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 || ( flags & SOCKET_FLAG_PEEK ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",459,-10.343386688631941,-0.022534611522073946
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) {  if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } // Added validation to check for message length if ( message->size > 0 && socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",455,-29.780671363961098,-0.06545202497573868
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; // Validate input if (message-> size > 0 && message-> size <= queueItem-> offset){ message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",461,-19.82623345844856,-0.043007014009649805
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+    error_t error; 
+    SocketQueueItem * queueItem; 
+    if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+        if ( socket->receiveQueue == NULL ) { 
+            socket->eventMask = SOCKET_EVENT_RX_READY ; 
+            osResetEvent( &socket->event ) ; 
+            osReleaseMutex ( &netMutex ) ; 
+            osWaitForEvent ( &socket->event , socket->timeout ) ; 
+            osAcquireMutex ( &netMutex ) ; 
+        } 
+    } 
+    if ( socket->receiveQueue != NULL ) { 
+        // Validate data before processing
+        if (message->size > 0 && message->data != NULL && message->length <= message->size) {
+            queueItem = socket->receiveQueue ; 
+            message->length = netBufferRead ( message->data , queueItem->buffer , queueItem->offset , message->size ) ; 
+            message->srcIpAddr = queueItem->srcIpAddr ; 
+            message->srcPort = queueItem->srcPort ; 
+            message->destIpAddr = queueItem->destIpAddr ; 
+            message->ttl = queueItem->ancillary.ttl ; 
+#if ( ETH_SUPPORT == ENABLED ) 
+            message->srcMacAddr = queueItem->ancillary.srcMacAddr ; 
+            message->destMacAddr = queueItem->ancillary.destMacAddr ; 
+#endif 
+#if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+            message->switchPort = queueItem->ancillary.port ; 
+#endif 
+#if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+            message->timestamp = queueItem->ancillary.timestamp ; 
+#endif 
+            if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+                socket->receiveQueue = queueItem->next ; 
+                netBufferFree ( queueItem->buffer ) ; 
+            } 
+            rawSocketUpdateEvents ( socket ) ; 
+            error = NO_ERROR ;
+        }
+        else
+        {
+            error = ERROR_INVALID_DATA;
+        }
+    } 
+    else { 
+        message->length = 0 ; 
+        error = ERROR_TIMEOUT ; 
+    } 
+    return error ; 
+}",613,-51.06627383566858,-0.08330550381022607
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+
+error_t error ; 
+SocketQueueItem * queueItem ; 
+
+//Validate message size
+if(message->size <= 0) {
+return ERROR_INVALID_PARAMETER;
+}
+
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+if ( socket -> receiveQueue == NULL ) { 
+socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+osResetEvent ( & socket -> event ) ; 
+osReleaseMutex ( & netMutex ) ; 
+osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+osAcquireMutex ( & netMutex ) ; 
+} 
+} 
+if ( socket -> receiveQueue != NULL ) { 
+queueItem = socket -> receiveQueue ; 
+message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+message -> srcIpAddr = queueItem -> srcIpAddr ; 
+message -> srcPort = queueItem -> srcPort ; 
+message -> destIpAddr = queueItem -> destIpAddr ; 
+message -> ttl = queueItem -> ancillary . ttl ; 
+# if ( ETH_SUPPORT == ENABLED ) 
+message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+# endif 
+# if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+message -> switchPort = queueItem -> ancillary . port ; 
+# endif 
+# if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+message -> timestamp = queueItem -> ancillary . timestamp ; 
+# endif 
+if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+socket -> receiveQueue = queueItem -> next ; 
+netBufferFree ( queueItem -> buffer ) ; 
+} 
+rawSocketUpdateEvents ( socket ) ; 
+error = NO_ERROR ; 
+} else { 
+message -> length = 0 ; 
+error = ERROR_TIMEOUT ; 
+} 
+return error ; 
+}",554,-24.651531719387908,-0.044497349673985394
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) {
+ error_t error ; 
+ SocketQueueItem * queueItem ;
+ if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+   if ( socket -> receiveQueue == NULL ) {
+     socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+     osResetEvent ( & socket -> event ) ; 
+     osReleaseMutex ( & netMutex ) ; 
+     osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+     osAcquireMutex ( & netMutex ) ;
+   }
+ } 
+ if ( socket -> receiveQueue != NULL && message != NULL) { 
+   queueItem = socket -> receiveQueue ;
+   message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+   message -> srcIpAddr = queueItem -> srcIpAddr ; 
+   message -> srcPort = queueItem -> srcPort ; 
+   message -> destIpAddr = queueItem -> destIpAddr ; 
+   message -> ttl = queueItem -> ancillary . ttl ; 
+ # if ( ETH_SUPPORT == ENABLED ) 
+   message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ;
+   message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+ # endif 
+ # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+   message -> switchPort = queueItem -> ancillary . port ; 
+ # endif 
+ # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+   message -> timestamp = queueItem -> ancillary . timestamp ; 
+ # endif 
+   if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+     socket -> receiveQueue = queueItem -> next ; 
+     netBufferFree ( queueItem -> buffer ) ;
+   }
+   rawSocketUpdateEvents ( socket ) ; 
+   error = NO_ERROR ;
+ } 
+ else { 
+   message -> length = 0 ; 
+   error = ERROR_TIMEOUT ;
+ } 
+ return error ;
+}",539,-46.704605734429016,-0.08665047446090726
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+    error_t error ; 
+    SocketQueueItem * queueItem ; 
+    if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+        if ( socket -> receiveQueue == NULL ) { 
+            socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+            osResetEvent ( & socket -> event ) ; 
+            osReleaseMutex ( & netMutex ) ; 
+            osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+            osAcquireMutex ( & netMutex ) ; 
+        } 
+    } 
+    if ( socket -> receiveQueue != NULL ) { 
+        queueItem = socket -> receiveQueue ; 
+        // Validate input
+        if (message->size > 0) {
+           message->length = netBufferRead ( message->data , queueItem->buffer , queueItem->offset , message->size ) ; 
+        }
+        message -> srcIpAddr = queueItem -> srcIpAddr ; 
+        message -> srcPort = queueItem -> srcPort ; 
+        message -> destIpAddr = queueItem -> destIpAddr ; 
+        message -> ttl = queueItem -> ancillary . ttl ; 
+        #if ( ETH_SUPPORT == ENABLED ) 
+        message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+        message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+        #endif 
+        #if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+        message -> switchPort = queueItem -> ancillary . port ; 
+        #endif 
+        #if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+        message -> timestamp = queueItem -> ancillary . timestamp ; 
+        #endif 
+        if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+            socket -> receiveQueue = queueItem -> next ; 
+            netBufferFree ( queueItem -> buffer ) ; 
+        } 
+        rawSocketUpdateEvents ( socket ) ; 
+        error = NO_ERROR ; 
+    } 
+    else { 
+        message -> length = 0 ; 
+        error = ERROR_TIMEOUT ; 
+    } 
+    return error ; 
+}",582,-28.122897646257147,-0.04832112997638685
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { 
+	error_t error ; 
+	SocketQueueItem * queueItem ; 
+	if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+		if ( socket -> receiveQueue == NULL ) { 
+			socket -> eventMask = SOCKET_EVENT_RX_READY ; 
+			osResetEvent ( & socket -> event ) ; 
+			osReleaseMutex ( & netMutex ) ; 
+			osWaitForEvent ( & socket -> event , socket -> timeout ) ; 
+			// Added
+			if (socket->timeout == 0) { 
+				return error ; 
+			} 
+			osAcquireMutex ( & netMutex ) ; 
+		} 
+	} 
+	if ( socket -> receiveQueue != NULL ) { 
+		queueItem = socket -> receiveQueue ; 
+		message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+		message -> srcIpAddr = queueItem -> srcIpAddr ; 
+		message -> srcPort = queueItem -> srcPort ; 
+		message -> destIpAddr = queueItem -> destIpAddr ; 
+		message -> ttl = queueItem -> ancillary . ttl ; 
+		# if ( ETH_SUPPORT == ENABLED ) 
+			message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; 
+			message -> destMacAddr = queueItem -> ancillary . destMacAddr ; 
+			# endif 
+		# if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) 
+			message -> switchPort = queueItem -> ancillary . port ; 
+			# endif 
+		# if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) 
+			message -> timestamp = queueItem -> ancillary . timestamp ; 
+			# endif 
+		if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+			socket -> receiveQueue = queueItem -> next ; 
+			netBufferFree ( queueItem -> buffer ) ; 
+		} 
+		rawSocketUpdateEvents ( socket ) ; 
+		error = NO_ERROR ; 
+	} else { 
+		message -> length = 0 ; 
+		error = ERROR_TIMEOUT ; 
+	} 
+	return error ; 
+}",639,-41.30719984719799,-0.06464350523818152
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; 
+//check for allowed flags
+if ((flags & SOCKET_FLAG_DONT_WAIT) != 0 || (flags & SOCKET_FLAG_PEEK) != 0)
+{
+    return ERROR_INVALID_ARGUMENT;
+}
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { 
+if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { 
+queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; 
+//Check for valid IP addresses
+if (message->srcIpAddr < 0 || message->srcIpAddr > 0xFFFFFFFF) 
+{
+  return ERROR_INVALID_ADDRESS;
+}
+message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; 
+//Check for valid port
+if (message->srcPort < 0 || message->srcPort > 0xFFFF) 
+{
+  return ERROR_INVALID_PORT;
+}
+message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif 
+if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { 
+socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",605,-79.22111733286013,-0.13094399559150435
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } // Add input validation check if(message->size > MAX_MSG_SIZE) { return ERROR_INVALID_PARAMETER; } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }",472,-19.022105204890494,-0.04030107034934426
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) { error_t error ; SocketQueueItem * queueItem ; if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) { if ( socket -> receiveQueue == NULL ) { socket -> eventMask = SOCKET_EVENT_RX_READY ; osResetEvent ( & socket -> event ) ; osReleaseMutex ( & netMutex ) ; osWaitForEvent ( & socket -> event , socket -> timeout ) ; osAcquireMutex ( & netMutex ) ; } } if ( socket -> receiveQueue != NULL ) { queueItem = socket -> receiveQueue ; message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ; message -> srcIpAddr = queueItem -> srcIpAddr ; message -> srcPort = queueItem -> srcPort ; message -> destIpAddr = queueItem -> destIpAddr ; message -> ttl = queueItem -> ancillary . ttl ; # if ( ETH_SUPPORT == ENABLED ) message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ; message -> destMacAddr = queueItem -> ancillary . destMacAddr ; # endif # if ( ETH_PORT_TAGGING_SUPPORT == ENABLED ) message -> switchPort = queueItem -> ancillary . port ; # endif # if ( ETH_TIMESTAMP_SUPPORT == ENABLED ) message -> timestamp = queueItem -> ancillary . timestamp ; # endif if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) { socket -> receiveQueue = queueItem -> next ; netBufferFree ( queueItem -> buffer ) ; } rawSocketUpdateEvents ( socket ) ; error = NO_ERROR ; } else { message -> length = 0 ; error = ERROR_TIMEOUT ; } return error ; }
+Fixed code:","
+error_t rawSocketReceiveIpPacket ( Socket * socket , SocketMsg * message , uint_t flags ) {
+error_t error ;
+SocketQueueItem * queueItem ;
+//Validate that flags is within the expected range
+if (flags < 0 || flags > SOCKET_FLAG_PEEK)
+  return ERROR_INVALID_PARAMETER;
+if ( ( flags & SOCKET_FLAG_DONT_WAIT ) == 0 ) {
+ if ( socket -> receiveQueue == NULL ) {
+ socket -> eventMask = SOCKET_EVENT_RX_READY ;
+ osResetEvent ( & socket -> event ) ;
+ osReleaseMutex ( & netMutex ) ;
+ osWaitForEvent ( & socket -> event , socket -> timeout ) ;
+ osAcquireMutex ( & netMutex ) ;
+ }
+}
+if ( socket -> receiveQueue != NULL ) {
+queueItem = socket -> receiveQueue ;
+message -> length = netBufferRead ( message -> data , queueItem -> buffer , queueItem -> offset , message -> size ) ;
+message -> srcIpAddr = queueItem -> srcIpAddr ;
+message -> srcPort = queueItem -> srcPort ;
+message -> destIpAddr = queueItem -> destIpAddr ;
+message -> ttl = queueItem -> ancillary . ttl ;
+# if ( ETH_SUPPORT == ENABLED )
+message -> srcMacAddr = queueItem -> ancillary . srcMacAddr ;
+message -> destMacAddr = queueItem -> ancillary . destMacAddr ;
+# endif
+# if ( ETH_PORT_TAGGING_SUPPORT == ENABLED )
+message -> switchPort = queueItem -> ancillary . port ;
+# endif
+# if ( ETH_TIMESTAMP_SUPPORT == ENABLED )
+message -> timestamp = queueItem -> ancillary . timestamp ;
+# endif
+if ( ( flags & SOCKET_FLAG_PEEK ) == 0 ) {
+ socket -> receiveQueue = queueItem -> next ;
+ netBufferFree ( queueItem -> buffer ) ;
+ }
+rawSocketUpdateEvents ( socket ) ;
+error = NO_ERROR ;
+} else {
+message -> length = 0 ;
+error = ERROR_TIMEOUT ;
+}
+return error ;
+}",523,-35.32931548988915,-0.06755127244720678

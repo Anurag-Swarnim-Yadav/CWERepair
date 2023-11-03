@@ -1,0 +1,423 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+   if(t != NULL && t->private_data != NULL){
+      struct snd_hrtimer * stime = t -> private_data ; 
+      atomic_set ( & stime -> running , 0 ) ; 
+      hrtimer_cancel ( & stime -> hrt ) ; 
+      hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+      atomic_set ( & stime -> running , 1 ) ; 
+      return 0 ;
+  }
+  return -1; 
+}",161,-21.1448243221648,-0.1313343125600298
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t && t -> sticks > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return - 1 ; } }",135,-8.391995679526225,-0.06216293095945352
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:"," 
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; int validValue = t -> sticks * resolution;  if(validValue > 0) {  atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( validValue ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; } return 0 ; }",135,-29.9312045672014,-0.2217126264237141
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if(t->sticks > 0 && t->sticks < MAX_VALUE){ atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1; } }",140,-12.772965883575429,-0.09123547059696735
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+    struct snd_hrtimer * stime = t -> private_data ; 
+    
+    if (t->sticks < 0) {
+        return -1;
+    }
+    
+    atomic_set ( & stime -> running , 0 ) ; 
+    hrtimer_cancel ( & stime -> hrt ) ; 
+    hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+    atomic_set ( & stime -> running , 1 ) ; 
+    return 0 ; 
+}",160,-11.417807093928365,-0.07136129433705228
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; // Validate input if ( t -> sticks == 0 || resolution == 0 ) { return - 1 ; } atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",138,-11.818155664677779,-0.08563880916433173
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { if ( t == NULL || t -> private_data == NULL ) { return -1 ; } struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",136,-7.766261969630282,-0.05710486742375207
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; int timer_length = t->sticks * resolution; // validating timer_length value if (timer_length < 0) return -1; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( timer_length ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",144,-34.64089545590474,-0.24056177399933848
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+    struct snd_hrtimer * stime = t -> private_data ; 
+    atomic_set ( & stime -> running , 0 ) ; 
+    hrtimer_cancel ( & stime -> hrt ) ;
+    if (t->sticks > 0 && t->sticks != LLONG_MAX) {
+        hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+        atomic_set ( & stime -> running , 1 ) ; 
+    }
+    return 0 ; 
+}",158,-22.066863207882513,-0.13966369118912983
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return - 1 ; } }",133,-4.74057223126193,-0.0356434002350521
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; int sticks = t->sticks; if(sticks > 0 && sticks < MAX_TIMER_VALUE) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1; } }",146,-17.909097325521312,-0.1226650501748035
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks * resolution > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1 ; } }",135,-6.04924767331663,-0.04480924202456763
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks < 0 || t -> sticks > MAX_TIMER_STICKS ) { return - EINVAL ; } atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",146,-11.011840139928161,-0.07542356260224768
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1 ; } }",133,-4.36650804006193,-0.032830887519262636
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { if ( t -> sticks < 0 ) { return -1 ; } struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",130,-8.418629219121133,-0.06475868630093179
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks && resolution ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1 ; } }",133,-7.375091265771433,-0.05545181402835664
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+	if (t == NULL || t -> private_data == NULL) {
+		return -1;
+	}
+	struct snd_hrtimer * stime = t -> private_data ; 
+	atomic_set ( & stime -> running , 0 ) ; 
+	hrtimer_cancel ( & stime -> hrt ) ; 
+	hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+	atomic_set ( & stime -> running , 1 ) ; 
+	return 0 ; 
+}",163,-13.035739854885485,-0.07997386414040175
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+    if (t && t->private_data) {
+        struct snd_hrtimer * stime = t -> private_data ; 
+        atomic_set ( & stime -> running , 0 ) ; 
+        hrtimer_cancel ( & stime -> hrt ) ; 
+        hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+        atomic_set ( & stime -> running , 1 ) ; 
+        return 0 ; 
+    }
+    return -1;
+}",158,-10.925207751339919,-0.06914688450215138
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; 
+ 
+if(t->sticks > 0){
+    hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+    atomic_set ( & stime -> running , 1 ) ; 
+}
+return 0 ; 
+}",139,-19.98117792411403,-0.14374948146844624
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; int resolution = t -> sticks * resolution; if (resolution > 0) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1; } }",136,-13.669628119895576,-0.10051197146982041
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; if (t->sticks < 0) { return -1; } hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",130,-10.213377318656782,-0.07856444091274448
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks * resolution > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1 ; } }",135,-6.232413296397229,-0.04616602441775725
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:"," 
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if (! t -> sticks || t -> sticks < 0) { return -EINVAL; } atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; 
+}",139,-20.563402690186102,-0.14793814885025972
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks <= 0 || t -> sticks > MAX_STICKS ) { return -EINVAL ; } atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",142,-8.901684622982298,-0.06268791988015703
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+	struct snd_hrtimer * stime = t -> private_data ; 
+	if (t->sticks < 0) {
+		return -EINVAL;
+	}
+	atomic_set ( & stime -> running , 0 ) ; 
+	hrtimer_cancel ( & stime -> hrt ) ; 
+	hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+	atomic_set ( & stime -> running , 1 ) ; 
+	return 0 ; 
+}",159,-11.976436750222318,-0.07532350157372526
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; unsigned long stick_val; if (t->sticks > 0) { stick_val = t->sticks * resolution; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( stick_val ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1; } }",147,-21.740379181836406,-0.14789373593085992
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 && t -> sticks <= MAX_TICKS && t -> resolution > 0 && t -> resolution <= MAX_RESOLUTION ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { // return error for invalid input return -1 ; } }",165,-26.358129700772817,-0.15974624061074436
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+	struct snd_hrtimer * stime = t -> private_data ; 
+	if (t->sticks < 0) {
+		return -EINVAL;
+	}
+	atomic_set ( & stime -> running , 0 ) ; 
+	hrtimer_cancel ( & stime -> hrt ) ; 
+	hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+	atomic_set ( & stime -> running , 1 ) ; 
+	return 0 ; 
+}",159,-11.937959554619617,-0.07508150663282778
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; long long sticks; if (stime == NULL || t->sticks < 0) { return -EINVAL; } atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; sticks = t->sticks; if (sticks > LLONG_MAX / resolution) { sticks = LLONG_MAX / resolution; } hrtimer_start ( & stime -> hrt , ns_to_ktime ( sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",167,-23.336761129030336,-0.13974108460497206
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+    struct snd_hrtimer * stime = t -> private_data ;
+    if(t->sticks < INT_MIN || t->sticks > INT_MAX)
+    {
+        return 0;
+    }
+    atomic_set ( & stime -> running , 0 ) ; 
+    hrtimer_cancel ( & stime -> hrt ) ; 
+    hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+    atomic_set ( & stime -> running , 1 ) ; 
+    return 0 ; 
+}",166,-26.953850230567333,-0.1623725917504056
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; 
+
+//validate input
+if(t->sticks == 0 || t->resolution == 0) {
+  return -1;
+}
+
+atomic_set ( & stime -> running , 0 ) ; 
+hrtimer_cancel ( & stime -> hrt ) ; 
+hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+atomic_set ( & stime -> running , 1 ) ; 
+return 0 ; 
+}",159,-25.28812247419943,-0.15904479543521655
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; // Validate timer input if (t->sticks > 0 && resolution > 0) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } return -1; // Invalid input }",142,-23.410892799512588,-0.16486544225008865
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks * resolution < 0 ) { return -1 ; } atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",132,-7.146782260003662,-0.05414228984851259
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; 
+if (t->sticks <= 0) {
+  return -1;
+} 
+atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",137,-13.167073522264971,-0.0961100257099633
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1 ; } }",133,-4.376157551351631,-0.03290344023572655
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; int validInput = 1; //Validate input, set to 0 if invalid if(t -> sticks <= 0 || resolution <= 0 ){ validInput = 0; } atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; if(validInput){ hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ;  } return 0 ; }",158,-40.178391002215925,-0.2542936139380755
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1 ; } }",133,-4.376157551351631,-0.03290344023572655
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start(struct snd_timer *t) {
+    struct snd_hrtimer *stime = t->private_data;
+    if (t->sticks > 0) {
+        atomic_set(&stime->running, 0);
+        hrtimer_cancel(&stime->hrt);
+        hrtimer_start(&stime->hrt, ns_to_ktime(t->sticks * resolution), HRTIMER_MODE_REL);
+        atomic_set(&stime->running, 1);
+        return 0;
+    } else {
+        return 1;
+    }
+}",144,-12.878364350514968,-0.08943308576746506
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+    struct snd_hrtimer * stime = t -> private_data ; 
+    atomic_set ( & stime -> running , 0 ) ; 
+    hrtimer_cancel ( & stime -> hrt ) ; 
+    if (t->sticks >= 0 && t->sticks <= MAX_STICKS) {
+        hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+        atomic_set ( & stime -> running , 1 ) ; 
+    }
+    return 0 ; 
+}",160,-15.10015925363321,-0.09437599533520756
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { if ( t != NULL && t -> private_data != NULL ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -1 ; } }",139,-7.161386129234822,-0.05152076351967498
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 && t -> resolution > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return - 1 ; } }",139,-6.060821632260472,-0.04360303332561491
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 && resolution > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return - EMINVAL ; } }",139,-17.825265482878425,-0.1282393200207081
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+ 
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+  struct snd_hrtimer * stime = t -> private_data ; 
+  if ( t -> sticks == 0 || resolution == 0 ) {
+    return -EINVAL ; 
+  }
+  atomic_set ( & stime -> running , 0 ) ; 
+  hrtimer_cancel ( & stime -> hrt ) ; 
+  hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+  atomic_set ( & stime -> running , 1 ) ; 
+  return 0 ; 
+}",165,-24.00479187400005,-0.1454835871151518
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; if ( t -> sticks < 0 ) { return - 1 ; } hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }",130,-9.212200797608276,-0.07086308305852519
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks >= 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return -EINVAL; } }",135,-9.34383981821593,-0.06921362828308096
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+    struct snd_hrtimer * stime = t -> private_data ; 
+    long resolution;
+    if(t->sticks > 0 && t->sticks < MAX_STICKS) {
+        atomic_set ( & stime -> running , 0 ) ; 
+        hrtimer_cancel ( & stime -> hrt ) ; 
+        resolution = t->sticks * resolution;
+        if(resolution > 0 && resolution < MAX_RESOLUTION) {
+            hrtimer_start ( & stime -> hrt , ns_to_ktime ( resolution ) , HRTIMER_MODE_REL ) ; 
+            atomic_set ( & stime -> running , 1 ) ; 
+            return 0 ;
+        }
+    }
+    return -1;
+ }",196,-25.512552055660592,-0.13016608191663567
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; 
+if (t->sticks < 0 && t->sticks > MAX_VALUE) {
+    return -1;
+}
+
+atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; 
+hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+atomic_set ( & stime -> running , 1 ) ; 
+return 0 ; 
+}",153,-26.75879460414732,-0.17489408238004783
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return - 1 ; } }",133,-4.735962889395632,-0.035608743529290464
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { 
+    struct snd_hrtimer * stime = t -> private_data ; 
+    
+    //Validate input
+    if (t->sticks < 0) {
+        return -1;
+    }
+    atomic_set ( & stime -> running , 0 ) ; 
+    hrtimer_cancel ( & stime -> hrt ) ; 
+    hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; 
+    atomic_set ( & stime -> running , 1 ) ; 
+    return 0 ; 
+}",164,-16.17422654206219,-0.09862333257354994
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; }
+Fixed code:","
+static int snd_hrtimer_start ( struct snd_timer * t ) { struct snd_hrtimer * stime = t -> private_data ; if ( t -> sticks > 0 && resolution > 0 ) { atomic_set ( & stime -> running , 0 ) ; hrtimer_cancel ( & stime -> hrt ) ; hrtimer_start ( & stime -> hrt , ns_to_ktime ( t -> sticks * resolution ) , HRTIMER_MODE_REL ) ; atomic_set ( & stime -> running , 1 ) ; return 0 ; } else { return 1 ; } }",136,-7.39920087040243,-0.05440588875295904

@@ -1,0 +1,374 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( ioc != NULL && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",130,-3.5797402706753,-0.02753646362057923
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; 
+
+if (current->io_context != NULL) {
+    ioc = current -> io_context ; 
+    current -> io_context = NULL ; 
+    task_unlock ( current ) ; 
+    if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { 
+        if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; 
+        cfq_exit ( ioc ) ; 
+    } 
+    put_io_context ( ioc ) ; 
+}
+else {
+    task_unlock(current);
+}
+}",180,-12.918684867744153,-0.07177047148746751
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; if (current->io_context != NULL) { ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } else { task_unlock ( current ) ; } }",148,-7.428083698307634,-0.05018975471829482
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ;
+
+if (current && current->io_context) { 
+ ioc = current -> io_context ;
+
+} else {
+ return;
+}
+
+current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",152,-28.110452672394494,-0.1849371886341743
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; if(current && current->io_context) { ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } }",137,-7.712723237173471,-0.0562972499063757
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; 
+// Validate input
+if (ioc == NULL) { task_unlock(current); return; }
+
+current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",152,-17.26740872489407,-0.11360137319009257
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( ioc != NULL && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",130,-3.5797402706753,-0.02753646362057923
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if (ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-4.5803468501474,-0.03578395976677656
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if (current == NULL || !ioc) { return; } task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",139,-13.897821034666702,-0.09998432399040792
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context(void) {
+ struct io_context *ioc;
+ task_lock(current);
+ ioc = current->io_context;
+ current->io_context = NULL;
+ task_unlock(current);
+ 
+ if (ioc && atomic_dec_and_test(&ioc->nr_tasks)) {
+  if (ioc->aic && ioc->aic->exit && check_input(ioc))
+   ioc->aic->exit(ioc->aic);
+  cfq_exit(ioc);
+ }
+ put_io_context(ioc);
+}
+
+bool check_input(struct io_context* ioc) {
+ // perform necessary checks on input
+}",165,-39.23190335437559,-0.23776911123863995
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; 
+if (current->io_context == NULL) {
+    task_unlock(current);
+    return;
+}
+
+ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; 
+if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",157,-14.725954015790222,-0.09379588545089314
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; if(current->io_context != NULL) { ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } else {task_unlock(current);} }",147,-10.336177237270377,-0.07031413086578488
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if (ioc == NULL) return; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",134,-5.05354501310715,-0.03771302248587425
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; 
+
+// Added input validation
+if (ioc == NULL) return;
+
+if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",144,-13.598646880861601,-0.09443504778376112
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; if(!current->io_context) { task_unlock(current); return; } ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",145,-8.007648131239343,-0.05522515952578857
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if ( ! ioc ) { return ; } task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",135,-5.875098896764788,-0.043519251087146577
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ;
+
+if(ioc != NULL && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { 
+	if ( ioc -> aic && ioc -> aic -> exit ) { 
+		ioc -> aic -> exit ( ioc -> aic ) ; 
+		cfq_exit ( ioc ) ; 
+	} 
+} 
+put_io_context ( ioc ) ; 
+}",154,-18.558550967220413,-0.12051007121571697
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if (ioc != NULL && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",130,-4.232808888569099,-0.032560068373608454
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; 
+if (ioc == NULL)
+	return;
+
+if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",140,-12.66324039180511,-0.0904517170843222
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if (ioc == NULL) { return; } task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",136,-4.5727978880881786,-0.03362351388300131
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if ( !ioc ) { return; } task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",135,-8.142059621242336,-0.06031155274994322
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; // added input validation check 
+if (ioc != NULL && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",137,-15.054890685344853,-0.10988971303171426
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { 
+    struct io_context * ioc ; 
+    task_lock ( current ) ; 
+    ioc = current -> io_context ; 
+    current -> io_context = NULL ; 
+    task_unlock ( current ) ; 
+    if (ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { 
+        if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; 
+        cfq_exit ( ioc ) ; 
+    } 
+    put_io_context ( ioc ) ; 
+}",160,-9.445703387081245,-0.059035646169257786
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if (!ioc) {return;} task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",133,-7.432015520390098,-0.05587981594278269
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if (atomic_read(&ioc->nr_tasks) <= 0) { return; } task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",146,-8.957801905281652,-0.061354807570422276
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-2.93710303717023,-0.022946117477892422
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; if (ioc != NULL) { 
+current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } 
+}",138,-12.270958216235382,-0.08891998707416944
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-2.93710303717023,-0.022946117477892422
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; 
+if ( ioc != NULL && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",132,-7.283594768612848,-0.05517874824706703
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; if ( ioc != NULL ) { current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } else { task_unlock ( current ) ; } }",145,-6.609677372182105,-0.045583981877117964
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if (ioc != null && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",130,-9.830298154343707,-0.0756176781103362
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; // Add validation of user input if ( ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",134,-20.06540433988109,-0.14974182343194845
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if (ioc == NULL) { return; } task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",136,-4.600509103942923,-0.03382727282310973
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if ( ioc == NULL ) return; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",134,-5.757812983228751,-0.04296875360618471
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if (ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-4.585905882602303,-0.03582738970783049
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if (ioc == NULL) { return; } task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",136,-4.586607127362863,-0.033725052407079875
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; 
+	if (ioc != NULL && ioc != 0) {
+		task_lock ( current ) ; 
+		ioc = current -> io_context ; 
+		current -> io_context = NULL ; 
+		task_unlock ( current ) ; 
+		if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { 
+			if ( ioc -> aic && ioc -> aic -> exit ) 
+				ioc -> aic -> exit ( ioc -> aic ) ; 
+			cfq_exit ( ioc ) ; 
+		} 
+		put_io_context ( ioc ) ;
+	}	
+}",189,-24.672161923647273,-0.130540539278557
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; 
+if(ioc == NULL)
+    return;
+if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",139,-11.911739179599394,-0.08569596532085895
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-3.0116509307843997,-0.023528522896753123
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-3.015955959856132,-0.02356215593637603
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; if (ioc != NULL) { current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } else { task_unlock ( current ) ;} }",145,-11.759676876120903,-0.08110121983531657
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; if(ioc != NULL) { ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } 
+}",136,-12.278128181912995,-0.09028035427877203
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if (ioc != NULL && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",130,-4.282073059632034,-0.03293902353563103
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if (ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-4.597168058996552,-0.03591537546091056
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; 
+if(ioc == NULL) return;
+
+task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",138,-8.564605861300699,-0.06206236131377318
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( ioc && atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }",128,-3.015955959856132,-0.02356215593637603
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; if ( ioc && ioc->aic ) { task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } }",131,-14.908634498195404,-0.1138063702152321
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; 
+
+if (ioc == NULL) {
+    return;
+}
+
+task_lock ( current ) ; 
+ioc = current -> io_context ; 
+current -> io_context = NULL ; 
+task_unlock ( current ) ; 
+if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { 
+if ( ioc -> aic && ioc -> aic -> exit ) { 
+    if (ioc->aic->exit != NULL) {
+        ioc -> aic -> exit ( ioc -> aic ) ; 
+    }
+}
+cfq_exit ( ioc ) ; 
+} 
+put_io_context ( ioc ) ; }",183,-19.949831484192707,-0.10901547259121698
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; if (ioc != NULL) { task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } }",134,-9.87601260126023,-0.07370158657656889
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; }
+Fixed code:","
+void exit_io_context ( void ) { struct io_context * ioc ; task_lock ( current ) ; if(current->io_context != NULL) { ioc = current -> io_context ; current -> io_context = NULL ; task_unlock ( current ) ; if ( atomic_dec_and_test ( & ioc -> nr_tasks ) ) { if ( ioc -> aic && ioc -> aic -> exit ) ioc -> aic -> exit ( ioc -> aic ) ; cfq_exit ( ioc ) ; } put_io_context ( ioc ) ; } }",137,-6.272003852799077,-0.04578105002043122

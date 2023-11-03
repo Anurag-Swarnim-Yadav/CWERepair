@@ -1,0 +1,946 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+
+// Add input validation to check length of queryString
+if ( context == NULL || queryString == NULL || osStrlen(queryString) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_PARAMETER ; 
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+
+if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; 
+
+p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+
+p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+
+if ( * p == '?' ) { 
+    q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; 
+    m = q - p ; 
+} else { 
+    q = p ; 
+    m = 0 ; 
+} 
+
+n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } 
+
+else { n ++ ; 
+
+// Add input validation to check buffer overflow
+if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; 
+
+osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",502,-44.81695334341776,-0.08927679948888
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; // Add input validation if ( n > HTTP_CLIENT_QUERY_STRING_SIZE ) return ERROR_INVALID_SYNTAX; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",451,-17.044588341268366,-0.03779287880547309
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+// Added input validation checks
+if (!context->bufferLen || context->bufferLen > HTTP_CLIENT_BUFFER_SIZE)
+   return ERROR_INVALID_SYNTAX;
+if (strlen(context->buffer) == 0)
+    return ERROR_INVALID_SYNTAX;
+
+context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",462,-38.81882824406541,-0.08402343775771734
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+
+//Added input validation 
+if (context == NULL || queryString == NULL || !(strlen(queryString) < HTTP_CLIENT_BUFFER_SIZE)) return ERROR_INVALID_PARAMETER ; 
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",449,-19.11735530373474,-0.042577628738830156
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { 
+size_t m ; size_t n ; char_t * p ; char_t * q ; 
+// Add an input validation check
+if ( context == NULL || queryString == NULL || !isValidString(queryString)) return ERROR_INVALID_PARAMETER ; 
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; 
+context -> buffer [ context -> bufferLen ] = '\\0' ; 
+p = strchr ( context -> buffer , ' ' ) ; 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+p = strpbrk ( p + 1 , "" ?"" ) ; 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+if ( * p == '?' ) { 
+    q = strchr ( p + 1 , ' ' ) ; 
+    if ( q == NULL ) return ERROR_INVALID_SYNTAX ; 
+    m = q - p ; 
+} else { 
+    q = p ; 
+    m = 0 ; 
+} 
+n = osStrlen ( queryString ) ; 
+if ( n == 0 ) { 
+    osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; 
+} else { 
+    n ++ ; 
+    if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; 
+    osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; 
+    p [ 0 ] = '?' ; 
+    osStrncpy ( p + 1 , queryString , n - 1 ) ; 
+} 
+context -> bufferLen = context -> bufferLen + n - m ; 
+return NO_ERROR ; 
+}",504,-24.02170745583917,-0.04766211796793486
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) {
+  size_t m ;
+  size_t n ;
+  char_t * p ;
+  char_t * q ;
+  if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ;
+  if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ;
+  if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ;
+  context -> buffer [ context -> bufferLen ] = '\\0' ;
+
+  // validate queryString before use
+  if (!validateQueryString(queryString)) {
+    return ERROR_INVALID_SYNTAX;
+  }
+
+  p = strchr ( context -> buffer , ' ' ) ;
+  if ( p == NULL ) return ERROR_INVALID_SYNTAX ;
+  p = strpbrk ( p + 1 , "" ?"" ) ;
+  if ( p == NULL ) return ERROR_INVALID_SYNTAX ;
+  if ( * p == '?' ) {
+    q = strchr ( p + 1 , ' ' ) ;
+    if ( q == NULL ) return ERROR_INVALID_SYNTAX ;
+    m = q - p ;
+  } else {
+    q = p ;
+    m = 0 ;
+  }
+  n = osStrlen ( queryString ) ;
+  if ( n == 0 ) {
+    osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ;
+  } else {
+    n ++ ;
+    if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ;
+    osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ;
+    p [ 0 ] = '?' ;
+    osStrncpy ( p + 1 , queryString , n - 1 ) ;
+  }
+  context -> bufferLen = context -> bufferLen + n - m ;
+  return NO_ERROR ;
+}
+
+// validates queryString for proper input values
+bool validateQueryString(const char_t * queryString) {
+  // check for valid characters
+  size_t length = osStrlen(queryString);
+  for (int i = 0; i < length; i++) {
+    if (!isValidCharacter(queryString[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// validates individual character
+bool isValidCharacter(char_t c) {
+  // add whitelisted characters
+  const char_t validCharacters[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+                                    'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+                                    'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a',
+                                    'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+                                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+                                    't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
+                                    '2', '3', '4', '5', '6', '7', '8', '9', '_'};
+  size_t numValidCharacters = sizeof(validCharacters) / sizeof(char_t);
+  for (int i = 0; i < numValidCharacters; i++) {
+    if (c == validCharacters[i]) {
+      return true;
+    }
+  }
+  return false;
+}",932,-97.21423717718329,-0.10430712143474602
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { 
+ size_t m ; 
+ size_t n ; 
+ char_t * p ; 
+ char_t * q ; 
+ if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; 
+ if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+ if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; 
+ context -> buffer [ context -> bufferLen ] = '\\0' ; 
+ p = strchr ( context -> buffer , ' ' ) ; 
+ if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+ p = strpbrk ( p + 1 , "" ?"" ) ; 
+ if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+ if ( * p == '?' ) {
+   q = strchr ( p + 1 , ' ' ) ; 
+   if ( q == NULL ) return ERROR_INVALID_SYNTAX ; 
+   m = q - p ; 
+ } else { 
+   q = p ;
+   m = 0 ; 
+ } 
+ n = osStrlen ( queryString ) ; 
+ // Add input validation
+ if (!validateQueryString(queryString)) {
+   return ERROR_INVALID_PARAMETER;
+ }
+ if ( n == 0 ) { 
+   osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; 
+ } else { 
+   n ++ ; 
+   if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; 
+   osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; 
+   p [ 0 ] = '?' ; 
+   osStrncpy ( p + 1 , queryString , n - 1 ) ; 
+ } 
+ context -> bufferLen = context -> bufferLen + n - m ; 
+ return NO_ERROR ; 
+}
+
+// Add validation function
+bool validateQueryString(const char_t * queryString) {
+  // Add appropriate check based on what kind of input is expected
+  return true;
+}",569,-63.90043442255342,-0.11230304819429424
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; //Added input validation that checks if the queryString is larger than the max buffer size and returns an error if true if (osStrlen(queryString) > HTTP_CLIENT_BUFFER_SIZE) return ERROR_INVALID_SYNTAX; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",473,-37.28261494035375,-0.07882159606840117
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } //Validate queryString to ensure it is not malicious input if (!validateInput(queryString)) return ERROR_INVALID_SYNTAX; n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+bool validateInput(const char_t * queryString) {
+    //Write validation code to check for malicious input
+}",479,-36.26623835978346,-0.07571239741082142
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; // New line to validate input parameters. if ( context == NULL || queryString == NULL || !isValidQueryString(queryString) ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+// Function to check if query string is valid
+bool isValidQueryString(const char_t * queryString) {
+    // Add code to check for valid input data
+    return true;
+}",481,-47.0863113248632,-0.09789253913692973
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; if (!strchr(queryString, '?')) return ERROR_INVALID_PARAMETER; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",442,-14.360899344246643,-0.03249072249829557
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+
+//Validate input 
+if ( context == NULL || queryString == NULL || context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE) return ERROR_INVALID_PARAMETER ; 
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+
+context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+
+if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } 
+
+//Sanitize input
+if (!strpbrk(queryString, "" ?"")) {
+  n = osStrlen ( queryString ) ; 
+  if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; 
+  return NO_ERROR ; 
+} 
+else {
+  return ERROR_INVALID_SYNTAX; 
+} 
+
+}",481,-52.84333834402148,-0.10986141027863094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n > 0 ) { //Replace this line to ensure that an empty string is not accepted n ++ ; //Replace this line to ensure that an empty string is not accepted if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; context -> bufferLen = context -> bufferLen + n - m ; } return NO_ERROR ; }",419,-39.73644583284514,-0.09483638623590726
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; // Validate input queryString if (!validateInput(queryString)) { return ERROR_INVALID_INPUT; } context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+//Function to validate input
+bool validateInput(const char_t * queryString) {
+    //Validation logic
+    //...
+    return true;
+}",483,-30.933473991041055,-0.06404445960878065
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:"," 
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } 
+//Added input validation	
+if (!queryString || !queryString[0]) { return ERROR_INVALID_PARAMETER; }	
+	
+n = osStrlen ( queryString ) ; 
+if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",420,-37.12148664166989,-0.08838449200397593
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; // Validate input if ( ! isValidString ( queryString ) ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+//Validation Function
+bool isValidString(const char_t *queryString) 
+{
+    int len = strlen(queryString);
+    for (int i = 0; i < len; i++) 
+    {
+        if (!isalpha(queryString[i])) 
+        {
+            return false;
+        }
+    }
+    return true;
+}",533,-37.08829989818745,-0.06958405234181511
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString(HttpClientContext *context, const char_t *queryString) {
+    size_t m;
+    size_t n;
+    size_t queryStringLen;
+    char_t *p;
+    char_t *q;
+
+    // Validate parameters
+    if (context == NULL || queryString == NULL) {
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    // Validate state
+    if (context->requestState != HTTP_REQ_STATE_FORMAT_HEADER) {
+        return ERROR_WRONG_STATE;
+    }
+
+    // Validate buffer
+    if (context->bufferLen > HTTP_CLIENT_BUFFER_SIZE) {
+        return ERROR_INVALID_SYNTAX;
+    }
+
+    context->buffer[context->bufferLen] = '\0';
+    p = strchr(context->buffer, ' ');
+    if (p == NULL) {
+        return ERROR_INVALID_SYNTAX;
+    }
+
+    p = strpbrk(p + 1, "" ?"");
+    if (p == NULL) {
+        return ERROR_INVALID_SYNTAX;
+    }
+
+    if (*p == '?') {
+        q = strchr(p + 1, ' ');
+        if (q == NULL) {
+            return ERROR_INVALID_SYNTAX;
+        }
+
+        m = q - p;
+    } else {
+        q = p;
+        m = 0;
+    }
+
+    // Validate query string
+    queryStringLen = osStrlen(queryString);
+    if (queryStringLen > HTTP_CLIENT_QUERY_STRING_MAX_LEN) {
+        return ERROR_INVALID_SYNTAX;
+    }
+
+    n = osStrlen(queryString);
+    if (n == 0) {
+        osMemmove(p, p + m, context->buffer + context->bufferLen + 1 - q);
+    } else {
+        n++;
+        if ((context->bufferLen + n - m) > HTTP_CLIENT_BUFFER_SIZE) {
+            return ERROR_BUFFER_OVERFLOW;
+        }
+
+        osMemmove(p + n, q, context->buffer + context->bufferLen + 1 - q);
+        p[0] = '?';
+        osStrncpy(p + 1, queryString, n - 1);
+    }
+
+    context->bufferLen = context->bufferLen + n - m;
+    return NO_ERROR;
+}",602,-36.061221058846726,-0.059902360562868316
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { 
+size_t m ; 
+size_t n ; 
+char_t * p ; 
+char_t * q ; 
+if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; 
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; 
+context -> buffer [ context -> bufferLen ] = '\\0' ; 
+p = strchr ( context -> buffer , ' ' ) ; 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+p = strpbrk ( p + 1 , "" ?"" ) ; 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+if ( * p == '?' ) { 
+    q = strchr ( p + 1 , ' ' ) ; 
+    if ( q == NULL ) return ERROR_INVALID_SYNTAX ; 
+    m = q - p ; 
+} else { 
+    q = p ; 
+    m = 0 ; 
+} 
+n = osStrlen ( queryString ) ; 
+
+//add validation of input
+if (!validateInput(queryString)) {
+    return ERROR_INVALID_INPUT;
+}
+
+if ( n == 0 ) { 
+    osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; 
+} else { 
+    n ++ ; 
+    if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; 
+    osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; 
+    p [ 0 ] = '?' ; 
+    osStrncpy ( p + 1 , queryString , n - 1 ) ; 
+} 
+context -> bufferLen = context -> bufferLen + n - m ; 
+return NO_ERROR ; 
+}
+
+//add function for validating input 
+bool validateInput(const char_t * queryString) {
+    //validation code here
+    return true;
+}",566,-45.322190267507864,-0.08007454110867114
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; // Added the following line to validate input if ( context == NULL || queryString == NULL || !isValidQueryString(queryString) ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+// Added the following function to validate input
+bool isValidQueryString(const char_t * queryString) {
+  // Input validation code goes here
+}",472,-34.51608206381762,-0.07312729250808818
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) {
+  size_t m ; size_t n ; char_t * p ; char_t * q ; 
+  if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; 
+  if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+  if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ;
+  context -> buffer [ context -> bufferLen ] = '\\0' ; 
+  
+  //Add input validation
+  if (!isValidInput(queryString)) {
+    return ERROR_INVALID_PARAMETER;
+  }
+
+  p = strchr ( context -> buffer , ' ' ) ; 
+  if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+  p = strpbrk ( p + 1 , "" ?"" ) ; 
+  if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+  if ( * p == '?' ) { 
+    q = strchr ( p + 1 , ' ' ) ; 
+    if ( q == NULL ) return ERROR_INVALID_SYNTAX ; 
+    m = q - p ; 
+  } else { 
+    q = p ; 
+    m = 0 ; 
+  } 
+  n = osStrlen ( queryString ) ; 
+  if ( n == 0 ) { 
+    osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; 
+  } else { 
+    n ++ ; 
+    if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; 
+    osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; 
+    p [ 0 ] = '?' ; 
+    osStrncpy ( p + 1 , queryString , n - 1 ) ; 
+  } 
+  context -> bufferLen = context -> bufferLen + n - m ; 
+  return NO_ERROR ; 
+}
+
+//Added input validation function
+bool isValidInput(const char_t* queryString) {
+  //validation code
+  return true;
+}",577,-43.44112830024329,-0.07528791733144419
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; n = osStrlen ( queryString ) ; //Validate Input if (!validInput(queryString)) { return ERROR_INVALID_INPUT; } if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+//Added function to validate input
+bool validInput(const char *input) {
+  for (int i = 0; i < strlen(input); i++) {
+    if (!isascii(input[i])) {
+      return false;
+    }
+  }
+  return true;
+}",492,-43.03624848695607,-0.08747204977023591
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ;
+ 
+if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ;
+ 
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ;
+ 
+if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; 
+ 
+if ( strlen(queryString) > HTTP_CLIENT_BUFFER_SIZE - context->bufferLen) return ERROR_INVALID_SYNTAX;
+ 
+context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ;
+ 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ;
+ 
+p = strpbrk ( p + 1 , "" ?"" ) ;
+ 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ;
+ 
+if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ;
+ 
+if ( q == NULL ) return ERROR_INVALID_SYNTAX ;
+ 
+m = q - p ; } else { q = p ; m = 0 ; }
+ 
+n = osStrlen ( queryString ) ;
+ 
+if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",494,-38.76776202947287,-0.07847725107180743
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; /* Validate the query string */ if (!isValidQueryString (queryString)) { return ERROR_INVALID_PARAMETER; } context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+bool isValidQueryString (const char_t *queryString) {
+  /* Insert code to validate the query string here */
+  return true;
+}",485,-34.631734912771,-0.07140563899540413
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { // Validate the Input // Add validation check here if(!validateInput(queryString)){ return ERROR_INVALID_INPUT; } n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",450,-33.549500706102755,-0.07455444601356168
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; //Add input validation //Check for special characters int i; for (i = 0; i < osStrlen(queryString); i++) { if ( queryString[i] == '&' || queryString[i] < 32 || queryString[i] > 126 ) return ERROR_INVALID_SYNTAX; } context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",489,-43.531809054685105,-0.089022104406309
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; char_t sanitizedQueryString[HTTP_CLIENT_BUFFER_SIZE]; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; // sanitize the input for (int i=0; i<=osStrlen(queryString); i++) { if (queryString[i] == ';') sanitizedQueryString[i] = ' '; else sanitizedQueryString[i] = queryString[i]; } context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen (sanitizedQueryString) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , sanitizedQueryString, n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",503,-42.01242565776489,-0.0835237090611628
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; 
+// Add input validation
+if (!isValidQueryString(queryString)) {
+    return ERROR_INVALID_SYNTAX;
+}
+
+context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+// Add input validation function
+bool isValidQueryString (const char_t * queryString) {
+   // Implement input validation logic
+   // ...
+}",490,-35.04407515656071,-0.07151852072767492
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; //Validate the query string to check for malicious input if (!validateQueryString(queryString)) { return ERROR_INVALID_SYNTAX; } p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; } 
+
+//Function to validate the query string
+bool validateQueryString(const char_t * queryString) {
+    //Sanitize the query string
+    char_t * sanitizedQueryString = sanitize(queryString);
+    
+    //Check if the sanitized string is equal to the input query string
+    if (strcmp(queryString, sanitizedQueryString)) {
+        //If not, free the sanitized string and return false
+        free(sanitizedQueryString);
+        return false;
+    }
+    //Free the sanitized string and return true
+    free(sanitizedQueryString);
+    return true;
+}",597,-64.88128753523874,-0.10867887359336473
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; // Validate queryString for dangerous characters before using if (queryString != NULL && strcspn(queryString, ""=;<>\""'/\\`"") != strlen(queryString)) return ERROR_INVALID_PARAMETER; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",472,-49.89909601771423,-0.1057184237663437
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; //added line for input validation if (n > HTTP_CLIENT_BUFFER_SIZE) return ERROR_INVALID_PARAMETER; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",450,-21.198993966199904,-0.04710887548044423
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+//Check for valid parameters
+if ( context == NULL || queryString == NULL || context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER || context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_PARAMETER ; 
+context -> buffer [ context -> bufferLen ] = '\\0' ; 
+p = strchr ( context -> buffer , ' ' ) ; 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+p = strpbrk ( p + 1 , "" ?"" ) ; 
+if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+if ( * p == '?' ) { 
+q = strchr ( p + 1 , ' ' ) ; 
+if ( q == NULL ) return ERROR_INVALID_SYNTAX ; 
+m = q - p ; 
+} else { 
+q = p ; 
+m = 0 ; 
+} 
+//Validate input
+if (!validateInput(queryString)) {
+    return ERROR_INVALID_SYNTAX; 
+}
+n = osStrlen ( queryString ) ; 
+if ( n == 0 ) { 
+osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; 
+} else { 
+n ++ ; 
+if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; 
+osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; 
+p [ 0 ] = '?' ; 
+osStrncpy ( p + 1 , queryString , n - 1 ) ; 
+} 
+context -> bufferLen = context -> bufferLen + n - m ; 
+return NO_ERROR ; 
+}
+
+//Function to validate input
+bool validateInput(const char_t * queryString){
+    //Check if the queryString contains any characters other than alphanumeric and whitespace
+    for (int i=0; i<strlen(queryString); i++){
+        if (!isalnum(queryString[i]) && !isspace(queryString[i])){
+            return false;
+        }
+    }
+    return true;
+}",588,-64.65658010201172,-0.10996017024151652
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; 
+
+//Validate the query string
+if (strlen(queryString) > HTTP_CLIENT_QUERY_STRING_LENGTH){
+    return ERROR_INVALID_SYNTAX;
+}
+
+p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",469,-24.059158568044868,-0.05129884556086326
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || !queryString ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; if (strlen(queryString) > HTTP_CLIENT_BUFFER_SIZE) return ERROR_BUFFER_OVERFLOW; if (!isValidInput(queryString)) return ERROR_INVALID_SYNTAX; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+bool isValidInput(const char_t * queryString){ 
+    size_t len = strlen(queryString); 
+    for (size_t i = 0; i < len; i++) {
+        char_t c = queryString[i];
+        // Check if character is in the set of valid characters
+        if (!(isalpha(c) || isdigit(c) || isspace(c) || c == '-' || c == '_' || c == '.' || c == '~')) {
+            return false; 
+        }
+    }
+    return true; 
+}",606,-76.6770809156915,-0.12652983649454044
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+// Added input validation
+if ( context == NULL || queryString == NULL || !validateString(queryString)) return ERROR_INVALID_PARAMETER ; 
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+// Added input validation function
+bool validateString(const char_t * queryString)
+{
+    size_t queryStringLength = strlen(queryString);
+    for(int i = 0; i < queryStringLength; i++)
+    {
+        if(!isAlphaNumeric(queryString[i]) && queryString[i] != '_' && queryString[i] != '-' && queryString[i] != ' ')
+            return false;
+    }
+    return true;
+}
+
+bool isAlphaNumeric(char c)
+{
+    return (c >= 'a' && c <= 'z') ||
+           (c >= 'A' && c <= 'Z') ||
+           (c >= '0' && c <= '9');
+}",611,-58.078352102999965,-0.09505458609328964
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } // validate input // if queryString contains invalid characters, return ERROR_INVALID_PARAMETER if ( ! isValidInput ( queryString ) ) return ERROR_INVALID_PARAMETER ; n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",463,-31.26539682130054,-0.06752785490561672
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+//Added input validation
+if ( context == NULL || queryString == NULL || !isValidInput(queryString)) return ERROR_INVALID_PARAMETER ;
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+//Added input validation function
+bool isValidInput(const char_t * queryString) {
+    //Add code to validate the query string here
+}",470,-31.94280557516559,-0.0679634161173736
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+
+// Added input validation.
+if (context == NULL || queryString == NULL || osStrlen(queryString) > HTTP_CLIENT_BUFFER_SIZE) return ERROR_INVALID_PARAMETER;
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",447,-16.156608435899432,-0.036144537887918195
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } // Add input validation if (strlen(queryString) > HTTP_CLIENT_BUFFER_SIZE) { return ERROR_BUFFER_OVERFLOW; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",453,-13.453672391266753,-0.029699056051361486
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; //Check for NULL and invalid characters if ( context == NULL || queryString == NULL || strlen(queryString) != strspn(queryString, ""ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~*'()&="") ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",484,-31.722520215978907,-0.06554239714045229
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+
+//Added input validation 
+if (context == NULL || queryString == NULL || !validateInput(queryString)) return ERROR_INVALID_PARAMETER ;
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } 
+
+//Added input validation 
+n = osStrlen ( queryString ) ; if ( n == 0 || !validateInput(queryString)) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+
+//Added validation function 
+bool validateInput(const char* queryString){
+  //Perform any desired validation checks 
+  return true;
+}",489,-53.72283124004291,-0.10986264057268488
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+
+//Validate the parameters 
+if ( context == NULL || queryString == NULL ) {
+    return ERROR_INVALID_PARAMETER ;
+}
+
+//Validate the request state 
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) {
+    return ERROR_WRONG_STATE ;
+}
+
+//Validate the buffer
+if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) {
+    return ERROR_INVALID_SYNTAX ;
+}
+
+context -> buffer [ context -> bufferLen ] = '\\0' ; 
+p = strchr ( context -> buffer , ' ' ) ; 
+
+//Validate the pointer 
+if ( p == NULL ) {
+    return ERROR_INVALID_SYNTAX ;
+}
+
+p = strpbrk ( p + 1 , "" ?"" ) ;
+
+//Validate the pointer 
+if ( p == NULL ) {
+    return ERROR_INVALID_SYNTAX ;
+}
+
+if ( * p == '?' ) { 
+    q = strchr ( p + 1 , ' ' ) ; 
+
+//Validate the pointer 
+    if ( q == NULL ) {
+        return ERROR_INVALID_SYNTAX ;
+    }
+
+    m = q - p ; 
+} else { 
+    q = p ; 
+    m = 0 ; 
+}
+
+//Validate the query string length
+n = osStrlen ( queryString ) ; 
+if ( n == 0 ) { 
+    osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ;
+} else { 
+    n ++ ; 
+    if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) {
+        return ERROR_BUFFER_OVERFLOW ;
+    }
+    osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; 
+    p [ 0 ] = '?' ; 
+    osStrncpy ( p + 1 , queryString , n - 1 ) ; 
+} 
+context -> bufferLen = context -> bufferLen + n - m ; 
+return NO_ERROR ; 
+}",574,-51.25334576642826,-0.08929154314708757
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; 
+
+// added - Validate the query string
+if (!validateQueryString(queryString)) return ERROR_INVALID_PARAMETER;
+
+if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+//added - Validate the query string
+bool validateQueryString(const char_t * queryString){
+  // Validate the query string here
+  return true;
+}",494,-38.42341619346101,-0.07778019472360528
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; int i; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; 
+
+context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; 
+
+//Added code to validate input
+for(i=0; queryString[i]!='\0';i++) {
+  if(queryString[i] != '&' || queryString[i] != '=' || queryString[i] != '!' || queryString[i] != '@' || queryString[i] != '#' || queryString[i] != '$' || queryString[i] != '%' || queryString[i] != '^' || queryString[i] != '*' || queryString[i] != '+' ||queryString[i] != '.' || queryString[i] != '~' || queryString[i] != '_' || queryString[i] != '/' || queryString[i] != '-' || queryString[i] != '`' || (queryString[i] >= 'a' && queryString[i]<='z') || (queryString[i] >='A' && queryString[i]<='Z') || (queryString[i] >='0' && queryString[i]<='9') || queryString[i] == '?' || queryString[i] == ' ' ) {
+    continue;
+  }else
+  return ERROR_INVALID_SYNTAX;
+}
+
+if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",720,-108.5854681794852,-0.15081315024928502
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; 
+//added code to validate input 
+if (strpbrk(queryString, ""<>{}[]()/\\?=&"") != NULL) {
+  return ERROR_INVALID_SYNTAX;
+}
+if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",471,-39.55924166772034,-0.083989897383695
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; // Validate queryString data if ( !validateQueryString(queryString) ) { return ERROR_INVALID_SYNTAX ; } if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; 
+}
+
+bool validateQueryString(const char_t * queryString) { 
+  // Add validation code here 
+  return true; 
+}",485,-40.17524354918257,-0.08283555370965479
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; 
+
+// Validate the input
+if (validateInput(queryString) == false)
+   return ERROR_INVALID_PARAMETER;
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+
+// Added function
+bool validateInput(char_t *queryString) {
+   // Add code to validate input
+   // Return true if valid, false otherwise
+   return true;
+}",498,-44.89837900212467,-0.09015738755446721
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; //Added code if (strchr(queryString, '\'') != NULL) return ERROR_INVALID_PARAMETER; //Added code if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",452,-26.095606199222185,-0.0577336420336774
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:"," 
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } //Add input validation if (strlen(queryString) > HTTP_CLIENT_BUFFER_SIZE) return ERROR_INVALID_SYNTAX; n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",454,-16.686002005799846,-0.036753308382819046
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; 
+//Validate the queryString for malicious characters
+if ( strcspn(queryString, ""\t\r\n\v\f\\\""\'"") != strlen(queryString)) { return ERROR_INVALID_INPUT; } 
+
+if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",476,-43.46523390265169,-0.09131351660220943
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }
+Fixed code:","
+error_t httpClientSetQueryString ( HttpClientContext * context , const char_t * queryString ) { size_t m ; size_t n ; char_t * p ; char_t * q ; if ( context == NULL || queryString == NULL ) return ERROR_INVALID_PARAMETER ; if ( context -> requestState != HTTP_REQ_STATE_FORMAT_HEADER ) return ERROR_WRONG_STATE ; if ( context -> bufferLen > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_INVALID_SYNTAX ; context -> buffer [ context -> bufferLen ] = '\\0' ; p = strchr ( context -> buffer , ' ' ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; p = strpbrk ( p + 1 , "" ?"" ) ; if ( p == NULL ) return ERROR_INVALID_SYNTAX ; if ( * p == '?' ) { q = strchr ( p + 1 , ' ' ) ; if ( q == NULL ) return ERROR_INVALID_SYNTAX ; m = q - p ; } else { q = p ; m = 0 ; } n = osStrlen ( queryString ) ; //Added input validation check if (n > HTTP_CLIENT_BUFFER_SIZE) return ERROR_INVALID_PARAMETER; if ( n == 0 ) { osMemmove ( p , p + m , context -> buffer + context -> bufferLen + 1 - q ) ; } else { n ++ ; if ( ( context -> bufferLen + n - m ) > HTTP_CLIENT_BUFFER_SIZE ) return ERROR_BUFFER_OVERFLOW ; osMemmove ( p + n , q , context -> buffer + context -> bufferLen + 1 - q ) ; p [ 0 ] = '?' ; osStrncpy ( p + 1 , queryString , n - 1 ) ; } context -> bufferLen = context -> bufferLen + n - m ; return NO_ERROR ; }",449,-15.192266960494683,-0.03383578387638014

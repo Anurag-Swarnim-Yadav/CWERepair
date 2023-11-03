@@ -1,0 +1,610 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { 
+    gint64 offset ; 
+    int pkt_len ; 
+    char line [ NETSCREEN_LINE_LENGTH ] ; 
+    char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; 
+    gboolean cap_dir ; 
+    char cap_dst [ 13 ] ; 
+    offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; 
+    if ( offset < 0 ) return FALSE ; 
+    if (strlen(line) > NETSCREEN_LINE_LENGTH - 1){
+        *err = WTAP_ERR_BAD_FILE;
+        *err_info = g_strdup_printf(""netscreen_read: Line too long"");
+        return FALSE;
+    }
+    pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; 
+    if ( pkt_len == - 1 ) return FALSE ; 
+    if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; 
+    if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; 
+    else { 
+        if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; 
+    } 
+    * data_offset = offset ; 
+    return TRUE ; 
+}",463,-19.407064952231217,-0.04191590702425749
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; // Validate input if (wth == NULL || err == NULL || err_info == NULL || data_offset == NULL) { *err = -1; *err_info = g_strdup(""Error: Invalid input parameters""); return FALSE; } offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",395,-18.902304851775078,-0.047853936333607794
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if ( ! validate_netscreen_line ( line ) ) { * err = WTAP_ERR_BAD_RECORD ; * err_info = g_strdup_printf ( ""netscreen: record has invalid input"" ) ; return FALSE ; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",397,-15.23600001920503,-0.038377833801524
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if(!validate_netscreen_line(line, NETSCREEN_LINE_LENGTH)){ *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup(""netscreen: Invalid line""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+Validating function:
+bool validate_netscreen_line(char *line, int line_length){
+    //Check for invalid characters in the line
+    for(int i=0; i < line_length; i++){
+        if(!isprint(line[i]))
+            return false;
+    }
+    return true;
+}",479,-53.65419384086648,-0.11201293077425153
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if ( ! netscreen_validate_input(line) ) { *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup_printf(""netscreen_read: input validation failed""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+bool netscreen_validate_input(char * line) {
+  regex_t regex;
+  int reti;
+ 
+  reti = regcomp(&regex, ""^[A-Za-z0-9-:_ ]+$"", 0);
+  if (reti) {
+    return false;
+  }
+ 
+  reti = regexec(&regex, line, 0, NULL, 0);
+ 
+  regfree(&regex);
+ 
+  if (!reti) {
+    return true;
+  } else {
+    return false;
+  }
+}",535,-48.1957976952507,-0.0900856031686929
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+// Add input validation
+if (!g_utf8_validate(line, strlen(line), NULL)) {
+  *err = WTAP_ERR_INVALID;
+  *err_info = g_strdup(""Invalid UTF-8 string"");
+  return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",411,-27.887000771334108,-0.06785158338524114
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","  
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+// Validate the input and filter out any malicious values
+if(!netscreen_validate_input(line)) {
+    return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+// Function to validate the input
+gboolean netscreen_validate_input(char line[]) {
+    char valid_characters[] = ""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~ "";
+    int line_len = strlen(line);
+    int i;
+    for(i=0; i<line_len; i++) {
+        if(!strchr(valid_characters, line[i])) {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}",546,-73.33163393446816,-0.13430702185800028
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; //Validate input if (wth == NULL || err == NULL || err_info == NULL || data_offset == NULL) return FALSE; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",370,-11.426862468281673,-0.030883412076436953
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if (strlen(line) > NETSCREEN_LINE_LENGTH) return FALSE; if (!netscreen_validate_input(line)) return FALSE; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+bool netscreen_validate_input(char* line) {
+    int i;
+    for (i = 0; i < strlen(line); i++) {
+        if (!isprint(line[i]))
+            return false;
+    }
+    return true;
+}",442,-24.17274910337751,-0.05468947760945138
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; // validate input if (!validate_input(line)) { *err = 0; *err_info = g_strdup(""Improper input validation""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+// validate_input function
+static gboolean validate_input(char* line) {
+  // validate input here
+}",407,-31.60975412353908,-0.07766524354677906
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+//Verify that the line length is equal to or less than the predefined maximum of NETSCREEN_LINE_LENGTH
+if (strlen(line) > NETSCREEN_LINE_LENGTH) {
+    *err = WTAP_ERR_BAD_FILE;
+    *err_info = g_strdup_printf(""netscreen_read: line length exceeds maximum"");
+    return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",440,-39.46981250896112,-0.089704119338548
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if (offset < 0 || line[NETSCREEN_LINE_LENGTH - 1] != '\0') return FALSE; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",359,-12.829687699514281,-0.035737291642101064
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if (!netscreen_line_is_valid(line)) { *err = WTAP_ERR_BAD_RECORD; *err_info = g_strdup_printf(""netscreen: record has invalid format""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",395,-15.872394027881038,-0.040183276019951995
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+//Validate input 
+if(!validate_input(line)) return FALSE; 
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+//Function to validate input 
+int validate_input(char *line) { 
+  //Add code to validate input 
+  //Return true if input is valid, false otherwise 
+  return true;
+}",414,-37.41254996848063,-0.09036847818473583
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if (strlen(line) > NETSCREEN_LINE_LENGTH) { *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup_printf(""netscreen_read: Line length exceeds %u."", NETSCREEN_LINE_LENGTH); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",411,-13.989878268552333,-0.03403863325681833
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; //Added input validation if (line[0] == '\0' || strlen(line) > NETSCREEN_LINE_LENGTH) { *err = WTAP_ERR_BAD_RECORD; *err_info = g_strdup_printf(""netscreen_read: record length %u is too large."", strlen(line)); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",423,-26.900241134472434,-0.06359395067251167
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if ( ! netscreen_validate_input (line) ) { *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup(""Invalid input data""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+// Added validation function
+static gboolean netscreen_validate_input(char *line) {
+  // TODO: Add input validation logic here
+}",426,-37.44090483226305,-0.08788944796305881
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; // Validate input. if (offset < 0 || line == NULL || strlen(line) > NETSCREEN_LINE_LENGTH) { return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",367,-17.66676015146626,-0.048138311039417604
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if ( strlen ( line ) > NETSCREEN_LINE_LENGTH ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",361,-10.989801436570419,-0.030442663259197835
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+// Validate the input
+if (strlen(line) > NETSCREEN_LINE_LENGTH) { *err = EINVAL; *err_info = g_strdup(""Invalid input: Input string is too long.""); return FALSE; }
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; 
+
+// Validate the input
+if (strlen(cap_int) > NETSCREEN_MAX_INT_NAME_LENGTH) { *err = EINVAL; *err_info = g_strdup(""Invalid input: Interface name is too long.""); return FALSE; }
+
+if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",471,-36.30017217510744,-0.07707042924651261
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if (!validate_input_line(line, err, err_info)) { return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+// validate_input_line() function
+static gboolean validate_input_line(char * line, int * err, gchar ** err_info) {
+  // Perform input validation checks here
+  // Return TRUE if valid, FALSE if invalid
+}",420,-32.79404531610674,-0.07808106027644462
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if (strlen(line) > 0) { pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+return FALSE;
+}",357,-14.449603960108094,-0.04047508112075096
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:"," 
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; // Validate input before parsing if (!validate_input(line)) { *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup_printf(""netscreen_read: Invalid input""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+boolean validate_input(char *line) {
+    // Add validation logic here
+    return TRUE;
+}",423,-32.75756524923918,-0.07744105259867418
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; // Validate user input if (!netscreen_validate_input(line)) { *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup_printf(""netscreen: Bad input detected""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+boolean netscreen_validate_input(char* line) {
+  // Validate input using regex
+  String pattern=""[A-Za-z0-9_]"";
+  Pattern r = Pattern.compile(pattern);
+  Matcher m = r.matcher(line);
+  if (m.find( )) {
+    return true;
+  } else {
+    return false;
+  }
+}",494,-57.13233054481436,-0.11565249098140558
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+// Added input validation
+if (!validate_input(line, NETSCREEN_LINE_LENGTH)) {
+    *err = WTAP_ERR_BAD_FILE;
+    *err_info = g_strdup(""netscreen_read: invalid input"");
+    return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; 
+
+// Added input validation
+if (!validate_input(cap_int, NETSCREEN_MAX_INT_NAME_LENGTH)) {
+    *err = WTAP_ERR_BAD_FILE;
+    *err_info = g_strdup(""netscreen_read: invalid input"");
+    return FALSE;
+}
+
+if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+// Added input validation
+static gboolean validate_input(char* input, int length) {
+    // Check that the input is not null and is within the specified length
+    if (input != NULL && strlen(input) <= length) {
+        return TRUE;
+    }
+    return FALSE;
+}",565,-48.74605246057236,-0.0862761990452608
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+// Validate the input string (line) to ensure it's not malicious
+// Validate the length of the string to prevent buffer overflows
+if (strlen(line) > NETSCREEN_LINE_LENGTH || !validate_string(line)) {
+  *err_info = g_strdup(""Input validation failed"");
+  return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",426,-53.67041724044769,-0.12598689493062837
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:"," 
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+// Added input validation check
+if (!line || line == NULL) {
+    return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",368,-21.79142987457347,-0.05921584205047139
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; //Validation of the character array and Size //Check if the length of the string is not greater than the //defined limit if(strlen(line) < NETSCREEN_LINE_LENGTH) { pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; //Validation of the character array and Size //Check if the length of the string is not greater than the //defined limit if(strlen(cap_int) < NETSCREEN_MAX_INT_NAME_LENGTH) { if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; } else { *err = WTAP_ERR_BAD_RECORD; *err_info = g_strdup_printf(""netscreen: cap_int is too long (%u bytes)"", (unsigned int) strlen(cap_int)); return FALSE; } } else { *err = WTAP_ERR_BAD_RECORD; *err_info = g_strdup_printf(""netscreen: line is too long (%u bytes)"", (unsigned int) strlen(line)); return FALSE; } if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",548,-90.02810179698527,-0.16428485729376874
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; // Perform input validation to ensure line is a valid string if(line == NULL || strlen(line) == 0) { *err = 0; *err_info = g_strdup_printf(""Input validation failed""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",392,-30.987423287047005,-0.07904954920165053
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if(strlen(line) > NETSCREEN_LINE_LENGTH){ *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup_printf(""netscreen_read: line is too long""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",399,-14.199612586883037,-0.035588001470884804
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if (!netscreen_validate_input(line)) { *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup_printf(""netscreen_read: input validation failed""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+//Function to validate the input
+bool netscreen_validate_input(char *line) {
+   // add necessary input validation checks
+   return true;
+}",431,-37.22668390924189,-0.08637281649476077
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; if (!wth || !wth->phdr || !wth->fh || !data_offset || !err || !err_info){ *err = WTAP_ERR_BAD_FILE; return FALSE; } offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) { *err = WTAP_ERR_ENCAP_PER_PACKET_UNSUPPORTED; return FALSE; } } * data_offset = offset ; return TRUE ; }",398,-25.485935426108064,-0.06403501363343735
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+//Added input validation
+if (strlen(line) > NETSCREEN_LINE_LENGTH) {
+    *err = WTAP_ERR_BAD_FILE;
+    *err_info = g_strdup(""netscreen_read: line too long"");
+    return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",414,-15.067638267232734,-0.036395261515054914
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+//Added Input Validation to verify input values
+if (!line || strlen(line) > NETSCREEN_LINE_LENGTH - 1) {
+  *err = WTAP_ERR_BAD_FILE;
+  *err_info = g_strdup_printf(""netscreen: line exceeded length of %u"", NETSCREEN_LINE_LENGTH);
+  return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; 
+//Added Input Validation to verify input values
+if (!cap_int || strlen(cap_int) > NETSCREEN_MAX_INT_NAME_LENGTH - 1) {
+  *err = WTAP_ERR_BAD_FILE;
+  *err_info = g_strdup_printf(""netscreen: interface name exceeded length of %u"", NETSCREEN_MAX_INT_NAME_LENGTH);
+  return FALSE;
+}
+
+if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",543,-53.75602135317881,-0.09899819770382838
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; // Validate the input parameters if (!wth || !err || !err_info || !data_offset) return FALSE; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",367,-15.744374552193175,-0.04290020313949094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+//Added input validation
+if (!is_valid_input(line))
+    return FALSE;
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+// Added a function for input validation
+bool is_valid_input(char* line) {
+  if (strlen(line) >= NETSCREEN_LINE_LENGTH) {
+    return false;
+  }
+  return true;
+}",423,-37.17677484493736,-0.08788835660741694
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; 
+// Check if the offset is valid before further processing.
+if (offset < 0 || offset > NETSCREEN_LINE_LENGTH) return FALSE;
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } 
+// Validate the packet length before further processing.
+if (pkt_len < 0 || pkt_len > NETSCREEN_LINE_LENGTH) return FALSE;
+
+* data_offset = offset ; return TRUE ; }",410,-37.730269342401165,-0.0920250471765882
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if (!netscreen_validate_input(line, err, err_info)) { return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+//Function to validate input
+static gboolean netscreen_validate_input(const char *line, int *err, gchar **err_info) { 
+    //Add input validation code here 
+    return TRUE;
+}",417,-27.710196471474795,-0.06645131048315299
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+//Add input validation 
+if (!is_valid_input(line)){
+  *err = 0;
+  *err_info = ""Input validation failed"";
+  return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",388,-24.005295273089093,-0.061869317714147144
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+//Validate input
+if (strlen(line) >= NETSCREEN_LINE_LENGTH) { 
+    *err = WTAP_ERR_BAD_RECORD; 
+    *err_info = g_strdup_printf(""netscreen_read: line too long: %d"", NETSCREEN_LINE_LENGTH); 
+    return FALSE; 
+} 
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",435,-23.4871180250693,-0.05399337477027425
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; // Validate the input from the line if (!validate_input(line)) return FALSE; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+// Validate the input from the line 
+static gboolean validate_input(char *line) {
+    if (line == NULL || strlen(line) > NETSCREEN_LINE_LENGTH) {
+        return FALSE;
+    }
+    return TRUE;
+}",426,-34.79701937061639,-0.08168314406247978
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH + 1 ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH + 1 ] ; gboolean cap_dir ; char cap_dst [ 14 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if ( strlen(line) >= NETSCREEN_LINE_LENGTH ) { // added input validation *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup (""netscreen: Line length exceeds maximum""); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",404,-32.77402948305196,-0.08112383535408901
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; if ( ! is_input_valid (line) ) { * err = WTAP_ERR_BAD_FILE ; * err_info = g_strdup_printf ( ""netscreen_read : line %"" G_GINT64_MODIFIER ""d of the capture file is malformed"" , wth -> fh -> frame_buffer_offset ) ; return FALSE ; } 
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+bool is_input_valid(const char *input) {
+  // Add input validation logic here
+  return true;
+}",459,-54.684886834369955,-0.11913918700298465
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+// Validate input before parsing 
+if ( ! isValidInput(line) ) { 
+   *err = -1; 
+   return FALSE;
+ }
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",381,-33.70287578148183,-0.08845899155244574
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 || line == NULL || line[0] == '\0' ) return FALSE ; if ( strlen(line) > NETSCREEN_LINE_LENGTH ) { *err = WTAP_ERR_BAD_FILE; *err_info = g_strdup_printf( ""netscreen_read: line too long %lu"", (unsigned long) strlen(line) ); return FALSE ; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",426,-35.47762100462192,-0.08328080048033315
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+
+static gboolean netscreen_read (wtap *wth, int *err, gchar **err_info, gint64 *data_offset) {
+    gint64 offset;
+    int pkt_len;
+    char line[NETSCREEN_LINE_LENGTH];
+    char cap_int[NETSCREEN_MAX_INT_NAME_LENGTH];
+    gboolean cap_dir;
+    char cap_dst[13];
+    offset = netscreen_seek_next_packet(wth, err, err_info, line);
+    if (offset < 0) 
+        return FALSE;
+    
+    // Validate input 
+    if (strlen(line) > NETSCREEN_LINE_LENGTH) {
+        *err_info = g_strdup(""Input is longer than NETSCREEN_LINE_LENGTH"");
+        return FALSE;
+    }
+    
+    pkt_len = parse_netscreen_rec_hdr(&wth->phdr, line, cap_int, &cap_dir, cap_dst, err, err_info);
+    if (pkt_len == -1)
+        return FALSE;
+    
+    if (!parse_netscreen_hex_dump(wth->fh, pkt_len, cap_int, cap_dst, &wth->phdr, wth->frame_buffer, err, err_info))
+        return FALSE;
+    
+    if (wth->file_encap == WTAP_ENCAP_UNKNOWN)
+        wth->file_encap = wth->phdr.pkt_encap;
+    else {
+        if (wth->file_encap != wth->phdr.pkt_encap)
+            wth->file_encap = WTAP_ENCAP_PER_PACKET;
+    }
+    *data_offset = offset;
+    return TRUE;
+}",449,-34.122408661823265,-0.07599645581697832
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; 
+
+//Verify the line length and ensure it is the expected length
+if(strlen(line) > NETSCREEN_LINE_LENGTH){
+  *err = WTAP_ERR_BAD_FILE;
+  *err_info = g_strdup_printf(""netscreen_read: line length %lu too long"", (unsigned long) strlen(line));
+  return FALSE;
+}
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",436,-41.73299761443387,-0.09571788443677492
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; 
+if ( offset < 0 )
+    return FALSE ; 
+// Add input validation check
+if (!validate_input(line, err, err_info))
+    return FALSE;
+
+pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+
+//Add input validation function
+bool validate_input(char* line, int* err, gchar ** err_info) {
+    //add code to validate input
+    return true;
+}",419,-48.73506477594943,-0.11631280376121583
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; // Validate input against whitespace and NULL characters if (strlen(wth->fh) < 1 || wth->fh == NULL || strlen(line) < 1 || line == NULL) { *error = 1; return FALSE; } offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",394,-51.5518654123563,-0.1308422980009043
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }
+Fixed code:","
+static gboolean netscreen_read ( wtap * wth , int * err , gchar * * err_info , gint64 * data_offset ) { gint64 offset ; int pkt_len ; char line [ NETSCREEN_LINE_LENGTH ] ; char cap_int [ NETSCREEN_MAX_INT_NAME_LENGTH ] ; gboolean cap_dir ; char cap_dst [ 13 ] ; offset = netscreen_seek_next_packet ( wth , err , err_info , line ) ; if ( offset < 0 ) return FALSE ; //Add input validation if (strlen(line) >= NETSCREEN_LINE_LENGTH) { *err = WTAP_ERR_BAD_RECORD; *err_info = g_strdup_printf(""netscreen_read: Line length %u is larger than NETSCREEN_LINE_LENGTH of %u"", (guint)strlen(line), NETSCREEN_LINE_LENGTH); return FALSE; } pkt_len = parse_netscreen_rec_hdr ( & wth -> phdr , line , cap_int , & cap_dir , cap_dst , err , err_info ) ; if ( pkt_len == - 1 ) return FALSE ; if ( ! parse_netscreen_hex_dump ( wth -> fh , pkt_len , cap_int , cap_dst , & wth -> phdr , wth -> frame_buffer , err , err_info ) ) return FALSE ; if ( wth -> file_encap == WTAP_ENCAP_UNKNOWN ) wth -> file_encap = wth -> phdr . pkt_encap ; else { if ( wth -> file_encap != wth -> phdr . pkt_encap ) wth -> file_encap = WTAP_ENCAP_PER_PACKET ; } * data_offset = offset ; return TRUE ; }",439,-32.02902746617357,-0.07295906028741131

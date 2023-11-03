@@ -1,0 +1,954 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) {
+  struct snd_timer * timer ; 
+  unsigned long flags ; 
+  if ( snd_BUG_ON ( ! timeri ) || event < 0 || event > SNDRV_TIMER_EVENT_MAX) return - ENXIO ; 
+  if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+    if ( ! keep_flag ) { 
+      spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+      timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+      spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+    } 
+    goto __end ; 
+  } 
+  timer = timeri -> timer ; 
+  if ( ! timer ) return - EINVAL ; 
+  spin_lock_irqsave ( & timer -> lock , flags ) ; 
+  list_del_init ( & timeri -> ack_list ) ; 
+  list_del_init ( & timeri -> active_list ) ; 
+  if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+    timer -> hw . stop ( timer ) ; 
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+      timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+      snd_timer_reschedule ( timer , 0 ) ; 
+      if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+        timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+        timer -> hw . start ( timer ) ; 
+      } 
+    } 
+  } 
+  if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+  spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+  __end : 
+  if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; 
+  return 0 ; 
+}",604,-15.523459892818693,-0.02570109253777929
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { 
+  struct snd_timer * timer ; 
+  unsigned long flags ; 
+  
+  if ( timeri == NULL || snd_BUG_ON ( ! timeri ) ) 
+    return - ENXIO ; 
+  
+  if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+    if ( ! keep_flag ) { 
+      spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+      timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+      spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+    } 
+    goto __end ; 
+  } 
+  
+  timer = timeri -> timer ; 
+  if ( ! timer ) 
+    return - EINVAL ; 
+  
+  spin_lock_irqsave ( & timer -> lock , flags ) ; 
+  list_del_init ( & timeri -> ack_list ) ; 
+  list_del_init ( & timeri -> active_list ) ; 
+  if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+    timer -> hw . stop ( timer ) ; 
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+      timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+      snd_timer_reschedule ( timer , 0 ) ; 
+      if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+        timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+        timer -> hw . start ( timer ) ; 
+      } 
+    } 
+  } 
+  if ( ! keep_flag ) 
+    timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+  spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+  
+  __end : 
+  if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) 
+    snd_timer_notify1 ( timeri , event ) ; 
+  
+  return 0 ; 
+}",615,-24.068962381036396,-0.039136524196807146
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { 
+struct snd_timer * timer ; 
+unsigned long flags ; 
+
+if ( timeri == NULL || !timeri ) 
+ return - ENXIO ; 
+
+// Validate event 
+if ( event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) 
+ return - EINVAL ; 
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+ if ( ! keep_flag ) { 
+  spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+  timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+  spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+ } 
+ goto __end ; 
+} 
+
+timer = timeri -> timer ; 
+if ( ! timer ) 
+ return - EINVAL ; 
+
+spin_lock_irqsave ( & timer -> lock , flags ) ; 
+list_del_init ( & timeri -> ack_list ) ; 
+list_del_init ( & timeri -> active_list ) ; 
+if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+ timer -> hw . stop ( timer ) ; 
+ if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+  timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+  snd_timer_reschedule ( timer , 0 ) ; 
+  if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+   timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+   timer -> hw . start ( timer ) ; 
+  } 
+ } 
+} 
+if ( ! keep_flag ) 
+ timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+__end : 
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) 
+ snd_timer_notify1 ( timeri , event ) ; 
+return 0 ; 
+}",613,-32.71765151116193,-0.053373004096512126
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri || timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",472,-8.01200134102063,-0.016974579112331842
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+if (!timeri || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION) return - ENXIO ; 
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",504,-12.287777050859455,-0.02438051002154654
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } 
+
+//Added input validation
+if (event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION) {
+    return -EINVAL;
+}
+
+timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",532,-13.197053395407185,-0.024806491344750346
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; 
+
+// Added input validation
+if (event < 0 || event >= SNDRV_TIMER_EVENT_MAX) {
+  return -EINVAL;
+}
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; 
+
+// Added input validation
+if ( ! timeri || !timer ) return - EINVAL ; 
+
+spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",545,-22.681597005795673,-0.04161760918494619
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+
+//Validate Input
+if (!timeri || event < 0 || event > 4) {
+ return -ENXIO; 
+}
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; 
+
+//Validate Input
+if ( ! timer || event < 0 || event > 4 ) return - EINVAL ; 
+
+spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",521,-28.224503991673043,-0.05417371207614787
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; } 
+
+The original code did not validate the input for the parameter 'event'. This can lead to the code crashing or a malicious user exploiting this vulnerability. To fix this vulnerability, a check is added to ensure that the value of the parameter 'event' is between 0 and SNDRV_TIMER_EVENT_RESOLUTION. If the value is not valid, the function will return -ENXIO.",596,-65.27696536595968,-0.109525109674429
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri ) return - ENXIO ; 
+
+if ( event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) return - EINVAL ;
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : snd_timer_notify1 ( timeri , event ) ; return 0 ; }",495,-13.578849402238653,-0.02743201899442152
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) {
+struct snd_timer * timer ;
+unsigned long flags ;
+if ( ! timeri || ! event ){
+    return - ENXIO ;
+}
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) {
+    if ( ! keep_flag ) {
+        spin_lock_irqsave ( & slave_active_lock , flags ) ;
+        timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ;
+        spin_unlock_irqrestore ( & slave_active_lock , flags ) ;
+    }
+    goto __end ;
+}
+timer = timeri -> timer ;
+if ( ! timer ) return - EINVAL ;
+spin_lock_irqsave ( & timer -> lock , flags ) ;
+list_del_init ( & timeri -> ack_list ) ;
+list_del_init ( & timeri -> active_list ) ;
+if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) {
+    timer -> hw . stop ( timer ) ;
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) {
+        timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ;
+        snd_timer_reschedule ( timer , 0 ) ;
+        if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) {
+            timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ;
+            timer -> hw . start ( timer ) ;
+        }
+    }
+}
+if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ;
+spin_unlock_irqrestore ( & timer -> lock , flags ) ;
+__end :
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ;
+return 0 ;
+}",536,-20.501282707731878,-0.038248661768156486
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+
+if ( timeri == NULL || timeri->flags & SNDRV_TIMER_IFLG_SLAVE ) {
+  if (!keep_flag) {
+    spin_lock_irqsave(&slave_active_lock, flags);
+    timeri->flags &= ~ SNDRV_TIMER_IFLG_RUNNING;
+    spin_unlock_irqrestore(&slave_active_lock, flags);
+  }
+  goto __end;
+}
+
+if (timeri->timer == NULL || event > SNDRV_TIMER_EVENT_RESOLUTION) {
+  return -EINVAL;
+}
+
+timer = timeri->timer;
+spin_lock_irqsave(&timer->lock, flags);
+list_del_init(&timeri->ack_list);
+list_del_init(&timeri->active_list);
+
+if ((timeri->flags & SNDRV_TIMER_IFLG_RUNNING) && !(--timer->running)) {
+  timer->hw.stop(timer);
+  if (timer->flags & SNDRV_TIMER_FLG_RESCHED) {
+    timer->flags &= ~SNDRV_TIMER_FLG_RESCHED; 
+    snd_timer_reschedule(timer, 0);
+    if (timer->flags & SNDRV_TIMER_FLG_CHANGE) {
+      timer->flags &= ~SNDRV_TIMER_FLG_CHANGE;
+      timer->hw.start(timer);
+    }
+  }
+}
+
+if (!keep_flag) {
+  timeri->flags &= ~(SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START);
+}
+
+spin_unlock_irqrestore(&timer->lock, flags);
+__end:
+snd_timer_notify1(timeri, event);
+return 0;
+}",514,-33.40838130191551,-0.06499685078193679
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) || !timer ) return - ENXIO ; 
+
+if (timeri -> flags & SNDRV_TIMER_IFLG_SLAVE) { 
+  if ( ! keep_flag ) { 
+    spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+    timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+    spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+  } 
+  goto __end ; 
+ } 
+ 
+ timer = timeri -> timer ; 
+ 
+ //Validate the timer 
+ if ( ! timer ) return - EINVAL ; 
+ 
+//Validate the event 
+if (event < SNDRV_TIMER_EVENT_RESOLUTION || event > SNDRV_TIMER_EVENT_MSTOPPED) return - EINVAL ; 
+ 
+ spin_lock_irqsave ( & timer -> lock , flags ) ; 
+ list_del_init ( & timeri -> ack_list ) ; 
+ list_del_init ( & timeri -> active_list ) ; 
+ if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+   timer -> hw . stop ( timer ) ; 
+   if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+     timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+     snd_timer_reschedule ( timer , 0 ) ; 
+     if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+       timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+       timer -> hw . start ( timer ) ; 
+     } 
+   } 
+ } 
+ if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+ spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+ __end : 
+ snd_timer_notify1 ( timeri , event ) ; 
+ return 0 ; 
+}",616,-62.21357842970655,-0.10099606887939375
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri ) return - ENXIO ; 
+
+// Add input validation
+if(event != SNDRV_TIMER_EVENT_RESOLUTION && event != SNDRV_TIMER_EVENT_START && event != SNDRV_TIMER_EVENT_STOP && event != SNDRV_TIMER_EVENT_CONTINUE && event != SNDRV_TIMER_EVENT_PAUSE && event != SNDRV_TIMER_EVENT_EARLY && event != SNDRV_TIMER_EVENT_SUSPEND && event != SNDRV_TIMER_EVENT_RESUME){ 
+	return -EINVAL; 
+}
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",636,-28.294473705108704,-0.044488166203001105
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri || ! event ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",483,-7.86350990668692,-0.016280558813016398
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+
+if (!timeri || event < SNDRV_TIMER_EVENT_RESOLUTION || event > SNDRV_TIMER_EVENT_MSTOP) {
+    return -ENXIO;
+}
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) {
+    if ( ! keep_flag ) {
+        spin_lock_irqsave ( & slave_active_lock , flags ) ;
+        timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ;
+        spin_unlock_irqrestore ( & slave_active_lock , flags ) ;
+    }
+    goto __end ;
+}
+
+timer = timeri -> timer ;
+
+if ( ! timer ) {
+    return - EINVAL ;
+}
+
+spin_lock_irqsave ( & timer -> lock , flags ) ;
+list_del_init ( & timeri -> ack_list ) ;
+list_del_init ( & timeri -> active_list ) ;
+
+if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) {
+    timer -> hw . stop ( timer ) ;
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) {
+        timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ;
+        snd_timer_reschedule ( timer , 0 ) ;
+        if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) {
+            timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ;
+            timer -> hw . start ( timer ) ;
+        }
+    }
+}
+
+if ( ! keep_flag ) {
+    timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ;
+}
+
+spin_unlock_irqrestore ( & timer -> lock , flags ) ;
+__end :
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) {
+    snd_timer_notify1 ( timeri , event ) ;
+}
+
+return 0 ;
+}",589,-23.87707414040819,-0.04053832621461492
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; // Validate the input if ( timeri == NULL ) return - ENXIO ; if ( !(event >= 0 && event <= SNDRV_TIMER_EVENT_MAX) ) return - EINVAL; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",516,-20.80175765551547,-0.040313483828518355
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",501,-5.0434599025047175,-0.010066786232544346
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",501,-4.3944064508209175,-0.008771270360919995
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:"," 
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } if ( ! timeri -> timer ) return - EINVAL ; timer = timeri -> timer ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+The snd_BUG_ON check in the original code has been removed as this is a form of improper input validation. As a result, the function now checks if the timeri pointer is NULL before attempting to use it. If it is NULL, the function will return - ENXIO.",545,-58.873366931993864,-0.1080245264807227
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ;
+
+if (timeri == NULL) return -ENXIO;
+if ( !(timeri->flags & SNDRV_TIMER_IFLG_SLAVE) ) {
+    if (timeri->timer == NULL) return -EINVAL;
+    if (timeri->flags & SNDRV_TIMER_IFLG_RUNNING) {
+        spin_lock_irqsave(&timer->lock, flags);
+        list_del_init(&timeri->ack_list);
+        list_del_init(&timeri->active_list);
+        if (!(--timer->running)) {
+            timer->hw.stop(timer);
+            if (timer->flags & SNDRV_TIMER_FLG_RESCHED) {
+                timer->flags &= ~SNDRV_TIMER_FLG_RESCHED;
+                snd_timer_reschedule(timer, 0);
+                if (timer->flags & SNDRV_TIMER_FLG_CHANGE) {
+                    timer->flags &= ~SNDRV_TIMER_FLG_CHANGE;
+                    timer->hw.start(timer);
+                }
+            }
+        }
+        if (!keep_flag) {
+            timeri->flags &= ~(SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START);
+        }
+        spin_unlock_irqrestore(&timer->lock, flags);
+    }
+} else {
+    if (!keep_flag) {
+        spin_lock_irqsave(&slave_active_lock, flags);
+        timeri->flags &= ~SNDRV_TIMER_IFLG_RUNNING;
+        spin_unlock_irqrestore(&slave_active_lock, flags);
+    }
+}
+
+if (event != SNDRV_TIMER_EVENT_RESOLUTION) snd_timer_notify1(timeri, event);
+
+return 0;
+}",519,-27.951384913137307,-0.05385623297328961
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } //Added input validation if ( event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) return -EINVAL; timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",521,-13.513593184278378,-0.025937798818192664
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { 
+    struct snd_timer * timer ; 
+    unsigned long flags ; 
+
+    if ( snd_BUG_ON ( ! timeri ) || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) {
+        return - ENXIO ; 
+    } 
+
+    if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+        if ( ! keep_flag ) { 
+            spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+            timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+            spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+        } 
+        goto __end ; 
+    } 
+
+    timer = timeri -> timer ; 
+    if ( ! timer ) 
+        return - EINVAL ; 
+
+    spin_lock_irqsave ( & timer -> lock , flags ) ; 
+    list_del_init ( & timeri -> ack_list ) ; 
+    list_del_init ( & timeri -> active_list ) ; 
+    if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+        timer -> hw . stop ( timer ) ; 
+        if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+            timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+            snd_timer_reschedule ( timer , 0 ) ; 
+            if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+                timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+                timer -> hw . start ( timer ) ; 
+            } 
+        } 
+    } 
+    if ( ! keep_flag ) 
+        timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+    spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+__end : 
+    if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) 
+        snd_timer_notify1 ( timeri , event ) ; 
+    return 0 ; 
+}",622,-22.332298095082983,-0.03590401623003695
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; if (!isValidInput(timeri)) { spin_unlock_irqrestore( & timer -> lock , flags ) ; return -EINVAL; } list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+
+bool isValidInput(struct snd_timer_instance * timeri) {
+  if (snd_BUG_ON(!timeri)) {
+    return false;
+  }
+  return true;
+}",565,-32.42919170025054,-0.05739679946946998
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { 
+struct snd_timer * timer ; 
+unsigned long flags ; 
+//validate the given input 
+if ( snd_BUG_ON ( ! timeri ) || ( event != SNDRV_TIMER_EVENT_RESOLUTION && event != SNDRV_TIMER_EVENT_START && event != SNDRV_TIMER_EVENT_STOP && event != SNDRV_TIMER_EVENT_CONTINUE && event != SNDRV_TIMER_EVENT_PAUSE ))
+ return - ENXIO ; 
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+if ( ! keep_flag ) { 
+spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+} 
+goto __end ; 
+} 
+timer = timeri -> timer ; 
+if ( ! timer ) return - EINVAL ; 
+spin_lock_irqsave ( & timer -> lock , flags ) ; 
+list_del_init ( & timeri -> ack_list ) ; 
+list_del_init ( & timeri -> active_list ) ; 
+if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+timer -> hw . stop ( timer ) ; 
+if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+snd_timer_reschedule ( timer , 0 ) ; 
+if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+timer -> hw . start ( timer ) ; 
+} 
+} 
+} 
+if ( ! keep_flag ) 
+timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+__end : 
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) 
+snd_timer_notify1 ( timeri , event ) ; 
+return 0 ; 
+}",651,-37.43535677146304,-0.05750438828181727
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } // ADDED INPUT VALIDATION TO CHECK FOR NULL VALUE if ( ! timeri->timer || !timeri->timer->hw.start || !timeri->timer->hw.stop ) return -EINVAL; timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",537,-29.438783360029436,-0.05482082562389094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+
+if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; 
+if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE) {
+if ( ! keep_flag ) { 
+if(val > 0) {
+spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+spin_unlock_irqrestore ( & slave_active_lock , flags ) ;
+}
+else{
+  return -EINVAL;
+}
+goto __end ; }
+timer = timeri -> timer ; 
+if ( ! timer ) return - EINVAL ; 
+spin_lock_irqsave ( & timer -> lock , flags ) ; 
+list_del_init ( & timeri -> ack_list ) ; 
+list_del_init ( & timeri -> active_list ) ; 
+if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+timer -> hw . stop ( timer ) ; 
+if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+snd_timer_reschedule ( timer , 0 ) ; 
+if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+timer -> hw . start ( timer ) ; 
+} 
+} 
+} 
+if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+__end : 
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; 
+return 0 ; 
+}",567,-54.084236341076725,-0.0953866602135392
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; // Added input validation if ( ! timeri || !( event == SNDRV_TIMER_EVENT_RESOLUTION || event == SNDRV_TIMER_EVENT_START || event == SNDRV_TIMER_EVENT_STOP || event == SNDRV_TIMER_EVENT_CONTINUE || event == SNDRV_TIMER_EVENT_PAUSE ) ) { return - ENXIO ; } if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",571,-24.098877262101432,-0.04220468872522142
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) {
+  struct snd_timer * timer ; 
+  unsigned long flags ; 
+  
+  // validate inputs
+  if ( snd_BUG_ON ( ! timeri || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) ) return - ENXIO ; 
+  
+  if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+    if ( ! keep_flag ) { 
+      spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+      timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+      spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+    } 
+    goto __end ; 
+  } 
+  
+  timer = timeri -> timer ; 
+  if ( ! timer ) return - EINVAL ; 
+  
+  spin_lock_irqsave ( & timer -> lock , flags ) ; 
+  list_del_init ( & timeri -> ack_list ) ; 
+  list_del_init ( & timeri -> active_list ) ; 
+  if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+    timer -> hw . stop ( timer ) ; 
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+      timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+      snd_timer_reschedule ( timer , 0 ) ; 
+      if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+        timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+        timer -> hw . start ( timer ) ; 
+      } 
+    } 
+  } 
+  if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+  spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+  __end : 
+  if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; 
+  return 0 ; 
+}",619,-25.7875359314641,-0.0416599934272441
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( timeri == NULL || timeri->flags & SNDRV_TIMER_IFLG_SLAVE ) { return -ENXIO; } 
+timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ;
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",405,-17.303552005023306,-0.04272481976548964
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( timeri == NULL || timeri->flags & ~SNDRV_TIMER_IFLG_SLAVE ) { return -ENXIO; } if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag && !(timeri->flags & ~SNDRV_TIMER_IFLG_SLAVE )) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",529,-21.525465123376918,-0.04069086034664824
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) || (event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",511,-8.26256470734467,-0.01616940255840444
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { 
+struct snd_timer * timer ; 
+unsigned long flags ; 
+
+if ( snd_BUG_ON ( ! timeri ) || timeri->flags & SNDRV_TIMER_IFLG_SLAVE || !timeri->timer )
+    return - ENXIO ; 
+
+if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+    if ( ! keep_flag ) { 
+        spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+        timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+        spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+    } 
+    goto __end ; 
+} 
+
+timer = timeri -> timer ; 
+
+spin_lock_irqsave ( & timer -> lock , flags ) ; 
+list_del_init ( & timeri -> ack_list ) ; 
+list_del_init ( & timeri -> active_list ) ; 
+
+if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+    timer -> hw . stop ( timer ) ; 
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+        timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+        snd_timer_reschedule ( timer , 0 ) ; 
+        if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+            timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+            timer -> hw . start ( timer ) ; 
+        } 
+    } 
+} 
+
+if ( ! keep_flag ) 
+    timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+
+spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+__end : 
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) 
+    snd_timer_notify1 ( timeri , event ) ; 
+return 0 ; 
+}",598,-24.250440930571315,-0.040552576806975445
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; int valid_event = (event == SNDRV_TIMER_EVENT_RESOLUTION);
+if ( snd_BUG_ON ( ! timeri ) || !valid_event ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( valid_event ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",504,-16.247639432062336,-0.03223737982552051
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+
+if (!timeri || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION) return - ENXIO ;
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; }
+
+timer = timeri -> timer ;
+if ( ! timer ) return - EINVAL ;
+
+spin_lock_irqsave ( & timer -> lock , flags ) ;
+list_del_init ( & timeri -> ack_list ) ;
+list_del_init ( & timeri -> active_list ) ;
+
+if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) {
+    timer -> hw . stop ( timer ) ;
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) {
+        timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ;
+        snd_timer_reschedule ( timer , 0 ) ;
+        if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) {
+            timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ;
+            timer -> hw . start ( timer ) ;
+        }
+    }
+}
+if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ;
+spin_unlock_irqrestore ( & timer -> lock , flags ) ;
+
+__end :
+if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ;
+return 0 ;
+}",540,-23.63168356794971,-0.04376237697768465
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( !timeri || !timeri->timer ) return - EINVAL ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",495,-13.067749030997554,-0.02639949299191425
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; }
+
+// Add input validation
+if(event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION) {
+  return -EINVAL;
+}
+
+timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : 
+
+// Add input validation
+if(event != SNDRV_TIMER_EVENT_RESOLUTION) {
+  snd_timer_notify1 ( timeri , event ) ;
+}
+return 0 ; 
+}",547,-24.87432608319139,-0.045474087903457756
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri || timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { return - ENXIO ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; if ( event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) { return - EINVAL ; } spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",432,-10.720659044216934,-0.02481634038013179
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+
+// Added input validation to ensure that timeri is valid.
+if ( timeri == NULL || snd_BUG_ON ( ! timeri ) ) return - ENXIO ;
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; 
+
+// Added input validation to ensure that timer is valid.
+if ( timer == NULL || ! timer ) return - EINVAL ; 
+
+spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",533,-23.551211524044597,-0.04418613794379849
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri )) return - ENXIO ; if ( event < 0 || event >= SNDRV_TIMER_EVENT_MAX ) return -EINVAL; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",514,-17.655140097326182,-0.03434852159012876
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+// Add input validation check
+if ( snd_BUG_ON ( ! timeri ) || event < 0 || event > SNDRV_TIMER_EVENT_RESOLUTION ) return - ENXIO ; 
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",520,-17.1179385657307,-0.03291911262640519
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if (timeri == NULL ) return - ENXIO ; if ( ! ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) ) { if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; timer = timeri -> timer ; if ( timer == NULL ) return - EINVAL ;  if ( event != SNDRV_TIMER_EVENT_RESOLUTION && event != SNDRV_TIMER_EVENT_START && event != SNDRV_TIMER_EVENT_STOP && event != SNDRV_TIMER_EVENT_CONTINUE && event != SNDRV_TIMER_EVENT_PAUSE ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ;  snd_timer_notify1 ( timeri , event ) ; return 0 ; } 
+else { 
+    if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } 
+    snd_timer_notify1 ( timeri , event ) ; 
+    return 0 ; } 
+}",605,-53.31286848170213,-0.08812044377140849
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) {
+  struct snd_timer * timer ; 
+  unsigned long flags ; 
+  int ret = 0;
+  
+  if ( timeri == NULL ) {
+    ret = - ENXIO ;
+    goto __end ;
+  }
+
+  if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { 
+    if ( ! keep_flag ) { 
+      spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+      timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; 
+      spin_unlock_irqrestore ( & slave_active_lock , flags ) ; 
+    } 
+    goto __end ;
+  } 
+  timer = timeri -> timer ; 
+  if ( ! timer ) {
+    ret = - EINVAL ;
+    goto __end ;
+  }
+  spin_lock_irqsave ( & timer -> lock , flags ) ; 
+  list_del_init ( & timeri -> ack_list ) ; 
+  list_del_init ( & timeri -> active_list ) ; 
+  if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { 
+    timer -> hw . stop ( timer ) ; 
+    if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { 
+      timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; 
+      snd_timer_reschedule ( timer , 0 ) ; 
+      if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { 
+        timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; 
+        timer -> hw . start ( timer ) ; 
+      } 
+    } 
+  } 
+  if ( ! keep_flag ) 
+    timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; 
+  spin_unlock_irqrestore ( & timer -> lock , flags ) ; 
+ __end : 
+  if ( ret == 0 && event != SNDRV_TIMER_EVENT_RESOLUTION ) 
+    snd_timer_notify1 ( timeri , event ) ; 
+  return ret; }",617,-47.060088695873624,-0.07627242900465742
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:"," 
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+
+//Add input validation to ensure timeri is valid
+if ( snd_BUG_ON ( ! timeri ) || (timeri->flags & SNDRV_TIMER_IFLG_SLAVE) == 0) return - ENXIO ; 
+
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } 
+
+timer = timeri -> timer ; 
+
+//Add input validation to ensure timer is valid
+if ( ! timer || snd_BUG_ON ( ! timeri ) ) return - EINVAL ; 
+
+spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",562,-32.06909656281048,-0.057062449400018644
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri || timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { return - ENXIO ; } if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",471,-10.051475041732091,-0.021340711341257094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if (timeri == NULL || timeri->flags & ~SNDRV_TIMER_IFLG_SLAVE){ return - ENXIO ; } if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",504,-15.757808449749893,-0.031265492955852965
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } if (!event || !(event != SNDRV_TIMER_EVENT_RESOLUTION)) { return -EINVAL; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",519,-20.221271839987274,-0.038961988130996675
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; 
+if (timeri == NULL) return -ENXIO;
+if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; 
+//Added input validation check
+if((timeri->flags & SNDRV_TIMER_IFLG_RUNNING) == 0) return -EINVAL; 
+timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; 
+//Added input validation check
+if((timeri->flags & SNDRV_TIMER_IFLG_RUNNING) == 0) return -EINVAL; 
+list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } 
+//Added input validation check
+if(((timeri->flags & SNDRV_TIMER_IFLG_RUNNING) == 0) || !keep_flag) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",602,-55.901822747076984,-0.09286017067620761
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri || timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { return - ENXIO ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }",401,-7.850137559361532,-0.01957640289117589
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( snd_BUG_ON ( ! timeri ) ) return - ENXIO ; if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : if ( event != SNDRV_TIMER_EVENT_RESOLUTION ) snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+Fixed code:","
+static int _snd_timer_stop ( struct snd_timer_instance * timeri , int keep_flag , int event ) { struct snd_timer * timer ; unsigned long flags ; if ( ! timeri ) return - ENXIO ; if ( event != SNDRV_TIMER_EVENT_RESOLUTION && event >= 0 && event < SNDRV_TIMER_EVENT_LAST ) { if ( timeri -> flags & SNDRV_TIMER_IFLG_SLAVE ) { if ( ! keep_flag ) { spin_lock_irqsave ( & slave_active_lock , flags ) ; timeri -> flags &= ~ SNDRV_TIMER_IFLG_RUNNING ; spin_unlock_irqrestore ( & slave_active_lock , flags ) ; } goto __end ; } timer = timeri -> timer ; if ( ! timer ) return - EINVAL ; spin_lock_irqsave ( & timer -> lock , flags ) ; list_del_init ( & timeri -> ack_list ) ; list_del_init ( & timeri -> active_list ) ; if ( ( timeri -> flags & SNDRV_TIMER_IFLG_RUNNING ) && ! ( -- timer -> running ) ) { timer -> hw . stop ( timer ) ; if ( timer -> flags & SNDRV_TIMER_FLG_RESCHED ) { timer -> flags &= ~ SNDRV_TIMER_FLG_RESCHED ; snd_timer_reschedule ( timer , 0 ) ; if ( timer -> flags & SNDRV_TIMER_FLG_CHANGE ) { timer -> flags &= ~ SNDRV_TIMER_FLG_CHANGE ; timer -> hw . start ( timer ) ; } } } if ( ! keep_flag ) timeri -> flags &= ~ ( SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START ) ; spin_unlock_irqrestore ( & timer -> lock , flags ) ; __end : snd_timer_notify1 ( timeri , event ) ; return 0 ; }
+}
+
+The original code does not validate the input for the parameter 'event'. This could lead to an attacker being able to pass in malicious input which would compromise the system.
+
+The fixed code includes a check to ensure that the input for the 'event' parameter is valid before proceeding. The code also checks to make sure that 'timeri' is not null before proceeding, which can help to prevent further issues.",588,-89.48140556346887,-0.15217926116236202

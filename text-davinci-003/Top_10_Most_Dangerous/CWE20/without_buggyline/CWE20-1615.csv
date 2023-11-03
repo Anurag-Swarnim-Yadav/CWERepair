@@ -1,0 +1,472 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = NULL; if (!data || !*data) return 1; options = ( char * ) * data ; if ( strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; if (strlen(options) == 0) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",226,-17.950416392102106,-0.07942662120399162
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; 
+options += 3 ; 
+if ( ! isdigit(*options) ) { 
+ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; 
+} 
+sb_block = simple_strtoul ( options , & options , 0 ) ; 
+if ( * options && * options != ',' ) { 
+ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; 
+} 
+if ( * options == ',' ) options ++ ; 
+* data = ( void * ) options ; 
+return sb_block ; 
+}",236,-20.529886540316394,-0.0869910446623576
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; /* Validate the input before conversion to unsigned int */ if ( ! isdigit(options[0]) ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",226,-26.7758673903815,-0.11847728933797123
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; char * endptr ; sb_block = strtoul ( options , & endptr , 0 ) ; if ( endptr == options || * endptr && * endptr != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * endptr == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",183,-7.872023715862298,-0.043016523037498894
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; 
+
+//Check if the options is not NULL and that the string begins with 'sb=', if not return an error.
+if (!options || strncmp(options, ""sb="", 3) != 0) {
+    ext3_msg(sb, ""error: invalid sb specification: %s"", (char *) *data);
+    return 1;
+}
+
+//Parse the input for the fsblk_t sb_block.
+options += 3;
+sb_block = simple_strtoul(options, &options, 0);
+
+//Check if the string is valid and has a comma at the end before returning.
+if (*options && *options != ',') {
+    ext3_msg(sb, ""error: invalid sb specification: %s"", (char *) *data);
+    return 1;
+} 
+
+//Update data to the remaining options
+if (*options == ',') options++;
+*data = (void *) options;
+return sb_block;
+}",279,-101.96373054973947,-0.3654613998198547
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 0 ; options += 3 ; if (!isalphanumeric(options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",213,-17.609667609893812,-0.0826744958210977
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 0 ; options += 3 ; //changed return 1 to 0 sb_block = simple_strtoul ( options , & options , 0 ) ; //check for invalid input if (sb_block < 0 || sb_block > UINT_MAX || * options && * options != ',') { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; // changed return 1 to 0 } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",204,-35.557528692778185,-0.17430161123910876
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; // Validate input before performing a conversion. if (!validateInput(options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+
+static bool validateInput(char *options) {
+  if (options == null) {
+    return false;
+  }
+  for (int i = 0; i < strlen(options); i++) {
+    if (!isdigit(options[i])) {
+      return false;
+    }
+  }
+  return true;
+}",301,-38.58646122233222,-0.12819422333000738
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 || strlen(options) > 8 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",179,-7.897149471526899,-0.044118153472217314
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; char *endptr; sb_block = strtoul(options, &endptr, 0); if (endptr == options || *endptr != '\0') { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } *data = (void *)endptr; return sb_block ; }",167,-13.618865366483504,-0.08155009201487129
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 0 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; //Validate that sb_block is within bounds if ( sb_block < 0 || sb_block > MAX_BLOCKS ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",235,-26.909864731130092,-0.11451006268565997
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; char *endptr; sb_block = strtoul(options, &endptr, 0); if(endptr == options || *endptr != '\0') { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",179,-15.686522380997111,-0.08763420324579392
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; char * endptr = NULL; sb_block = strtoul ( options , &endptr , 0 ) ; if ( * endptr != '\0' && * endptr != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * endptr == ',' ) endptr ++ ; * data = ( void * ) endptr ; return sb_block ; }",187,-11.8250650327344,-0.06323564188628021
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { 
+    ext3_fsblk_t sb_block ; 
+    char * options = ( char * ) * data ;
+    if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ;
+    
+    options += 3 ;
+    char *endPtr = NULL;
+    sb_block = strtoul(options, &endPtr, 0);
+    if(*endPtr && *endPtr != ',') {
+        ext3_msg(sb, ""error: invalid sb specification: %s"", (char *) *data);
+        return 1;
+    }
+    
+    if(*endPtr == ',') 
+        options++;
+    *data = (void *) options; 
+    return sb_block; 
+}",209,-39.4483741600631,-0.18874820172278997
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; 
+if (strlen(options) > 3) {
+    options += 3 ; 
+    sb_block = simple_strtoul ( options , & options , 0 ) ; 
+    if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } 
+    if ( * options == ',' ) options ++ ; * data = ( void * ) options ; 
+    return sb_block ;
+  } else {
+    return 1; 
+  }
+}",213,-24.698054434849805,-0.11595330720586763
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strnlen(options, 3)!=3 || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if (*options != '\0' && *options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",186,-24.887295194854694,-0.13380266233792845
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return -1 ; options += 3 ; if (!is_number(options)){ ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return -1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return -1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+
+static bool is_number(const char *str) 
+{ 
+    for (int i = 0; i < strlen(str); i++) 
+        if (isdigit(str[i]) == false) 
+            return false; 
+  
+    return true; 
+}",283,-20.767237861593593,-0.07338246594202683
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; 
+
+//Add validation to check if the input is a valid number
+if (!isdigit(options[3])) {
+    ext3_msg(sb, ""error: invalid sb specification: %s"", (char *) *data);
+    return 1;
+}
+
+options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",235,-24.197237446196493,-0.10296696785615529
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options ) return 1 ; if (strncmp ( options , ""sb="" , 3 ) != 0 ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",206,-8.694127996755505,-0.042204504838618956
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; if(!isdigit(options)){ ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",213,-9.042433654761894,-0.04245274016320138
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return -1 ; options += 3 ; if (!isdigit(*options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return -1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return -1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",215,-7.336775239928203,-0.03412453599966606
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; // Validate input before converting to long sb_block if ( ! isdigit ( * options ) ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",226,-19.912127445506183,-0.08810675860843444
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; if ( ! isdigit ( options ) ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",213,-7.273920186323397,-0.03414986002968731
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block(void** data, struct super_block* sb) {
+    ext3_fsblk_t sb_block;
+    char* options = (char*) *data;
+    if (!options || strncmp(options, ""sb="", 3) != 0) {
+        return 1;
+    }
+    if (strlen(options + 3) > 14) {
+        ext3_msg(sb, ""error: invalid sb specification: %s"", (char*) *data);
+        return 1;
+    }
+    options += 3;
+    sb_block = simple_strtoul(options, &options, 0);
+    if (*options && *options != ',') {
+        ext3_msg(sb, ""error: invalid sb specification: %s"", (char*) *data);
+        return 1;
+    }
+    if (*options == ',') {
+        options++;
+    }
+    *data = (void*)options;
+    return sb_block;
+}",245,-28.104821796244906,-0.11471355835202002
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } 
+if ( * options && * options != ',' ) { 
+    return 0; 
+}
+
+if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",196,-24.8167877021025,-0.12661626378623725
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",201,-4.864704051176997,-0.02420250771729849
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { 
+    ext3_fsblk_t sb_block ; 
+    char * options = ( char * ) * data ; 
+    if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) 
+        return 1 ; 
+    options += 3 ; 
+    char* endptr;
+    sb_block = strtoul ( options , &endptr , 0 ) ; 
+    if (endptr == options || * endptr && * endptr != ',' ) { 
+        ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; 
+        return 1 ; 
+    } 
+    if ( * endptr == ',' ) 
+        endptr ++ ; 
+    * data = ( void * ) endptr ; 
+    return sb_block ; 
+}",231,-18.24525027989761,-0.0789837674454442
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; //Add input validation to prevent null pointer dereference if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; //Add input validation to prevent buffer overflow if (strlen(options) > 3) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",232,-27.68972372122254,-0.11935225741906266
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 0 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',') { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",171,-11.561281398073998,-0.06760983273727485
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",201,-8.714521618995898,-0.043355828950228346
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+
+static ext3_fsblk_t get_sb_block(void** data, struct super_block* sb) {
+    ext3_fsblk_t sb_block;
+    char* options = (char*) *data;
+    if (!options || strncmp(options, ""sb="", 3) != 0) 
+        return -1;  //return an invalid value to indicate an error
+
+    options += 3;
+    char* endptr;
+    sb_block = (ext3_fsblk_t) strtol(options, &endptr, 0);  //use strtol with endptr to validate input 
+    if (*endptr && *endptr != ',') {
+        ext3_msg(sb, ""error: invalid sb specification: %s"", (char*) *data);
+        return -1; //return an invalid value to indicate an error
+    }
+    if (*endptr == ',') 
+        endptr++;
+    *data = (void*) endptr;
+    return sb_block;
+}",246,-49.20248367034749,-0.20001009622092475
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; 
+
+options += 3 ; 
+
+//input validation
+if ( ! options || ! isdigit ( * options ) ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; }
+
+sb_block = simple_strtoul ( options , & options , 0 ) ; 
+
+//input validation
+if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } 
+
+if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",238,-25.622027892842898,-0.10765557938169285
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; else { options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } else if ( * options == ',' ) { options ++ ; * data = ( void * ) options ; return sb_block ; } else { return 0; // Input validation failed. } } }",188,-23.87985463639,-0.1270205033850532
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return -1 ; options += 3 ; char *endptr; sb_block = strtoul ( options , &endptr , 0 ) ; if ( endptr == options || (*endptr != '\0' && *endptr != ',')) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return -1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",189,-17.312509237013995,-0.09160057797361902
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; char * endptr = NULL; sb_block = strtoul ( options , & endptr , 0 ) ; if ( endptr == NULL || endptr == options || * endptr != '\0' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } * data = ( void * ) options ; return sb_block ; }",176,-16.768712024935205,-0.09527677286895003
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; char *endptr = NULL; sb_block = strtoul ( options , &endptr , 0 ) ; if ( endptr == NULL || *endptr != '\0' || *options == '\0' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",190,-17.41950937538189,-0.09168162829148363
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 0 ; options += 3 ; options = strtok(options, "",""); sb_block = strtol ( options , & options , 0 ) ; if (errno == ERANGE || errno == EINVAL) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; }  * data = ( void * ) options ; return sb_block ; }",174,-25.72422320732331,-0.14784036326047878
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ;
+
+// Added additional input validation before calling simple_strtoul()
+if (strlen(options) > 10 || !isdigit(options)) {
+    ext3_msg (sb ,""error: Invalid sb specification: %s"", (char *) *data);
+    return 1;
+}
+
+sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",238,-46.78135267512317,-0.1965603053576604
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; char *endptr; 
+sb_block = strtoul(options, &endptr, 0); if(*endptr != '\0' && *endptr != ',') { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * endptr == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",182,-17.215463518705796,-0.09459045889398789
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 0 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",171,-4.8495129296320005,-0.02835972473469006
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:"," 
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; //Added this line to check if the input is valid. if(!isdigit(options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",226,-25.9591397485215,-0.1148634502146969
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ;
+
+options += 3 ; char *endptr; sb_block = strtoul(options, &endptr, 0); if (endptr == options || *endptr != '\0') { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if (*endptr == ',') options ++ ; * data = ( void * ) options ; return sb_block ; }",180,-21.2032477993191,-0.11779582110732834
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return -1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return -1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",173,-5.920936408128803,-0.03422506594294106
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; if (!isdigit(*options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",212,-6.357757803510436,-0.02998942360146432
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 0 ; options += 3 ; if (!isdigit(options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 0 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",212,-8.295005758571602,-0.03912738565363963
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; // Only allow integer values for the sb_block if (!isdigit(options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",223,-22.32540911581831,-0.10011394222340049
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; if (!options || !isdigit(options)) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",215,-10.781836024903296,-0.050148074534433935
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { 
+ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; 
+if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) 
+return 1 ; 
+options += 3 ; 
+if(!isdigit(options[0])) {
+    ext3_msg(sb, ""error: invalid sb specification: %s"", (char *) *data);
+    return 1;
+}
+sb_block = simple_strtoul ( options , & options , 0 ) ; 
+
+if ( * options && * options != ',' ) {
+    ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ;
+    return 1 ; 
+}
+if ( * options == ',' ) options ++ ; 
+* data = ( void * ) options ; return sb_block ; 
+}",241,-38.01079360365292,-0.1577211352848669
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; 
+
+//Checking if the value of data is not NULL 
+if (data == NULL)
+    return 1;
+
+//Checking if the length of options is less than 3
+char * options = ( char * ) * data ; 
+if ( ! options || strlen(options) < 3 || strncmp ( options , ""sb="" , 3 ) != 0 ) 
+    return 1 ; 
+
+options += 3 ; 
+
+//Checking if the string contains valid integer
+if(!isdigit(*options)){
+    ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; 
+    return 1 ; 
+}
+
+sb_block = simple_strtoul ( options , & options , 0 ) ; 
+if ( * options && * options != ',' ) { 
+    ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; 
+    return 1 ; 
+} 
+
+if ( * options == ',' ) options ++ ; 
+
+* data = ( void * ) options ; 
+
+return sb_block ; }",311,-66.92933491658597,-0.21520686468355618
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; sb_block = simple_strtoul ( options , & options , 0 ) ; if ( * options && * options != ',' ) { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }
+Fixed code:","
+static ext3_fsblk_t get_sb_block ( void * * data , struct super_block * sb ) { ext3_fsblk_t sb_block ; char * options = ( char * ) * data ; if ( ! options || strncmp ( options , ""sb="" , 3 ) != 0 ) return 1 ; options += 3 ; if (!options) return 1; char * endptr; sb_block = strtoul(options, &endptr, 0); if (*endptr && *endptr != ',') { ext3_msg ( sb , ""error: invalid sb specification: %s"" , ( char * ) * data ) ; return 1 ; } if ( * options == ',' ) options ++ ; * data = ( void * ) options ; return sb_block ; }",182,-18.8326366979559,-0.1034760258129445

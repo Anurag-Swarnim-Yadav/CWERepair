@@ -1,0 +1,537 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if (w > 0 && h > 0) {
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+}
+}",301,-10.136991795464098,-0.03367771360619302
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+ if (w > 0 && h > 0 && action != NULL) {
+  outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+ }
+}",307,-11.492777171805207,-0.03743575625995181
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if (w > 0 && h > 0 && action != NULL) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",317,-10.118229241695706,-0.03191870423247857
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if ( (w <= 0) || (h <= 0) || (action == NULL) ) { printf ( ""Invalid input parameters!"" ) ; return ; } 
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}",329,-30.303357871460996,-0.092107470733924
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+  if (action == NULL) {
+    return;
+  }
+  outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",302,-9.233408025362804,-0.030574198759479483
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+  if (w > 0 && h > 0) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+  }
+}",309,-6.996745202804706,-0.022643188358591283
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval(double w, double h, char *action) {
+  if (w > 0 && h > 0) {
+    outpos += sprintf(outpos, "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"", -w, -w, h * BzK, -w * BzK, h, h);
+    outpos += sprintf(outpos, "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"", w * BzK, h, w, h * BzK, w);
+    outpos += sprintf(outpos, "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"", w, -h * BzK, w * BzK, -h, -h);
+    outpos += sprintf(outpos, "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"", -w * BzK, -h, -w, -h * BzK, -w, action);
+  }
+}",301,-9.051571416585315,-0.03007166583583161
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+if (w <= 0 || h <= 0 || action == NULL) {
+exit(0);
+}
+ outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",308,-20.062871471040776,-0.06513919308779473
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if(w > 0 && h > 0) {
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}
+else {
+printf(""Error: w and h must be greater than 0."");
+}
+}",328,-17.801003274053194,-0.05427135144528413
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    if (!action) return;
+	if (w < 0 || h < 0) return;
+	
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}",313,-19.16324326305846,-0.06122441937079381
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if (w >= 0 && h >= 0) { 
+	outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+	outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+	outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+	outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",314,-15.221453873163103,-0.04847596774892708
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if (w > 0 && h > 0 && action != null) {
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+}
+else{
+  throw new IllegalArgumentException(""Invalid input parameters"");
+}
+}",323,-28.28990206809879,-0.08758483612414486
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+
+if (!w || !h || !action) 
+   return; 
+
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",305,-15.333194537984598,-0.05027276897699868
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    if (w > 0 && h > 0 && action != NULL) {
+        outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+    }
+}",309,-9.094007254911903,-0.029430444190653406
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if (w > 0 && h > 0) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+  }
+}",310,-8.823431322362293,-0.028462681685039654
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if (!action) return;
+  outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+  outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+  outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+  outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}",306,-9.058845046358007,-0.029604068778947737
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+    
+    if (w < 0 || h < 0 || action == NULL) {
+        return;
+    }
+    
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}",316,-11.766632192549801,-0.03723617782452469
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if (w > 0 && h > 0 && action != NULL) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",318,-6.679972447195406,-0.021006202664136497
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if(w > 0 && h > 0 && action != NULL) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",318,-7.910590484416996,-0.024876070705713824
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+
+if (w >= 0 && h >= 0 && action != NULL) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  } 
+}",319,-15.522691148363412,-0.048660473819321044
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { if(w > 0 && h > 0){ outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; } }",295,-7.508040853398812,-0.025450985943724788
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+    if (w > 0 && h > 0 && action != NULL) {
+        outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+    }
+}",317,-7.670224420879299,-0.024196291548515138
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+
+// Ensure w and h are greater than 0
+if (w <= 0 || h <= 0) {
+    return;
+}
+
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",316,-16.54863146066039,-0.052369086900824015
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval(double w , double h , char * action) {
+     if (w >= 0 && h >= 0 && action != NULL) {
+        outpos += sprintf (outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ;
+        outpos += sprintf (outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ;
+        outpos += sprintf (outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ;
+        outpos += sprintf (outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+    }
+}",313,-26.11793113204441,-0.0834438694314518
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    if(w >= 0 && h >= 0) {
+        outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+    }
+}",314,-9.270782496682902,-0.029524785021283126
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { if (w > 0 && h > 0 && strlen(action) > 0) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; } }",304,-8.7553348331023,-0.028800443529941776
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    if (w > 0 && h > 0) {
+        outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+    }
+}",314,-6.792834777073711,-0.0216332317741201
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    if(w < 0 || h < 0) {
+        return;
+    }
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}",309,-10.384106648387908,-0.033605523133941446
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { // Validate inputs before proceeding if (w <= 0 || h <= 0) { return; } outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",304,-17.61249605288309,-0.05793584227922068
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if (w < 0 || h < 0 || action == NULL) {
+    return;
+}
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",308,-9.770384325663692,-0.031722027031375624
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { if ( action != NULL ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; } }",292,-7.497509947379502,-0.025676403929381857
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if (w <= 0 || h <= 0){
+  return;
+}
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",303,-12.130448117779121,-0.04003448223689479
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if (w > 0 && h > 0 && action != NULL){
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",308,-11.035805025932211,-0.0358305357984812
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+if (w <= 0 || h <= 0 || action == null) {
+return;
+}
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",307,-19.626898346738074,-0.06393126497308818
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+	if ( w > 0 && h > 0 ) {
+		outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+		outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+		outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+		outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+	}
+}",318,-10.011314936425608,-0.03148212244158996
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+    if (w > 0 && h > 0){
+        outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ;
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ;
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ;
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+    }
+}",309,-11.554926751959098,-0.037394584957796434
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { if(w && h && action){ outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; } }",293,-11.129662230804911,-0.03798519532697922
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:"," 
+void BezierOval ( double w , double h , char * action ) {
+if(w > 0 && h > 0 && action != NULL) {
+outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}
+else {
+//error handling
+}
+}",315,-20.880305955655306,-0.0662866855735089
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    if(w > 0 && h > 0 && action != nullptr) {
+        outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+    }
+ }",318,-15.086607477284106,-0.047442161878251905
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+  if (w > 0 && h > 0 && action != NULL) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",317,-6.8183344001138,-0.021508941325280126
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if (w <= 0 || h <= 0) {
+    return;
+  }
+  outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",307,-8.506195734273502,-0.02770747796180294
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    if (w > 0 && h > 0 && action != NULL) {
+        outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+    }
+}",318,-6.6564986036659,-0.020932385546119182
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+  double BzK;
+  if (w == 0 && h == 0) {
+    BzK = 0;
+  }
+  else {
+    BzK = 4 * (sqrt(2) - 1) / 3;
+  }
+  outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",344,-22.876664009519633,-0.06650193026023149
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+    // Sanitize the input
+    if (w <= 0 || h <= 0 || action == NULL) {
+        return;
+    }
+
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}",330,-17.595354708793273,-0.05331925669331295
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if ( w > 0 && h > 0 ) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+  } else {
+    //handle error
+  }
+}",314,-19.11436891165884,-0.06087378634286255
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if (w < 0 || h < 0) {
+    return;
+  }
+
+  outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+  outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+  outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+  outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+}",318,-9.477810724327808,-0.029804436240024556
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+ // Adding input validation
+ if (w <= 0 || h <= 0 || action == NULL) {
+    return;
+ }
+ outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }",313,-22.53495174385446,-0.07199665093883215
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+  if (w > 0 && h > 0 && action != NULL) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ;
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ;
+  } else {
+    //handle error and return
+  }
+}",325,-21.8762248012367,-0.06731146092688214
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) { 
+  if (w > 0 && h > 0 && strlen(action) <= MAX_STRING_LEN) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",328,-17.318722813282147,-0.05280098418683581
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void BezierOval ( double w , double h , char * action ) { outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; }
+Fixed code:","
+void BezierOval ( double w , double h , char * action ) {
+  if (action != NULL) {
+    outpos += sprintf ( outpos , "" %12.3f 0 m %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , - w , - w , h * BzK , - w * BzK , h , h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c\\n"" , w * BzK , h , w , h * BzK , w ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f 0 %12.3f c\\n"" , w , - h * BzK , w * BzK , - h , - h ) ; 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f %12.3f 0 c %s\\n"" , - w * BzK , - h , - w , - h * BzK , - w , action ) ; 
+  }
+}",309,-7.962773061773008,-0.025769492109297763

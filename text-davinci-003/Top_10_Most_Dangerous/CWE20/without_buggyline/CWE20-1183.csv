@@ -1,0 +1,834 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) {
+    uint16_t value ;
+    TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+    if ( interface -> phyAddr == 0 || interface -> phyAddr > 32 ) {
+        interface -> phyAddr = TJA1101_PHY_ADDR ;
+    }
+    if ( interface -> smiDriver != NULL ) {
+        interface -> smiDriver -> init ( ) ;
+    }
+    if ( interface -> extIntDriver != NULL ) {
+        interface -> extIntDriver -> init ( ) ;
+    }
+    tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ;
+    while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) {
+    }
+    tja1101DumpPhyReg ( interface ) ;
+    value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ;
+    value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ;
+    tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ;
+    value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ;
+    value &= ~ TJA1101_CONFIG1_MII_MODE ;
+    value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ;
+    tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ;
+    value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ;
+    value |= TJA1101_COMM_CTRL_AUTO_OP ;
+    tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ;
+    interface -> phyEvent = TRUE ;
+    osSetEvent ( & netEvent ) ;
+    return NO_ERROR ;
+} 
+The code has been fixed by adding an additional conditional statement to check if the phyAddr is equal to 0 or greater than 32. This ensures that only valid values are accepted and prevents any invalid input from being accepted and potentially exploited.",578,-55.64815672871686,-0.09627708776594612
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ;
+
+//Validate interface
+if (interface == NULL || interface->smiDriver == NULL || interface->extIntDriver == NULL){
+  return ERROR; 
+}
+
+if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; }
+
+//Validate smiDriver and extIntDriver
+if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; }
+
+if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; }
+
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",517,-34.53947532400841,-0.06680749579111878
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; 
+
+// Added validation of phyAddr
+if ( interface -> phyAddr < 32 ) { TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+else {
+	return ERROR;
+}
+}",466,-25.53986618331242,-0.05480657979251592
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { 
+uint16_t value ; 
+TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+if ( interface -> phyAddr <= 31 ) { 
+    interface -> phyAddr = TJA1101_PHY_ADDR ; 
+} 
+if ( interface -> smiDriver != NULL ) { 
+    interface -> smiDriver -> init ( ) ; 
+} 
+if ( interface -> extIntDriver != NULL ) { 
+    interface -> extIntDriver -> init ( ) ; 
+} 
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } 
+tja1101DumpPhyReg ( interface ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+interface -> phyEvent = TRUE ; 
+osSetEvent ( & netEvent ) ; 
+return NO_ERROR ; 
+}",520,-17.130379551743115,-0.03294303759950599
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //Input Validation if ( interface -> phyAddr >= 32 || interface -> phyAddr < 0) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",474,-16.720490127200524,-0.03527529562700533
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+//Added validation to check for valid range of interface->phyAddr
+if ( interface -> phyAddr < 0 || interface -> phyAddr >= 32 ) { 
+    interface -> phyAddr = TJA1101_PHY_ADDR ; 
+} 
+
+if ( interface -> smiDriver != NULL ) { 
+    interface -> smiDriver -> init ( ) ; 
+} 
+
+if ( interface -> extIntDriver != NULL ) { 
+    interface -> extIntDriver -> init ( ) ; 
+} 
+
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+
+while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } 
+
+tja1101DumpPhyReg ( interface ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+interface -> phyEvent = TRUE ; 
+osSetEvent ( & netEvent ) ; 
+return NO_ERROR ; 
+}",546,-26.80405219788479,-0.04909167069209668
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init(NetInterface *interface) {
+    uint16_t value;
+    TRACE_INFO(""Initializing TJA1101...\r\n"");
+
+    // Validate the PHY address
+    if (interface->phyAddr < 0 || interface->phyAddr > 32)
+    {
+        interface->phyAddr = TJA1101_PHY_ADDR;
+    }
+
+    if (interface->smiDriver != NULL)
+    {
+        interface->smiDriver->init();
+    }
+
+    if (interface->extIntDriver != NULL)
+    {
+        interface->extIntDriver->init();
+    }
+
+    tja1101WritePhyReg(interface, TJA1101_BASIC_CTRL, TJA1101_BASIC_CTRL_RESET);
+
+    while (tja1101ReadPhyReg(interface, TJA1101_BASIC_CTRL) & TJA1101_BASIC_CTRL_RESET)
+    {
+    }
+
+    tja1101DumpPhyReg(interface);
+    value = tja1101ReadPhyReg(interface, TJA1101_EXTENDED_CTRL);
+    value |= TJA1101_EXTENDED_CTRL_CONFIG_EN;
+    tja1101WritePhyReg(interface, TJA1101_EXTENDED_CTRL, value);
+    value = tja1101ReadPhyReg(interface, TJA1101_CONFIG1);
+    value &= ~TJA1101_CONFIG1_MII_MODE;
+    value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ;
+    tja1101WritePhyReg(interface, TJA1101_CONFIG1, value);
+    value = tja1101ReadPhyReg(interface, TJA1101_COMM_CTRL);
+    value |= TJA1101_COMM_CTRL_AUTO_OP;
+    tja1101WritePhyReg(interface, TJA1101_COMM_CTRL, value);
+    interface->phyEvent = TRUE;
+    osSetEvent(&netEvent);
+    return NO_ERROR;
+}",523,-18.447235635092174,-0.03527196106136171
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+if ( interface -> phyAddr >= 32 ) { return ERROR ; } 
+
+if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } 
+
+if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } 
+
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+
+while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } 
+
+tja1101DumpPhyReg ( interface ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+
+value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+
+tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+
+value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+
+value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+
+tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+
+value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+
+tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+
+interface -> phyEvent = TRUE ; 
+
+osSetEvent ( & netEvent ) ; 
+
+return NO_ERROR ; }",503,-16.465759254289605,-0.03273510786141075
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //Validate phyAddr if ( interface -> phyAddr < 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",468,-9.147089576776331,-0.019545063198240023
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+// Validate the PHY address  
+if (interface->phyAddr < 0 || interface->phyAddr > 31){
+  interface->phyAddr = TJA1101_PHY_ADDR;
+}
+
+if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } 
+if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } 
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",496,-34.77092300298772,-0.0701026673447333
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr > 32 ) { // Validate the PHY address // Return an error return ERROR ; } if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",488,-19.182515281180574,-0.03930843295323888
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+//Added input validation check
+if ( interface -> phyAddr >= 32 || interface -> phyAddr < 0 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } 
+if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",480,-14.981938251193043,-0.031212371356652172
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if (interface -> phyAddr < 32) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",461,-9.245937168238916,-0.02005626283782845
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; 
+
+//Added check to ensure valid input
+if (interface == NULL) {
+    return ERROR;
+}
+
+TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+//Added check to ensure valid input
+if ( interface -> phyAddr >= 32 ) { 
+    return ERROR;
+}
+
+if ( interface -> smiDriver != NULL ) { 
+    interface -> smiDriver -> init ( ) ; 
+} 
+
+if ( interface -> extIntDriver != NULL ) { 
+    interface -> extIntDriver -> init ( ) ; 
+} 
+
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+
+while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } 
+
+tja1101DumpPhyReg ( interface ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+interface -> phyEvent = TRUE ; 
+osSetEvent ( & netEvent ) ; 
+return NO_ERROR ; 
+}",540,-26.462847297438746,-0.049005272773034715
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 || interface->phyAddr < 0 ) { //add check to make sure the phyAddr is not below 0 
+interface -> phyAddr = TJA1101_PHY_ADDR ;
+} if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",487,-28.69659077393485,-0.058925237728819
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 || interface -> phyAddr < 0) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",470,-5.774584109065657,-0.012286349168224802
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { 
+    uint16_t value ; 
+    TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+    if ( interface -> phyAddr < 32 ) { 
+        interface -> phyAddr = TJA1101_PHY_ADDR ; 
+    } 
+    if ( interface -> smiDriver != NULL ) { 
+        interface -> smiDriver -> init ( ) ; 
+    } 
+    if ( interface -> extIntDriver != NULL ) { 
+        interface -> extIntDriver -> init ( ) ; 
+    } 
+    tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+    while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { 
+    } 
+    tja1101DumpPhyReg ( interface ) ; 
+    value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+    value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+    tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+    value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+    value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+    value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+    tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+    value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+    value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+    tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+    interface -> phyEvent = TRUE ; 
+    osSetEvent ( & netEvent ) ; 
+    return NO_ERROR ; 
+}",547,-9.242274330387241,-0.016896296764876126
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //check if the address is within valid range if ( interface -> phyAddr < 32 ) { //if not, initialize the address to the default value interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",481,-29.164632810471247,-0.06063333224630197
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; // Check for valid phy address if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; // Check for valid configuration value if ( ( value & TJA1101_CONFIG1_MII_MODE ) != TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ) { value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; } value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",518,-25.40917965404643,-0.049052470374607006
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+//Added this line to check for valid phyAddr
+if ( interface -> phyAddr < 32 ) { 
+  interface -> phyAddr = TJA1101_PHY_ADDR ; 
+} if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",481,-24.947486107298637,-0.05186587548294935
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //Added input validation to make sure the input is within bounds if ( interface -> phyAddr < 0 || interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",482,-22.80387100295309,-0.04731093569077405
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //Add validation check to ensure phyAddr does not exceed max set value if ( interface -> phyAddr >= 32 ) { return ERROR_INVALID_PARAMETER; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",471,-31.96154127635865,-0.0678588986759207
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { 
+	uint16_t value ; 
+	
+	// Validate the interface
+	if (interface == NULL) {
+		return ERROR;
+	}
+	
+	TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+	
+	// Check if the address is between 0 and 32
+	if ( interface->phyAddr < 0 || interface->phyAddr >= 32 ) { 
+		interface->phyAddr = TJA1101_PHY_ADDR ; 
+	} 
+	
+	if ( interface->smiDriver != NULL ) { 
+		interface->smiDriver->init ( ) ; 
+	} 
+	
+	if ( interface->extIntDriver != NULL ) { 
+		interface->extIntDriver->init ( ) ; 
+	} 
+	
+	tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+	
+	while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { 
+	} 
+	
+	tja1101DumpPhyReg ( interface ) ; 
+	value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+	value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+	tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+	
+	value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+	value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+	value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+	tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+	
+	value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+	value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+	tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+	
+	interface->phyEvent = TRUE ; 
+	osSetEvent ( & netEvent ) ; 
+	
+	return NO_ERROR ; 
+}",616,-42.87683009372505,-0.06960524365864455
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; 
+ TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+ // Fix: Validate the PHY address
+ if ( interface -> phyAddr >= 32 || interface->phyAddr <= 0 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } 
+ if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } 
+ if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } 
+ tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",489,-33.81739923838747,-0.06915623566132408
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //Added input validation if ( interface->phyAddr >= 0 && interface->phyAddr < 32 ) { if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+}
+
+The fixed code adds an input validation for the interface->phyAddr. This makes sure that the address used is within a valid range. This prevents any malicious input from being used and keeps the code secure.",530,-56.34115334661725,-0.10630406291814574
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+//Added validation to check if the value is within valid range
+if ( interface -> phyAddr < 32 ) { 
+    interface -> phyAddr = TJA1101_PHY_ADDR ;
+}
+
+if ( interface -> smiDriver != NULL ) { 
+    interface -> smiDriver -> init ( ) ; 
+} 
+
+if ( interface -> extIntDriver != NULL ) { 
+    interface -> extIntDriver -> init ( ) ; 
+} 
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+
+while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { 
+} 
+tja1101DumpPhyReg ( interface ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+
+value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+
+interface -> phyEvent = TRUE ; 
+osSetEvent ( & netEvent ) ; 
+
+return NO_ERROR ; 
+}",524,-43.16285837637678,-0.08237186713049004
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 || interface-> phyAddr < 0 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",470,-7.9621209904093995,-0.01694068295831787
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; // Validate the PHY address if ( interface -> phyAddr >= 32 || interface -> phyAddr < 0 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",477,-10.150109285242308,-0.021279055105329788
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //Added input validation if ( interface -> phyAddr >= 0 && interface -> phyAddr < 32 ) { if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; } 
+}",489,-13.737213279058597,-0.028092460693371363
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr < 0 || interface -> phyAddr >= 32 ) { //Added check for invalid values 
+    interface -> phyAddr = TJA1101_PHY_ADDR ;
+ } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",480,-23.56452674842996,-0.049092764059229084
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ); // ADDED: Validation if (interface->phyAddr >= 0 && interface->phyAddr <=32) { if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+}",487,-34.99328019119676,-0.07185478478685166
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr <= 0 || interface -> phyAddr > 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",470,-7.981141920864386,-0.016981153023115713
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr > 32 ) { 
+	// Added check for valid input
+	return ERROR;
+}
+if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",490,-25.42511278951816,-0.05188798528473094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { 
+    uint16_t value ; 
+    TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+    if ( interface -> phyAddr >= 32 || interface -> phyAddr < 0) { 
+        interface -> phyAddr = TJA1101_PHY_ADDR ; 
+    } 
+    if ( interface -> smiDriver != NULL ) { 
+        interface -> smiDriver -> init ( ) ; 
+    } 
+    if ( interface -> extIntDriver != NULL ) { 
+        interface -> extIntDriver -> init ( ) ; 
+    } 
+    tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+    while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { 
+    } 
+    tja1101DumpPhyReg ( interface ) ; 
+    value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+    value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+    tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+    value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+    value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+    value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+    tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+    value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+    value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+    tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+    interface -> phyEvent = TRUE ; 
+    osSetEvent ( & netEvent ) ; 
+    return NO_ERROR ; 
+}",556,-10.521373573667244,-0.01892333376558857
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+// Added input validation 
+if (interface != NULL && interface -> phyAddr >= 0 && interface -> phyAddr <= 32) { 
+if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ;
+}
+else { 
+    return ERROR; 
+} 
+}",513,-30.636718551262028,-0.05972069893033534
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr > 32 || interface -> phyAddr <= 0) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",470,-10.490110960284456,-0.02231938502188182
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+//Validate the interface 
+if (interface == NULL || interface-> phyAddr < 0 || interface->phyAddr >= 32 || interface->smiDriver == NULL || interface->extIntDriver == NULL) { 
+    return ERROR; 
+} 
+
+if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } 
+
+//Initialize the drivers 
+interface -> smiDriver -> init ( ) ; 
+interface -> extIntDriver -> init ( ) ; 
+
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",514,-36.158262182950374,-0.07034681358550657
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+if ( interface -> phyAddr > 0 && interface -> phyAddr < 32 ) {
+  interface -> phyAddr = TJA1101_PHY_ADDR ;
+} else {
+  return ERROR;
+}
+
+if ( interface -> smiDriver != NULL ) {
+  interface -> smiDriver -> init ( ) ;
+}
+
+if ( interface -> extIntDriver != NULL ) {
+  interface -> extIntDriver -> init ( ) ;
+}
+
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",496,-18.076278529910127,-0.03644410993933493
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init(NetInterface * interface) {
+ uint16_t value; 
+ TRACE_INFO(""Initializing TJA1101...\r\n""); 
+ if(interface->phyAddr > 0 && interface->phyAddr < 32){
+  interface->phyAddr = TJA1101_PHY_ADDR; 
+ }
+ if (interface->smiDriver != NULL) {
+  interface->smiDriver->init();
+ }
+ if (interface->extIntDriver != NULL) {
+  interface->extIntDriver->init();
+ }
+ tja1101WritePhyReg(interface, TJA1101_BASIC_CTRL, TJA1101_BASIC_CTRL_RESET);
+ while (tja1101ReadPhyReg(interface, TJA1101_BASIC_CTRL) & TJA1101_BASIC_CTRL_RESET) {
+ }
+ tja1101DumpPhyReg(interface);
+ value = tja1101ReadPhyReg(interface, TJA1101_EXTENDED_CTRL);
+ value |= TJA1101_EXTENDED_CTRL_CONFIG_EN;
+ tja1101WritePhyReg(interface, TJA1101_EXTENDED_CTRL, value);
+ value = tja1101ReadPhyReg(interface, TJA1101_CONFIG1);
+ value &= ~TJA1101_CONFIG1_MII_MODE;
+ value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ;
+ tja1101WritePhyReg(interface, TJA1101_CONFIG1, value);
+ value = tja1101ReadPhyReg(interface, TJA1101_COMM_CTRL);
+ value |= TJA1101_COMM_CTRL_AUTO_OP;
+ tja1101WritePhyReg(interface, TJA1101_COMM_CTRL, value);
+ interface->phyEvent = TRUE;
+ osSetEvent(&netEvent); 
+ return NO_ERROR;
+}",484,-30.410202283885408,-0.06283099645430869
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+
+// Add input validation
+if (interface == NULL || interface -> phyAddr > 32) {
+    return ERROR;
+}
+
+if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",494,-16.862629322348038,-0.034134877170745016
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+// Add input validation 
+if (interface->phyAddr >= 0 && interface->phyAddr < 32) 
+{ 
+	if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } 
+	if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } 
+	if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } 
+	tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+	while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } 
+	tja1101DumpPhyReg ( interface ) ; 
+	value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+	value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+	tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+	value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+	value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+	value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+	tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+	value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+	value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+	tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+	interface -> phyEvent = TRUE ; 
+	osSetEvent ( & netEvent ) ; 
+	return NO_ERROR ; 
+}
+else
+{
+	return ERROR;
+} 
+}",563,-23.366676661736033,-0.04150386618425583
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+//Verify that the phyAddr is in the valid range of 0-31
+if ( interface -> phyAddr >= 0 && interface -> phyAddr <= 31 ) { if ( interface -> phyAddr == 0 ){ interface -> phyAddr = TJA1101_PHY_ADDR ; } } else { //If the phyAddr is invalid, throw an error and return 
+TRACE_ERROR ( ""Error: Invalid PHY Address\\r\\n"" ) ; return ERROR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",546,-54.898430736266626,-0.10054657644004876
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface->phyAddr < 32 ) { interface->phyAddr = TJA1101_PHY_ADDR; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",459,-11.237714644359997,-0.024483038440871453
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( ! ( interface -> phyAddr >= 0 && interface -> phyAddr <= 32 ) ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",473,-9.520322388822757,-0.020127531477426547
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { 
+	uint16_t value ; 
+	TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+	
+	if ( interface->phyAddr <= 0 || interface->phyAddr > 32 ) { // Added validation to check for a valid range for address
+		interface -> phyAddr = TJA1101_PHY_ADDR ;
+	} 
+
+	if ( interface -> smiDriver != NULL ) { 
+		interface -> smiDriver -> init ( ) ; 
+	} 
+	
+	if ( interface -> extIntDriver != NULL ) { 
+		interface -> extIntDriver -> init ( ) ; 
+	} 
+	
+	tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+	
+	while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { 
+	} 
+	
+	tja1101DumpPhyReg ( interface ) ; 
+	value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+	value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+	tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+	
+	value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+	value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+	value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+	tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+	
+	value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+	value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+	tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+	
+	interface -> phyEvent = TRUE ; 
+	osSetEvent ( & netEvent ) ; 
+	return NO_ERROR ; 
+}",582,-48.59983341591786,-0.08350486841223
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if(interface == NULL) { return -1;
+}
+if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",475,-21.349458925652772,-0.04494622931716373
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( !(interface -> phyAddr < 32) ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",464,-9.129814489497436,-0.01967632433081344
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; //Check for valid input  if ( interface->phyAddr >= 0 && interface->phyAddr <= 32 ) { if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+else 
+{
+	return ERROR;
+}
+}",500,-27.406644093124292,-0.05481328818624859
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr > 32 ) { return ERROR ; // Limit PHY address to 32 } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }",453,-17.580686261326527,-0.03880946194553317
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; if ( interface -> phyAddr >= 32 ) { interface -> phyAddr = TJA1101_PHY_ADDR ; } if ( interface -> smiDriver != NULL ) { interface -> smiDriver -> init ( ) ; } if ( interface -> extIntDriver != NULL ) { interface -> extIntDriver -> init ( ) ; } tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) { } tja1101DumpPhyReg ( interface ) ; value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; value &= ~ TJA1101_CONFIG1_MII_MODE ; value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; value |= TJA1101_COMM_CTRL_AUTO_OP ; tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; interface -> phyEvent = TRUE ; osSetEvent ( & netEvent ) ; return NO_ERROR ; }
+Fixed code:","
+error_t tja1101Init ( NetInterface * interface ) { uint16_t value ; TRACE_INFO ( ""Initializing TJA1101...\\r\\n"" ) ; 
+// Added input validation
+if ( interface -> phyAddr >= 0 && interface -> phyAddr < 32 ) {
+  interface -> phyAddr = TJA1101_PHY_ADDR ;
+ } 
+if ( interface -> smiDriver != NULL ) {
+  interface -> smiDriver -> init ( ) ;
+ } 
+if ( interface -> extIntDriver != NULL ) {
+  interface -> extIntDriver -> init ( ) ;
+ } 
+tja1101WritePhyReg ( interface , TJA1101_BASIC_CTRL , TJA1101_BASIC_CTRL_RESET ) ; 
+while ( tja1101ReadPhyReg ( interface , TJA1101_BASIC_CTRL ) & TJA1101_BASIC_CTRL_RESET ) {
+ } 
+tja1101DumpPhyReg ( interface ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_EXTENDED_CTRL ) ; 
+value |= TJA1101_EXTENDED_CTRL_CONFIG_EN ; 
+tja1101WritePhyReg ( interface , TJA1101_EXTENDED_CTRL , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_CONFIG1 ) ; 
+value &= ~ TJA1101_CONFIG1_MII_MODE ; 
+value |= TJA1101_CONFIG1_MII_MODE_RMII_25MHZ ; 
+tja1101WritePhyReg ( interface , TJA1101_CONFIG1 , value ) ; 
+value = tja1101ReadPhyReg ( interface , TJA1101_COMM_CTRL ) ; 
+value |= TJA1101_COMM_CTRL_AUTO_OP ; 
+tja1101WritePhyReg ( interface , TJA1101_COMM_CTRL , value ) ; 
+interface -> phyEvent = TRUE ; 
+osSetEvent ( & netEvent ) ; 
+return NO_ERROR ;
+}",524,-25.035168687180885,-0.047777039479352836
