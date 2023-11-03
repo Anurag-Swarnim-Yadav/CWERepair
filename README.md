@@ -29,7 +29,7 @@ study and compare the fixing capabilities of newly developed
 LLMs on real-world vulnerabilities and assess the practicality of
 these models.
 
-# CWERepair without buggyline
+## CWERepair -  Text-davinci-003: without buggyline
 
 | Rank | CWE Type | Name                                                                                       | Count | VRepair | VulRepair | CWERepair |
 |------|----------|--------------------------------------------------------------------------------------------|-------|---------|-----------|-----------|
