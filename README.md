@@ -70,7 +70,7 @@ these models.
 | 10   | CWE-434  | Unrestricted Upload of File with Dangerous Type                                            | -     | -       | -         |           |
 
 </div>
-
+</details>
 
 <details open="open">
 <summary>text-davinvi-003: with buggy line</summary>
@@ -99,3 +99,4 @@ these models.
 | 10   | CWE-434  | Unrestricted Upload of File with Dangerous Type                                            | -     | -       | -         |           |
 
 </div>
+</details>
