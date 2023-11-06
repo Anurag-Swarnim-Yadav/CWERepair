@@ -1,0 +1,296 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if ( buf -> private != NULL ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",63,-4.465564967961099,-0.07088198361843015
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref ) { ref -> ref ++ ; } else { return; } }",64,-5.33154431314125,-0.08330537989283203
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { 
+    if(buf == NULL) {
+        return;
+    }
+    else {
+        struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; const uintptr_t addr = (uintptr_t) ref;
+        if(addr != 0) {
+            ref -> ref ++ ; 
+        }
+    }
+}",110,-43.351615269099554,-0.3941055933554505
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf->private != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",63,-4.233900416508199,-0.06720476851600315
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { 
+if ( buf -> private == NULL ) {
+    return;
+}
+struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; 
+ref -> ref ++ ; }",73,-18.94962339091175,-0.2595838820672842
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref != NULL ) { ref -> ref ++ ; } }",61,-3.75455044014125,-0.06155000721543033
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if(buf!=NULL && buf->private!=NULL){ struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",68,-10.731760081821351,-0.15782000120325515
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf && buf->private) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",63,-5.0118893578038,-0.07955379933021904
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if ( buf -> private != NULL ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",63,-4.465564967961099,-0.07088198361843015
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref != NULL ) { ref -> ref ++ ; } else { /* Handle the condition where ref is NULL */ } }",73,-18.17312912484125,-0.24894697431289384
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { // check if ref is null before incrementing  if ( buf->private != NULL ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",73,-21.60993645388285,-0.2960265267655185
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",61,-4.0495881595019,-0.0663866911393754
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get(struct pipe_inode_info *pipe, struct pipe_buffer *buf) {
+   struct buffer_ref *ref = (struct buffer_ref *)buf->private;
+   if (ref == NULL) {
+      return;
+   }
+
+   ref->ref++;
+}",72,-16.840683139957996,-0.23389837694386106
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf != NULL && buf->private != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",67,-5.579106865521998,-0.08327025172420893
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if ( buf -> private ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",61,-4.0894237261457995,-0.06703973321550491
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get(struct pipe_inode_info * pipe, struct pipe_buffer * buf) {
+    struct buffer_ref * ref = NULL; 
+    if (buf->private != NULL) {
+        ref = (struct buffer_ref *) buf->private;
+        ref->ref++;
+    }
+}",77,-15.667324033885603,-0.20347174069981303
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref ; if ( buf -> private != NULL ) { ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",65,-5.3846364373491795,-0.08284056057460276
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { 
+    struct buffer_ref * ref;
+    if(buf->private != NULL){
+        ref = ( struct buffer_ref * ) buf -> private ;
+        ref -> ref ++ ;
+    }
+}",76,-12.86694274259295,-0.1693018781920125
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf->private) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",61,-5.0015910495817995,-0.0819932958947836
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",61,-4.0542611880619015,-0.06646329816494921
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if(ref != NULL){ ref -> ref ++ ; } }",61,-8.73090200183513,-0.14312954101369066
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if ( buf -> private ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",61,-4.054177415477099,-0.06646192484388687
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if(ref != NULL){ ref -> ref ++ ; } }",60,-4.979936373122649,-0.08299893955204414
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = NULL; if (buf->private != NULL) { ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",67,-5.87685881334545,-0.08771431064694701
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref != NULL ) { ref -> ref ++ ; } }",61,-3.7150357434226495,-0.06090222530201065
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref != NULL) { ref -> ref ++ ; } }",61,-3.2254450558617496,-0.05287614845674999
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if(ref != NULL) { ref -> ref ++ ; } }",61,-4.36437276022265,-0.0715470944298795
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref != NULL) { ref -> ref ++ ; } }",61,-3.2254450558617496,-0.05287614845674999
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf->private != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",63,-4.2104769857358,-0.06683296802755238
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref ; if ( buf -> private != NULL ) { ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",65,-5.3846364373491795,-0.08284056057460276
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref) { ref -> ref ++ ; } else { return; } }",64,-5.40903525207265,-0.08451617581363516
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref != NULL ) { atomic_inc ( & ( ref -> ref ) ) ; } }",68,-11.277451497841747,-0.165844874968261
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref != NULL ) { ref -> ref ++ ; } }",61,-3.717198654863451,-0.06093768286661395
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref != NULL ) { ref -> ref ++ ; } else { return; } }",66,-5.92183576134735,-0.08972478426283864
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref != NULL) ref -> ref ++ ; }",59,-5.366741551763451,-0.09096172121632969
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",61,-4.0346068259509,-0.0661410955073918
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref != NULL) { ref -> ref ++ ; } }",61,-3.2970774938634504,-0.054050450719072954
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref != NULL) { ref -> ref ++ ; } }",61,-3.291887562917351,-0.053965369883891
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if(ref != NULL){ ref -> ref ++ ; } }",60,-5.0436770552634504,-0.08406128425439084
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if ( buf -> private != NULL ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",63,-4.437217821943901,-0.07043202891974445
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf->private != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } else { return; } }",68,-6.4309014766118,-0.09457208053840882
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ;  if (ref != NULL) { ref -> ref ++ ; } }",62,-7.54279546601735,-0.12165799138737661
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if(buf && buf->private != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } else { return; } }",70,-12.243588357391802,-0.1749084051055972
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ;
+if (ref != NULL) {
+    ref->ref++;
+}
+}",65,-12.059432084017349,-0.18552972436949766
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { if (buf != NULL && buf->private != NULL) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; } }",67,-5.548350472660301,-0.0828112010844821
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref != NULL) { ref -> ref ++ ; } }",61,-3.291887562917351,-0.053965369883891
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if (ref != NULL){ ref -> ref ++ ; } else { return; } }",65,-7.766946434613452,-0.11949148360943772
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if(ref != NULL){ ref -> ref ++ ; } }",60,-5.02016219141735,-0.08366936985695585
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; if ( ref ) { ref -> ref ++; } }",59,-8.43380604655845,-0.14294586519590594
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; ref -> ref ++ ; }
+Fixed code:","
+static void buffer_pipe_buf_get ( struct pipe_inode_info * pipe , struct pipe_buffer * buf ) { 
+  /** Check if the pointer is valid before using it **/
+  if (buf != NULL && buf->private != NULL) {
+    struct buffer_ref * ref = ( struct buffer_ref * ) buf -> private ; 
+    ref -> ref ++ ; 
+  }
+}",93,-27.47365038731015,-0.29541559556247476

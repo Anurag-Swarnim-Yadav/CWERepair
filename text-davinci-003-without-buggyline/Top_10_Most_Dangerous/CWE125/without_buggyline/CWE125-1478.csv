@@ -1,0 +1,390 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { if (len > ptr) break; ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",234,-6.8018139763816,-0.029067581095647863
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",226,-3.3705031255283004,-0.014913730643930532
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",226,-3.254011302842002,-0.014398280101070806
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && len + 4 < length ) ND_PRINT ( ( ndo , "","" ) ) ; } }",232,-6.349674476736298,-0.027369286537656457
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && ptr < length) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-7.105292531103299,-0.030892576222188255
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { if (len > ptr ) continue; ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",234,-13.650931491407801,-0.0583373140658453
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 || ptr > len) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",232,-5.260638603907903,-0.022675166396154755
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { 
+    register u_int ptr ; register u_int len ;
+    if ( length < 3 ) { 
+        ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ;
+        return ; 
+    } 
+    if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+    ptr = cp [ 2 ] - 1 ;
+    if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) {
+        ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ;
+        return ; 
+    }
+    for ( len = 3 ; len < length ; len += 4 ) { 
+        ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; 
+        if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; 
+    } 
+}",271,-26.618797371694697,-0.09822434454499888
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; if ( length < 4 ) { return; } ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { if ( len > ptr ) { break; } ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",248,-15.266187653463888,-0.06155720828009632
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { if ( len < ptr) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } } }",234,-10.735022777235404,-0.045876165714681214
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) { ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; return; } for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-4.621295715473801,-0.020092590067277396
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",226,-3.3705031255283004,-0.014913730643930532
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { if(len == ptr) { break; } ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",236,-10.2586349401248,-0.04346879211917288
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && len < length-4) ND_PRINT ( ( ndo , "","" ) ) ; } }",238,-16.441910868950092,-0.06908365911323568
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+//Added the check to make sure the pointer is not out of bounds
+if (cp[2] < 3 || cp[2] > length+1) {
+  ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ;
+  return;
+}
+ptr = cp [ 2 ] - 1 ; 
+
+for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",254,-30.016399770855493,-0.11817480224746257
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; if (length < 4) return; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",236,-12.804140002630806,-0.05425483051962206
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",226,-3.3729191337028,-0.01492442094558761
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && len < length - 4) ND_PRINT ( ( ndo , "","" ) ) ; } }",232,-6.7856116388571,-0.029248326029556466
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",226,-3.3729191337028,-0.01492442094558761
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+
+//Add bound checks
+if (cp[2] < 3 || cp[2] > length + 1) {
+  ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ;
+  return;
+}
+
+ptr = cp [ 2 ] - 1 ; 
+
+for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",246,-25.078298379877893,-0.1019443023572272
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( length > 3 && ( ( ( length + 1 ) & 3 ) ) ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > 0 && ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",240,-21.461278566628195,-0.08942199402761748
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr >= length || ( ( ptr + 1 ) & 3 ) ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( u_int len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",219,-14.654597778730107,-0.06691597159237492
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",226,-3.3729191337028,-0.01492442094558761
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; 
+
+if (ptr > length) {
+  ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; 
+} else {
+  if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) ) {
+    ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ;
+  }
+
+  for ( len = 3 ; len < length ; len += 4 ) { 
+    ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; 
+    if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; 
+  }
+}",283,-24.76326399318241,-0.08750269962255268
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( cp[2] == 0 || ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > 0 && ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",239,-11.732851220377894,-0.049091427700325915
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) % 4 != 0 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ptr % 4 != 0 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",228,-8.564308221450098,-0.03756275535723727
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { 
+    register u_int ptr ; 
+    register u_int len ; 
+    if ( length < 3 ) {
+        ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+        return ; 
+    } 
+    if ( ( length + 1 ) & 3 ) 
+        ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+    ptr = cp [ 2 ] - 1 ; 
+    if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) 
+        ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; 
+    for ( len = 3 ; len < length ; len += 4 ) { 
+        ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; 
+        if ( ptr > len && ptr < length ) 
+            ND_PRINT ( ( ndo , "","" ) ) ; 
+    } 
+}",279,-13.67218061940629,-0.04900423161077524
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { 
+ register u_int ptr ; 
+ register u_int len ; 
+
+ if ( length < 3 ) { 
+  ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+  return ; 
+ } 
+ if ( ( length + 1 ) & 3 ) 
+  ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+ ptr = cp [ 2 ] - 1 ; 
+ 
+ if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > (length - 3)) { 
+  ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; 
+  return;
+ }
+ 
+ for ( len = 3 ; len < length ; len += 4 ) { 
+  ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; 
+  if ( ptr > len ) 
+   ND_PRINT ( ( ndo , "","" ) ) ; 
+ } 
+}",281,-32.15823192394591,-0.11444210649091072
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && ptr < length ) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-4.425973890626798,-0.019243364741855645
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) % 4 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr >= length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length && len < ptr ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",216,-17.011634962642997,-0.07875756927149535
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; if (length == 3) { return; } ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) { ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; return; } for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",242,-13.370876138801204,-0.05525155429256696
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len + 1 < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",228,-9.9738763522901,-0.043745071720570614
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 || ptr >= len) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",232,-9.444871018051206,-0.040710650939875886
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length-1 ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",228,-6.622046787261499,-0.029044064856410083
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+
+static void ip_printroute (netdissect_options *ndo, register const u_char *cp, u_int length) {
+    register u_int ptr;
+    register u_int len;
+    if (length < 3) {
+        ND_PRINT((ndo, "" [bad length %u]"", length));
+        return;
+    }
+    if ((length + 1) & 3) ND_PRINT((ndo, "" [bad length %u]"", length));
+    ptr = cp[2] - 1;
+    if (ptr < 3 || (ptr + 1) > length) ND_PRINT((ndo, "" [bad ptr %u]"", cp[2]));
+    for (len = 3; len < length && ptr > len; len += 4) {
+        ND_PRINT((ndo, "" %s"", ipaddr_string(ndo, &cp[len])));
+        if (ptr > len) ND_PRINT((ndo, "",""));
+    }
+}",235,-15.57722690805018,-0.0662860719491497
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { 
+    register u_int ptr ; 
+    register u_int len ; 
+    if ( length < 3 ) { 
+        ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+        return ; 
+    } 
+    if ( ( length + 1 ) & 3 || length > 255) { 
+        ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+    } 
+    ptr = cp [ 2 ] - 1 ; 
+    if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 || ptr > 255 ) { 
+        ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; 
+    } 
+    for ( len = 3 ; len < length ; len += 4 ) { 
+        ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; 
+        if ( ptr > len && ptr <= 255) { 
+            ND_PRINT ( ( ndo , "","" ) ) ; 
+        } 
+    } 
+}",306,-20.578164135682208,-0.06724890240419022
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 || ptr > len) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",232,-5.173926875719101,-0.022301408947065088
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length && len <= ptr; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-4.979022683118999,-0.02164792470921304
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { if (len + 4 <= ptr) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } } }",228,-13.657558676506598,-0.0599015731425728
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length - 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && ptr < length ) ND_PRINT ( ( ndo , "","" ) ) ; } }",232,-6.714876975772602,-0.028943435240399145
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && ptr < length) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-5.358959608996803,-0.02329982438694262
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 || (length + 1) % 4 != 0 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length && len <= ptr; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",211,-15.082264116117795,-0.07147992472093742
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length && len < ptr; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",236,-6.203147685540003,-0.0262845240912712
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; else { for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } } }",229,-7.8198054035924995,-0.034147621849748906
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { if (len > ptr) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } } }",234,-10.7156135106294,-0.04579322013089487
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < ( length - 4 ) ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-10.474255986369394,-0.045540243418997366
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && ptr < length ) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-4.4111872652612,-0.01917907506635304
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length) { ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; return; } for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }",230,-6.703485720266699,-0.029145590088116083
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { 
+  register u_int ptr ; 
+  register u_int len ; 
+  if ( length < 3 ) { 
+    ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+    return ; 
+  } 
+  if ( ( length + 1 ) & 3 ) 
+    ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; 
+  ptr = cp [ 2 ] - 1 ; 
+  if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) 
+    ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; 
+  for ( len = 3 ; len < length ; len += 4 ) { 
+    ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; 
+    if ( ptr > len && ptr < length ) 
+      ND_PRINT ( ( ndo , "","" ) ) ; 
+  } 
+}",280,-10.423116833236005,-0.03722541726155716
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length + 1 ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len ) ND_PRINT ( ( ndo , "","" ) ) ; } }
+Fixed code:","
+static void ip_printroute ( netdissect_options * ndo , register const u_char * cp , u_int length ) { register u_int ptr ; register u_int len ; if ( length < 3 ) { ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; return ; } if ( ( length + 1 ) & 3 ) ND_PRINT ( ( ndo , "" [bad length %u]"" , length ) ) ; ptr = cp [ 2 ] - 1 ; if ( ptr < 3 || ( ( ptr + 1 ) & 3 ) || ptr > length ) ND_PRINT ( ( ndo , "" [bad ptr %u]"" , cp [ 2 ] ) ) ; for ( len = 3 ; len < length ; len += 4 ) { ND_PRINT ( ( ndo , "" %s"" , ipaddr_string ( ndo , & cp [ len ] ) ) ) ; if ( ptr > len && len + 4 <= length ) ND_PRINT ( ( ndo , "","" ) ) ; } }",232,-6.475704728003602,-0.02791252037932587

@@ -1,0 +1,573 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len <= 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : if (facilities_len >= 1) { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; } facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",236,-13.447643329776204,-0.056981539532950015
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if (!p) return 0; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",232,-5.667457088511094,-0.02442869434703058
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:"," 
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len <= 0 || facilities_len > 256) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",232,-12.416792385812547,-0.05352065683539891
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+
+if (p == NULL || facilities == NULL)
+   	return 0;
+
+facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",247,-19.334389044585222,-0.0782768787230171
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 || facilities_len > MAX_FACILITIES_LEN) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; if ( len < 0 || len > facilities_len - 1 ) return -1; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; if ( len < 0 || len > facilities_len - 1 ) return -1; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",275,-16.69553097566779,-0.060711021729701053
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if (p == NULL || facilities == NULL)  return 0; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",239,-11.166787983470831,-0.04672296227393653
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; 
+if ( facilities_len == 0 || facilities_len < 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; 
+default: 
+if (facilities_len > 0) { 
+printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } 
+else { return 0; } 
+} } else break ; } return 1 ; }",260,-33.09581508809435,-0.12729159649267058
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len > MAX_FACILITIES_LEN ) return 0 ; //added to avoid buffer overflow if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",250,-23.091442283363612,-0.09236576913345446
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { char facilities_family = *p + 1; // Added check if (facilities_family >= 0 && facilities_family <= 0xFF) { // Added check facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else { // Added break; break; // Added } } else break ; } return 1 ; }",271,-40.41798366322433,-0.14914385115580933
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 || facilities_len > 255 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",231,-6.35059310718055,-0.027491745052729652
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; if (*p >= FAC_NATIONAL && *p <= FAC_CCITT) { switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } } else {printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",245,-14.1851472343461,-0.05789856014018817
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : if (facilities_len - 1 > 0) { len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - insufficient facilities length for FAC_NATIONAL\\n"" ) ; break ; } break ; case FAC_CCITT : if (facilities_len - 1 > 0) { len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - insufficient facilities length for FAC_CCITT\\n"" ) ; break ; } break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",323,-20.019637123891687,-0.06198030069316312
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; if(len > 0) { facilities_len -= len + 1 ; p += len + 1 ; } else { break; } break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; if(len > 0) { facilities_len -= len + 1 ; p += len + 1 ; } else { break; } break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",251,-12.316142955869402,-0.04906829862896176
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if (!p) { return -1; } facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",235,-8.980698250092706,-0.038215737234437046
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; if (len > 0) { facilities_len -= len + 1 ; p += len + 1 ; break ; } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - invalid facility family %02X\\n"" , * p ) ; return 0 ; } case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; if (len > 0) { facilities_len -= len + 1 ; p += len + 1 ; break ; } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - invalid facility family %02X\\n"" , * p ) ; return 0 ; } default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",317,-15.927427602435596,-0.05024425111178422
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; if ((*p == FAC_NATIONAL || *p == FAC_CCITT) && facilities_len > 0) { switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else { break ; } } return 1 ; }",255,-18.916289777921204,-0.07418152854086747
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 || facilities_len > MAX_FACILITIES_SIZE) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",238,-7.7311917960690915,-0.032483999143147445
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 || facilities_len > ROSE_FACILITIES_LENGTH ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",240,-10.667353549007602,-0.044447306454198345
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : if(facilities_len-1 > 1) { len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } else { return 0; } case FAC_CCITT : if(facilities_len-1 > 1) { len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } else { return 0; } default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",263,-16.610538187403243,-0.06315793987605796
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; if(*p>=FAC_NATIONAL && *p<=FAC_CCITT){ switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; } } else break ; } return 1 ; }",246,-13.38825091082331,-0.05442378419033866
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if (p == NULL) { return 0; } facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",236,-6.526065522442431,-0.027652820010349282
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len <= 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; if (len < 0) return -1; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; if (len < 0) return -1; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",245,-10.30511767370229,-0.04206170479062159
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if ( p == NULL ) { return 0; } facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",236,-8.915409176687067,-0.03777715752833503
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 || facilities_len < 2 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else return 0; } return 1 ; }",232,-13.105039598643792,-0.05648723964932669
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : if (facilities_len >= 2) { len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } else { break ; } case FAC_CCITT : if (facilities_len >= 2) { len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } else { break ; } default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",257,-15.674542597376895,-0.06099043812208909
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; 
+if ( facilities_len < 0 || facilities_len > 256) {
+  return 0; 
+}
+
+while ( facilities_len > 0 ) { 
+  if ( * p == 0x00 ) { 
+    facilities_len -- ; 
+    p ++ ; 
+    switch ( * p ) { 
+      case FAC_NATIONAL : 
+        len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; 
+        facilities_len -= len + 1 ; 
+        p += len + 1 ; 
+        break ; 
+      case FAC_CCITT : 
+        len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; 
+        facilities_len -= len + 1 ; 
+        p += len + 1 ; 
+        break ; 
+      default : 
+        printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; 
+        facilities_len -- ; 
+        p ++ ; 
+        break ; 
+    } 
+  } else {
+    break ; 
+  }
+} 
+return 1 ; 
+}",316,-23.23034500938171,-0.07351375002968896
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if (p == NULL || facilities == NULL) return 0; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",238,-6.119876976802003,-0.025713768810092453
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities(unsigned char *p, struct rose_facilities_struct *facilities) {
+    int facilities_len, len;
+    facilities_len = *p++;
+    if (facilities_len == 0 || facilities_len > ROSE_MAX_FAC_LEN)
+        return 0;
+    while (facilities_len > 0) {
+        if (*p == 0x00) {
+            facilities_len--;
+            p++;
+            switch (*p) {
+            case FAC_NATIONAL:
+                len = rose_parse_national(p + 1, facilities, facilities_len - 1);
+                facilities_len -= len + 1;
+                p += len + 1;
+                break;
+            case FAC_CCITT:
+                len = rose_parse_ccitt(p + 1, facilities, facilities_len - 1);
+                facilities_len -= len + 1;
+                p += len + 1;
+                break;
+            default:
+                printk(KERN_DEBUG
+                       ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"",
+                       *p);
+                facilities_len--;
+                p++;
+                break;
+            }
+        } else
+            break;
+    }
+    return 1;
+}",297,-16.23761319536778,-0.05467209830090161
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if(facilities == NULL) return 0; 
+facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",238,-16.135435040069726,-0.06779594554651146
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:"," 
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+
+facilities_len = * p ++ ; 
+if ( facilities_len == 0 ) return 0 ; 
+
+if (facilities_len > 0) { // added this line
+    while ( facilities_len > 0 ) {
+        if ( * p == 0x00 ) {
+            facilities_len -- ; 
+            p ++ ; 
+            switch ( * p ) {
+                case FAC_NATIONAL : 
+                    len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; 
+                    facilities_len -= len + 1 ; 
+                    p += len + 1 ; 
+                    break ; 
+                case FAC_CCITT : 
+                    len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; 
+                    facilities_len -= len + 1 ; 
+                    p += len + 1 ; 
+                    break ; 
+                default : 
+                    printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; 
+                    facilities_len -- ; 
+                    p ++ ; 
+                    break ;
+            }
+        } else {
+            break;
+        } 
+    }
+} // added this line
+return 1 ; 
+}",327,-41.28467773394404,-0.1262528371068625
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+
+//Ensure that the facilities_len is not bigger than the number of bytes specified in the buffer 
+if (facilities_len > len(p)) return 0;
+  
+facilities_len = * p ++ ; 
+
+//Ensure that the facilities_len is greater than 0
+if ( facilities_len <= 0 ) return 0 ; 
+ 
+while ( facilities_len > 0 ) { 
+ if ( * p == 0x00 ) { 
+  facilities_len -- ; 
+  p ++ ; 
+  switch ( * p ) { 
+   case FAC_NATIONAL : 
+    len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; 
+    facilities_len -= len + 1 ; 
+    p += len + 1 ; 
+    break ; 
+   case FAC_CCITT : 
+    len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; 
+    facilities_len -= len + 1 ; 
+    p += len + 1 ; 
+    break ; 
+   default : 
+    //Ensure that the default case is not reached 
+    return 0; 
+    break ; 
+  } 
+ } else break ; 
+} 
+return 1 ; 
+}",325,-81.05636666726556,-0.24940420513004788
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p != 0x00 ) { break; } 
+// check if *p is not equal to 0x00 before proceeding 
+facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } return 1 ; }",243,-30.19895871747569,-0.12427555027767774
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; if (facilities_len < 0) { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - invalid facilities length %d\\n"" , facilities_len ) ; return 0; } switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",271,-15.500073876126741,-0.057195844561353286
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 && is_valid_input(*p) ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+
+//Function to perform input validation
+int is_valid_input(unsigned char *p) {
+    if(p == NULL) {
+        return 0;
+    }
+    return 1;
+}",280,-32.0661349373376,-0.11452191049049143
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+
+if(p == NULL || facilities == NULL) {
+    return 0;
+}
+
+facilities_len = * p ++ ; 
+if ( facilities_len == 0 ) return 0 ; 
+while ( facilities_len > 0 ) { 
+    if ( * p == 0x00 ) { 
+        facilities_len -- ; 
+        p ++ ; 
+        switch ( * p ) { 
+            case FAC_NATIONAL : 
+                len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; 
+                facilities_len -= len + 1 ; 
+                p += len + 1 ; 
+                break ; 
+            case FAC_CCITT : 
+                len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; 
+                facilities_len -= len + 1 ; 
+                p += len + 1 ; 
+                break ; 
+            default : 
+                printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; 
+                facilities_len -- ; 
+                p ++ ; 
+                break ; 
+        } 
+    } else break ; 
+} 
+return 1 ; 
+}",322,-11.668479215151951,-0.03623751309053401
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : if(facilities_len - 1 >= 0){ len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - insufficient data\\n"" ) ; return 0 ; } case FAC_CCITT : if(facilities_len - 1 >= 0){ len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; } else { printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - insufficient data\\n"" ) ; return 0 ; } default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",311,-21.461856028169603,-0.06900918337032026
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; if ( * p >= FAC_NATIONAL && * p <= FAC_CCITT ) //Added validation { switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else { //Added validation printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",296,-24.997261019505093,-0.08445020614697667
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 && isdigit(*p) && isalpha(*p)) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",236,-16.688126824898102,-0.07071240180041569
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; 
+
+if ( facilities_len == 0 ) return 0 ; 
+
+while ( facilities_len > 0 ) { 
+  if ( * p < 0x02) {
+    facilities_len -- ; p ++ ; 
+    switch ( * p ) { 
+      case FAC_NATIONAL : 
+        len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; 
+        facilities_len -= len + 1 ; 
+        p += len + 1 ; 
+        break ; 
+      case FAC_CCITT : 
+        len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; 
+        facilities_len -= len + 1 ; 
+        p += len + 1 ; 
+        break ; 
+      default : 
+        printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; 
+        facilities_len -- ; 
+        p ++ ; 
+        break ; 
+    } 
+  } else break ; 
+} 
+
+return 1 ; 
+}",297,-28.107864759048898,-0.09463927528299292
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+if(p == NULL)
+{
+    return -1;
+}
+facilities_len = * p ++ ; 
+if ( facilities_len == 0 ) return 0 ; 
+while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; if(len < 0)
+{
+    return -1;
+}
+facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; if(len < 0)
+{
+    return -1;
+}
+facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } 
+return 1 ; 
+}",289,-24.82806587285282,-0.08591026253582291
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len < 1 || facilities_len > 255 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",231,-8.185381842258598,-0.0354345534296909
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+//Validate the length of data before parsing 
+if (p == NULL || *p == 0) { return 0; }
+
+facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",257,-28.52936215124301,-0.1110091912499728
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 || facilities_len > MAX_FACILITIES_LEN) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",239,-5.547807481002904,-0.02321258360252261
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len < 0 || p == null ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",229,-17.4708417379438,-0.07629188531853189
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+facilities_len = * p ++ ; 
+// Add input validation
+if(facilities_len < 0 || facilities_len > MAX_FACILITIES_LEN) {
+    return -1;
+}
+
+if ( facilities_len == 0 ) return 0 ; 
+while ( facilities_len > 0 ) { 
+    if ( * p == 0x00 ) { 
+        facilities_len -- ; 
+        p ++ ; 
+        switch ( * p ) { 
+            case FAC_NATIONAL : 
+                len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; 
+                facilities_len -= len + 1 ; 
+                p += len + 1 ; 
+                break ; 
+            case FAC_CCITT : 
+                len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; 
+                facilities_len -= len + 1 ; 
+                p += len + 1 ; 
+                break ; 
+            default : 
+                printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; 
+                facilities_len -- ; 
+                p ++ ; 
+                break ; 
+        } 
+    } else break ; 
+} 
+return 1 ; 
+}",340,-26.323228243526138,-0.07742125953978277
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = verify_unsigned_char(p++); 
+if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( verify_unsigned_char(*p) ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+
+unsigned char verify_unsigned_char(unsigned char val)
+{
+    if(val > UCHAR_MAX)
+    {
+        return 0;
+    }
+    return val;
+}",283,-31.53961976240668,-0.11144741965514728
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; if (p > 0 && p < 256){ switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else{ printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - invalid input\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",277,-25.885081335676343,-0.0934479470602034
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+
+if(p == NULL || facilities == NULL)
+  return 0;
+
+facilities_len = * p ++ ; 
+if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else { facilities_len = 0; break; } } 
+return 1 ; }",258,-22.146891757823436,-0.08584066572799781
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; 
+if (!p) {
+  return 0;
+}
+
+facilities_len = * p ++ ; 
+if ( facilities_len == 0 ) {
+  return 0 ; 
+}
+while ( facilities_len > 0 ) { 
+  if ( * p == 0x00 ) { 
+    facilities_len -- ; 
+    p ++ ; 
+    switch ( * p ) { 
+      case FAC_NATIONAL : 
+        len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; 
+        if (len <= 0) {
+          return 0;
+        }
+        facilities_len -= len + 1 ; 
+        p += len + 1 ; 
+        break ; 
+      case FAC_CCITT : 
+        len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; 
+        if (len <= 0) {
+          return 0;
+        }
+        facilities_len -= len + 1 ; 
+        p += len + 1 ; 
+        break ; 
+      default : 
+        printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; 
+        facilities_len -- ; 
+        p ++ ; 
+        break ; 
+    } 
+  } else {
+    break ; 
+  }
+} 
+return 1 ; 
+}",360,-22.263818575231642,-0.06184394048675456
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }
+Fixed code:","
+int rose_parse_facilities ( unsigned char * p , struct rose_facilities_struct * facilities ) { int facilities_len , len ; if (!p) return 0; facilities_len = * p ++ ; if ( facilities_len == 0 ) return 0 ; while ( facilities_len > 0 ) { if ( * p == 0x00 ) { facilities_len -- ; p ++ ; switch ( * p ) { case FAC_NATIONAL : len = rose_parse_national ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; case FAC_CCITT : len = rose_parse_ccitt ( p + 1 , facilities , facilities_len - 1 ) ; facilities_len -= len + 1 ; p += len + 1 ; break ; default : printk ( KERN_DEBUG ""ROSE: rose_parse_facilities - unknown facilities family %02X\\n"" , * p ) ; facilities_len -- ; p ++ ; break ; } } else break ; } return 1 ; }",232,-5.6580117752482995,-0.02438798178986336

@@ -1,0 +1,638 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { if (!remote_bd_addr || !link_key) { return BT_STATUS_FAIL; } bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",238,-7.84414142393628,-0.03295857741149698
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+	// Check for null pointer
+	if (remote_bd_addr == NULL || link_key == NULL) 
+		return BT_STATUS_FAIL; 
+	
+	// Verify key_type is valid value
+	if (key_type < 0 || key_type > 255) 
+		return BT_STATUS_FAIL; 
+	
+	// Verify pin_length is valid value 
+	if (pin_length < 0 || pin_length > 255) 
+		return BT_STATUS_FAIL; 
+	
+	bdstr_t bdstr ; 
+	bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+	int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+	ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+	ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+	btif_config_flush ( ) ; 
+	return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",361,-39.39833066586602,-0.10913665004395019
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; if (remote_bd_addr == NULL || link_key == NULL || pin_length == NULL) return BT_STATUS_FAIL; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",245,-12.774927755158135,-0.05214256226595157
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; if ( remote_bd_addr == NULL || link_key == NULL || key_type == 0 || pin_length == 0) { return BT_STATUS_FAIL; } bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",253,-9.562514855300094,-0.0377965014043482
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { if ( remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL ) { return BT_STATUS_FAIL ; } bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",253,-5.605419264497142,-0.022155807369553922
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  if (remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL){
+    return BT_STATUS_FAIL;
+  }
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",281,-10.143536996692038,-0.03609799642950903
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { // Validate parameters if ( ! remote_bd_addr || ! link_key || key_type > LINK_KEY_TYPE_MAX || pin_length > PIN_CODE_MAX ) { return BT_STATUS_FAIL ; } bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",266,-17.996677799351477,-0.06765668345620857
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; // validate inputs if ( remote_bd_addr == NULL || link_key == NULL || key_type == 0 || pin_length == 0 ) { return BT_STATUS_FAIL ; } // convert to string bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; // set config values int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",264,-20.24892348414526,-0.07670046774297447
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+    //Validate Input
+    if (!remote_bd_addr || !link_key || !key_type || !pin_length)
+        return BT_STATUS_FAIL;
+
+    bdstr_t bdstr ; 
+    bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+    int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+    btif_config_flush ( ) ; 
+    return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",279,-15.788566357831494,-0.056589843576456966
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) {
+if (remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL) {
+return BT_STATUS_FAIL;
+}
+bdstr_t bdstr ;
+bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ;
+int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ;
+ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ;
+ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ;
+btif_config_flush ( ) ;
+return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ;
+}",262,-11.759059621968483,-0.04488190695407818
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; if(key_type == 0 || key_type == 1 || key_type == 2 || key_type == 3) { int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; } else { return BT_STATUS_FAIL; } }",254,-15.018310691267004,-0.05912720744593309
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  if(remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL) {
+    return BT_STATUS_FAIL;
+  }
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",282,-8.860138934426349,-0.0314189323915828
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+    // Validate input parameters  
+    if(key_type < 0 || key_type > 255 || pin_length < 0 || pin_length > 16) {
+        return BT_STATUS_FAIL;
+    }
+    bdstr_t bdstr ; 
+    bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+    int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+    btif_config_flush ( ) ; 
+    return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",288,-27.46606343856883,-0.09536827582836399
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+if(remote_bd_addr == NULL || link_key == NULL) {
+return BT_STATUS_FAIL;
+}
+bdstr_t bdstr ; 
+if(bdaddr_to_string( remote_bd_addr, bdstr, sizeof ( bdstr )) != 0) {
+return BT_STATUS_FAIL;
+}
+
+int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ;
+if (ret != 0) {
+return BT_STATUS_FAIL;
+}
+
+ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ;
+if (ret != 0) {
+return BT_STATUS_FAIL;
+}
+
+ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ;
+if (ret != 0) {
+return BT_STATUS_FAIL;
+}
+
+btif_config_flush ( ) ;
+return BT_STATUS_SUCCESS;
+}",322,-37.08930518126629,-0.11518417758157233
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  bdstr_t bdstr ; 
+  /* Verify remote_bd_addr is valid before proceeding */
+  if (remote_bd_addr == NULL) {
+    return BT_STATUS_FAIL;
+  } 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",279,-27.322798026904554,-0.09793117572367224
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+if (remote_bd_addr == NULL || link_key == NULL) { return BT_STATUS_FAIL; } 
+bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",244,-10.851328767299487,-0.04447265888237494
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  // validate inputs 
+  if ( !remote_bd_addr || !link_key || !key_type || !pin_length ) { 
+    return BT_STATUS_FAIL; 
+  } 
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",288,-20.159423887326046,-0.069997999608771
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; if ( key_type > BTIF_MAX_KEY_TYPE ) return BT_STATUS_FAIL ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; if ( pin_length > BTIF_MAX_PIN_LENGTH ) return BT_STATUS_FAIL ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+In this fixed code, the added input validation checks ensure the key_type and pin_length arguments passed to the function are within the valid range of values for the application. If not, the function returns a fail status to alert the user of the invalid input.",317,-80.96539320047943,-0.25541133501728525
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+//Validate input 
+if (remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL) { 
+return BT_STATUS_FAIL;
+} 
+bdstr_t bdstr ; 
+bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+btif_config_flush ( ) ; 
+return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",278,-17.62768290056385,-0.06340893129699227
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) {
+    //Validate input
+    if ( link_key == NULL || remote_bd_addr == NULL ) {
+        return BT_STATUS_FAIL;
+    }
+
+    bdstr_t bdstr ; 
+    bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+    int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+    btif_config_flush ( ) ; 
+    return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ;
+}",274,-24.6256802427283,-0.08987474541141716
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = 0;
+  if ( key_type >= 0 && key_type < 255 && pin_length >= 0 && pin_length < 255 )
+  {
+    ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  }
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",277,-24.011831821929633,-0.08668531343656907
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { if(remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL) { return BT_STATUS_FAIL; } bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",253,-7.453096975527142,-0.029458881326194238
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+    // Verify key_type is within range 
+    if (key_type < 0 || key_type > 7) return BT_STATUS_FAIL; 
+    // Verify pin_length is within range 
+    if (pin_length < 0 || pin_length > 16) return BT_STATUS_FAIL; 
+    bdstr_t bdstr ; 
+    bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+    int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+    btif_config_flush ( ) ; 
+    return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",311,-26.6394949614338,-0.08565754006891897
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; //Validate bd_addr, key_type and pin_length if (remote_bd_addr == NULL || key_type > LINK_KEY_TYPE_MAX || pin_length > MAX_PIN_LENGTH) { return BT_STATUS_INVALID_ARGS; } bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",277,-29.62532634411905,-0.1069506366213684
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { if ( remote_bd_addr == NULL || link_key == NULL || key_type < 0 || pin_length < 0 ) { return BT_STATUS_FAIL ; } bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",253,-7.564415577161598,-0.0298988757990577
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+if ( ! remote_bd_addr || ! link_key || key_type < 0 || key_type > 255 || pin_length < 0 || pin_length > 255 ) {
+  return BT_STATUS_FAIL ;
+}
+
+bdstr_t bdstr ;
+bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ;
+int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ;
+ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ;
+ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ;
+btif_config_flush ( ) ;
+return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ;
+}",275,-19.547607077480535,-0.07108220755447467
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) {
+    if(remote_bd_addr == NULL || key_type < 0 || key_type > 5 || pin_length < 0 || pin_length > 16){
+        return BT_STATUS_FAIL;
+    }
+    bdstr_t bdstr ; 
+    bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+    int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+    btif_config_flush ( ) ; 
+    return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",287,-20.802822726804063,-0.07248370288085039
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  // Validate inputs
+  if(remote_bd_addr == NULL || link_key == NULL || key_type == 0 || pin_length == 0) {
+    return BT_STATUS_FAIL;
+  }
+  
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",290,-13.584454422382537,-0.046842946284077716
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; //Validate input against malicious input if ( bdstr == NULL || strlen ( bdstr ) > sizeof ( bdstr ) || key_type > MAX_KEY_TYPE || pin_length > MAX_PIN_LENGTH ) return BT_STATUS_FAIL ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",274,-33.69171257882807,-0.12296245466725572
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) {
+  bdstr_t bdstr ;
+  if ( remote_bd_addr == NULL || link_key == NULL || key_type == 0 || pin_length == 0 ) {
+    return BT_STATUS_FAIL ;
+  }
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ;
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ;
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ;
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ;
+  btif_config_flush ( ) ;
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ;
+}",274,-10.351180789262493,-0.03777803207760034
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+if (remote_bd_addr == NULL || link_key == NULL || key_type < 0 || key_type > 3 || pin_length < 0 || pin_length > 16) {
+    return BT_STATUS_FAIL;
+} else {
+    bdstr_t bdstr ; 
+    bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+    int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+    btif_config_flush ( ) ; 
+    return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+    }
+}",297,-20.720324988096504,-0.06976540400032492
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) {
+    //Validate bdaddr
+    if (!remote_bd_addr || !link_key || !key_type || !pin_length) {
+        return BT_STATUS_INVALID_ARG;
+    }
+    bdstr_t bdstr ; 
+    bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+    int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+    ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+    ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+    btif_config_flush ( ) ; 
+    return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",288,-27.2562611097613,-0.09463979552000451
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = 0;
+  if(key_type < MAX_KEY_TYPE) {
+      ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  }
+  if(pin_length < MAX_PIN_LENGTH) {
+      ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ;
+  }
+  if(link_key != NULL) {
+      ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  }
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",293,-27.151910155609986,-0.0926686353433788
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; if (remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL){ return BT_STATUS_FAIL; } bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; } 
+The code has been fixed by adding input validation checks to ensure that the parameters passed to the function are not null. This protects against malicious input and ensures that only valid data is accepted.",291,-40.42372368162233,-0.13891313979938943
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) {
+  bdstr_t bdstr ;
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ;
+  //add input validation checks
+  if ( remote_bd_addr == NULL )
+    return BT_STATUS_FAIL ;
+  if ( link_key == NULL )
+    return BT_STATUS_FAIL ;
+  if ( key_type < 0 || key_type > 255 )
+    return BT_STATUS_FAIL ;
+  if ( pin_length < 0 || pin_length > 255 )
+    return BT_STATUS_FAIL ;
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ;
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ;
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ;
+  btif_config_flush ( ) ;
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ;
+}",334,-29.03501953647816,-0.08693119621700048
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+if(remote_bd_addr == NULL || link_key == NULL || key_type > 3 || pin_length > 16) 
+    return BT_STATUS_FAIL; 
+bdstr_t bdstr ; 
+bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+btif_config_flush ( ) ; 
+return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",270,-16.279651283249873,-0.060295004752777305
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+ bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  bdstr_t bdstr ; 
+ //Validate input 
+ if(remote_bd_addr == NULL || link_key == NULL || key_type == 0 || pin_length == 0){
+     return BT_STATUS_FAIL; 
+ } 
+ 
+ bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+ int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+ ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+ ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+ btif_config_flush ( ) ; 
+ return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",284,-35.186738206210094,-0.12389696551482428
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) {
+  if ( remote_bd_addr == NULL || link_key == NULL || key_type < 0 || key_type > 255 || pin_length < 0 || pin_length > 255 ) {
+    return BT_STATUS_FAIL ;
+  }
+  bdstr_t bdstr ;
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ;
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ;
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ;
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ;
+  btif_config_flush ( ) ;
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ;
+}",286,-11.332819300280471,-0.039625242308672974
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; // Check for null pointer before converting bdaddr_t to bdstr if ( remote_bd_addr != NULL ) { bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; } else { return BT_STATUS_FAIL ; } int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",254,-25.90978640239174,-0.10200703308028244
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  bdstr_t bdstr ; 
+  if (remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL) {
+    return BT_STATUS_FAIL;
+  }
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",282,-9.371139532213116,-0.03323099124898268
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { if ( remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL ) { return BT_STATUS_FAIL ; } bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",253,-5.5829010905111,-0.022066802729292883
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  if (!remote_bd_addr || !link_key || !key_type || !pin_length)
+      return BT_STATUS_FAIL;
+  bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",253,-16.1059478105786,-0.06365987276908537
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+if(!remote_bd_addr || !link_key) return BT_STATUS_FAIL; 
+bdstr_t bdstr ; 
+bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+btif_config_flush ( ) ; 
+return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",253,-12.38128722107719,-0.0489378941544553
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  if (remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL) {
+    return BT_STATUS_FAIL;
+  }
+
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",282,-9.42296092771274,-0.033414755062811136
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+ 
+ //CHECK FOR VALID INPUTS
+ if ( remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL ) 
+ { 
+  return BT_STATUS_FAIL ; 
+ } 
+ 
+ bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",279,-34.61318712390767,-0.12406160259465115
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; if ( remote_bd_addr == NULL || link_key == NULL || pin_length < 0 || pin_length > 16 ) { return BT_STATUS_FAIL ; } bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",253,-9.64152273710328,-0.03810878552214735
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; if (!remote_bd_addr || !link_key || key_type > 7 || pin_length > 16) return BT_STATUS_FAIL; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",248,-12.327454494253288,-0.04970747779940842
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = 0 ; // Validate the input if ( key_type > 0 && key_type <= MAX_ALLOWED_KEY_TYPE && pin_length > 0 && pin_length <= MAX_ALLOWED_PIN_LENGTH ) { ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; } btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }",268,-24.33373146127799,-0.0907975054525298
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  // Check for valid input
+  if(remote_bd_addr == NULL || link_key == NULL || key_type == NULL || pin_length == NULL) {
+    return BT_STATUS_FAIL;
+  }
+  
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",291,-15.0344203452937,-0.05166467472609519
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { bdstr_t bdstr ; bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; btif_config_flush ( ) ; return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; }
+Fixed code:","
+bt_status_t btif_storage_add_bonded_device ( bt_bdaddr_t * remote_bd_addr , LINK_KEY link_key , uint8_t key_type , uint8_t pin_length ) { 
+  if (!remote_bd_addr || !link_key || !key_type || !pin_length) {
+    return BT_STATUS_FAIL;
+  }
+  bdstr_t bdstr ; 
+  bdaddr_to_string ( remote_bd_addr , bdstr , sizeof ( bdstr ) ) ; 
+  int ret = btif_config_set_int ( bdstr , ""LinkKeyType"" , ( int ) key_type ) ; 
+  ret &= btif_config_set_int ( bdstr , ""PinLength"" , ( int ) pin_length ) ; 
+  ret &= btif_config_set_bin ( bdstr , ""LinkKey"" , link_key , sizeof ( LINK_KEY ) ) ; 
+  btif_config_flush ( ) ; 
+  return ret ? BT_STATUS_SUCCESS : BT_STATUS_FAIL ; 
+}",277,-8.631669559888403,-0.031161261949055604

@@ -1,0 +1,403 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (len > left){ len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left){ len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",216,-5.937036536510201,-0.0274862802616213
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } if (len > left) len = left; FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",204,-7.607916204647298,-0.03729370688552597
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { 
+    UINT32 len ; 
+    UINT32 left ; 
+    BYTE value ; 
+    
+    left = originalSize ;
+    
+    while ( left > 4 ) {
+        value = * in ++ ; 
+        
+        if ( left == 5 ) {
+            * out ++ = value ; 
+            left -- ; 
+        } 
+        
+        else if ( value == * in ) {
+            in ++ ; 
+            
+            if ( * in < 0xFF ) {
+                len = ( UINT32 ) * in ++ ; 
+                len += 2 ; 
+            }
+            
+            else {
+                in ++ ; 
+                len = * ( ( UINT32 * ) in ) ; 
+                in += 4 ; 
+            }
+            
+            if(len <= left) {
+                FillMemory ( out , len , value ) ; 
+                out += len ; 
+                left -= len ; 
+            }
+            
+            else {
+                break;
+            }
+        } 
+        
+        else {
+            * out ++ = value ; 
+            left -- ; 
+        } 
+    } 
+    
+    * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; 
+}",323,-39.750294977560806,-0.12306592872309847
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if ( len > left ) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( len > left ) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-4.575463723572799,-0.020988365704462383
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",206,-5.467682954166997,-0.02654215026294659
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",206,-7.580349786094303,-0.03679781449560342
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) {len = left;} //added to fix vulnerability FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",209,-13.7371194196084,-0.06572784411295884
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len = min(len + 2, left); } else { in ++ ; len = min(* (( UINT32 * ) in ), left); in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",201,-10.775676302467593,-0.05361032986302285
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if ( len > left ) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( len > left ) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-4.5885841058043,-0.021048550944056423
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len = (len < left) ? len + 2 : left; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; len = (len < left) ? len : left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",216,-7.700173998029203,-0.03564895369457964
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:"," 
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { 
+    UINT32 len ; 
+    UINT32 left ; 
+    BYTE value ; 
+    left = originalSize ; 
+    while ( left > 4 ) { 
+        value = * in ++ ; 
+        if ( left == 5 ) { 
+            * out ++ = value ; 
+            left -- ; 
+        } else if ( value == * in ) { 
+            in ++ ; 
+            if ( * in < 0xFF ) { 
+                len = ( UINT32 ) * in ++ ; 
+                len = (len + 2 <= left) ? (len + 2) : left; 
+            } else { 
+                in ++ ; 
+                len = * ( ( UINT32 * ) in ) ; 
+                in += 4 ; 
+                len = (len <= left) ? len : left;
+            } 
+            FillMemory ( out , len , value ) ; 
+            out += len ; 
+            left -= len ; 
+        } else { 
+            * out ++ = value ; 
+            left -- ; 
+        } 
+    } 
+    * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; 
+}",309,-21.74815572889421,-0.07038238099965764
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if(len > left){ len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",204,-6.860452064247902,-0.03362966698160736
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (left < len) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",205,-6.972382407692798,-0.03401162150094048
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) {len = left;} //ADDED LINE FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",208,-12.5273234880188,-0.06022751676932115
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len <= left) { FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { // Stop writing if len exceeds left bytes break; } } } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",215,-27.484539196843006,-0.12783506603182793
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",205,-5.3467646615124,-0.026081778836645853
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if ( len > left ) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( len > left ) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-4.667897955403594,-0.02141237594221832
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if(len > left) len = left; //Added line } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if(len > left) len = left; //Added line } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",220,-12.154724005208644,-0.05524874547822111
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (len > left){ // Additional line len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left){ // Additional line len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",222,-18.763278525393396,-0.08451927263690719
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if ( left < len ) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( left < len ) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-5.607717957357201,-0.02572347686861101
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if ( len > left ) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( len > left ) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-4.679989547433899,-0.02146784196070596
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if ( len > left ) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( len > left ) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-4.667897955403594,-0.02141237594221832
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (left < len){ // Out-Of-Bounds Write check added len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",214,-22.744028035403197,-0.10628050483833269
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ;  if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( len > left ) { len = left ; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",207,-14.0438337422173,-0.06784460745032513
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (left < len) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (left < len) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-5.662456420959195,-0.025974570738344933
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode(BYTE* in, BYTE* out, UINT32 originalSize) {
+  UINT32 len;
+  UINT32 left;
+  BYTE value;
+  left = originalSize;
+  while (left > 4) {
+    value = *in++;
+    if (left == 5) {
+      *out++ = value;
+      left--;
+    } 
+    else if (value == *in) {
+      in++;
+      if (*in < 0xFF) {
+        len = (UINT32) *in++;
+        len += 2;
+      } 
+      else {
+        in++;
+        len = *((UINT32*)in);
+        in += 4;
+      }
+      //check that the len is not greater than the size of the left
+      if (len > left) {
+        return;
+      }
+      FillMemory(out, len, value);
+      out += len;
+      left -= len;
+    } 
+    else {
+      *out++ = value;
+      left--;
+    }
+  }
+  *((UINT32*) out) = *((UINT32*) in);
+}",278,-42.297791190569384,-0.15215032802363088
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if(len > left) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if(len > left) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-5.909540947507642,-0.027107985997741477
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",205,-5.375392360556601,-0.026221426149056593
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } // Check to make sure len isn't longer than left to prevent out of bounds write if ( len > left ) { len = left ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",223,-27.991968942553385,-0.12552452440606898
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len = min(len, left-3);//added line here len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",209,-29.6426642641828,-0.1418309294936976
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",206,-5.544960523151898,-0.02691728409297038
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } if ( left < len ) { len = left ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",206,-8.193363980737,-0.03977361155697573
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len = min(len + 2, left-1) FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; len = min(len, left-1) FillMemory ( out , len , value ) ; out += len ; left -= len ; } } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; 
+}",232,-23.429912012262253,-0.10099100005285454
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",205,-5.3436479117220985,-0.026066575179132186
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; len = (len > left) ? left : len; // Limit len to the number of bytes left FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",214,-18.226032823971913,-0.08516837768211175
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if(left >= len) { FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { len = left; FillMemory(out, len, value); out += len; left -= len; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if(left >= len) { FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { len = left; FillMemory(out, len, value); out += len; left -= len; } } } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",277,-16.090022519615214,-0.05808672389752785
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 && left > 0) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (len > left) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",222,-8.777808566029504,-0.03953967822535813
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 && left >= len ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } if ( left >= len ) { FillMemory ( out , len , value ) ; out += len ; left -= len ; } } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",206,-9.229771142375734,-0.04480471428337735
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",205,-5.345164001849203,-0.02607397074072782
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len<left){ // added line  FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { return; // added line } } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",213,-25.781565588341397,-0.12104021402977182
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (len > left) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-4.550751599020402,-0.020875007334955974
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { 
+    UINT32 len ; 
+    UINT32 left ; 
+    BYTE value ; 
+    left = originalSize ; 
+    while ( left > 4 ) { 
+        value = * in ++ ; 
+        if ( left == 5 ) { 
+            * out ++ = value ; 
+            left -- ; 
+        } else if ( value == * in ) { 
+            in ++ ; 
+            if ( * in < 0xFF ) { 
+                len = ( UINT32 ) * in ++ ; 
+                len += 2 ;
+            } else { 
+                in ++ ; 
+                len = * ( ( UINT32 * ) in ) ; 
+                in += 4 ; 
+            }
+            if (len <= left) { // added condition to prevent out-of-bounds write
+                FillMemory ( out , len , value ) ; 
+                out += len ; 
+                left -= len ; 
+            }
+            else {
+                break;
+            }
+        } else { 
+            * out ++ = value ; 
+            left -- ; 
+        } 
+    } 
+    * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; 
+}",313,-26.9689883250175,-0.08616290199686102
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if ( left < len ) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ( left < len ) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-5.542479823909931,-0.025424219375733626
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (len > left) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",218,-4.5605767884947035,-0.020920077011443595
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if ((len+out) > originalSize) { len = originalSize - (out - in); } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",215,-15.365702268278794,-0.07146838264315718
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (len > left) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ;  if (len > left) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",219,-8.919288126992996,-0.04072734304563012
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",205,-5.345164001849203,-0.02607397074072782
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 && left >= 5) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if (len > left) { len = left; } } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if (len > left) { len = left; } } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",222,-11.331623942449493,-0.05104335109211484
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; //Check if writing len bytes wont exceed bounds if (len > left) { printf(""Out-of-bounds write detected. Aborting.""); return; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",227,-39.793904971637474,-0.17530354613056157
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }
+Fixed code:","
+static void nsc_rle_decode ( BYTE * in , BYTE * out , UINT32 originalSize ) { UINT32 len ; UINT32 left ; BYTE value ; left = originalSize ; while ( left > 4 ) { value = * in ++ ; if ( left == 5 ) { * out ++ = value ; left -- ; } else if ( value == * in ) { in ++ ; if ( * in < 0xFF ) { len = ( UINT32 ) * in ++ ; len += 2 ; if(len > left) len = left; } else { in ++ ; len = * ( ( UINT32 * ) in ) ; in += 4 ; if(len > left) len = left; } FillMemory ( out , len , value ) ; out += len ; left -= len ; } else { * out ++ = value ; left -- ; } } * ( ( UINT32 * ) out ) = * ( ( UINT32 * ) in ) ; }",214,-6.967579283608499,-0.03255878169910514

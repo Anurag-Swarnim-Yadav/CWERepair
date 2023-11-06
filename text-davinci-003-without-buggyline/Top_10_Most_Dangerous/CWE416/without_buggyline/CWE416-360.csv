@@ -1,0 +1,309 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-2.70814171228695,-0.01854891583758185
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; // add conditional check to avoid use after free condition if (L->stack != NULL) { condmovestack ( L , { } , { } ) ; } } luaE_shrinkCI ( L ) ; }",166,-23.40945165164544,-0.14102079308220145
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else { luaU_free(L->stack); L->stack = NULL; } luaE_shrinkCI ( L ) ; }
+The vulnerability is fixed by ensuring that any memory that is allocated is properly freed before it is reused. The original code did not explicitly free the memory before attempting to reallocate it, which could lead to a use after free vulnerability. The fixed code adds a call to the luaU_free function to ensure that the memory is properly freed before it is reused.",223,-56.633502518906035,-0.2539618947036145
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 1 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-8.126181312420401,-0.0556587761124685
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ;  condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",147,-6.26144579440935,-0.04259486934972347
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else { condmovestack ( L , { } , { } ) ; } }",149,-5.613332089720151,-0.037673369729665444
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else { free(L); // free the memory block before moving the stack. condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; } }",161,-24.588316096682895,-0.15272246022784408
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else  { if (L->stacksize != 0) { luaD_reallocstack(L, 0, 0); L->stacksize = 0; } } luaE_shrinkCI ( L ) ; }",167,-20.27973608149874,-0.12143554539819605
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 1 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+
+The fix for this vulnerability involves changing the ""0"" parameter on the luaD_reallocstack() call to ""1"". This tells the function to free the memory before reallocating it, which prevents the use-after-free vulnerability.",198,-35.98041106832002,-0.18171924781979806
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; } }",146,-5.479937144444249,-0.03753381605783732
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else { free(L->stacks); L->stacks = NULL; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",161,-10.024339972274747,-0.06226298119425309
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; //Add null pointer checks to prevent use after free if (L != NULL && L->stacksize != NULL) luaE_shrinkCI ( L ) ; }",169,-22.505294472944342,-0.13316742291683042
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-2.70814171228695,-0.01854891583758185
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { void* original_stack = L->stack; luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , original_stack , { } ) ; } else { condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",175,-17.276366053768136,-0.09872209173581792
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; } else { luaD_reallocstack ( L , goodsize , 1 ) ; } luaE_shrinkCI ( L ) ; }",150,-8.151112475303352,-0.05434074983535568
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else luaE_freeCI ( L ) ; luaE_shrinkCI ( L ) ; }",140,-8.109586792806049,-0.057925619948614636
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-2.582131666901239,-0.017685833334939994
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 1 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+
+The fix for this vulnerability is to call luaD_reallocstack with the parameter 1, instead of 0. This tells the function to explicitly free any memory that it allocated during its execution. This ensures that the memory is properly freed and not inadvertently accessed after it has been freed.",205,-58.10793578715054,-0.28345334530317334
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) {
+int inuse = stackinuse ( L ) ; 
+int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; 
+if ( goodsize > LUAI_MAXSTACK ) 
+	goodsize = LUAI_MAXSTACK ; 
+if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize )
+	luaD_reallocstack ( L , goodsize , 0 ) ;
+else {
+	if(L->stacksize != 0)
+		free(L->stacksize);
+	condmovestack ( L , { } , { } ) ; 
+}
+luaE_shrinkCI ( L ) ; }",186,-33.633259473128625,-0.18082397566198186
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else condmovestack ( L , { } , { } ) ; }",147,-4.238271548670292,-0.02883177924265505
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else  {condmovestack ( L , { } , { } ) ; } }",150,-13.85576680707617,-0.09237177871384114
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-2.582131666901239,-0.017685833334939994
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else condmovestack ( L , { } , { } ) ; }",147,-4.014485987865569,-0.027309428488881425
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else { luaE_freeCI ( L ) ; condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; } }",157,-8.407809589754892,-0.05355292732327957
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-2.7300608601778196,-0.018699046987519313
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else condmovestack ( L , { } , { } ) ; }",147,-4.238271548670292,-0.02883177924265505
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { // Lock stack allocation lua_lock(L); luaD_reallocstack ( L , goodsize , 0 ) ; lua_unlock(L); } else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }",166,-18.391530530728495,-0.11079235259474997
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else condmovestack ( L , { } , { } ) ; }",147,-4.238271548670292,-0.02883177924265505
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else { luaE_shrinkCI ( L ) ; luaD_reallocstack ( L , goodsize , 0 ) ; } }",148,-8.24628053292487,-0.05571811170895182
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ){ luaD_reallocstack ( L , goodsize , 0 ) ; if(L->stacksize > 0) condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",156,-13.388713642420095,-0.08582508745141086
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+
+ void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-11.8848656027449,-0.08140318905989657
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack( L , goodsize , 0 ) ; //Added curly braces to encapsulate luaD_reallocstack } else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }",161,-27.994912218855006,-0.17388144235313668
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else if (L->stacksize > 0) // added line { condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; } }",160,-17.061735692545128,-0.10663584807840705
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",146,-2.638149894077081,-0.01806951982244576
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack(lua_State *L) 
+{
+    int inuse = stackinuse(L);
+    int goodsize = inuse + (inuse / 8) + 2 * EXTRA_STACK;
+    if (goodsize > LUAI_MAXSTACK)
+        goodsize = LUAI_MAXSTACK;
+    if (inuse <= (LUAI_MAXSTACK - EXTRA_STACK) && goodsize < L->stacksize) 
+    {
+        if (L->stack != nullptr)
+        {
+            luaD_reallocstack(L,goodsize,0);
+        }
+    }
+    else
+    {
+        condmovestack(L, { }, { });
+    }
+    luaE_shrinkCI(L);
+}",190,-31.57176380499142,-0.16616717792100746
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; } else { // added else statement condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",153,-14.889556308619724,-0.09731736149424657
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:"," 
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 1 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+The fixed code adds a parameter when calling luaD_reallocstack. The parameter is a boolean value set to 1, which will prevent the use of the memory after it is freed.",186,-39.57551962674345,-0.21277161089647015
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else { condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; } }",160,-4.656225445326933,-0.029101409033293328
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 1 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+
+The vulnerability is fixed by adding the argument ""1"" to the luaD_reallocstack() function call. This argument indicates that the memory associated with the stack should be freed when the stack is reallocated, ensuring that the memory is not used after it has been freed.",205,-30.003694552246635,-0.1463594856207153
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse; int goodsize; if(L == NULL) { return; } inuse = stackinuse ( L ) ; goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }",161,-12.892815562358813,-0.08007959976620381
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 1 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+
+The fixed code adds an extra parameter to the luaD_reallocstack() function to indicate that it should free the memory it is allocating before allocating in order to avoid a use-after-free vulnerability.",192,-38.96038153437863,-0.2029186538248887
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) {    luaD_reallocstack ( L , goodsize , 0 ) ;  } else {    condmovestack ( L , { } , { } ) ;  } luaE_shrinkCI ( L ) ; }",153,-15.432182913939734,-0.10086394061398518
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ){ luaD_reallocstack ( L , goodsize , 0 ) ; } else { condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",149,-9.111255412736567,-0.06114936518615145
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 1 /*prevent pointer reuse*/ ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }",151,-22.929051598467154,-0.1518480238309083
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse > 0 && inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }",150,-5.227974375060128,-0.03485316250040085
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { 
+int inuse = stackinuse ( L ) ; 
+int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; 
+if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; 
+if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) {
+    luaD_reallocstack ( L , goodsize , 0 ) ; 
+}
+else {
+    void* temp_ptr = luaM_realloc_(L->stack, L->stacksize * sizeof(TValue));
+    if (temp_ptr == NULL) {
+        luaM_error(L);
+    } else {
+        L->stack = temp_ptr;
+        L->stacksize = goodsize;
+    }
+}
+luaE_shrinkCI ( L ) ; 
+}",231,-37.37233464818348,-0.16178499847698477
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:"," 
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; } else { condmovestack ( L , { } , { } ) ; } luaE_shrinkCI ( L ) ; }",150,-8.23041030592445,-0.05486940203949633
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else { lua_free(L); lua_malloc(L); condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }  }",163,-16.519411470346366,-0.10134608264016176
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else condmovestack ( L , { } , { } ) ; }",147,-4.152957542779729,-0.028251411855644417
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) luaD_reallocstack ( L , goodsize , 0 ) ; else condmovestack ( L , { } , { } ) ; luaE_shrinkCI ( L ) ; }
+Fixed code:","
+void luaD_shrinkstack ( lua_State * L ) { int inuse = stackinuse ( L ) ; int goodsize = inuse + ( inuse / 8 ) + 2 * EXTRA_STACK ; if ( goodsize > LUAI_MAXSTACK ) goodsize = LUAI_MAXSTACK ; if ( inuse <= ( LUAI_MAXSTACK - EXTRA_STACK ) && goodsize < L -> stacksize ) { luaD_reallocstack ( L , goodsize , 0 ) ; luaE_shrinkCI ( L ) ; } else condmovestack ( L , { } , { } ) ;  }",148,-6.2334865727797295,-0.042118152518781954

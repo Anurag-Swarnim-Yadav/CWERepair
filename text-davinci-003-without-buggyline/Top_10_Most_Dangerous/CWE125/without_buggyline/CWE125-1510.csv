@@ -1,0 +1,264 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",47,-3.2453313640822405,-0.0690496034911115
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; if (self != NULL){ Py_TYPE ( self ) -> tp_free ( self ) ; } }",48,-7.532273710421202,-0.15692236896710837
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self->dict != NULL) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.3412921435464003,-0.06551553222640001
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self != NULL ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-3.1739453406702,-0.0647743947075551
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict != NULL ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.4405165335590997,-0.06746110850115881
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { 
+    if (self->dict != NULL) {
+        Py_CLEAR ( self -> dict ) ;
+    }
+    Py_TYPE ( self ) -> tp_free ( self ) ; }",60,-11.059758232091601,-0.18432930386819335
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self != NULL ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-3.2119822374116995,-0.06555065790636122
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",47,-3.2453313640822405,-0.0690496034911115
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",49,-3.248854814752901,-0.06630315948475307
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { Py_XCLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }",42,-3.4771131564585014,-0.08278840848710718
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { 
+    if (self->dict != NULL) {
+        Py_CLEAR(self->dict); 
+    }
+    Py_TYPE(self)->tp_free(self); 
+}",60,-10.1242014287197,-0.1687366904786617
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self != NULL) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-2.185086912331201,-0.04459361045573879
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",47,-3.283345573926241,-0.06985841646651576
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:"," 
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",50,-6.367017730868698,-0.12734035461737395
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict != NULL ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.4405165335590997,-0.06746110850115881
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict != NULL ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.4866515712691,-0.06836571708370785
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { 
+if (self->dict != NULL) {
+Py_CLEAR ( self -> dict ) ; 
+}
+Py_TYPE ( self ) -> tp_free ( self ) ; }",57,-10.2059771054756,-0.17905222992062458
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self != NULL ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-3.2135522787591992,-0.06558269956651427
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self != NULL) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-2.2324673401882986,-0.0455605579630265
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",49,-3.262693895371901,-0.06658558970146737
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self-> dict != NULL) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-6.360470490090298,-0.12471510764882938
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self != NULL) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-2.1826886795332,-0.04454466692924898
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self != NULL ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-3.2004192462559997,-0.0653146784950204
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",47,-3.27792670033644,-0.06974312128375404
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self != NULL) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-2.2324673401882986,-0.0455605579630265
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self != NULL && self -> dict != NULL ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",55,-6.187252956505899,-0.11249550830010727
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:"," 
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict != NULL) Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }",50,-10.829967399786652,-0.21659934799573302
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { Py_XCLEAR ( self -> dict ) ; if (self != NULL) { Py_TYPE ( self ) -> tp_free ( self ) ; } }",50,-6.742474550554998,-0.13484949101109994
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self->dict != NULL) {Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-7.310146845142201,-0.14333621264984708
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if(self->dict != NULL) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-4.383223342886001,-0.08594555574286275
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self->dict) Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }",47,-5.318300605119598,-0.11315533202382123
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { Py_XDECREF ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }",42,-3.7950357263105015,-0.09035799348358337
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; if ( self != NULL ) { Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-5.815169546210198,-0.11867692951449384
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict != NULL ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.4866514672690996,-0.06836571504449215
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",47,-3.245331260082241,-0.06904960127834554
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if(self->dict != NULL) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-4.3849781226222,-0.08597996318867059
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",49,-3.2932534391339,-0.06720925385987551
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict != NULL ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.4866514672690996,-0.06836571504449215
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",47,-3.7658127275172397,-0.08012367505355829
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self && self->dict) Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }",49,-7.1533420328153,-0.14598657209827143
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; if(self != NULL) { Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-6.479960705001002,-0.1322440960204286
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict != NULL ) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.4866514672690996,-0.06836571504449215
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self != NULL) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-2.1850868083312003,-0.0445936083332898
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self -> dict != NULL) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-5.415258795710698,-0.10618154501393526
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",47,-3.245331260082241,-0.06904960127834554
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self != NULL) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-2.1850868083312003,-0.0445936083332898
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self -> dict ) Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }",47,-5.41078540878114,-0.11512309380385405
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if ( self != NULL ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; } }",49,-3.1739452366702,-0.06477439258510613
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self->dict) { Py_CLEAR(self->dict); } Py_TYPE ( self ) -> tp_free ( self ) ; }",48,-8.294698561869302,-0.17280622003894378
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static void ast_dealloc ( AST_object * self ) { Py_CLEAR ( self -> dict ) ; Py_TYPE ( self ) -> tp_free ( self ) ; }
+Fixed code:","
+static void ast_dealloc ( AST_object * self ) { if (self->dict != NULL) { Py_CLEAR ( self -> dict ) ; } Py_TYPE ( self ) -> tp_free ( self ) ; }",51,-3.368366139464901,-0.06604639489146864

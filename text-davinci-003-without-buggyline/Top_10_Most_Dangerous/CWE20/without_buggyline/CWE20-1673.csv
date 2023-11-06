@@ -1,0 +1,735 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh != NULL || !cur_state == NULL || st->st_suspend_md != ke->md ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or input was invalid"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",367,-33.835560429197535,-0.09219498754549738
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:"," 
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; // Add validation code to check if st is not null if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } // End of validation code passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ;
+}",374,-36.25228060497952,-0.09693123156411636
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } if (ugh != NULL) { loglog(RC_LOG_SERIOUS, ""%s: Error in input validation: %s"", __FUNCTION__, ugh); if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",403,-14.60978837455193,-0.03625257661179139
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or there was an error"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } 
+passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",359,-11.350016705605803,-0.031615645419514775
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if ( ugh != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Error with request validation"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",400,-16.25995853859608,-0.0406498963464902
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+//Added input validation
+if(ke == NULL || md == NULL || st == NULL) {
+ loglog(RC_LOG_SERIOUS, ""%s: Improper input detected, exiting function"", __FUNCTION__);
+  if ( ke->md ) release_md(ke->md);
+  return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",379,-35.01324126722115,-0.09238322234095289
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if ( ugh != NULL || st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Improper input validation"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",351,-12.14590865421546,-0.03460372835958821
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+// Added validation check to ensure request is valid
+if (r == NULL) {
+    loglog (RC_LOG_SERIOUS, ""%s: Invalid request detected"", __FUNCTION__);
+    if (ke->md) release_md (ke->md);
+    return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",427,-30.361765704776705,-0.0711048377161047
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { 
+	struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; 
+	struct msg_digest * md = ke -> md ; 
+	struct state * const st = md -> st ; 
+	stf_status e ; 
+	
+	if (ugh != NULL) {
+		loglog(RC_LOG_SERIOUS, ""input validation error: %s"", ugh);
+		if (ke->md) release_md(ke->md);
+		return;
+	}
+	
+	DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+	if ( st == NULL ) { 
+		loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; 
+		if ( ke -> md ) release_md ( ke -> md ) ; 
+		return ; 
+	} 
+	passert ( st -> st_suspended_md == ke -> md ) ; 
+	set_suspended ( st , NULL ) ; 
+	set_cur_state ( st ) ; 
+	st -> st_calculating = FALSE ; 
+	
+	e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+	if ( ke -> md != NULL ) { 
+		complete_v2_state_transition ( & ke -> md , e ) ; 
+		if ( ke -> md ) release_md ( ke -> md ) ; 
+	} 
+	reset_globals ( ) ; 
+	passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",465,-28.51467476116333,-0.06132188120680286
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or improper input"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",355,-8.14309147316295,-0.022938285839895635
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { 
+ struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; 
+ struct msg_digest * md = ke -> md ; 
+ struct state * const st = md -> st ; 
+ stf_status e ; 
+ if ( ugh != NULL ) {
+   loglog ( RC_LOG_SERIOUS , ""Error in ikev2_parent_inI1outR1_continue: %s"" , ugh ) ;
+   if ( ke -> md ) release_md ( ke -> md ) ;
+   return ; 
+ }
+ DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+ if ( st == NULL ) { 
+   loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; 
+   if ( ke -> md ) release_md ( ke -> md ) ; 
+   return ; 
+ } 
+ passert ( cur_state == NULL ) ; 
+ passert ( st != NULL ) ; 
+ passert ( st -> st_suspended_md == ke -> md ) ; 
+ set_suspended ( st , NULL ) ; 
+ set_cur_state ( st ) ; 
+ st -> st_calculating = FALSE ; 
+ e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+ if ( ke -> md != NULL ) { 
+   complete_v2_state_transition ( & ke -> md , e ) ; 
+   if ( ke -> md ) release_md ( ke -> md ) ; 
+ } 
+ reset_globals ( ) ; 
+ passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",473,-26.5954093972013,-0.056227081178015434
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } //Added check for valid input if (ugh != NULL) { loglog(RC_LOG_SERIOUS, ""%s: Invalid input detected"", __FUNCTION__); if (ke->md) release_md(ke->md); return; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",410,-21.049020719953013,-0.05133907492671467
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+//Add input validation
+if (ke == NULL || md == NULL || st == NULL) {
+    loglog(RC_LOG_SERIOUS, ""%s: Invalid input parameters"", __FUNCTION__);
+    return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } 
+passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",417,-20.744294838072612,-0.04974651040305183
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh != NULL) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or Improper Input Validation"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",358,-9.879405306454865,-0.027596104207974485
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+//Validate input
+if (ugh != NULL || cur_state != NULL || st == NULL || st->st_suspended_md != ke->md){
+    loglog ( RC_LOG_SERIOUS , ""%s: Improper Input Validation"" , __FUNCTION__ ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+    return ; 
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+passert ( st -> st_suspended_md == ke -> md ) ; 
+set_suspended ( st , NULL ) ; 
+set_cur_state ( st ) ; 
+st -> st_calculating = FALSE ; 
+e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+if ( ke -> md != NULL ) { 
+    complete_v2_state_transition ( & ke -> md , e ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+} 
+reset_globals ( ) ; 
+passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",397,-20.14714068962631,-0.050748465213164506
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } 
+if(ugh == NULL) {
+	passert ( cur_state == NULL ) ; 
+	passert ( st != NULL ) ; 
+	passert ( st -> st_suspended_md == ke -> md ) ; 
+	set_suspended ( st , NULL ) ; 
+	set_cur_state ( st ) ; 
+	st -> st_calculating = FALSE ; 
+	e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+	if ( ke -> md != NULL ) { 
+		complete_v2_state_transition ( & ke -> md , e ) ; 
+		if ( ke -> md ) release_md ( ke -> md ) ; 
+	} 
+	reset_globals ( ) ; 
+	passert ( GLOBALS_ARE_RESET ( ) ) ; 
+} else {
+	loglog(RC_LOG_SERIOUS, ""Input validation error: %s"", ugh);
+	if ( ke -> md ) release_md ( ke -> md ) ;
+	return;
+}
+}",449,-25.440978078962193,-0.05666142111127437
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if(!validateInput(pcrc, r, ugh, ke, md, st)) return; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+
+bool validateInput(struct pluto_crypto_req_cont * pcrc, struct pluto_crypto_req * r, err_t ugh, struct ke_continuation * ke, struct msg_digest * md, struct state * const st) {
+    if (ugh != NULL || cur_state != NULL || st == NULL || st->st_suspended_md != ke->md) {
+        loglog(RC_LOG_SERIOUS, ""%s: Failed to validate input"", __FUNCTION__);
+        if (ke->md) {
+            release_md(ke->md);
+        }
+        return false;
+    }
+    return true;
+}",535,-36.94412714982108,-0.0690544432706936
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } /* Added input validation check */ if ( ke == NULL || ugh != NULL || cur_state != NULL || st == NULL || st -> st_suspended_md != ke -> md ) { loglog ( RC_LOG_SERIOUS , ""%s: Improper input data"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",407,-29.289904026988356,-0.07196536615967655
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if ( ugh != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Unexpected error: %s"" , __FUNCTION__ , ugh ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } 
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",408,-12.752261804373157,-0.0312555436381695
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if (!ke) { loglog(RC_LOG_SERIOUS, ""%s: Request was not valid"", __FUNCTION__); return; } if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } if(!r || ugh) { loglog(RC_LOG_SERIOUS, ""%s: Input validation error"", __FUNCTION__); if ( ke -> md ) release_md ( ke -> md ) ; return; } DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",431,-36.15668431271011,-0.0838902188229933
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+//validate the input
+if(ke == NULL || md == NULL || st == NULL){
+  loglog(RC_LOG_SERIOUS , ""%s: Invalid Input"", __FUNCTION__);
+  if ( ke -> md ) release_md ( ke -> md ) ; 
+  return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",430,-32.02407350930556,-0.07447458955652456
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+//validate input
+if (ugh != NULL || cur_state != NULL || st == NULL || st->st_suspended_md != ke->md) {
+  loglog (RC_LOG_SERIOUS, ""%s: Improper Input Validation"", __FUNCTION__);
+  if (ke->md) release_md(ke->md);
+  return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+
+passert ( st != NULL ) ; 
+passert ( st -> st_suspended_md == ke -> md ) ; 
+set_suspended ( st , NULL ) ; 
+set_cur_state ( st ) ; 
+st -> st_calculating = FALSE ; 
+e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+if ( ke -> md != NULL ) { 
+  complete_v2_state_transition ( & ke -> md , e ) ; 
+  if ( ke -> md ) release_md ( ke -> md ) ; 
+} 
+reset_globals ( ) ; 
+passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",403,-26.422994219403684,-0.06556574247990989
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if ( st == NULL || ugh != NULL ) { // validate input DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; } }",363,-18.447729856387543,-0.05082019244183896
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } if (!ugh) { passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; } else { loglog(RC_LOG_SERIOUS, ""Error encountered while validating input""); if ( ke -> md ) release_md ( ke -> md ) ; return; } }",392,-23.553287664370863,-0.06008491751115016
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:"," 
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } if ( ugh != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Error encountered input validation: %s"" , __FUNCTION__, ugh ) ; return; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",392,-26.120328684311822,-0.06663349154161179
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+// Added input validation
+if (r == NULL) {
+  loglog(RC_LOG_SERIOUS, ""%s: No valid input detected."", __FUNCTION__);
+  return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",406,-23.580176036654272,-0.05807925132180855
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if ( ugh != NULL ){ loglog(RC_LOG_SERIOUS, ""%s: Error with request: %s"", __FUNCTION__, ugh); if ( ke -> md ) release_md ( ke -> md ) ; return ; } DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",403,-18.498325480940053,-0.04590155206188599
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or invalid input"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",355,-7.039134444013058,-0.01982854772961425
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if ( ugh != NULL ) { loglog(RC_LOG_SERIOUS, ""%s: Error in input validation: %s"", __FUNCTION__, ugh); if ( ke -> md ) release_md ( ke -> md ) ; return; } DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",404,-12.529321267319032,-0.03101317145375998
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { 
+  struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ;
+  struct msg_digest * md = ke -> md ;
+  struct state * const st = md -> st ;
+  stf_status e ;
+  
+  if (st == NULL) {
+   loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ;
+   if ( ke -> md ) 
+     release_md ( ke -> md ) ;
+   return ;
+  }
+  
+  //validate input
+  if(!validateInput(st)) return;
+  
+  DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+  passert ( ugh == NULL ) ;
+  passert ( cur_state == NULL ) ;
+  passert ( st != NULL ) ;
+  passert ( st -> st_suspended_md == ke -> md ) ;
+  set_suspended ( st , NULL ) ;
+  set_cur_state ( st ) ;
+  st -> st_calculating = FALSE ;
+  e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ;
+  if ( ke -> md != NULL ) {
+    complete_v2_state_transition ( & ke -> md , e ) ;
+    if ( ke -> md ) 
+      release_md ( ke -> md ) ;
+  }
+  reset_globals ( ) ;
+  passert ( GLOBALS_ARE_RESET ( ) ) ;
+}
+
+//validate input function
+bool validateInput(struct state * st){
+  if(st == NULL || st->st_suspended_md == NULL) return false;
+  //validate other inputs
+  return true;
+}",491,-64.71096273344446,-0.1317942214530437
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue( struct pluto_crypto_req_cont *pcrc, struct pluto_crypto_req *r, err_t ugh) {
+    struct ke_continuation *ke = (struct ke_continuation *)pcrc;
+    struct msg_digest *md = ke->md;
+    struct state *const st = md->st;
+    stf_status e;
+    
+    if (ugh == NULL) {
+        DBG( DBG_CONTROLMORE, DBG_log(""ikev2 parent inI1outR1: calculated ke+nonce, sending R1""));
+        if (st == NULL) {
+            loglog(RC_LOG_SERIOUS, ""%s: Request was disconnected from state"", __FUNCTION__);
+            if (ke->md) release_md(ke->md);
+            return;
+        }
+        passert(cur_state == NULL);
+        passert(st != NULL);
+        passert(st->st_suspended_md == ke->md);
+        set_suspended(st, NULL);
+        set_cur_state(st);
+        st->st_calculating = FALSE;
+        e = ikev2_parent_inI1outR1_tail(pcrc, r);
+        if (ke->md != NULL) {
+            complete_v2_state_transition(&ke->md, e);
+            if (ke->md) release_md(ke->md);
+        }
+        reset_globals();
+        passert(GLOBALS_ARE_RESET());
+    } 
+}",388,-29.507049948323687,-0.07604909780495796
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+// Validate the input
+if(pcrc == NULL || r == NULL || ugh == NULL) {
+  loglog(RC_LOG_SERIOUS, ""Input validation failed in %s"", __FUNCTION__);
+  return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",418,-23.465436938174708,-0.0561374089430017
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+// Added code to validate input
+if (r == NULL)
+    return;
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",379,-19.556082710022043,-0.05159916282327716
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { 
+	struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; 
+	struct msg_digest * md = ke -> md ; 
+	struct state * const st = md -> st ; 
+	stf_status e ; 
+	
+	//Validate input
+	if (ugh == NULL) {
+		DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+		if ( st == NULL ) { 
+			loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; 
+			if ( ke -> md ) release_md ( ke -> md ) ; 
+			return ; 
+		} 
+		
+		passert ( cur_state == NULL ) ; 
+		passert ( st != NULL ) ; 
+		passert ( st -> st_suspended_md == ke -> md ) ; 
+		set_suspended ( st , NULL ) ; 
+		set_cur_state ( st ) ; 
+		st -> st_calculating = FALSE ; 
+		e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+		if ( ke -> md != NULL ) { 
+			complete_v2_state_transition ( & ke -> md , e ) ; 
+			if ( ke -> md ) release_md ( ke -> md ) ; 
+		} 
+		reset_globals ( ) ; 
+		passert ( GLOBALS_ARE_RESET ( ) ) ; 
+	}
+}",466,-17.215382638403288,-0.03694288119829032
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { 
+  struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; 
+  struct msg_digest * md = ke -> md ; 
+  struct state * const st = md -> st ; 
+  stf_status e ; 
+  
+  if(ugh != NULL) {
+    loglog(RC_LOG_SERIOUS, ""%s: Unexpected Error: '%s'"", __FUNCTION__, ugh); 
+    if (ke->md) 
+      release_md(ke->md); 
+    return; 
+  }
+  
+  if ( st == NULL ) { 
+    loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+    return ; 
+  } 
+   
+  DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+  passert ( cur_state == NULL ) ; 
+  passert ( st != NULL ) ; 
+  passert ( st -> st_suspended_md == ke -> md ) ; 
+  set_suspended ( st , NULL ) ; 
+  set_cur_state ( st ) ; 
+  st -> st_calculating = FALSE ; 
+  e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+  if ( ke -> md != NULL ) { 
+    complete_v2_state_transition ( & ke -> md , e ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+  } 
+  reset_globals ( ) ; 
+  passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",497,-41.205184049481204,-0.08290781498889578
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) {
+ 
+ struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ;
+ 
+ struct msg_digest * md = ke -> md ;
+ 
+ struct state * const st = md -> st ;
+ 
+ stf_status e ;
+ 
+ // Validate that no input is null
+ if ( st == NULL || ugh == NULL || cur_state == NULL || st->st_suspended_md == NULL) { 
+    loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+    return ;
+ }
+ 
+ passert ( ugh == NULL ) ; 
+ passert ( cur_state == NULL ) ; 
+ passert ( st != NULL ) ; 
+ passert ( st -> st_suspended_md == ke -> md ) ; 
+ set_suspended ( st , NULL ) ; 
+ set_cur_state ( st ) ; 
+ st -> st_calculating = FALSE ; 
+ e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+ 
+ if ( ke -> md != NULL ) { 
+    complete_v2_state_transition ( & ke -> md , e ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+ } 
+ reset_globals ( ) ; 
+ passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",407,-46.15823469097599,-0.11341089604662405
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { 
+  if (ugh != NULL) {
+    return;
+  }
+
+  struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; 
+  struct msg_digest * md = ke -> md ; 
+  struct state * const st = md -> st ; 
+  stf_status e ; 
+  DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+  if ( st == NULL ) { 
+    loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+    return ; 
+  } 
+  passert ( cur_state == NULL ) ; 
+  passert ( st != NULL ) ; 
+  passert ( st -> st_suspended_md == ke -> md ) ; 
+  set_suspended ( st , NULL ) ; 
+  set_cur_state ( st ) ; 
+  st -> st_calculating = FALSE ; 
+  e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+  if ( ke -> md != NULL ) { 
+    complete_v2_state_transition ( & ke -> md , e ) ; 
+    if ( ke -> md ) release_md ( ke -> md ) ; 
+  } 
+  reset_globals ( ) ; 
+  passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",434,-11.664519254432584,-0.026876772475651116
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; }
+if (ugh != NULL) {
+	loglog(RC_LOG_SERIOUS, ""Improper input detected, ugh: %s"", ugh);
+	release_md (ke->md);
+	return;
+}
+passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",400,-32.69267829788667,-0.08173169574471668
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+if (ugh != NULL) {
+    loglog(RC_LOG_SERIOUS, ""%s: Error encountered during cryptographic operation"", __FUNCTION__);
+    if (ke->md) release_md(ke->md);
+    return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",418,-19.558278402201317,-0.04679013971818497
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+if (ke == NULL) {
+ loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ );
+ if (ke->md) release_md (ke->md);
+ return;
+}
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } 
+passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",419,-35.24640882464926,-0.08412030745739679
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh != NULL) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or an error occurred"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",356,-8.227602480743393,-0.023111242923436498
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if(r == NULL || ugh != NULL) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } 
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",345,-20.904470382124362,-0.060592667774273516
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh !=NULL) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or input validation failed"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; }
+passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",357,-17.368214073494944,-0.04865045958962169
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+
+// Added input validation to check state
+if ( st == NULL || ugh != NULL ) { 
+  loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or incorrect input"" , __FUNCTION__ ) ; 
+  if ( ke -> md ) release_md ( ke -> md ) ; 
+  return ; 
+ } 
+passert ( cur_state == NULL ) ; 
+passert ( st != NULL ) ; 
+passert ( st -> st_suspended_md == ke -> md ) ; 
+set_suspended ( st , NULL ) ; 
+set_cur_state ( st ) ; 
+st -> st_calculating = FALSE ; 
+e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; 
+if ( ke -> md != NULL ) { 
+  complete_v2_state_transition ( & ke -> md , e ) ; 
+  if ( ke -> md ) release_md ( ke -> md ) ; 
+} 
+reset_globals ( ) ; 
+passert ( GLOBALS_ARE_RESET ( ) ) ; 
+}",407,-30.416820949572106,-0.07473420380730247
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+//Validate the input
+if (ugh == NULL || cur_state != NULL || st == NULL || st->st_suspended_md != ke->md) {
+    loglog(RC_LOG_SERIOUS, ""%s: Invalid input parameters"", __FUNCTION__);
+    if (ke->md) release_md(ke->md);
+    return;
+}
+
+DBG(DBG_CONTROLMORE, DBG_log(""ikev2 parent inI1outR1: calculated ke+nonce, sending R1""));
+
+passert(st->st_suspended_md == ke->md);
+set_suspended(st, NULL);
+set_cur_state(st);
+st->st_calculating = FALSE;
+e = ikev2_parent_inI1outR1_tail(pcrc, r);
+if (ke->md != NULL) {
+    complete_v2_state_transition(&ke->md, e);
+    if (ke->md) release_md(ke->md);
+}
+reset_globals();
+passert(GLOBALS_ARE_RESET());
+}",366,-23.794675435547532,-0.06501277441406429
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; 
+
+/* Added input validation check */
+if ( r == NULL || pcrc == NULL ) {
+loglog ( RC_LOG_SERIOUS , ""%s: Request or continuation is null"" , __FUNCTION__ ) ; return ;
+} 
+
+DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",414,-34.04494300690808,-0.08223416185243497
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ;  DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+
+if ( st == NULL || ugh != NULL) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or input validation failed"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; }
+
+passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",362,-19.658036979765246,-0.05430396955736256
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; 
+
+// Added input validation
+if(pcrc == NULL || r == NULL) { 
+    loglog(RC_LOG_SERIOUS, ""%s: Invalid input passed in params"", __FUNCTION__); 
+    if(ke->md) release_md(ke->md); 
+    return; 
+}
+
+if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",432,-36.29168325889887,-0.0840085260622659
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL || ugh != NULL ||cur_state != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state or validation failed"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; }  passert ( st != NULL ) ;  passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }",353,-25.822352467321068,-0.07315114013405402
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( ugh == NULL ) ; passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+Fixed code:","
+static void ikev2_parent_inI1outR1_continue ( struct pluto_crypto_req_cont * pcrc , struct pluto_crypto_req * r , err_t ugh ) { struct ke_continuation * ke = ( struct ke_continuation * ) pcrc ; struct msg_digest * md = ke -> md ; struct state * const st = md -> st ; stf_status e ; if ( ugh != NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request failed with error: %s"" , __FUNCTION__ , ugh ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } DBG ( DBG_CONTROLMORE , DBG_log ( ""ikev2 parent inI1outR1: calculated ke+nonce, sending R1"" ) ) ; if ( st == NULL ) { loglog ( RC_LOG_SERIOUS , ""%s: Request was disconnected from state"" , __FUNCTION__ ) ; if ( ke -> md ) release_md ( ke -> md ) ; return ; } passert ( cur_state == NULL ) ; passert ( st != NULL ) ; passert ( st -> st_suspended_md == ke -> md ) ; set_suspended ( st , NULL ) ; set_cur_state ( st ) ; st -> st_calculating = FALSE ; e = ikev2_parent_inI1outR1_tail ( pcrc , r ) ; if ( ke -> md != NULL ) { complete_v2_state_transition ( & ke -> md , e ) ; if ( ke -> md ) release_md ( ke -> md ) ; } reset_globals ( ) ; passert ( GLOBALS_ARE_RESET ( ) ) ; }
+The vulnerability has been fixed by adding a check for the ugh parameter before proceeding with the rest of the code. This ensures that the code does not execute if there is an error in the input, thus preventing the potential issue.",453,-47.09526054053044,-0.10396304755083982

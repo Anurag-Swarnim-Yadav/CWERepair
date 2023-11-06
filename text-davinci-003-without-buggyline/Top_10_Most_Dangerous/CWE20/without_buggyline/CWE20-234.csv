@@ -1,0 +1,662 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; 
+//Check for valid input
+if(path == NULL || nd == NULL)
+   return -EINVAL;
+
+if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",337,-18.297606802711865,-0.054295569147512955
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { 
+   int error ; 
+   void * cookie ; 
+   struct dentry * dentry = path -> dentry ; 
+   touch_atime ( path -> mnt , dentry ) ; 
+   nd_set_link ( nd , NULL ) ; 
+   
+   //Validate path before assigning values
+   if ( !path || !nd ) {
+      return -EINVAL;
+   }
+   
+   if ( path -> mnt != nd -> path . mnt ) { 
+      path_to_nameidata ( path , nd ) ; 
+      dget ( dentry ) ; 
+   } 
+   mntget ( path -> mnt ) ; 
+   cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; 
+   error = PTR_ERR ( cookie ) ; 
+   
+   if ( ! IS_ERR ( cookie ) ) { 
+      char * s = nd_get_link ( nd ) ; 
+      error = 0 ; 
+      
+      // Validate s before passing to __vfs_follow_link()
+      if (s) {
+         error = __vfs_follow_link ( nd , s ) ; 
+      }
+      else if ( nd -> last_type == LAST_BIND ) { 
+         error = force_reval_path ( & nd -> path , nd ) ; 
+         if ( error ) path_put ( & nd -> path ) ; 
+      } 
+      if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; 
+   } 
+   return error ; 
+}",441,-53.27892758798973,-0.12081389475734632
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) {
+ int error ;
+ void * cookie ;
+ struct dentry * dentry = path -> dentry ;
+ touch_atime ( path -> mnt , dentry ) ;
+ nd_set_link ( nd , NULL ) ;
+ if ( path -> mnt != nd -> path . mnt ) {
+  path_to_nameidata ( path , nd ) ;
+  dget ( dentry ) ;
+ }
+ mntget ( path -> mnt ) ;
+ if (dentry->d_inode->i_op->follow_link == NULL) {
+  return -EINVAL;
+ } 
+ cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ;
+ error = PTR_ERR ( cookie ) ;
+ if ( ! IS_ERR ( cookie ) ) {
+  char * s = nd_get_link ( nd ) ;
+  error = 0 ;
+  if ( s ) error = __vfs_follow_link ( nd , s ) ;
+  else if ( nd -> last_type == LAST_BIND ) {
+   error = force_reval_path ( & nd -> path , nd ) ;
+   if ( error ) path_put ( & nd -> path ) ;
+  }
+  if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ;
+ }
+ return error ;
+}",375,-19.432866376837055,-0.051820977004898815
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; // Add input validation if (dentry->d_inode && dentry->d_inode->i_op && dentry->d_inode->i_op->follow_link) { cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } } return error ; }",352,-12.444736140098932,-0.03535436403437197
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; if ( dentry->d_inode->i_op->follow_link ) { cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } } return error ; }",328,-9.37981028052412,-0.028596982562573536
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; nd -> last_type = LAST_NORM ; //ADDED LINE if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; if ( dentry -> d_inode -> i_op -> follow_link ) { //ADDED LINE cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; //ADDED LINE error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } } //ADDED LINE return error ; }",356,-28.449653785625195,-0.07991475782478988
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; 
+
+//Validate path before accessing
+if (path == NULL || nd == NULL) {
+  return -EINVAL;
+}
+
+if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",342,-19.4686601185736,-0.056925906779454964
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+
+// Added input validation
+if(!dentry) {
+  return -EINVAL;
+}
+ 
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",336,-16.857687800273773,-0.05017168988176718
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; 
+//verify input -- START
+if ( ! path || ! nd ) 
+  return -EINVAL ; 
+//verify input -- END
+
+if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",345,-36.60196610407168,-0.10609265537412081
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { 
+int error ; 
+void * cookie ; 
+struct dentry * dentry = path -> dentry ;
+touch_atime ( path -> mnt , dentry ) ; 
+nd_set_link ( nd , NULL ) ; 
+
+if ( path -> mnt != nd -> path . mnt ) { 
+    path_to_nameidata ( path , nd ) ; 
+    dget ( dentry ) ; 
+    // check for valid inode pointer
+    if (dentry->d_inode == NULL) {
+        return -EINVAL;
+    }
+} 
+mntget ( path -> mnt ) ; 
+cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; 
+error = PTR_ERR ( cookie ) ; 
+if ( ! IS_ERR ( cookie ) ) { 
+    char * s = nd_get_link ( nd ) ; 
+    error = 0 ; 
+    // check for valid pointer
+    if (s == NULL) {
+        return -EINVAL;
+    }
+    // check for valid length
+    if (strnlen(s, PATH_MAX) == 0) {
+        return -EINVAL;
+    }
+    error = __vfs_follow_link ( nd , s ) ; 
+    else if ( nd -> last_type == LAST_BIND ) { 
+        error = force_reval_path ( & nd -> path , nd ) ; 
+        if ( error ) path_put ( & nd -> path ) ; 
+    } 
+    if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; 
+} 
+return error ; 
+}",459,-56.48363025837686,-0.12305801799210646
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; 
+//Added input validation
+if (!dentry->d_inode)
+  return -EINVAL;
+if (!dentry->d_inode->i_op || !dentry->d_inode->i_op->follow_link)
+  return -EINVAL;
+cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",374,-24.403153715154414,-0.06524907410469094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; // Validate input if ( ! path || ! nd ) { return -EINVAL; } if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",329,-13.207406337194955,-0.04014409221031901
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; 
+
+//Add input validation
+if (dentry == NULL || dentry->d_inode == NULL || dentry->d_inode->i_op == NULL 
+  || nd == NULL || nd->path.mnt == NULL) { 
+  return -EINVAL; 
+}
+
+if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",380,-32.108095318416154,-0.08449498768004252
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if (!dentry) { return -EINVAL; } touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",321,-5.690810589256923,-0.017728381897996644
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; if (dentry != NULL && dentry->d_inode && dentry->d_inode->i_op && dentry->d_inode->i_op->follow_link) { dget ( dentry ) ; } else { return -EINVAL; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",361,-17.299225748344607,-0.04792029293170252
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+
+// Added input validation to prevent malicious input
+if (dentry == NULL || dentry->d_inode == NULL) {
+    return -EINVAL;
+}
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",349,-21.357305693927813,-0.061195718320710066
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; if ( ! path || ! nd ) return - EINVAL ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",323,-7.954667693013951,-0.024627454157937927
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if ( dentry == NULL ) { return -ENOENT; }
+
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; if(s == NULL) { return -ENOENT; } 
+error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",341,-23.314716072703686,-0.06837160138622782
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if (dentry == NULL) { return -EINVAL; } touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",323,-5.614454806787215,-0.017382213024109024
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+
+//Validate the dentry
+if(dentry == NULL)
+  return -ENOENT;
+
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; 
+
+//Validate the mount
+if ( path -> mnt != nd -> path . mnt )
+{
+  path_to_nameidata ( path , nd ) ; 
+  dget ( dentry ) ;
+}
+mntget ( path -> mnt ) ; 
+
+//Validate the inode operations
+if(dentry->d_inode->i_op->follow_link == NULL )
+  return -ENOENT;
+
+cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; 
+error = PTR_ERR ( cookie ) ; 
+if ( ! IS_ERR ( cookie ) ) 
+{ 
+  char * s = nd_get_link ( nd ) ; 
+  error = 0 ; 
+  if ( s ) error = __vfs_follow_link ( nd , s ) ; 
+  else if ( nd -> last_type == LAST_BIND ) 
+  { 
+    error = force_reval_path ( & nd -> path , nd ) ; 
+    if ( error ) path_put ( & nd -> path ) ; 
+  } 
+  
+  //Validate the inode operations
+  if(dentry->d_inode->i_op->put_link != NULL )
+    dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; 
+} 
+return error ; 
+}",447,-58.09853838522961,-0.12997435880364566
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; //Added input validation here if (dentry->d_inode->i_op && dentry->d_inode->i_op->follow_link) { cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } } return error ; }",345,-16.104727295573117,-0.046680368972675704
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; 
+
+//input validation check
+if (dentry == NULL || path == NULL || nd == NULL){
+	return -EINVAL;
+}
+nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",342,-24.240502383609424,-0.07087866194037844
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; //Added input validation if(dentry->d_inode->i_op && dentry->d_inode->i_op->follow_link) { cookie = dentry->d_inode->i_op->follow_link(dentry, nd); error = PTR_ERR(cookie); if (!IS_ERR(cookie)) { char *s = nd_get_link(nd); error = 0; if (s) error = __vfs_follow_link(nd, s); else if (nd->last_type == LAST_BIND) { error = force_reval_path(&nd->path, nd); if (error) path_put(&nd->path); } if (dentry->d_inode->i_op->put_link) dentry->d_inode->i_op->put_link(dentry, nd, cookie); } } return error; }",328,-16.314541232121663,-0.04973945497598068
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; // Added input validation if(dentry->d_inode && dentry->d_inode->i_op && dentry->d_inode->i_op->follow_link) { cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } } return error ; }",352,-13.889388494710968,-0.03945849004179252
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if ( dentry == NULL ) { return -EINVAL; } touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+The vulnerability has been fixed by adding a check for the dentry pointer being NULL and returning an error code if it is. This prevents the code from attempting to use a null pointer, which could lead to a crash or other security vulnerabilities.",372,-39.38846767388783,-0.10588297761797805
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; 
+if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; 
+if (!dentry || !dentry->d_inode) { return -EINVAL; }
+} mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",335,-20.78004118724129,-0.062029973693257585
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if(!dentry){
+  return -ENOENT;
+}
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) { if(strlen(s) > PATH_MAX){ 
+  return -ENAMETOOLONG;
+}
+    error = __vfs_follow_link ( nd , s ) ; } else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",354,-32.79430226720601,-0.09263927194125991
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; // Check if the dentry is valid if(!dentry) { return -EINVAL; } cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",330,-18.06157820663799,-0.05473205517163027
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; if (!dentry->d_inode->i_op->follow_link) { return -EINVAL; } cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+The code has been modified to add an input validation check to check if the follow_link function pointer is valid before attempting to execute it. If the pointer is invalid, the code would return an error code of -EINVAL.",382,-40.2248697484219,-0.10530070614770132
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; 
+
+// added input validation check
+if ( ! path || ! nd ) { return -EINVAL; }
+
+nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",335,-18.405606594086244,-0.05494210923607834
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+
+//Add input validation
+if(dentry == NULL || dentry->d_inop == NULL) {
+ return -EINVAL;
+}
+
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",345,-22.771998186997862,-0.06600579184637062
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { 
+
+int error ; 
+
+void * cookie ; 
+
+struct dentry * dentry = path -> dentry ; 
+
+touch_atime ( path -> mnt , dentry ) ; 
+
+nd_set_link ( nd , NULL ) ; 
+
+if ( path -> mnt != nd -> path . mnt ) { 
+
+path_to_nameidata ( path , nd ) ; 
+
+dget ( dentry ) ; 
+
+} 
+
+mntget ( path -> mnt ) ; 
+
+// Add validation to reject invalid user input
+if (dentry == NULL || dentry->d_inode == NULL || dentry->d_inode->i_op == NULL || dentry->d_inode->i_op->follow_link == NULL)
+  return -EINVAL;
+
+cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; 
+
+error = PTR_ERR ( cookie ) ; 
+
+if ( ! IS_ERR ( cookie ) ) { 
+
+char * s = nd_get_link ( nd ) ; 
+
+error = 0 ; 
+
+if ( s ) error = __vfs_follow_link ( nd , s ) ; 
+
+else if ( nd -> last_type == LAST_BIND ) { 
+
+error = force_reval_path ( & nd -> path , nd ) ; 
+
+if ( error ) path_put ( & nd -> path ) ; 
+
+} 
+
+if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; 
+
+} 
+
+return error ; 
+
+}",447,-37.41325184725328,-0.0836985499938552
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+
+//Check for valid input 
+if (!dentry) { 
+    return -EINVAL; 
+} 
+
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",339,-16.56511384570062,-0.04886464261268619
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) {
+  int error ;
+  void * cookie ;
+  struct dentry * dentry = path -> dentry ;
+  char * s ; 
+  touch_atime ( path -> mnt , dentry ) ;
+  nd_set_link ( nd , NULL ) ;
+  if ( path -> mnt != nd -> path . mnt ) {
+    path_to_nameidata ( path , nd ) ;
+    dget ( dentry ) ;
+  }
+  mntget ( path -> mnt ) ;
+  cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ;
+  error = PTR_ERR ( cookie ) ;
+  if ( ! IS_ERR ( cookie ) ) {
+    s = nd_get_link ( nd ) ;
+    error = 0 ;
+    if ( s ) {
+      if (strlen(s) > PATH_MAX || strchr(s, '/')) {
+        error = -ENAMETOOLONG;
+      } else {
+        error = __vfs_follow_link ( nd , s ) ; 
+      }
+    } else if ( nd -> last_type == LAST_BIND ) {
+      error = force_reval_path ( & nd -> path , nd ) ;
+      if ( error ) path_put ( & nd -> path ) ;
+    }
+    if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ;
+  }
+  return error ;
+}",408,-35.912289233920504,-0.08802031674980515
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if (!dentry) return -EINVAL; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",319,-6.2836328308314755,-0.019697908560600236
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { 
+   int error ; 
+   void * cookie ; 
+   struct dentry * dentry = path -> dentry ; 
+   if (!dentry)
+   {
+      return -ENOENT;
+   }
+   touch_atime ( path -> mnt , dentry ) ; 
+   nd_set_link ( nd , NULL ) ; 
+   if ( path -> mnt != nd -> path . mnt ) { 
+      path_to_nameidata ( path , nd ) ; 
+      dget ( dentry ) ; 
+   } 
+   mntget ( path -> mnt ) ; 
+   cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; 
+   error = PTR_ERR ( cookie ) ; 
+   if ( ! IS_ERR ( cookie ) ) { 
+      char * s = nd_get_link ( nd ) ; 
+      error = 0 ; 
+      if ( s ) {
+        if (strlen(s) > PATH_MAX)
+        {
+           return -ENAMETOOLONG;
+        }
+        error = __vfs_follow_link ( nd , s ) ; 
+      }
+      else if ( nd -> last_type == LAST_BIND ) { 
+         error = force_reval_path ( & nd -> path , nd ) ; 
+         if ( error ) path_put ( & nd -> path ) ; 
+      } 
+      if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; 
+   } 
+   return error ; 
+}",436,-26.888319903176722,-0.061670458493524594
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { if (dentry == NULL) { return -EINVAL; } path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",323,-9.877573846221212,-0.030580723982109016
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error = 0; void * cookie ; struct dentry * dentry = path -> dentry ; 
+ 
+//validate that the path is not a NULL pointer
+if (path == NULL) 
+{
+    return -EINVAL;
+}
+
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",347,-34.70968600891396,-0.10002791357035724
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; int result; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; result = -1; if (dentry != NULL && dentry->d_inode != NULL && dentry->d_inode->i_op != NULL && dentry->d_inode->i_op->follow_link != NULL){ result = 0; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; } error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) && result == 0) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",374,-33.82622757609848,-0.09044445875962161
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if (!dentry) return -EINVAL; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) { if (!nd->last_type) return -EINVAL; error = __vfs_follow_link ( nd , s ) ; } else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",335,-15.71267833067347,-0.04690351740499543
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+
+//Add input validation
+if(!dentry)
+  return -EINVAL;
+
+touch_atime ( path -> mnt , dentry ) ; 
+nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; 
+
+//Add input validation
+if(error == -EINVAL)
+  return error;
+
+if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",357,-27.49772433249126,-0.07702443790613799
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+if(!dentry){
+  return -EINVAL;
+}
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",327,-12.069023911821134,-0.036908330005569215
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } 
+// check if the dentry is valid
+if (!dentry) {
+    return -EINVAL;
+}
+mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",336,-20.803896541814037,-0.06191635875539892
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; 
+
+//Validate the input
+if (dentry == NULL) {
+    return -EINVAL;
+}
+
+touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",337,-10.988907326694335,-0.032608033610368944
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } 
+
+// Added check for NULL
+if(dentry->d_inode == NULL)
+    return -EINVAL;
+
+mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",339,-24.049780030585715,-0.0709433039250316
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if (!dentry) return -1; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",317,-9.905182663316046,-0.031246633007306138
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; if (!dentry) return -EINVAL; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",319,-6.2836328308314755,-0.019697908560600236
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; //Check if dentry is valid before following link if(dentry) { cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } } return error ; }",325,-19.37175080213888,-0.05960538708350425
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; if (!dentry || !dentry->d_inode || !dentry->d_inode->i_op || !dentry->d_inode->i_op->follow_link) { return -EINVAL; } cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }",360,-7.884832394804974,-0.021902312207791593
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { int error ; void * cookie ; struct dentry * dentry = path -> dentry ; touch_atime ( path -> mnt , dentry ) ; nd_set_link ( nd , NULL ) ; if ( path -> mnt != nd -> path . mnt ) { path_to_nameidata ( path , nd ) ; dget ( dentry ) ; } mntget ( path -> mnt ) ; cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; error = PTR_ERR ( cookie ) ; if ( ! IS_ERR ( cookie ) ) { char * s = nd_get_link ( nd ) ; error = 0 ; if ( s ) error = __vfs_follow_link ( nd , s ) ; else if ( nd -> last_type == LAST_BIND ) { error = force_reval_path ( & nd -> path , nd ) ; if ( error ) path_put ( & nd -> path ) ; } if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; } return error ; }
+Fixed code:","
+static __always_inline int __do_follow_link ( struct path * path , struct nameidata * nd ) { 
+ int error ; 
+ void * cookie ; 
+ struct dentry * dentry = path -> dentry ; 
+ touch_atime ( path -> mnt , dentry ) ; 
+ nd_set_link ( nd , NULL ) ; 
+ 
+ if (!dentry) {
+  return -EINVAL;
+ }
+ 
+ if ( path -> mnt != nd -> path . mnt ) {
+  path_to_nameidata ( path , nd ) ; 
+  dget ( dentry ) ; 
+ }
+ 
+ mntget ( path -> mnt ) ; 
+ cookie = dentry -> d_inode -> i_op -> follow_link ( dentry , nd ) ; 
+ error = PTR_ERR ( cookie ) ; 
+ 
+ if ( ! IS_ERR ( cookie ) ) { 
+  char * s = nd_get_link ( nd ) ; 
+  error = 0 ; 
+  if ( s ) error = __vfs_follow_link ( nd , s ) ; 
+  else if ( nd -> last_type == LAST_BIND ) { 
+   error = force_reval_path ( & nd -> path , nd ) ; 
+   if ( error ) path_put ( & nd -> path ) ; 
+  } 
+  if ( dentry -> d_inode -> i_op -> put_link ) dentry -> d_inode -> i_op -> put_link ( dentry , nd , cookie ) ; 
+ } 
+ return error ; 
+}",389,-25.7085908043081,-0.06608892237611336

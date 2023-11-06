@@ -1,0 +1,399 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; /* Add check to see if dev is valid */ if (dev <= 0) { ext3_msg ( sb , ""error: invalid device %d"" , dev ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",193,-22.688726755166883,-0.11755816971589059
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; 
+//Added an input validation to check if the dev is valid or not 
+if (dev <= 0) { ext3_msg ( sb , ""error: invalid device %s"" , __bdevname ( dev , b ) ; return NULL; } 
+bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",210,-32.27969978105884,-0.15371285610028018
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; 
+//Added input validation 
+if(dev <= 0) {ext3_msg(sb, ""error: invalid device ID %ld"", dev); return NULL;}
+
+bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",190,-26.842523567645195,-0.14127643982971155
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(dev <= 0) return NULL; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",161,-6.6037831446313024,-0.041017286612616784
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; // Check the input if ( dev < 0 || sb == NULL ) { ext3_msg ( sb , ""error: invalid input parameters"" ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",189,-19.650902594871475,-0.10397302960249458
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( dev <= 0 ) { ext3_msg ( sb , ""error: invalid device number"" ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",180,-8.650452174896497,-0.04805806763831387
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+	struct block_device * bdev ; 
+	char b [ BDEVNAME_SIZE ] ; 
+	if (dev <= 0) {
+		ext3_msg ( sb , ""error: invalid device number %s"" , dev ) ;
+		return NULL ;
+	}
+	bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ;
+	if ( IS_ERR ( bdev ) ) goto fail ;
+	return bdev ;
+fail : 
+	ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; 
+	return NULL ; 
+}",216,-24.43040744233377,-0.11310373815895264
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(!bdev_valid_dev(dev)) goto fail; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",167,-14.866498858693602,-0.08902095124966228
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( dev < 0 ) { ext3_msg ( sb , ""error: invalid device number %d"" , dev ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",184,-6.2114281779519,-0.033757761836695106
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(dev <= 0) { ext3_msg ( sb , ""error: invalid device %s"" , __bdevname ( dev , b ) ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",191,-8.653973212830397,-0.04530876027659894
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( dev == 0 || dev == ( dev_t ) - 1 ) goto fail ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",171,-10.450566361274998,-0.061114423165350866
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( ! dev ) { ext3_msg ( sb , ""error: invalid device number passed in: %d"" , dev ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",186,-15.923738966176842,-0.08561149981815507
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(dev == 0)  { ext3_msg ( sb , ""error: invalid value of dev"" ); return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",181,-23.24861695830782,-0.1284453975597117
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+ struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; 
+ if (!dev) return NULL;
+ bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; 
+ if ( IS_ERR ( bdev ) ) goto fail ; 
+ return bdev ; 
+fail : 
+ ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; 
+ return NULL ; 
+ }",176,-18.394568009775597,-0.10451459096463407
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+  struct block_device * bdev ; 
+  char b [ BDEVNAME_SIZE ] ; 
+  if(!dev || !sb){
+    ext3_msg ( sb , ""error: invalid input passed to ext3_blkdev_get "" ) ; 
+    return NULL ; 
+  }
+  bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; 
+  if ( IS_ERR ( bdev ) ) goto fail ; 
+  return bdev ; 
+fail : 
+  ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; 
+  return NULL ; 
+}",225,-25.82446008871487,-0.11477537817206608
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (!dev || dev < 0) { ext3_msg(sb, ""error: invalid dev_t %d"", dev); return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",184,-13.570323775954886,-0.07375175965192873
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:"," 
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; // Check to make sure the dev_t is valid 
+if (dev == 0 || dev == -1) { ext3_msg(sb, ""error: invalid device %s"", __bdevname(dev, b)); return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",206,-29.57422785491317,-0.143564212887928
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( ! dev || ( dev <= 0 ) ) { ext3_msg ( sb , ""error: Invalid input device %lx"" , dev ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",190,-27.4810122771493,-0.14463690672183843
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (dev <= 0) return NULL; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",162,-9.796590910627888,-0.06047278339893758
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( ! dev ) { ext3_msg ( sb , ""error: invalid device specified"" ) ; return NULL ; }  bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ;
+if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",181,-22.915740703351798,-0.12660630222846297
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; 
+
+//Added input validation
+if(dev < 0){
+    ext3_msg(sb, ""error: invalid device number %d"", dev);
+    return NULL;
+}
+
+bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",195,-16.290512610393684,-0.0835410903097112
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (!dev) return NULL; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",159,-5.095433475653281,-0.032046751419203025
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (!dev || dev < 0) { ext3_msg( sb , ""error: failed to open journal device %s: %ld"", __bdevname( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",208,-23.006570108641537,-0.11060851013769969
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+    struct block_device * bdev ; 
+    char b [ BDEVNAME_SIZE ] ; 
+
+    // Check if dev is a valid device number before proceeding 
+    if (dev < 0) {
+        ext3_msg ( sb , ""error: invalid device number %s"" , __bdevname ( dev , b ) );
+        return NULL; 
+    }
+
+    bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; 
+    if ( IS_ERR ( bdev ) ) goto fail ; 
+    return bdev ; 
+fail : 
+    ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; 
+    return NULL ; 
+}",239,-35.63110144726464,-0.14908410647391063
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(dev == 0) { ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",207,-8.5696359518066,-0.04139920749665024
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; 
+if (dev <= 0) {
+        ext3_msg(sb, ""error: invalid device number %d"", dev);
+        return NULL;
+    }
+
+bdev = blkdev_get_by_dev(dev, FMODE_READ | FMODE_WRITE | FMODE_EXCL, sb);
+if (IS_ERR(bdev)) goto fail;
+return bdev;
+fail:
+    ext3_msg(sb, ""error: failed to open journal device %s: %ld"", __bdevname(dev, b), PTR_ERR(bdev));
+    return NULL;
+}",192,-25.36029122299218,-0.13208485011975094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (!dev) return NULL; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",159,-5.161664521473581,-0.032463298877192334
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (! dev || dev > BDEVNAME_SIZE) { ext3_msg ( sb , ""error: invalid device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",210,-19.07254605344285,-0.09082164787353737
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+    struct block_device * bdev ; 
+    char b [ BDEVNAME_SIZE ] ; 
+    if (!dev || dev < 0) {
+        ext3_msg ( sb , ""error: invalid device %s"" , __bdevname ( dev , b ) ) ; 
+        return NULL;
+    }
+    bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; 
+    if ( IS_ERR ( bdev ) ) goto fail ; 
+    return bdev ; 
+fail : 
+    ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; 
+    return NULL ; 
+}",227,-16.932269841253483,-0.07459149709803296
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+  struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; 
+  if ( dev <= 0 ) {
+    ext3_msg ( sb , ""error: invalid device number: %ld"" , dev ) ;
+    return NULL ;
+  }
+  bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; 
+fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",201,-24.954757202964593,-0.12415302091027161
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (! dev ) return NULL ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",159,-6.894898995492943,-0.04336414462574178
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; // validate the input if ( dev < 0 ) { ext3_msg ( sb , ""error: invalid device number %d"" , dev ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",188,-13.52127720128684,-0.07192168724088745
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:"," 
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) {
+struct block_device * bdev ;
+char b [ BDEVNAME_SIZE ] ;
+if(!dev)
+	return NULL;
+bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ;
+if ( IS_ERR ( bdev ) )
+	goto fail ;
+return bdev ;
+fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ;
+return NULL ;
+}",175,-19.90667872641085,-0.11375244986520486
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(dev <= 0) { ext3_msg ( sb , ""error: invalid device identifier %s"" , __bdevname ( dev , b ) ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",192,-12.66628518929995,-0.06597023536093724
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(!dev) return NULL; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",161,-7.709136328294552,-0.04788283433723325
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+	if(dev <= 0) return NULL;
+	struct block_device * bdev ; 
+	char b [ BDEVNAME_SIZE ] ; 
+	bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; 
+	if ( IS_ERR ( bdev ) ) goto fail ; 
+	return bdev ; 
+	fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; 
+	return NULL ; 
+}",186,-15.993880097530152,-0.08598860267489329
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get(dev_t dev, struct super_block * sb) {
+    struct block_device * bdev;
+    char b[BDEVNAME_SIZE];
+    
+    // Sanity check the dev argument
+    if (dev <= 0) {
+        ext3_msg(sb, ""error: invalid device number %d"", dev);
+        return NULL;
+    }
+    
+    bdev = blkdev_get_by_dev(dev, FMODE_READ | FMODE_WRITE | FMODE_EXCL, sb);
+    if (IS_ERR(bdev)) goto fail;
+    return bdev;
+
+fail:
+    ext3_msg(sb, ""error: failed to open journal device %s: %ld"", __bdevname(dev, b), PTR_ERR(bdev));
+    return NULL;
+ }",211,-34.37947992221577,-0.16293592380197047
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (dev <= 0) { ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",207,-8.328248239567005,-0.04023308328293239
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( dev == 0 ) { ext3_msg ( sb , ""error: failed to open journal device %s: Invalid device number"" , __bdevname ( dev , b ) ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",198,-12.17131320227754,-0.06147127879938152
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (!dev){ return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",160,-10.018299451598907,-0.06261437157249317
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (!(dev > 0)){ ext3_msg ( sb , ""error: invalid device %s"" , __bdevname ( dev , b ) ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",193,-15.881938588334846,-0.08228983724525826
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( ! dev || ! sb ) { ext3_msg ( sb , ""error: invalid arguments to ext3_blkdev_get"" ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",191,-11.743178076549695,-0.06148260773062667
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(!dev) { ext3_msg ( sb , ""error: device is NULL"" ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",179,-12.583938668682798,-0.07030133334459664
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; // Added validation if ( dev == 0 || sb == NULL) { return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",171,-19.716001712620017,-0.11529825562935682
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:"," 
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(dev <= 0) { ext3_msg(sb,""Error: Invalid device number""); return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",177,-15.992093633298996,-0.09035081148756495
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(!dev) goto fail; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",160,-5.362734607027691,-0.033517091293923065
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if (! dev || ! sb) { ext3_msg(sb, “error: invalid input parameters”); return NULL; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) { ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; } return bdev ; }",179,-22.709982261079205,-0.12687140927977208
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if ( dev < 0 ) { ext3_msg ( sb , ""error: invalid device number %d"" , dev ) ; return NULL ; } bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",184,-6.2578642167968015,-0.034010131613026094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { 
+struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; 
+if ( ! dev ) {
+    ext3_msg ( sb , ""error: invalid device number %d"" , dev ) ;
+    return NULL ;
+}
+bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; 
+if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; 
+fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",197,-21.0809630319797,-0.10700996462933858
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }
+Fixed code:","
+static struct block_device * ext3_blkdev_get ( dev_t dev , struct super_block * sb ) { struct block_device * bdev ; char b [ BDEVNAME_SIZE ] ; if(!dev || !sb) return NULL; bdev = blkdev_get_by_dev ( dev , FMODE_READ | FMODE_WRITE | FMODE_EXCL , sb ) ; if ( IS_ERR ( bdev ) ) goto fail ; return bdev ; fail : ext3_msg ( sb , ""error: failed to open journal device %s: %ld"" , __bdevname ( dev , b ) , PTR_ERR ( bdev ) ) ; return NULL ; }",163,-5.470535697925238,-0.033561568698927846

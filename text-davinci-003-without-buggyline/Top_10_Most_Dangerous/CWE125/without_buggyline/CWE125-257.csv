@@ -1,0 +1,688 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( opt_len < 12 ) { ND_PRINT( ( ndo , "" Invalid Option Length"" ) ); return 1; } if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",330,-18.3134345858167,-0.05549525632065667
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+if (opt_len != 12 && opt_len != 20) return 0;
+if (!(opt_len == 12 && flags & TH_SYN) && !(opt_len == 20 && (flags & (TH_SYN | TH_ACK)) == TH_ACK)) return 0;
+
+const struct mp_capable * mpc = ( const struct mp_capable * ) opt ;
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } 
+
+if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ;
+ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ;
+if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ;
+ND_PRINT ( ( ndo , ""}"" ) ) ; 
+return 1 ; 
+}",331,-22.350857956900096,-0.06752525062507582
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  if (!(opt_len == 12 || opt_len == 20)) {
+    return 0;
+  }
+  
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",335,-19.714057712864502,-0.05884793347123732
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  // Check if option length is correct
+  if (opt_len != 12 && opt_len != 20) {
+    return 0;
+  }
+
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+
+  // Check if flags are correct
+  if (!( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) {
+    return 0 ;
+  }
+
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+    ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+    return 1 ; 
+  } 
+
+  if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  ND_PRINT ( ( ndo , ""}"" ) ) ; 
+  return 1 ; 
+}",382,-32.247359153852976,-0.08441717055982455
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    if (opt_len < 12) {
+        return 0;
+    }
+    const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+    if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+    if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+        ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+        return 1 ; 
+    } 
+    if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+    ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+    if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+    ND_PRINT ( ( ndo , ""}"" ) ) ; 
+    return 1 ; 
+}",356,-9.690558099206402,-0.02722066881799551
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:"," 
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+
+  //Fix
+  if(opt_len < sizeof(struct mp_capable)) {
+      ND_PRINT((ndo, ""Error: Out-of-bounds Read""));
+      return 0;
+  }
+
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+      ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+      return 1 ; 
+  } 
+ 
+  if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  ND_PRINT ( ( ndo , ""}"" ) ) ; 
+  return 1 ; 
+}",391,-42.03308654143402,-0.10750150010596936
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    if (opt_len < 12 || opt_len > 20) 
+    { 
+        return 0; 
+    }
+
+    const struct mp_capable * mpc = (const struct mp_capable *) opt; 
+    
+    if (!(opt_len == 12 && flags & TH_SYN) && !(opt_len == 20 && (flags & (TH_SYN | TH_ACK)) == TH_ACK)) 
+    { 
+        return 0; 
+    }
+
+    if (MP_CAPABLE_OPT_VERSION (mpc->sub_ver) != 0) 
+    { 
+        ND_PRINT((ndo, "" Unknown Version (%d)"", MP_CAPABLE_OPT_VERSION (mpc->sub_ver))); 
+        return 1; 
+    }
+
+    if (mpc->flags & MP_CAPABLE_C) 
+        ND_PRINT((ndo, "" csum"")); 
+    ND_PRINT((ndo, "" {0x%"" PRIx64, EXTRACT_64BITS (mpc->sender_key))); 
+
+    if (opt_len == 20) 
+        ND_PRINT((ndo, "",0x%"" PRIx64, EXTRACT_64BITS (mpc->receiver_key))); 
+    ND_PRINT((ndo, ""}"")); 
+
+    return 1; 
+}",369,-39.959047157971014,-0.10829010069910844
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if ( opt_len < MIN_MP_CAPABLE_PKT_LEN ) return 0 ; const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",323,-19.596549277062284,-0.06067043119833524
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if (opt_len < 12 || opt_len > 20) { return 0; } else { if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; } }",323,-14.818140353590733,-0.04587659552195274
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( opt_len < sizeof(struct mp_capable) ) { ND_PRINT ( ( ndo , "" Too Short"" ) ) ; return 1 ; } if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",337,-13.208527813023204,-0.03919444454903028
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( opt_len < 12 || opt_len > 20 || !((opt_len == 12 && flags & TH_SYN) || (opt_len == 20 && (flags & (TH_SYN | TH_ACK)) == TH_ACK))) return 0; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",310,-12.350283971291436,-0.03983962571384334
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) 
+    return 0 ; 
+if (opt_len < sizeof(*mpc))
+    return 0;
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+    ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+    return 1 ; 
+} 
+if ( mpc -> flags & MP_CAPABLE_C ) 
+    ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+if ( opt_len == 20 ) 
+    ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+ND_PRINT ( ( ndo , ""}"" ) ) ; 
+return 1 ; 
+}",353,-14.896051951747674,-0.04219844745537585
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if (opt_len < sizeof(struct mp_capable)) { ND_PRINT((ndo, ""[Invalid MP Capable Option]"")); return 0; } if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",337,-19.39930553790901,-0.05756470486026413
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( opt_len != 12 && ( opt_len != 20 || ( flags & ( TH_SYN | TH_ACK ) ) != TH_ACK ) ) return 0 ; if ( opt_len >= 12 ) { if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; } return 1 ; }",300,-15.119041956128,-0.05039680652042666
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  if (opt_len < 12 || (opt_len == 12 && !(flags & TH_SYN)) || (opt_len == 20 && ((flags & ( TH_SYN | TH_ACK )) != TH_ACK))) return 0; 
+  if (opt_len > 20) return 0; 
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+    ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+    return 1 ; 
+  } 
+  if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  ND_PRINT ( ( ndo , ""}"" ) ) ; 
+  return 1 ; 
+}",355,-27.251435929269114,-0.0767646082514623
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if (opt_len >= 12 && opt_len <= 20) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; } else { return 0; } }",323,-8.757181788823555,-0.027112017922054348
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if ( opt_len != 12 && opt_len != 20 ) return 0 ; const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",318,-5.837068099796798,-0.01835556006225408
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+if (opt_len < 12) {
+  ND_PRINT((ndo, "" Invalid option length (%u)"", opt_len));
+  return 1;
+}
+
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",342,-20.935585886972376,-0.06121516341219993
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    if (opt_len < sizeof(struct mp_capable)) { //Added 
+        return 0; 
+    } 
+
+    const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+    if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) 
+        return 0 ; 
+
+    if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+        ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+        return 1 ; 
+    } 
+
+    if ( mpc -> flags & MP_CAPABLE_C ) 
+        ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+
+    ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+    if ( opt_len == 20 ) 
+        ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+
+    ND_PRINT ( ( ndo , ""}"" ) ) ; 
+    return 1 ; 
+}",375,-29.73983324974708,-0.07930622199932555
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if ( opt_len < 12 || opt_len > 20 ) return 0; const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",318,-7.094069367724797,-0.02230839423812829
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+	if (opt_len < 12) {
+		return 0;
+	}
+	const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+	if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) {
+		return 0 ; 
+	} 
+	if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+		ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+		return 1 ; 
+	} 
+	if ( mpc -> flags & MP_CAPABLE_C ) {
+		ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+	}
+	ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+	if ( opt_len == 20 ) {
+		ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+	}
+	ND_PRINT ( ( ndo , ""}"" ) ) ; 
+	return 1 ; 
+}",380,-12.374336643131516,-0.03256404379771451
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if (opt_len < 12 || opt_len > 20) { return 0; } const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",321,-8.227370678394825,-0.02563043825045117
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+
+if ( opt_len < 12 || (opt_len > 12 && opt_len < 20) || opt_len > 20 ) return 0 ; 
+
+if ( opt_len == 12 && !(flags & TH_SYN) ) return 0 ;
+if ( opt_len == 20 && (( flags & ( TH_SYN | TH_ACK ) ) != TH_ACK) ) return 0 ; 
+
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } 
+if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+
+ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+ND_PRINT ( ( ndo , ""}"" ) ) ; 
+return 1 ; 
+}",360,-31.606539387755962,-0.08779594274376656
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if ( opt_len < 12 ) return 0 ; const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",312,-8.059555744650648,-0.025831909437982848
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+    if ( opt_len != 12 && opt_len != 20 || !(flags & TH_SYN) && (flags & (TH_SYN | TH_ACK)) != TH_ACK ) 
+        return 0 ; 
+    if (opt_len == 12 && (flags & TH_SYN) || opt_len == 20 && (flags & ( TH_SYN | TH_ACK )) == TH_ACK ) {
+        if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+            ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+            return 1 ; 
+        } 
+        if ( mpc -> flags & MP_CAPABLE_C ) 
+            ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+        ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+        if ( opt_len == 20 ) 
+            ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+        ND_PRINT ( ( ndo , ""}"" ) ) ; 
+        return 1 ; 
+    }
+    return 0;
+}",393,-32.859327936569194,-0.08361152146709719
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if (opt_len == 12 && flags & TH_SYN || opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if (MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; } else { return 0; }  }",301,-17.791332897598647,-0.059107418264447334
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( opt_len != 12 && opt_len != 20) return 0; if (opt_len == 12 && !(flags & TH_SYN)) return 0; if (opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) != TH_ACK) return 0; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",320,-17.870571249286982,-0.05584553515402182
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( opt_len < 12 || opt_len > 20 ) return 0;
+
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",320,-10.51814229206352,-0.0328691946626985
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; // Add bounds check if ( opt_len < 12 ) return 0; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",316,-16.06686247317385,-0.0508445014973856
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc ; 
+if(opt_len >= 12) { 
+mpc = ( const struct mp_capable * ) opt ; 
+if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } 
+if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; 
+return 1 ;
+} 
+return 0; }",332,-28.89062717502157,-0.0870199613705469
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( opt_len < sizeof(struct mp_capable) ) return 0 ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( opt_len > sizeof(struct mp_capable) ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",312,-19.018553901117382,-0.06095690352922238
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+if (opt_len < 12 || opt_len > 20) {
+  return 0;
+}
+
+const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } 
+if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",335,-12.728144093159527,-0.037994459979580675
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) {
+   const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+   if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+   if ( opt_len < sizeof(struct mp_capable) || MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+      ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+      return 1 ; 
+   }
+   if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+   ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+   if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+   ND_PRINT ( ( ndo , ""}"" ) ) ; 
+   return 1 ; 
+}",347,-20.371992936765672,-0.058708913362437096
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if(opt_len == 12 && flags & TH_SYN){ const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; } else if(opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK){ const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; } else{ return 0; } }",463,-14.243940094517509,-0.030764449448201964
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( opt_len < sizeof(struct mp_capable) || ! ( (opt_len == 12 && flags & TH_SYN) || (opt_len == 20 && (flags & (TH_SYN | TH_ACK)) == TH_ACK) ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",314,-13.26132764099341,-0.042233527519087294
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  // validate opt_len
+  if ( opt_len < 12 || opt_len > 20 ) {
+    return 0;
+  }
+
+  if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) {
+    return 0 ; 
+  }
+
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+    ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+    return 1 ; 
+  } 
+  
+  if ( mpc -> flags & MP_CAPABLE_C ) {
+    ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+  }
+  
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  
+  if ( opt_len == 20 ) {
+    ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  }
+  
+  ND_PRINT ( ( ndo , ""}"" ) ) ; 
+  return 1 ; 
+}",395,-31.850421859477585,-0.0806339793910825
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    
+    if (opt_len < 12 && !(flags & TH_SYN))
+        return 0;
+    if (opt_len < 20 && (flags & (TH_SYN | TH_ACK)) != TH_ACK)
+        return 0;
+    
+    if (opt_len > 20)
+        opt_len = 20;
+    
+    const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+    if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+        ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+        return 1 ; 
+    } 
+    if ( mpc -> flags & MP_CAPABLE_C ) 
+        ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+    ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+    if ( opt_len == 20 ) 
+        ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+    ND_PRINT ( ( ndo , ""}"" ) ) ; 
+    return 1 ; 
+}",371,-28.558428005268357,-0.07697689489290663
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+    if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+    if (opt_len == 12 || opt_len == 20){
+        if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+            ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+            return 1 ; 
+        } 
+        if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+        ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+        if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+        ND_PRINT ( ( ndo , ""}"" ) ) ; 
+        return 1 ;
+    }
+    return 0;
+}",359,-14.591225838720748,-0.04064408311621378
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( opt_len != 12 && opt_len != 20 || ( flags & TH_SYN ) != TH_SYN || ( flags & ( TH_ACK | TH_SYN ) ) != ( TH_ACK | TH_SYN ) ) return 0 ; if ( opt_len > 0 && MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( opt_len > 0 && mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; if ( opt_len > 8 ) ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len > 16 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; if ( opt_len > 8 ) ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",337,-22.895172884331824,-0.06793819846982738
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( opt_len < 12 && ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",307,-8.430990219700558,-0.027462508858959473
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+    if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) 
+        return 0 ; 
+    
+    if (opt_len == 12 && opt_len == 20){
+        if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+            ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+            return 1 ; 
+        } 
+        if ( mpc -> flags & MP_CAPABLE_C ) 
+            ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+        ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+        if ( opt_len == 20 ) 
+            ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+        ND_PRINT ( ( ndo , ""}"" ) ) ; 
+        return 1 ; 
+    }
+    return 0;
+}",371,-17.608938124097413,-0.047463445078429686
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  if ( opt_len < 12 || opt_len > 20 ) {
+    return 0;
+  }
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } 
+  if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; 
+}",346,-15.721419835961582,-0.045437629583703995
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  if (opt_len < 12 || opt_len > 20) {
+    return 0;
+  }
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } 
+  if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  ND_PRINT ( ( ndo , ""}"" ) ) ; 
+  return 1 ; 
+}",352,-10.186504167233988,-0.028938932293278374
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+
+if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; 
+
+if ( opt_len < 12 ) { ND_PRINT( ( ndo , ""Opt len %u too short"" , opt_len ) ) ; return 1 ; } 
+
+if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } 
+
+if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+
+if ( opt_len >= 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",353,-33.35433615260334,-0.09448820439830974
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+    const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+    if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) 
+        return 0 ; 
+    
+    if (opt_len >= sizeof(struct mp_capable)) {
+        if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+            ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+            return 1 ; 
+        } 
+        if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+        ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+        if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+        ND_PRINT ( ( ndo , ""}"" ) ) ; 
+        return 1 ; 
+    }
+
+    return 0;
+}",367,-17.881465970231744,-0.04872334051834263
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) )
+    return 0 ; 
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+    if (opt_len < 12){
+    	ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+    	return 1 ; 
+    }
+    ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+    return 1 ; 
+  } 
+  if ( mpc -> flags & MP_CAPABLE_C ) 
+    ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  if ( opt_len == 20 ) 
+    ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  ND_PRINT ( ( ndo , ""}"" ) ) ; 
+  return 1 ; 
+}",404,-29.720783337207788,-0.07356629538912819
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  if (opt_len < 12 || (opt_len == 12 && !(flags & TH_SYN)) || (opt_len == 20 && !((flags & (TH_SYN | TH_ACK)) == TH_ACK))) {
+    return 0;
+  }
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; 
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { 
+    ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; 
+    return 1 ; 
+  } 
+  if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; 
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; 
+  if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; 
+  ND_PRINT ( ( ndo , ""}"" ) ) ; 
+  return 1 ; 
+}",347,-16.39742632576409,-0.04725483090998297
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { if (opt_len < 12 || opt_len > 20) { return 0; } const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",320,-5.560222956216007,-0.017375696738175024
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { 
+  if ( opt_len < 12 || opt_len > 20 || !(flags & TH_SYN || flags & (TH_SYN|TH_ACK) == TH_ACK)) {
+    return 0;
+  }
+  const struct mp_capable * mpc = ( const struct mp_capable * ) opt ;
+  if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) {
+    ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ;
+    return 1 ;
+  }
+  if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ;
+  ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ;
+  if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ;
+  ND_PRINT ( ( ndo , ""}"" ) ) ;
+  return 1 ; 
+}",326,-26.317369025286794,-0.08072812584443802
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }
+Fixed code:","
+static int mp_capable_print ( netdissect_options * ndo , const u_char * opt , u_int opt_len , u_char flags ) { const struct mp_capable * mpc = ( const struct mp_capable * ) opt ; if ( ! ( opt_len == 12 && flags & TH_SYN ) && ! ( opt_len == 20 && ( flags & ( TH_SYN | TH_ACK ) ) == TH_ACK ) ) return 0 ; if ( opt_len >= sizeof(struct mp_capable) && MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) != 0 ) { ND_PRINT ( ( ndo , "" Unknown Version (%d)"" , MP_CAPABLE_OPT_VERSION ( mpc -> sub_ver ) ) ) ; return 1 ; } if ( mpc -> flags & MP_CAPABLE_C ) ND_PRINT ( ( ndo , "" csum"" ) ) ; ND_PRINT ( ( ndo , "" {0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> sender_key ) ) ) ; if ( opt_len == 20 ) ND_PRINT ( ( ndo , "",0x%"" PRIx64 , EXTRACT_64BITS ( mpc -> receiver_key ) ) ) ; ND_PRINT ( ( ndo , ""}"" ) ) ; return 1 ; }",314,-7.303987255242309,-0.023261105908414997

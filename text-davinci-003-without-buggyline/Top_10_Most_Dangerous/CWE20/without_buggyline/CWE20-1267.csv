@@ -1,0 +1,406 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+//Check if all the parameters are between -1 and 1
+if ( ( x11 > -1. && x11 < 1. ) && ( x22 > -1. && x22 < 1. ) && ( x12 > -1. && x12 < 1. ) && ( x21 > -1. && x21 < 1. ) && ( x > -1. && x < 1. ) && ( y > -1. && y < 1. ) ) {
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ;
+    }
+}",201,-30.98625858420941,-0.15416049046870353
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+    if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) {
+        if(x11 > 0 && x22 > 0 && x12 > 0 && x21 > 0 && x > 0 && y > 0) {
+            if(x11 < 100 && x22 < 100 && x12 < 100 && x21 < 100 && x < 100 && y < 100) {
+                outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ;
+            }
+        }
+    }
+}",257,-22.96847186146214,-0.08937148584226515
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+  //Validate all parameters against allowed ranges
+  if ( ( x11 < 0 || x11 > 1 ) || ( x22 < 0 || x22 > 1 ) || ( x12 < 0 || x12 > 0 ) || ( x21 < 0 || x21 > 0 ) || ( x < 0 || x > 0 ) || ( y < 0 || y > 0 ) ) { 
+    //Error message
+    printf(""Error: Values must be between 0 and 1.\n"");
+    //Exit function
+    return;
+  }
+  else {
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ;
+  } 
+}",221,-60.50003591567528,-0.27375581862296505
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) {
+  // check if values are within tolerance
+  double tolerance = 0.001;
+  if ( ( fabs ( x11 - 1. ) > tolerance ) || ( fabs ( x22 - 1. ) > tolerance ) || ( fabs ( x12 ) > tolerance ) || ( fabs ( x21 ) > tolerance ) || ( fabs ( x ) > tolerance ) || ( fabs ( y ) > tolerance ) ) { 
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+  }
+}",192,-24.191268912648493,-0.12599619225337758
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+    if ( ( x11 == 1. ) && ( x22 == 1. ) && ( x12 == 0. ) && ( x21 == 0. ) && ( x == 0. ) && ( y == 0. ) ) { 
+        outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+    } 
+}",152,-11.849821252959007,-0.07795935034841452
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+  if ( !(x11 == 1. && x22 == 1. && x12 == 0. & x21 == 0. && x == 0. && y == 0.) ) {
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+  }
+}",140,-22.828602948165607,-0.16306144962975433
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 >= -100 && x11 <= 100 && x12 >= -100 && x12 <= 100 && x21 >= -100 && x21 <= 100 && x22 >= -100 && x22 <= 100 && x >= -100 && x <= 100 && y >= -100 && y <= 100) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",243,-9.197409979272699,-0.03784942378301522
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( x11 > 0.001 && x11 < 1.001 ) || ( x22 > 0.001 && x22 < 1.001 ) || ( x12 > -0.001 && x12 < 0.001 ) || ( x21 > -0.001 && x21 < 0.001 ) || ( x > -0.001 && x < 0.001 ) || ( y > -0.001 && y < 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",191,-9.457337838043395,-0.04951485779080312
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if ( x11 < 0 || x22 < 0 || x11 > 10 || x12 > 10 || x21 > 10 || x22 > 10 || x > 10 || y > 10 || x < 0 || y < 0){ return; } else { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",231,-26.63500825905768,-0.11530306605652675
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { 
+//add input validation   
+if(x11 < 0.0 || x11 > 1.0 || x12 < 0.0 || x12 > 1.0 || x21 < 0.0 || x21 > 1.0 || x22 < 0.0 || x22 > 1.0 || x < 0.0 || x > 1.0 || y < 0.0 || y > 1.0 || ){
+    return;
+}
+
+outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+} 
+}",283,-37.250617639020696,-0.13162762416615087
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 >= 0 && x12 >= 0 && x21 >= 0 && x22 >= 0 && x >= 0 && y >= 0) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } else { //handle invalid input } } }",216,-12.554354010610295,-0.058122009308381
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 >= 0 && x11 <= 1 && x12 >= 0 && x12 <= 1 && x21 >= 0 && x21 <= 1 && x22 >= 0 && x22 <= 1 && x >= 0 && x <= 1 && y >= 0 && y <= 1) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",237,-8.972937712842493,-0.03786049667866031
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if(x11 != NULL && x12 != NULL && x21 != NULL && x22 != NULL && x != NULL && y != NULL && x11 >= 0 && x12 >= 0 && x21 >= 0 && x22 >= 0 && x >= 0 && y >= 0) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",237,-16.3329045852997,-0.06891520922067385
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+  // Validate that x11 is in the range [-1, 1] and x22 is in the range [-1, 1]
+  if(x11 < -1 || x11 > 1 || x22 < -1 || x22 > 1) {
+    return;
+  }
+  
+  if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { 
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+  } 
+}",253,-32.4789070318133,-0.12837512660795772
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+    if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) {
+        
+        // added input validation
+        if(!isValidInput(x11, x12, x21, x22, x, y)) {
+            return;
+        }
+        
+        outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+    } 
+}
+
+bool isValidInput(double x11, double x12, double x21, double x22, double x, double y) {
+    if(x11 < 0.0 || x12 < 0.0 || x21 < 0.0 || x22 < 0.0 || x < 0.0 || y < 0.0) {
+        return false;
+    }
+    return true;
+}",320,-33.04081417493007,-0.10325254429665646
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:"," 
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( abs ( x11 - 1. ) > 0.001 ) && ( abs ( x22 - 1. ) > 0.001 ) && ( abs ( x12 ) > 0.001 ) && ( abs ( x21 ) > 0.001 ) && ( abs ( x ) > 0.001 ) && ( abs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",172,-9.7531776666954,-0.05670452131799651
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) {if (x11 > 0 && x22 > 0 && x < 0.001 && y < 0.001) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; }} }",202,-19.615723692393104,-0.09710754303164904
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+if ( ( x11 < 0 || x11 > 1 ) || ( x22 < 0 || x22 > 1 ) || ( x12 < 0 || x12 > 0.001 ) || ( x21 < 0 || x21 > 0.001 ) || ( x < 0 || x > 0.001 ) || ( y < 0 || y > 0.001 ) ) { 
+outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+} 
+}",179,-10.544279404438395,-0.058906588851611145
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) < 0.001 ) && ( fabs ( x22 - 1. ) < 0.001 ) && ( fabs ( x12 ) < 0.001 ) && ( fabs ( x21 ) < 0.001 ) && ( fabs ( x ) < 0.001 ) && ( fabs ( y ) < 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",177,-3.5666899071828317,-0.020150790436061196
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) <= 0.001 ) && ( fabs ( x22 - 1. ) <= 0.001 ) && ( fabs ( x12 ) <= 0.001 ) && ( fabs ( x21 ) <= 0.001 ) && ( fabs ( x ) <= 0.001 ) && ( fabs ( y ) <= 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",177,-3.0521511004849993,-0.017243791528163837
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 >= -1.0 && x11 <= 1.0 && x12 >= -1.0 && x12 <= 1.0 && x21 >= -1.0 && x21 <= 1.0 && x22 >= -1.0 && x22 <= 1.0 && x >= -1.0 && x <= 1.0 && y >= -1.0 && y <= 1.0 ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",267,-11.066479594849104,-0.04144748911928504
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if(validInput(x11, x12, x21, x22, x, y)){ outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } } 
+
+boolean validInput(double x11, double x12, double x21, double x22, double x, double y){
+  if(x11 < 0 || x12 < 0 || x21 < 0 || x22 < 0 || x < 0 || y < 0 || 
+     x11 > 100 || x12 > 100 || x21 > 100 || x22 > 100 || x > 100 || y > 100)
+  {
+    return false;
+  }
+  else {
+    return true;
+  }
+}",318,-37.95987926639587,-0.11937068951696815
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 != 0 && x12 != 0 && x21 != 0 && x22 != 0 && x != 0 && y != 0) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } else { //Throw an exception or handle the error accordingly } } }",221,-23.446907136500297,-0.10609460242760316
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) {
+    double epsilon = 0.001;
+    if ( ( fabs ( x11 - 1. ) > epsilon ) || ( fabs ( x22 - 1. ) > epsilon ) || ( fabs ( x12 ) > epsilon ) || ( fabs ( x21 ) > epsilon ) || ( fabs ( x ) > epsilon ) || ( fabs ( y ) > epsilon ) ) {
+        outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ;
+    }
+}",195,-10.038333605647894,-0.051478633875117405
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) < 0.001 ) && ( fabs ( x22 - 1. ) < 0.001 ) && ( fabs ( x12 ) < 0.001 ) && ( fabs ( x21 ) < 0.001 ) && ( fabs ( x ) < 0.001 ) && ( fabs ( y ) < 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",177,-3.5666899071828317,-0.020150790436061196
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) <= 0.001 ) && ( fabs ( x22 - 1. ) <= 0.001 ) && ( fabs ( x12 ) <= 0.001 ) && ( fabs ( x21 ) <= 0.001 ) && ( fabs ( x ) <= 0.001 ) && ( fabs ( y ) <= 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",177,-3.0521511004849993,-0.017243791528163837
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:"," 
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if(x11 < 1. || x11 > 1. || x22 < 1. || x22 > 1. || x12 < 0.001 || x21 < 0.001 || x < 0.001 || y < 0.001) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",146,-22.326067357550297,-0.15291826957226232
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) {
+  if ( ( x11 < 0 || x11 > 1 ) || ( x22 < 0 || x22 > 1 ) || ( x12 < 0 || x12 > 1 ) || ( x21 < 0 || x21 > 1 ) || ( x < 0 || x > 1 ) || ( y < 0 || y > 1 ) ) {
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ;
+  }
+}",170,-10.476337798122891,-0.06162551645954642
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) < 0.001 ) && ( fabs ( x22 - 1. ) < 0.001 ) && ( fabs ( x12 ) < 0.001 ) && ( fabs ( x21 ) < 0.001 ) && ( fabs ( x ) < 0.001 ) && ( fabs ( y ) < 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",177,-3.5666899071828317,-0.020150790436061196
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( x11 < -0.001 || x11 > 1.001 ) || ( x22 < -0.001 || x22 > 1.001 ) || ( x12 < -0.001 || x12 > 0.001 ) || ( x21 < -0.001 || x21 > 0.001 ) || ( x < -0.001 || x > 0.001 ) || ( y < -0.001 || y > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",193,-8.905761186062712,-0.046143840342293845
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) <= 0.001 ) && ( fabs ( x22 - 1. ) <= 0.001 ) && ( fabs ( x12 ) <= 0.001 ) && ( fabs ( x21 ) <= 0.001 ) && ( fabs ( x ) <= 0.001 ) && ( fabs ( y ) <= 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",177,-3.031948778335501,-0.017129654114889835
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void setTransferMatrix(double x11, double x12, double x21, double x22, double x, double y) {
+  if ((fabs(x11 - 1.0) > 0.001) || (fabs(x22 - 1.0) > 0.001) || (fabs(x12) > 0.001) || (fabs(x21) > 0.001)) {
+    // Validate input
+    if (fabs(x) > 0.001 && fabs(y) > 0.001) {
+      outpos += sprintf(outpos, ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"",
+                        x11, x12, x21, x22, x, y);
+    }
+  }
+}",194,-30.101288539832815,-0.15516128113315883
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+ 
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 <= 1.0 && x22 <= 1.0 && x12 >= 0.0 && x21 >= 0.0 && x >= 0.0 && y >= 0.0) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",223,-21.624972815916575,-0.09697297226868419
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 >= 0.0 && x12 >= 0.0 && x21 >= 0.0 && x22 >= 0.0 && x >= 0.0 && y >= 0.0) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } else { printf(""Error: Incorrect input value.\n""); } } }",236,-22.8682231224393,-0.0968992505188106
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) <= 0.001 ) && ( fabs ( x22 - 1. ) <= 0.001 ) && ( fabs ( x12 ) <= 0.001 ) && ( fabs ( x21 ) <= 0.001 ) && ( fabs ( x ) <= 0.001 ) && ( fabs ( y ) <= 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",177,-3.107583321111999,-0.017556967915887
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:"," 
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+  //Check for valid input
+  if (x11 <= 0 || x12 < 0 || x21 < 0 || x22 <= 0 || x < 0 || y < 0) {
+    //Throw error
+    throw new InvalidInputException(""Inputs cannot be negative or 0"");
+  } 
+  if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) {
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+  } 
+}",253,-45.560225702711605,-0.18007994348897868
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) {
+  if ( ( fabs ( x11 ) > 0.001 ) && ( fabs ( x12 ) > 0.001 ) && ( fabs ( x21 ) > 0.001 ) && ( fabs ( x22 ) > 0.001 ) && ( fabs ( x ) > 0.001 ) && ( fabs ( y ) > 0.001 ) ) {
+    if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) ) {
+      outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ;
+    }
+  }
+}",218,-16.000885233744096,-0.07339855611809218
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( x11 < -1. || x11 > 1.) || ( x22 < -1. || x22 > 1.) || ( x12 < -0.1 || x12 > 0.1 ) || ( x21 < -0.1 || x21 > 0.1 ) || ( x < -0.1 || x > 0.1 ) || ( y < -0.1 || y > 0.1 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",187,-17.088908682505483,-0.09138453840912023
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+    
+    if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { 
+        // Validate input before setting output
+        if (x11 >= -1.0 && x11 <= 1.0 && x12 >= -1.0 && x12 <= 1.0 && x21 >= -1.0 && x21 <= 1.0 && x22 >= -1.0 && x22 <= 1.0 
+            && x >= -1.0 && x <= 1.0 && y >= -1.0 && y <= 1.0) {
+            outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+        }
+    } 
+}",296,-35.29414903666161,-0.11923698998872165
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) {
+//Validate input
+if ( !( ( fabs ( x11 ) <= 1. ) && ( fabs ( x22 ) <= 1. ) && ( fabs ( x12 ) <= 0.001 ) && ( fabs ( x21 ) <= 0.001 ) && ( fabs ( x ) <= 0.001 ) && ( fabs ( y ) <= 0.001 ) ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",178,-21.045026483682275,-0.11823048586338357
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { // validate input if ( ( x11 < 0.001 || x11 > 1.0 ) || ( x22 < 0.001 || x22 > 1.0 ) || ( x12 < 0.001 || x12 > 1.0 ) || ( x21 < 0.001 || x21 > 1.0 ) || ( x < 0.001 || x > 1.0 ) || ( y < 0.001 || y > 1.0 ) ) { return; } outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; }",192,-17.3257533659155,-0.0902382987808099
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 > 0 && x11 < 1 && x12 > 0 && x12 < 1 && x21 > 0 && x21 < 1 && x22 > 0 && x22 < 1 && x > 0 && x < 1 && y > 0 && y < 1) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",237,-11.533110572890493,-0.048662913809664525
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+    if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { 
+        // Verify that all variables are valid
+        if (x11 >= -1. && x11 <= 1. && x12 >= -1. && x12 <= 1. && x21 >= -1. && x21 <= 1. && x22 >= -1. && x22 <= 1. && x >= -1. && x <= 1. && y >= -1. && y <= 1.) {
+            outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+        }
+    } 
+}",278,-28.10612193130354,-0.10110115802627173
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { if (x11 > 0 && x12 > 0 && x21 > 0 && x22 > 0 && x > 0 && y > 0) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } } }",209,-7.933484207780001,-0.03795925458267943
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:"," 
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) {
+     // Check for valid input values
+     if (fabs(x11) <= 0.001 || fabs(x12) <= 0.001 || fabs(x21) <= 0.001 || fabs(x22) <= 0.001 || fabs(x) <= 0.001 || fabs(y) <= 0.001) {
+          printf(""Invalid input values.\n"");
+     } else {
+          outpos += sprintf(outpos, ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"", x11, x12, x21, x22, x, y);
+     }
+}",189,-38.63443241068621,-0.20441498629992702
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( x11 > 0 && x11 < 1 ) || ( x22 > 0 && x22 < 1 ) || ( x12 > 0 && x12 < 1 ) || ( x21 > 0 && x21 < 1 ) || ( x > 0 && x < 1 ) || ( y > 0 && y < 1 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",163,-10.865763340814194,-0.06666112479027113
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:"," 
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { // Validate input values if ( x11 < 0 || x12 < 0 || x21 < 0 || x22 < 0 || x < 0 || y < 0 || x11 > 1 || x12 > 1 || x21 > 1 || x22 > 1 || x > 1 || y > 1 ) { return; } if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",245,-17.01384677807109,-0.06944427256355547
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( abs ( x11 - 1. ) <= 0.001 ) && ( abs ( x22 - 1. ) <= 0.001 ) && ( abs ( x12 ) <= 0.001 ) && ( abs ( x21 ) <= 0.001 ) && ( abs ( x ) <= 0.001 ) && ( abs ( y ) <= 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }",171,-6.755739331225597,-0.039507247551026886
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { 
+// Check if x11,x12,x21,x22,x,y are in a valid range
+if ( ( x11 < -1. || x11 > 1. ) || ( x12 < -1. || x12 > 1. ) || ( x21 < -1. || x21 > 1. ) || ( x22 < -1. || x22 > 1. ) || ( x < -1. || x > 1. ) || ( y < -1. || y > 1. ) ) { 
+    outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; 
+} 
+}",214,-32.13381133782199,-0.15015799690571022
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) { if ( ( fabs ( x11 - 1. ) > 0.001 ) || ( fabs ( x22 - 1. ) > 0.001 ) || ( fabs ( x12 ) > 0.001 ) || ( fabs ( x21 ) > 0.001 ) || ( fabs ( x ) > 0.001 ) || ( fabs ( y ) > 0.001 ) ) { outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ; } }
+Fixed code:","
+void SetTransferMatrix ( double x11 , double x12 , double x21 , double x22 , double x , double y ) {
+    if ( ( fabs ( x11 - 1. ) <= 0.001 ) && ( fabs ( x22 - 1. ) <= 0.001 ) && ( fabs ( x12 ) <= 0.001 ) && ( fabs ( x21 ) <= 0.001 ) && ( fabs ( x ) <= 0.001 ) && ( fabs ( y ) <= 0.001 ) ) {
+        outpos += sprintf ( outpos , ""%12.3f %12.3f %12.3f %12.3f %12.3f %12.3f cm\\n"" , x11 , x12 , x21 , x22 , x , y ) ;
+    } 
+}",185,-10.723175227704703,-0.05796310933894434

@@ -1,0 +1,626 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+    if ( c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1 ) { 
+        return; 
+    } 
+    if ( par == STROKING ) { 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+}",183,-10.241249979836597,-0.05596311464391583
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+	if(par != STROKING && par != FILLING){
+		printf(""Error: Invalid option"");
+		return;
+	}
+	if ( par == STROKING ) { 
+		outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+	} else { 
+		outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+	} 
+}",172,-22.389713719725606,-0.1301727541844512
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+  // Check for valid values 
+  if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1) {
+    return;
+  }
+  if ( par == STROKING ) { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+  } else { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+  } 
+}",187,-18.64888026833529,-0.09972663245099085
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+    // Check that input values are within appropriate range
+    if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1 ) {
+        if ( par == STROKING ) { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+        } else { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+        } 
+    }
+}",187,-23.578522249917306,-0.12608835427763265
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1 ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } } else { printf(""Error: Invalid input parameters"") } }",166,-15.933115543416598,-0.09598262375552168
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING && c>=0.0 && c<=1.0 && m>=0.0 && m<=1.0 && y>=0.0 && y<=1.0 && k>=0.0 && k<=1.0 ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else if ( par != STROKING && c>=0.0 && c<=1.0 && m>=0.0 && m<=1.0 && y>=0.0 && y<=1.0 && k>=0.0 && k<=1.0 ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }",239,-12.8593265354571,-0.05380471353747741
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+ if ( c < 0.0 || c > 1.0 || m < 0.0 || m > 1.0 || y < 0.0 || y > 1.0 || k < 0.0 || k > 1.0 || par < 0 || par > 1 ){
+    return;
+  }
+ if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }",187,-19.3721975061261,-0.10359463907019305
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if (c < 0 || m < 0 || y < 0 || k < 0 || c > 100 || m > 100 || y > 100 || k > 100) {
+    return; 
+  }
+  if ( par == STROKING ) { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+  } else { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+  } 
+}",181,-16.212707827970384,-0.08957297142525074
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( c >= 0.0 && c <= 1.0 && m >= 0.0 && m <= 1.0 && y>= 0.0 && y <= 1.0 && k >= 0.0 && k <= 1.0) {
+    if ( par == STROKING ) { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+  }
+}",193,-17.07227369176379,-0.08845737664126316
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1 ) {
+    if ( par == STROKING ) {
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+  } 
+}",176,-12.912258980806206,-0.0733651078454898
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+
+void SetColor ( double c , double m , double y , double k , int par ) {
+  // Validate Inputs
+  if ( c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1) {
+    return;
+  }
+ 
+  if ( par == STROKING ) {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+  } else {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+  }
+}",184,-21.005308074770088,-0.11415928301505483
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+//Validate that all parameters are within the expected range 
+if(c >= 0 && c <= 1
+   && m >= 0 && m <= 1
+   && y >= 0 && y <= 1
+   && k >= 0 && k <= 1
+   && par >= 0 && par <= 1){
+   if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; }
+ } else {
+  //Handle error condition
+ }
+}",199,-50.58829557267657,-0.25421254056621395
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+	if (c < 0.0 || c > 1.0 || m < 0.0 || m > 1.0 || y < 0.0 || y > 1.0 || k < 0.0 || k > 1.0) {
+		printf(""Values not in valid range\n"");
+	}
+	else {
+		if ( par == STROKING ) { 
+			outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+		} 
+		else { 
+			outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+		} 
+	}
+}",223,-28.25266544865378,-0.12669356703432189
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+    if(c < 0 || c > 100 || m < 0 || m > 100 || y < 0 || y > 100 || k < 0 || k > 100) {
+        printf(""Error: Color values must be between 0 and 100.\n"");
+    } else {
+        if ( par == STROKING ) { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+        } else { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+        }
+    }
+}",198,-20.3636932873905,-0.10284693579490152
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par != STROKING ) { return; } if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1) { return; } outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; }",114,-10.417410560990811,-0.09138079439465624
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+   if ( c > 0 && c <= 1 && m > 0 && m <= 1 && y > 0 && y <= 1 && k > 0 && k <= 1) {
+     if ( par == STROKING ) { 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+      } else { 
+         outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+      } 
+   }
+   else {
+      printf(""Invalid input. Please enter numbers between 0 and 1."");
+   }
+}",199,-33.91361778137469,-0.17042018985615423
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING && c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1 ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }",151,-5.9062890861199016,-0.03911449725907219
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1 ) {
+    if ( par == STROKING ) { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+  }
+}",176,-8.606175624228698,-0.04889872513766305
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+    //Checking if the input values are within the accepted range
+    if (c > 0.0 && c <= 1.0 && m > 0.0 && m <= 1.0 && y > 0.0 && y <= 1.0 && k > 0.0 && k <= 1.0) {
+        if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } 
+    }
+    else {
+        //Throw an exception if the input values are not within the accepted range
+        throw std::invalid_argument(""Invalid input values!"");
+    }
+}",232,-42.338623357167684,-0.1824940661946883
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1 ) {
+    if ( par == STROKING ) { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+  } else {
+    printf(""Error: Improper input values.\n"");
+  }
+}",195,-20.1607965592187,-0.10338870030368563
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+  c = c > 0.0 ? c : 0.0;
+  m = m > 0.0 ? m : 0.0;
+  y = y > 0.0 ? y : 0.0;
+  k = k > 0.0 ? k : 0.0;
+  
+  if ( par == STROKING ) {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+  } else { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+  } 
+}",198,-19.27238421357359,-0.09733527380592723
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1) {
+    if ( par == STROKING ) { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+  }
+}",176,-9.4262450865805,-0.05355821071920739
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if (par == STROKING && c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1) { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+  } 
+  else if (c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1) { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+  }
+}",204,-14.773426367092505,-0.07241875670143384
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+if ( c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1) { 
+throw new Exception(""Invalid color values""); 
+} 
+
+if ( par == STROKING ) { 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+} else { 
+outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+} 
+}",182,-21.91309429389111,-0.1204016169994017
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( par == STROKING ) { 
+    if (c > 0 && c < 1 && m > 0 && m < 1 && y > 0 && y < 1 && k > 0 && k < 1) {
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    }
+  } else { 
+    if (c > 0 && c < 1 && m > 0 && m < 1 && y > 0 && y < 1 && k > 0 && k < 1) {
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    }
+  } 
+}",216,-14.794057517145594,-0.0684910070238222
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING && c >= 0.0 && c <= 1.0 && m >= 0.0 && m <= 1.0 && y >= 0.0 && y <= 1.0 && k >= 0.0 && k <= 1.0 ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }",167,-6.0771713020604965,-0.036390247317727525
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+    
+    // Validate input parameters
+    if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1 || par < 0 || par > 1) {
+        throw new IllegalArgumentException(""Input parameters must be between 0 and 1"");
+    }
+    
+    if ( par == STROKING ) {
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+    } else {
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+    }
+}",207,-24.74524043671401,-0.11954222433195173
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor(double c, double m, double y, double k, int par) {
+    if (par != STROKING && par != FILLING){
+        return;
+    }
+    if (par == STROKING) {
+        outpos += sprintf(outpos, "" %12.3f %12.3f %12.3f %12.3f K"", c, m, y, k);
+    } else {
+        outpos += sprintf(outpos, "" %12.3f %12.3f %12.3f %12.3f k"", c, m, y, k);
+    }
+}",149,-12.110255224184598,-0.08127688069922549
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+if ( c < 0 || m < 0 || y < 0 || k < 0 || c > 1 || m > 1 || y > 1 || k > 1 ) {
+    printf ( ""Invalid color value!"" ) ;
+    return ;
+}
+
+if ( par == STROKING ) {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+} else {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+} }",181,-26.341440493575703,-0.1455328204064956
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+    if ( c >= 0.0 && c <= 1.0 && m >= 0.0 && m <= 1.0 && y >= 0.0 && y <= 1.0 && k >= 0.0 && k <= 1.0 ) {
+        if ( par == STROKING ) { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+        } else { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+        } 
+    }
+}",192,-9.080736151877502,-0.047295500791028657
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par != STROKING && par != FILLING ) { return ; } if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }",137,-8.304385530929096,-0.06061595278050435
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+//Validate input parameters
+if(c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1 || (par != STROKING && par != FILLING)) {
+    printf(""Invalid input parameters\n"");
+    return;
+}
+if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; }
+else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }",193,-30.243927105402495,-0.15670428552022017
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+if(c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1) {
+if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+else {
+  printf(""Error: Invalid value for c, m, y, or k"");
+}
+}",181,-29.168355044808095,-0.16115113284424362
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { if(c >= 0.0 && c <= 100.0 && m >= 0.0 && m <= 100.0 && y >= 0.0 && y <= 100.0 && k >= 0.0 && k <= 100.0) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { print(""Error: invalid input parameters""); } } else { if(c >= 0.0 && c <= 100.0 && m >= 0.0 && m <= 100.0 && y >= 0.0 && y <= 100.0 && k >= 0.0 && k <= 100.0) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } else { print(""Error: invalid input parameters""); } } }",245,-25.489848943314705,-0.10404019976863145
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+	if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1) {
+  		printf(""Invalid input! Please enter valid color values."");
+  		exit(1);
+	} 
+	if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } 
+}",189,-33.20609242871791,-0.1756936107339572
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+    if (par < 0 || par > 1) {
+        return;
+    }
+    if ( par == STROKING ) { 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+}",156,-8.7912288425728,-0.05635403104213333
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+  /*Validate parameters*/
+  if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1){
+    return;
+  }
+  if ( par == STROKING ) {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+  } else {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+  }
+}",180,-21.775613474397616,-0.12097563041332009
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { // Check parameters if (!(par == STROKING || par == FILLING)) { // Throw exception } else { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } } }",145,-26.153617757441594,-0.18036977763752823
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+ if ( c >= 0.0 && c <= 1.0 && m >= 0.0 && m <= 1.0 && y >= 0.0 && y <= 1.0 && k >= 0.0 && k <= 1.0 ){
+    if ( par == STROKING ) { 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+    } else { 
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+    } 
+  }
+ else{
+    //handle error
+ }
+}",201,-28.577172934782105,-0.1421749897252841
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:"," 
+void SetColor ( double c , double m , double y , double k , int par ) {
+if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1)
+{
+    printf(""Improper input values! Please enter values between 0 and 1."");
+    return;
+}
+if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }",182,-29.054648094179775,-0.15964092359439436
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+  if ( c < 0.0 || c > 1.0 || m < 0.0 || m > 1.0 || y < 0.0 || y > 1.0 || k < 0.0 || k > 1.0 ) {
+    printf(""Error: Invalid RGB color values!\n"");
+    return;
+  }
+  if ( par == STROKING ) { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+  } else { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+  } 
+}",209,-23.640797275794583,-0.11311386256361045
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( par != STROKING && par != FILLING ) { 
+    printf(""Invalid input detected"");
+    return; 
+  }
+  if ( par == STROKING ) { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+  } 
+  else { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+  } 
+}",173,-26.01259016559219,-0.15036179286469473
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1 && par >= 0 && par <= 1 ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } } }",163,-7.9347079431041,-0.04867918983499448
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+  if ( c >= 0.0 && c <= 1.0 && m >= 0.0 && m <= 1.0 && y >= 0.0 && y <= 1.0 && k >= 0.0 && k <= 1.0 ) {
+    if ( par == STROKING ) {
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+    } else { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+    } 
+  } else {
+    printf(""Please enter valid values for c, m, y, and k"");
+  }
+}",212,-25.120358652172804,-0.11849225779326794
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+    if ( c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1) {    
+        if ( par == STROKING ) { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+        } else { 
+            outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+        } 
+    }
+    else {
+            printf(""Error: Invalid input for color values.\n"")
+    }
+}",199,-35.22792378726581,-0.17702474264957693
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) { 
+if ( par == STROKING && c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } 
+else if (c >= 0 && c <= 1 && m >= 0 && m <= 1 && y >= 0 && y <= 1 && k >= 0 && k <= 1){ outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } 
+else {printf(""Error: Invalid input"");} 
+}",202,-25.136647928537897,-0.12443885113137573
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+    // Validate the input parameters.
+    if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1) {
+        return;
+    }
+
+    if ( par == STROKING ) {
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+    } else {
+        outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+    }
+}",183,-16.716453114551193,-0.09134673833088083
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+  // validate input
+  if (c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1) { 
+    return;
+  } 
+  if ( par == STROKING ) {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+  } else {
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+  }
+}",181,-19.280322200409593,-0.10652111712933476
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+  if ( c < 0 || c > 1 || m < 0 || m > 1 || y < 0 || y > 1 || k < 0 || k > 1 ) {
+    return;
+  }
+ 
+  if ( par == STROKING ) { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; 
+  } else { 
+    outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; 
+  } 
+}",181,-13.677433231251804,-0.07556592945442986
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void SetColor ( double c , double m , double y , double k , int par ) { if ( par == STROKING ) { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ; } else { outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ; } }
+Fixed code:","
+void SetColor ( double c , double m , double y , double k , int par ) {
+  if ( ( c >= 0.0 && c <= 1.0 ) && ( m >= 0.0 && m <= 1.0 ) && ( y >= 0.0 && y <= 1.0 ) && ( k >= 0.0 && k <= 1.0 ) && ( par == STROKING || par == FILLING ) ) { 
+    if ( par == STROKING ) { 
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f K"" , c , m , y , k ) ;
+    } else {
+      outpos += sprintf ( outpos , "" %12.3f %12.3f %12.3f %12.3f k"" , c , m , y , k ) ;
+    }
+  }
+}",210,-20.778661838076495,-0.09894600875274522

@@ -1,0 +1,343 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen(s1); size_t s2_len = strlen(s2); return pure_memcmp ( s1 , s2 , s1_len > s2_len ? s1_len + 1U : s2_len + 1U ) ; }",90,-7.792079486938997,-0.08657866096598886
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp(const char * const s1, const char * const s2)
+{
+    size_t len1 = strlen(s1);
+    size_t len2 = strlen(s2);
+    size_t len = len1 > len2 ? len2 : len1;
+    return pure_memcmp(s1, s2, len + 1U);
+}",91,-15.435030482536702,-0.1696157195883154
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s2 ) + 1U ) ; }",46,-3.2442632597945,-0.07052746216944565
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+    size_t s1_len = strlen ( s1 ) ; 
+    size_t s2_len = strlen ( s2 ) ; 
+    size_t len = ( s1_len < s2_len ) ? s1_len : s2_len ; 
+    return pure_memcmp ( s1 , s2 , len + 1U ) ; 
+}",112,-11.985109908172493,-0.10700990989439726
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen ( s1 ); size_t s2_len = strlen ( s2 ); size_t len = (s1_len < s2_len) ? s1_len + 1U : s2_len + 1U; return pure_memcmp ( s1 , s2 , len ) ; }",99,-13.923210708622303,-0.1406384920062859
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s2 ) + 1U ) ; }",46,-3.2562803727004996,-0.07078870375435868
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen(s1); size_t s2_len = strlen(s2); size_t len = (s1_len > s2_len) ? s1_len : s2_len; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",96,-6.6146699945886,-0.06890281244363125
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+    size_t s1_len = strlen(s1);
+    size_t s2_len = strlen(s2);
+    size_t len = (s1_len > s2_len ? s1_len : s2_len) + 1;
+    return pure_memcmp ( s1 , s2 , len ) ; 
+}",106,-10.788145457665594,-0.10177495714778863
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+int len1 = strlen(s1);
+int len2 = strlen(s2);
+int len = len1;
+//choose the smaller length
+if(len1 > len2)
+    len = len2;
+return pure_memcmp ( s1 , s2 , len + 1U ) ; 
+}",97,-27.85900041382149,-0.2872061898332112
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len1 = strlen(s1);  size_t len2 = strlen(s2); size_t len = len1 > len2 ? len2 : len1; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",83,-14.078843667187497,-0.16962462249623492
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) && (strlen(s2)>=strlen(s1)); }",61,-17.326632589844497,-0.2840431572105655
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { unsigned int s1_len = strlen(s1); unsigned int s2_len = strlen(s2); unsigned int len = s1_len > s2_len ? s1_len + 1U : s2_len + 1U; return pure_memcmp ( s1 , s2 , len ); }",93,-14.075119402333602,-0.15134536991756561
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+    size_t s1_len = strlen(s1) + 1U;
+    size_t s2_len = strlen(s2) + 1U;
+    size_t len = (s1_len < s2_len) ? s1_len : s2_len;
+    return pure_memcmp ( s1 , s2 , len ) ; 
+}",112,-10.822483426213793,-0.0966293163054803
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen(s1); size_t s2_len = strlen(s2); size_t len = (s1_len > s2_len) ? s1_len : s2_len; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",96,-6.612264631031602,-0.06887775657324585
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+    size_t s1len = strlen(s1);
+    size_t s2len = strlen(s2);
+    size_t len = s1len > s2len ? s1len + 1U : s2len + 1U; 
+    return pure_memcmp ( s1 , s2 , len ) ; 
+}",103,-13.480436656149692,-0.1308780257878611
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { int len1 = strlen(s1); int len2 = strlen(s2); int len = (len1 < len2) ? len1 : len2; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",78,-8.264884525897203,-0.10596005802432312
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len1 = strlen(s1); size_t len2 = strlen(s2); size_t len = (len1 > len2) ? len1 : len2; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",84,-6.177974726701901,-0.07354731817502264
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { int s1Len = strlen(s1); int s2Len = strlen(s2); int minLen = (s1Len < s2Len) ? s1Len : s2Len; return pure_memcmp ( s1 , s2 , minLen + 1U ) ; }",86,-10.496579342625,-0.12205324817005812
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+int s1_len = strlen(s1);
+int s2_len = strlen(s2);
+return pure_memcmp ( s1 , s2 , max(s1_len, s2_len) + 1U ) ; 
+}",82,-12.194522556714,-0.1487136897160244
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { int str_len1 = strlen(s1); int str_len2 = strlen(s2); int max_len = (str_len1 > str_len2) ? str_len1 : str_len2; return pure_memcmp ( s1 , s2 , max_len + 1U ) ; }",94,-12.470313608298502,-0.13266291072657982
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len_s1 = strlen(s1) + 1U; size_t len_s2 = strlen(s2) + 1U; size_t len = len_s1 < len_s2 ? len_s1 : len_s2; return pure_memcmp ( s1 , s2 , len ) ; }",99,-11.982252120645002,-0.12103284970348487
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+    size_t s1_len = strlen(s1);
+    size_t s2_len = strlen(s2);
+    size_t min_len = (s1_len < s2_len) ? s1_len : s2_len;
+    return pure_memcmp ( s1 , s2 , min_len + 1U ) ; 
+}",111,-7.852309274528603,-0.07074152499575319
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+	int s1_len = strlen(s1);
+	int s2_len = strlen(s2);
+	int minLen = (s1_len < s2_len) ? s1_len : s2_len;
+	return pure_memcmp ( s1 , s2 , minLen + 1U ) ; 
+}",103,-14.455889759547302,-0.14034844426744955
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len1 = strlen(s1); size_t len2 = strlen(s2); if (len1 > len2) { return pure_memcmp ( s1 , s2 , len1 + 1U ) ; } else { return pure_memcmp ( s1 , s2 , len2 + 1U ) ; } }",98,-8.140625695983404,-0.08306760914268779
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len1 = strlen(s1); size_t len2 = strlen(s2); size_t len = (len1>len2)? len1 : len2; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",83,-11.257682921184303,-0.1356347339901723
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { int len1 = strlen(s1); int len2 = strlen(s2); int minlen = len1 < len2 ? len1 : len2; return pure_memcmp ( s1 , s2 , minlen + 1U ) ; }",78,-9.138173249386499,-0.11715606729982692
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + strlen ( s2 ) + 1U ) ; }",53,-4.882047951160101,-0.09211411228603963
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) {
+  size_t s1_len = strlen(s1);
+  size_t s2_len = strlen(s2);
+  size_t len = s1_len > s2_len ? s1_len : s2_len;
+  return pure_memcmp ( s1 , s2 , len + 1U ) ;
+}",103,-9.898141335048297,-0.0960984595635757
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp(const char * const s1, const char * const s2) {
+  size_t len1 = strlen(s1);
+  size_t len2 = strlen(s2);
+  size_t length = (len1 > len2) ? len1 : len2;
+  return pure_memcmp(s1, s2, length + 1U);
+}",92,-13.299120041641006,-0.14455565262653267
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+  size_t s1len = strlen(s1);
+  size_t s2len = strlen(s2);
+  size_t len = (s1len > s2len)? s1len : s2len;
+  return pure_memcmp ( s1 , s2 , len + 1U ) ; 
+}",100,-13.6969069344174,-0.136969069344174
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen(s1); size_t s2_len = strlen(s2); size_t cmp_len = s1_len > s2_len ? s2_len : s1_len; return pure_memcmp ( s1 , s2 , cmp_len + 1U ) ; }",100,-10.4238032536494,-0.104238032536494
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len1 = strlen ( s1 ) ; size_t len2 = strlen ( s2 ) ; size_t len = ( len1 > len2 ) ? len1 : len2 ; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",86,-7.455162655535004,-0.08668793785505818
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { int s1_length = strlen(s1); int s2_length = strlen(s2); int length = s1_length > s2_length ? s1_length : s2_length; return pure_memcmp ( s1 , s2 , length + 1U ) ; }",88,-8.4758337769994,-0.09631629292044773
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { int len1 = strlen(s1); int len2 = strlen(s2); int len = len1 > len2 ? len1 : len2; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",76,-7.494099955733002,-0.09860657836490792
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+    size_t len1 = strlen(s1);
+    size_t len2 = strlen(s2);
+    size_t len = (len1 > len2) ? len1 : len2;
+    return pure_memcmp ( s1 , s2 , len + 1U ) ;
+}",94,-9.775109440349498,-0.10399052596116487
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len1 = strlen(s1); size_t len2 = strlen(s2); size_t min = (len1 < len2) ? len1 : len2; return pure_memcmp ( s1 , s2 , min + 1U ) ; }",84,-9.43308650789879,-0.11229864890355704
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen(s1); size_t s2_len = strlen(s2); size_t len = (s1_len > s2_len) ? s1_len+1U : s2_len+1U; return pure_memcmp ( s1 , s2 , len ) ; }",99,-9.858488198070997,-0.09958068886940401
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) {
+  size_t s1_len = strlen(s1);
+  size_t s2_len = strlen(s2);
+  size_t max_len = (s1_len > s2_len) ? s1_len : s2_len;
+  return pure_memcmp ( s1 , s2 , max_len + 1U ) ; 
+}",110,-11.083897311506002,-0.10076270283187275
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s2 ) + 1U ) ; }",46,-3.2440283372377996,-0.07052235515734347
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen(s1); size_t s2_len = strlen(s2); return pure_memcmp ( s1 , s2 , s1_len < s2_len ? s2_len + 1U : s1_len + 1U ) ; }",90,-9.676399977082001,-0.10751555530091113
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+  size_t len_s1 = strlen ( s1 );
+  size_t len_s2 = strlen ( s2 );
+  size_t len = len_s1 > len_s2 ? len_s1 : len_s2;
+  return pure_memcmp ( s1 , s2 , len + 1U ); 
+}",104,-16.94245257165441,-0.16290819780436933
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , max(strlen ( s1 ) ,strlen (s2)) + 1U ) ; }",55,-10.0331511350718,-0.18242092972857818
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s2 ) + 1U ) ; }",46,-3.2440283372377996,-0.07052235515734347
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , max (strlen ( s1 ) , strlen(s2)) + 1U ) ; }",55,-7.8701863198328,-0.1430942967242327
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t len1 = strlen ( s1 ) ; size_t len2 = strlen ( s2 ) ; size_t length = ( len1 > len2 ) ? len2 : len1 ; return pure_memcmp ( s1 , s2 , length + 1 ) ; }",85,-15.024891371122997,-0.17676342789556468
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+    size_t s1_len = strlen(s1);
+    size_t s2_len = strlen(s2);
+    size_t max_len = s1_len > s2_len ? s1_len : s2_len;
+   
+    return pure_memcmp ( s1 , s2 , max_len + 1U ) ; 
+}",111,-14.251972712127298,-0.12839615055970538
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { unsigned int s1_length = strlen(s1); 
+  unsigned int s2_length = strlen(s2); 
+  unsigned int max_length = (s1_length > s2_length) ? s1_length : s2_length; 
+  return pure_memcmp ( s1 , s2 , max_length + 1U ) ; 
+}",108,-18.936270154465,-0.17533583476356482
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t s1_len = strlen(s1); size_t s2_len = strlen(s2); size_t len = (s1_len > s2_len) ? s1_len : s2_len; return pure_memcmp ( s1 , s2 , len + 1U ) ; }",96,-6.605661711946601,-0.06880897616611042
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { size_t size1 = strlen(s1); size_t size2 = strlen(s2); return pure_memcmp ( s1 , s2 , (size1 > size2) ? size1 : size2 ) ; }",74,-11.6867336186058,-0.15792883268386215
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { return pure_memcmp ( s1 , s2 , strlen ( s1 ) + 1U ) ; }
+Fixed code:","
+int pure_strcmp ( const char * const s1 , const char * const s2 ) { 
+  size_t len1 = strlen(s1);
+  size_t len2 = strlen(s2);
+  return pure_memcmp ( s1 , s2 , (len1 > len2 ? len1 : len2) + 1U ) ; 
+}",86,-9.744103297779,-0.11330352671836047

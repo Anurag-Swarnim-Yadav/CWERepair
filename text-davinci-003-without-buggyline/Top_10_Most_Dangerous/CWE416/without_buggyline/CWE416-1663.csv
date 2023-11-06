@@ -1,0 +1,451 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; sock = sock_alloc ( ) ; if ( ! sock ) return - ENOMEM ; sock -> ops = sp -> ops ; err = sock_init_data ( sock , sk ) ; if ( err < 0 ) { sock_release ( sock ) ; return err ; } sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }",293,-14.855672210832445,-0.05070195293799469
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; if ( err == 0 ) { * sockp = sock ; } else { sock_release ( sock ) ; * sockp = NULL ; } return err ; }",301,-12.158124137554235,-0.040392438995196796
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { 
+struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; 
+struct sctp_sock * sp = sctp_sk ( sk ) ; 
+struct socket * sock ; 
+int err = 0 ; 
+if ( ! asoc ) return - EINVAL ; 
+if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; 
+if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; 
+err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; 
+if ( err < 0 ) { 
+    // Free the memory to prevent Use After Free
+    kfree(asoc); 
+    return err; 
+}
+sctp_copy_sock ( sock -> sk , sk , asoc ) ; 
+sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; 
+sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; 
+* sockp = sock ; 
+return err ; }",331,-34.34277610627813,-0.10375461059298528
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; sock_put(sock); return err ; }",284,-6.8988581039722385,-0.02429175388722619
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; //add sctp_assoc_free here sctp_assoc_free(asoc); sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }",300,-16.723364260499178,-0.05574454753499726
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; 
+
+//Add a reference count to make sure the socket is not freed while still in use 
+sock_hold(sock); 
+return err ; }",309,-25.473476665428247,-0.08243843581044741
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; atomic_inc ( & sock -> sk -> sk_refcnt ) ; * sockp = sock ; return err ; }
+The vulnerability in the original code was that the sock structure was not being incremented in the reference count before it was assigned to the sockp pointer. The fixed code adds an atomic_inc call to increment the reference count of the sock structure before it is assigned to the sockp pointer, thus preventing any use-after-free errors.",362,-50.883269480890235,-0.1405615179030117
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; //Add an extra line of code to increment the reference count of the sock object. refcount_inc(&sock->sk->sk_refcnt); * sockp = sock ; return err ; }",310,-26.841325657794933,-0.08658492147675785
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff(struct sock *sk, sctp_assoc_t id, struct socket **sockp) { 
+    struct sctp_association *asoc = sctp_id2assoc(sk, id); 
+    struct sctp_sock *sp = sctp_sk(sk); 
+    struct socket *sock; 
+    int err = 0; 
+    if (!asoc) 
+        return -EINVAL; 
+    if (waitqueue_active(&asoc->wait)) 
+        return -EBUSY; 
+    if (!sctp_style(sk, UDP)) 
+        return -EINVAL; 
+    err = sock_create(sk->sk_family, SOCK_SEQPACKET, IPPROTO_SCTP, &sock); 
+    if (err < 0) 
+        return err; 
+    sctp_copy_sock(sock->sk, sk, asoc); 
+    sp->pf->to_sk_daddr(&asoc->peer.primary_addr, sk); 
+    sctp_sock_migrate(sk, sock->sk, asoc, SCTP_SOCKET_UDP_HIGH_BANDWIDTH); 
+    /* Free the association after migration */
+    sctp_association_free(asoc); 
+    *sockp = sock; 
+    return err; 
+}",349,-24.415636096940702,-0.06995884268464385
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; // Add reference to prevent Use After Free sock_hold(sock); * sockp = sock ; return err ; } // Release reference to prevent Use After Free static void sctp_do_peeloff_release (struct socket * sock) { sock_put(sock); }",328,-22.445904426488642,-0.06843263544661171
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; // Add reference count to prevent Use After Free sock_hold(sock); * sockp = sock ; return err ; } // Release the reference count sock_put(sock);",305,-17.07031459645224,-0.05596824457853193
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; 
+// Add a reference count to the socket to prevent a use-after-free 
+sock_hold(sk); 
+* sockp = sock ; 
+// Release the reference count when it is no longer needed 
+sock_put(sk); 
+return err ; }",330,-33.34897631970824,-0.10105750399911588
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; sock_release(sock); * sockp = sock ; return err ; }",284,-6.5948335946509395,-0.023221245051587815
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) { sctp_association_put ( asoc ) ; return - EBUSY ; } if ( ! sctp_style ( sk , UDP ) ) { sctp_association_put ( asoc ) ; return - EINVAL ; } err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) { sctp_association_put ( asoc ) ; return err ; } sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; sctp_association_put ( asoc ) ; return err ; }",335,-6.241504812911427,-0.01863135765048187
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; sock = sock_alloc ( ) ; if ( ! sock ) return - ENOMEM ; sock -> sk = sk_alloc ( sk -> sk_family , GFP_KERNEL ) ; if ( ! sock -> sk ) { err = - ENOMEM ; goto out ; } sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; err = 0 ; out : if ( err ) sock_release ( sock ) ; return err ; }",312,-17.176468898585533,-0.05505278493136389
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; //Add reference to avoid Use-After-Free issue. refcount_inc(&asoc->refcnt); * sockp = sock ; return err ; }",301,-19.991113866285243,-0.06641566068533303
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { 
+struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; 
+struct sctp_sock * sp = sctp_sk ( sk ) ; 
+struct socket * sock ; 
+int err = 0 ; 
+
+if ( ! asoc ) 
+{
+    return - EINVAL ; 
+}
+
+if ( waitqueue_active ( & asoc -> wait ) ) 
+{
+    return - EBUSY ; 
+}
+
+if ( ! sctp_style ( sk , UDP ) ) 
+{
+    return - EINVAL ; 
+}
+
+err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; 
+if ( err < 0 ) 
+{
+    return err ; 
+}
+
+sctp_copy_sock ( sock -> sk , sk , asoc ) ; 
+sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; 
+
+/* Prevent Use after Free */
+sctp_association_hold(asoc);
+sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; 
+
+/* Release the hold */
+sctp_association_put(asoc);
+* sockp = sock ; 
+return err ; 
+}",381,-38.73806352321725,-0.10167470741001902
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; //add code here to free the old socket if it was previously allocated sock_release(sk); * sockp = sock ; return err ; }",297,-29.65048824521859,-0.09983329375494475
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:"," 
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; 
+if ( err < 0 ) { 
+	sctp_association_free ( asoc ) ; 
+	return err ; 
+} 
+
+sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }",306,-19.60722005699016,-0.06407588253918352
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; if ( sock ) { * sockp = sock ; } else { return -EINVAL; } return err ; }",292,-11.930160689726598,-0.040856714690844516
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sock -> sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }",279,-6.919388551843391,-0.02480067581305875
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:"," 
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; sock_hold(sock); * sockp = sock ; return err ; }
+
+int sctp_do_peeloff_release(struct socket * sock) {
+    sock_put(sock);
+}",317,-18.51753997841747,-0.05841495261330432
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; sock_release(sock); * sockp = sock ; return err ; }",284,-6.398576409456039,-0.022530198624845208
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; if ( ! sk -> sk_refcnt . counter ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+
+The code has been fixed by adding an extra check to ensure that the socket is still referenced before creating the new socket. The code added is ""if (! sk->sk_refcnt.counter) return -EINVAL;"". This check ensures that the socket is still valid and prevents the use of a socket that has been freed already, thus preventing the vulnerability.",373,-71.39601983078627,-0.19141024083320715
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; 
+// Add the code below
+sctp_association_hold(asoc);
+* sockp = sock ; 
+sctp_association_put(asoc);
+return err ;
+}",314,-23.40487747719444,-0.07453782636049185
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; // Add a reference to the socket to prevent it from being freed * sockp = sock_get ( sock ) ; return err ; }",295,-16.657459957519606,-0.05646596595769358
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; // Add a reference to the socket so that it is not freed. sock_hold(sk); sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; // Add a reference to the socket so that it is not freed. sock_hold(sock); * sockp = sock ; return err ; }",318,-24.954211045389044,-0.07847236177795297
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; sock_hold ( sk ) ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; sock_put ( sk ) ; return err ; }",291,-7.727150360049933,-0.026553781306013515
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; // Add reference to prevent double free sock_hold(sock); return err ; }",291,-14.029833982118042,-0.04821248791105856
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; sock_hold(sock); * sockp = sock ; return err ; }
+
+sock_put(sock);
+
+The fixed code adds an extra line of code that holds a reference to the socket before setting the pointer to it. This ensures that the socket will not be freed when the pointer is set. Additionally, at the end of the function, a call to sock_put is made to release the reference and ensure that the socket is eventually freed.",364,-57.143350738688596,-0.15698722730408954
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff(struct sock *sk, sctp_assoc_t id, struct socket **sockp) {
+  struct sctp_association *asoc = sctp_id2assoc(sk, id);
+  struct sctp_sock *sp = sctp_sk(sk);
+  struct socket *sock;
+  int err = 0;
+
+  if (!asoc)
+    return -EINVAL;
+  if (waitqueue_active(&asoc->wait))
+    return -EBUSY;
+  if (!sctp_style(sk, UDP))
+    return -EINVAL;
+  
+  err = sock_create(sk->sk_family, SOCK_SEQPACKET, IPPROTO_SCTP, &sock);
+  if (err < 0)
+    return err;
+  sctp_copy_sock(sock->sk, sk, asoc);
+  sp->pf->to_sk_daddr(&asoc->peer.primary_addr, sk);
+  sctp_sock_migrate(sk, sock->sk, asoc, SCTP_SOCKET_UDP_HIGH_BANDWIDTH);
+ 
+  // Add reference to socket to avoid use-after-free
+  sock_hold(sock);  
+  *sockp = sock;
+  return err;
+}",334,-33.11277394304973,-0.09914004174565788
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; // Add reference count for sockp // Add ref_get before assignment * sockp = sock ; // Add ref_put after assignment ref_put ( sockp ) ; return err ; }",306,-37.3547584233096,-0.12207437393238431
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; 
+
+if ( ! asoc ) return - EINVAL ; 
+
+if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; 
+
+if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; 
+
+err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; 
+
+if ( err < 0 ) { sctp_association_free(asoc);  return err ; } 
+
+sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; 
+
+sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; 
+
+* sockp = sock ; 
+
+sctp_association_free(asoc);
+
+return err ; }",333,-24.088024928016974,-0.07233641119524617
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sock -> sk , sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }",277,-6.116385128502238,-0.022080812738275227
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; //Add reference to avoid Use After Free sock_hold(sock); * sockp = sock ; return err ; }",292,-13.010184411221136,-0.044555426065825805
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; if (!sockp) { sock_release(sock); return -EINVAL; } * sockp = sock ; return err ; }",298,-9.665565874066539,-0.03243478481230382
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; sock_put(sk); return err ; }",283,-8.23050447829574,-0.029083054693624526
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock = NULL ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; kfree ( sock ) ; return err ; }",285,-8.376551787057481,-0.029391409779149058
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; sock_hold ( sock ) ; * sockp = sock ; return err ; }
+
+The fixed code prevents CWE-416: Use After Free by adding the sock_hold() function to the code. This adds a reference to the socket, preventing it from being freed when the function exits.",328,-34.40509312145374,-0.10489357658979798
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; if ( asoc ) { // Add code to check for a valid asoc if ( sockp && sock ) { // Add code to check for valid pointers * sockp = sock ; } else { // Close the socket if it is invalid sock_release ( sock ) ; } } return err ; }",329,-47.97452239891913,-0.14581921701799128
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; // Add reference count to asoc so it doesn't get freed 
+sctp_association_hold(asoc); 
+sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; // Release reference count of asoc 
+sctp_association_put(asoc); 
+return err ; }",329,-32.77939523819126,-0.09963342017687314
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; refcount_set (&sock->sk->sk_refcnt, 1); return err ; }",295,-16.00664122492714,-0.05425980076246488
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; refcount_inc(&asoc->refcnt); * sockp = sock ; return err ; }
+
+void sctp_do_peeloff_cleanup(struct sock *sk, sctp_assoc_t id) {
+  struct sctp_association *asoc = sctp_id2assoc(sk, id);
+  if (!asoc)
+    return;
+
+  refcount_dec(&asoc->refcnt);
+  sctp_association_put(asoc);
+}",388,-22.41671504246128,-0.057775038769230104
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff(struct sock *sk, sctp_assoc_t id, struct socket **sockp) {
+    struct sctp_association *asoc = sctp_id2assoc(sk, id);
+    struct sctp_sock *sp = sctp_sk(sk);
+    struct socket *sock;
+    int err = 0;
+
+    if (!asoc)
+        return -EINVAL;
+
+    if (waitqueue_active(&asoc->wait))
+        return -EBUSY;
+
+    if (!sctp_style(sk, UDP))
+        return -EINVAL;
+
+    err = sock_create(sk->sk_family, SOCK_SEQPACKET, IPPROTO_SCTP, &sock);
+    if (err < 0)
+        return err;
+
+    /* Add reference to ensure the socket is not freed while in use */
+    sock_hold(sk);
+    sctp_copy_sock(sock->sk, sk, asoc);
+    sp->pf->to_sk_daddr(&asoc->peer.primary_addr, sk);
+    sctp_sock_migrate(sk, sock->sk, asoc, SCTP_SOCKET_UDP_HIGH_BANDWIDTH);
+    *sockp = sock;
+    return err;
+}
+
+/* Release reference to the socket */
+sock_put(sk);
+}",349,-34.603906744859415,-0.09915159525747684
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) {  struct sctp_association * asoc ;  struct sctp_sock * sp = sctp_sk ( sk ) ;  struct socket * sock ;  int err = 0 ;  asoc = sctp_id2assoc ( sk , id ) ;  if ( ! asoc ) return - EINVAL ;  if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ;  if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ;  err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ;  if ( err < 0 ) {  sctp_association_put ( asoc ) ;  return err ;  }  sctp_copy_sock ( sock -> sk , sk , asoc ) ;  sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ;  sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ;  * sockp = sock ;  sctp_association_put ( asoc ) ;  return err ; }",327,-17.60482346526094,-0.05383738062770929
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; /* Add a reference to prevent Use After Free */ sock_hold(sk); sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; /* Release the reference to prevent memory leak */ sock_put(sk); return err ; }",308,-21.77906810486815,-0.07071126008074075
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; sock = sock_alloc ( ) ; if ( ! sock ) return - ENOMEM ; err = sock_init_data ( sk , sock ) ; if ( err ) { sock_release ( sock ) ; return err ; } sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }",283,-11.100039543506135,-0.039222754570693054
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; asoc = sctp_id2assoc ( sk , id ) ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) { sctp_association_free ( asoc ) ; return - EINVAL ; } err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) { sctp_association_free ( asoc ) ; return err ; } sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; sctp_association_free ( asoc ) ; return err ; }",323,-8.27322929632989,-0.025613712991733404
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; sock_hold(sock); * sockp = sock ; return err ; }
+sock_hold() is used to increase the reference count of the socket to avoid Use After Free vulnerability.",307,-18.956429553486792,-0.0617473275357876
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }
+Fixed code:","
+int sctp_do_peeloff ( struct sock * sk , sctp_assoc_t id , struct socket * * sockp ) { struct sctp_association * asoc = sctp_id2assoc ( sk , id ) ; struct sctp_sock * sp = sctp_sk ( sk ) ; struct socket * sock ; int err = 0 ; if ( ! asoc ) return - EINVAL ; if ( waitqueue_active ( & asoc -> wait ) ) return - EBUSY ; if ( ! sctp_style ( sk , UDP ) ) return - EINVAL ; err = sock_create ( sk -> sk_family , SOCK_SEQPACKET , IPPROTO_SCTP , & sock ) ; if ( err < 0 ) return err ; if (atomic_inc_not_zero(&sk->sk_refcnt) == 0) { sock_put(sk); //added to fix the vulnerability return - EINVAL; } sctp_copy_sock ( sock -> sk , sk , asoc ) ; sp -> pf -> to_sk_daddr ( & asoc -> peer . primary_addr , sk ) ; sctp_sock_migrate ( sk , sock -> sk , asoc , SCTP_SOCKET_UDP_HIGH_BANDWIDTH ) ; * sockp = sock ; return err ; }",318,-29.293710072299763,-0.09211858513301813

@@ -1,0 +1,283 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength ( s ) >= 4 ) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; } nego -> state = NEGO_STATE_FINAL ; }",155,-5.5341996254279,-0.03570451371243806
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (Stream_GetRemainingLength(s) >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-5.230899872058799,-0.03374774111005677
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 5 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-3.9999850644885484,-0.025806355254764827
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) < 3 ) { WLog_ERR ( TAG , ""RDP_NEG_REQ: Not enough data"" ) ; return ; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength ( s ) < length ) { WLog_ERR ( TAG , ""RDP_NEG_REQ: Not enough data"" ) ; return ; } Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",223,-11.957171803606865,-0.053619604500479215
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (Stream_GetRemainingLength(s) >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { WLog_ERR ( TAG , ""RDP_NEG_REQ: Requested protocol field is out of bounds"" ) ; } }",187,-23.1613565841091,-0.12385752184015561
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 5 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; } else { WLog_ERR ( TAG , ""RDP_NEG_REQ: not enough data!"" ) ; } nego -> state = NEGO_STATE_FINAL ; }",182,-12.913722169434353,-0.07095451741447446
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) < 5 ) { WLog_ERR ( TAG , ""Not enough data!"" ) ; return ; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength ( s ) < 3 ) { WLog_ERR ( TAG , ""Not enough data!"" ) ; return ; } Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",205,-11.865312269772797,-0.05787957204767218
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (!Stream_SafeSeek (s, 2)) return; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( length < 4 || (Stream_GetRemainingLength(s) < 4) ) return; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",175,-24.950343941273392,-0.14257339395013366
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 3 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { WLog_WARN ( TAG , ""Unexpected end of data!"" ) ; } }",174,-14.319643087662298,-0.08229679935438103
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (length >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { WLog_WARN(TAG, ""Invalid length of negotiation request: %"" PRIu16 """", length); nego->state = NEGO_STATE_FAIL; } }",188,-18.92733915800791,-0.10067733594685059
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:"," 
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (Stream_GetRemainingLength(s) < 4) return; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",156,-10.291756829243573,-0.0659728001874588
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; 
+if (Stream_GetRemainingLength(s) >= 5) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+else { WLog_ERR ( TAG , ""RDP_NEG_REQ: error not enough data!"" ) ; } }",186,-23.645559040128248,-0.12712666150606586
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 5 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { WLog_ERR ( TAG , ""Not enough space in stream to read RequestedProtocol."" ) ; } }",181,-20.203392585955545,-0.11162095351356655
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (Stream_GetRemainingLength(s) < 3) { WLog_ERR(TAG, ""Negotiation request is too short""); return; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (Stream_GetRemainingLength(s) < length) { WLog_ERR(TAG, ""Negotiation request is too short""); return; } Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",207,-16.893581411512343,-0.08161150440344127
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (length >= sizeof(nego->RequestedProtocols)) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",156,-9.641293638717897,-0.06180316435075575
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if(Stream_GetRemainingLength(s) >= 5) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-5.800729567818093,-0.037424061727858664
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 5 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-3.951246976708148,-0.025491915978762245
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (!Stream_SafeSeek(s, 2)) { WLog_ERR(TAG, ""Failed to seek to position 2 in Stream_SafeSeek()""); return; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",179,-21.543919711645596,-0.12035709336114858
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ;  if ( length >= 4 ) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; } nego -> state = NEGO_STATE_FINAL ; }",148,-11.117946736239094,-0.07512126173134523
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (Stream_GetRemainingLength(s) < 5) { return; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",157,-7.127689731982401,-0.04539929765593886
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 5 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-3.951246976708148,-0.025491915978762245
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request(rdpNego *nego, wStream *s) {
+	BYTE flags = 0;
+	UINT16 length = 0;
+	if (Stream_GetRemainingLength(s) >= 5) {
+		Stream_Read_UINT8(s, flags);
+		Stream_Read_UINT16(s, length);
+		Stream_Read_UINT32(s, nego->RequestedProtocols);
+		WLog_DBG(TAG, ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """", nego->RequestedProtocols);
+		nego->state = NEGO_STATE_FINAL;
+	}
+}",179,-13.662329074703509,-0.07632586075253357
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (length >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; } nego -> state = NEGO_STATE_FINAL ; }",147,-5.63818209273935,-0.03835498022271667
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_Length(s) - Stream_GetPosition(s) >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",160,-13.060934854763893,-0.08163084284227433
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if(Stream_GetRemainingLength(s) < 3) return; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",155,-8.745585491090903,-0.05642313220058647
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; // Added a length check to prevent out-of-bounds read if (length >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { WLog_DBG ( TAG , ""RDP_NEG_REQ: Invalid length: %"" PRIu16 """" , length ) ; } }",196,-26.214310224153685,-0.13374648073547798
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength ( s ) >= 4 ) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { nego -> state = NEGO_STATE_FAIL ; } }",172,-6.6869054493104,-0.038877357263432555
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) < 4 ) { WLog_ERR ( TAG , ""RDP_NEG_REQ: Invalid packet length %"" PRIuz """" , Stream_GetRemainingLength ( s ) ) ; return ; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",198,-21.098058788412306,-0.10655585246672881
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if(Stream_GetRemainingLength(s) >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; } nego -> state = NEGO_STATE_FINAL ; }",155,-6.9804333986628295,-0.04503505418492148
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength ( s ) >= 4 ) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-4.5331912007107,-0.02924639484329484
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 3 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; } nego -> state = NEGO_STATE_FINAL ; }",155,-7.2700550082934985,-0.046903580698667735
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( length >= 4 ) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",147,-6.0759375104070985,-0.041332908234061896
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s, length ) ; 
+if (length >= 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; }
+nego -> state = NEGO_STATE_FINAL ; }",150,-18.048215601748893,-0.12032143734499262
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; //Check for overflow if(length > Stream_GetRemainingLength(s)) { WLog_ERR(TAG, ""RDP_NEG_REQ: RequestedProtocols data size exceeds stream size!""); return; } Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",190,-32.68736839518951,-0.1720387810273132
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (Stream_GetRemainingLength(s) < 3) { WLog_ERR(TAG, ""RDP_NEG_REQ: Insufficient data available!""); nego->state = NEGO_STATE_FAIL; return; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (Stream_GetRemainingLength(s) < 4) { WLog_ERR(TAG, ""RDP_NEG_REQ: Insufficient data available!""); nego->state = NEGO_STATE_FAIL; return; } Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",251,-20.09697144285514,-0.08006761531017983
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) >= 5 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-3.8815983196510504,-0.025042569804200325
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) < 3 ) { return ; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength ( s ) < ( length - 3 ) ) { return ; } Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",179,-9.764624157050045,-0.05455097294441366
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if(Stream_GetRemainingLength(s) < 5) { return; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if(Stream_GetRemainingLength(s) < 4) { return; } Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",175,-10.754092772132939,-0.06145195869790251
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if( Stream_GetRemainingLength ( s ) >= 5 ) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-8.81866205511266,-0.05689459390395265
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) < 5 ) { WLog_ERR ( TAG , ""RDP_NEG_REQ: packet too short"" ) ; return ; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",181,-11.290955000231447,-0.06238096685210744
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if (Stream_GetRemainingLength(s) > 4) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; } nego -> state = NEGO_STATE_FINAL ; }",155,-9.56320229427973,-0.061698079317933745
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (Stream_GetRemainingLength ( s ) >= 5) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { WLog_ERR ( TAG , ""RDP_NEG_REQ: not enough data to read RequestedProtocols"" ) ; } }",189,-19.3531396035521,-0.10239756403995821
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; 
+if(Stream_GetRemainingLength(s) >= 3) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } else { WLog_ERR ( TAG , ""RDP_NEG_REQ packet too short"" ) ; return ; } }",185,-21.689426601339246,-0.11724014379102295
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { 
+BYTE flags ; 
+UINT16 length ; 
+if ( Stream_GetRemainingLength ( s ) < 5 ) {
+    WLog_ERR ( TAG , ""Not enough data in stream!"" ) ; 
+    return ; 
+}
+Stream_Read_UINT8 ( s , flags ) ; 
+Stream_Read_UINT16 ( s , length ) ; 
+if ( Stream_GetRemainingLength ( s ) < length ) {
+    WLog_ERR ( TAG , ""Not enough data in stream!"" ) ; 
+    return ; 
+}
+Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; 
+WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; 
+nego -> state = NEGO_STATE_FINAL ; 
+}",241,-22.42417714388899,-0.09304637819041074
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength(s) < 3 ) return ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength(s) < 4 ) return ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",171,-9.315080429689193,-0.05447415455958592
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if ( Stream_GetRemainingLength ( s ) < 6 ) { return ; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",157,-8.7526355424379,-0.05574927097094204
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:"," 
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (Stream_GetRemainingLength(s) < 5) { WLog_ERR ( TAG , ""Error: Invalid Negotiation Request!"" ) ; return ; } Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",176,-21.709348652296683,-0.12334857188804933
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; if ( Stream_GetRemainingLength ( s ) >= 4 ) { Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-4.535919058897698,-0.029263993928372246
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_EnsureRemainingCapacity ( s , 5 ) if ( Stream_GetRemainingLength ( s ) < 5 ) return Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }",167,-15.712951208293973,-0.09408952819337708
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; }
+Fixed code:","
+void nego_process_negotiation_request ( rdpNego * nego , wStream * s ) { BYTE flags ; UINT16 length ; if (Stream_GetRemainingLength(s) >= 5) { Stream_Read_UINT8 ( s , flags ) ; Stream_Read_UINT16 ( s , length ) ; Stream_Read_UINT32 ( s , nego -> RequestedProtocols ) ; WLog_DBG ( TAG , ""RDP_NEG_REQ: RequestedProtocol: 0x%08"" PRIX32 """" , nego -> RequestedProtocols ) ; nego -> state = NEGO_STATE_FINAL ; } }",155,-5.5642434038239035,-0.035898344540799376

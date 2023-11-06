@@ -1,0 +1,281 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) { return NF_ACCEPT ; } # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { return NF_STOLEN ; } else if ( err < 0 ) { return NF_DROP ; } return NF_ACCEPT ; }",183,-6.037115976855141,-0.03298970479155815
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:"," 
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if ( skb -> len < sizeof ( struct ipv6hdr ) ) return NF_DROP ; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",188,-9.753506381268101,-0.0518803530918516
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { skb_clear_hash ( skb ) ; return NF_STOLEN ; } return NF_ACCEPT ; }",177,-10.624910481791737,-0.060027742834981565
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err = 0 ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err < 0 && err != - EINPROGRESS ) return NF_DROP ; else if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",188,-9.335339360615446,-0.04965606042880556
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if (skb->len < sizeof(struct ipv6hdr)) return NF_ACCEPT; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",186,-7.45549008087744,-0.04008328000471742
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { /* add bounds checking */ if (skb->len > skb->data_len) return NF_DROP; return NF_STOLEN ; } return NF_ACCEPT ; }",191,-14.317232949261744,-0.0749593348128887
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; 
+if ( err == - EINPROGRESS ) {  
+     nf_ct_frag6_consume_orig ( state -> net , skb ) ;  
+     return NF_STOLEN ; 
+} 
+return NF_ACCEPT ; }",200,-25.355204921968646,-0.12677602460984322
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:"," 
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) { return NF_ACCEPT ; } # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { return NF_STOLEN ; } return NF_ACCEPT ; }",169,-8.002322380542603,-0.04735102000321067
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS || err == - EFAULT ) return NF_STOLEN ; return NF_ACCEPT ; }",170,-5.041301337290141,-0.02965471374876554
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { if ( skb_linearize ( skb ) != 0 ) { kfree_skb ( skb ) ; return NF_DROP ; } else { return NF_STOLEN ; } 
+} return NF_ACCEPT ; }",203,-19.975286773696443,-0.09840042745663272
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { kfree_skb ( skb ) ; return NF_DROP ; } return NF_ACCEPT ; }",175,-7.16283869422294,-0.04093050682413109
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { kfree_skb ( skb ) ; return NF_STOLEN ; } return NF_ACCEPT ; }",176,-4.773616232529539,-0.027122819503008745
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; if ( ! skb ) return NF_DROP ; return NF_ACCEPT ; }",176,-14.470835466328042,-0.08222065605868206
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if ( skb -> len < sizeof ( struct ipv6hdr ) ) return NF_ACCEPT ; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",188,-9.323337332728348,-0.04959221985493802
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS || err == - EFAULT ) return NF_STOLEN ; return NF_ACCEPT ; }",170,-5.041301337290141,-0.02965471374876554
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { if (skb->len > 65535) { kfree_skb(skb); return NF_ACCEPT; } return NF_STOLEN ; } return NF_ACCEPT ; }",193,-11.079649680073182,-0.05740751129571597
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { /* Add check to ensure skb->len is not larger than skb->data_len */ if ( skb -> len <= skb -> data_len ) { return NF_STOLEN ; } else { return NF_ACCEPT ; } } return NF_ACCEPT ; }",212,-24.18457995247915,-0.11407820732301487
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err <= 0 ) return NF_STOLEN ; return NF_ACCEPT ; }",159,-6.464400084082491,-0.0406566043024056
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb && skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",167,-4.84365358721488,-0.029003913695897485
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err < 0 && err != - EINPROGRESS ) return NF_ACCEPT ; return NF_STOLEN ; }",168,-5.538646073611539,-0.03296813139054487
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS || err == - EFAULT ) return NF_STOLEN ; return NF_ACCEPT ; }",170,-5.10008811073294,-0.030000518298429056
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if ( skb -> len > IPV6_MAXPLEN ) { return NF_DROP ; } err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",187,-8.055140930968975,-0.043075619951705744
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS || err == - EFAULT ) return NF_STOLEN ; return NF_ACCEPT ; }",170,-5.10008811073294,-0.030000518298429056
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:"," 
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) { if ( skb -> len > skb -> data_len ) return NF_DROP ; return NF_ACCEPT ; } # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",187,-10.905706231219034,-0.058319284658925316
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if ( skb -> len > skb -> data_len ) return NF_DROP ; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",184,-5.8591083495622724,-0.03184298016066452
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { if ( skb_linearize ( skb ) < 0 ) return NF_DROP ; return NF_STOLEN ; } return NF_ACCEPT ; }",186,-7.688385091722543,-0.0413354037189384
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if ( skb -> len == 0 ) return NF_ACCEPT ; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",179,-9.588754813601243,-0.053568462645817
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif // Check if skb is valid and able to write to if (skb && skb_check_writable(skb, skb->len) == 0) { err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; } return NF_ACCEPT ; }",202,-41.698359708216444,-0.2064275233080022
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if(skb->len > 65535) { return NF_DROP; } err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",182,-8.946700531137537,-0.049157695226030425
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err < 0 ) return NF_ACCEPT ; return NF_STOLEN ; }",159,-6.41544312116604,-0.04034869887525811
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; if ( err == - EFAULT ) return NF_DROP ; return NF_ACCEPT ; }",178,-7.394956251144641,-0.04154469804013843
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if ( skb -> len > 0 ) { err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; } return NF_ACCEPT ; }",175,-5.389045035590342,-0.03079454306051624
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { skb_put ( skb , ETH_HLEN ) ; return NF_STOLEN ; } return NF_ACCEPT ; }",180,-11.083583308716936,-0.0615754628262052
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb && skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) { return NF_ACCEPT ; } # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { return NF_STOLEN ; } return NF_ACCEPT ; }",171,-8.77718206572404,-0.051328550091953445
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif /* Check for out-of-bounds write */ if ( skb -> data + skb -> len >= skb -> head + skb -> data_len ) return NF_ACCEPT ; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",206,-22.80923150722905,-0.11072442479237403
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif //Check buffer size before writing  if(skb->len > 0){ err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; }else{ return NF_DROP; } return NF_ACCEPT ; }",190,-27.545242826540534,-0.14497496224495018
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if ( skb_linearize ( skb ) != 0 ) return NF_DROP ; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",184,-6.5839181664106885,-0.03578216394788418
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag(void *priv, struct sk_buff *skb, const struct nf_hook_state *state) {
+    int err;
+#if IS_ENABLED(CONFIG_NF_CONNTRACK)
+    if (skb->nfct && !nf_ct_is_template((struct nf_conn *)skb->nfct)) {
+        return NF_ACCEPT;
+    }
+#endif
+    if (skb->len < sizeof(struct ipv6hdr)) {
+        return NF_ACCEPT;
+    }
+    err = nf_ct_frag6_gather(state->net, skb, nf_ct6_defrag_user(state->hook, skb));
+    if (err == -EINPROGRESS) {
+        return NF_STOLEN;
+    }
+    return NF_ACCEPT;
+}",215,-11.603826033275736,-0.0539712838757011
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { if (skb->len > 65536) 			 return NF_DROP; return NF_STOLEN ; } return NF_ACCEPT ; }",186,-22.48404075666433,-0.12088193955195878
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { if ( skb_has_frag_list ( skb ) ) { skb_walk_frags ( skb , skb_defrag_count ) ; if ( skb_defrag_count ( skb , 0 ) > 65535 ) { kfree_skb ( skb ) ; return NF_REJECT ; } } return NF_STOLEN ; } return NF_ACCEPT ; }",241,-35.550035756758426,-0.1475105218122756
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; else if ( err < 0 ) return NF_DROP ; return NF_ACCEPT ; }",177,-5.847239321566038,-0.0330352504043279
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { kfree_skb ( skb ) ; return NF_STOLEN ; } return NF_ACCEPT ; }",176,-4.72673825545984,-0.026856467360567272
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) { skb_put ( skb , skb -> len - skb -> data_len ) ; return NF_STOLEN ; } return NF_ACCEPT ; }",187,-10.712317297670142,-0.05728511923887776
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) { return NF_ACCEPT ; } # endif if ( skb -> len < sizeof ( struct ipv6hdr ) ) { return NF_ACCEPT ; } err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",191,-9.216929529045695,-0.048256175544741854
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; else if ( err < 0 ) { return NF_DROP ; } return NF_ACCEPT ; }",179,-8.706391549248337,-0.04863905893434826
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if(skb->len > 0) { err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; } else { return NF_DROP; } }",184,-9.308593108642077,-0.05059017993827215
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif 
+if(skb && skb->len > 0) { 
+  err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; 
+  if ( err == - EINPROGRESS ) return NF_STOLEN ; 
+}
+
+return NF_ACCEPT ; }",190,-20.868620658250197,-0.10983484556973788
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif if (skb->len > 0xFFFF) return NF_DROP; err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }",181,-11.26842921777997,-0.06225651501535895
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err <= 0 ) return NF_ACCEPT ; return NF_STOLEN ; }",159,-6.540432394084689,-0.04113479493135025
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; return NF_ACCEPT ; }
+Fixed code:","
+static unsigned int ipv6_defrag ( void * priv , struct sk_buff * skb , const struct nf_hook_state * state ) { int err ; # if IS_ENABLED ( CONFIG_NF_CONNTRACK ) if ( skb -> nfct && ! nf_ct_is_template ( ( struct nf_conn * ) skb -> nfct ) ) return NF_ACCEPT ; # endif err = nf_ct_frag6_gather ( state -> net , skb , nf_ct6_defrag_user ( state -> hook , skb ) ) ; if ( err == - EINPROGRESS ) return NF_STOLEN ; else if ( err < 0 ) return NF_DROP ; return NF_ACCEPT ; }",177,-5.769906595242439,-0.03259834234600248

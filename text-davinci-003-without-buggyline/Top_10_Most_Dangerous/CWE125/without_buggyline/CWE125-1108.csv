@@ -1,0 +1,321 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData ** get_html_data ( MAPI_Attr * a ) { VarLenData ** body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if ( j < a -> num_values ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body[j] = NULL; } } return body ; }",185,-7.983240938577632,-0.04315265372204125
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if (a->values[j].len > 0) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body[j] = NULL; } } return body ; }",189,-7.407781141374801,-0.039194609213623284
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; if ( a -> values [ j ] . len > 0 ) { memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",180,-8.24728588579345,-0.045818254921074726
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; if(a->values[j].len > 0){ body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body[j]->len = 0; body[j]->data = NULL; } } return body ; }",199,-8.373839851277303,-0.04207959724259951
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if ( j < a -> num_values ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",177,-4.781803469548402,-0.02701583881100792
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData **get_html_data(MAPI_Attr *a) {
+  VarLenData **body = XCALLOC(VarLenData *, a->num_values + 1);
+  int j;
+  for (j = 0; j < a->num_values && j <= a->num_values; j++) {
+    body[j] = XMALLOC(VarLenData, 1);
+    body[j]->len = a->values[j].len;
+    body[j]->data = CHECKED_XCALLOC(unsigned char, a->values[j].len);
+    memmove(body[j]->data, a->values[j].data.buf, body[j]->len);
+  }
+  return body;
+}",182,-10.096955928213502,-0.05547777982534891
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if ( a -> values [ j ] . len == 0 ) { body [ j ] -> data = NULL ; } else { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",192,-8.385600562209005,-0.0436750029281719
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if (body[j]->len > 0) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",178,-6.411491628926404,-0.03601961589284497
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = (a -> values[j].len > 0) ? a -> values[j].len : 0; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",178,-12.195905086742348,-0.06851632071203566
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; if ( a -> values [ j ] . len > 0 ) { body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",180,-5.410263340838132,-0.030057018560211847
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values && j < a -> num_values; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",173,-6.073285876674629,-0.0351056987091019
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData **get_html_data(MAPI_Attr *a) {
+    VarLenData **body = XCALLOC(VarLenData *, (a->num_values + 1));
+    int j;
+    for (j = 0; j < a->num_values; j++) {
+        body[j] = XMALLOC(VarLenData, 1);
+        if (a->values[j].len > 0) {
+            body[j]->len = a->values[j].len;
+            body[j]->data = CHECKED_XCALLOC(unsigned char, a->values[j].len);
+            memmove(body[j]->data, a->values[j].data.buf, body[j]->len);
+        }
+    }
+    return body;
+}",193,-13.741495425249497,-0.07119945816191449
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if(a -> values [ j ] . len > 0) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body [ j ] -> data = NULL; } } return body ; }",192,-7.8842605031999975,-0.041063856787499985
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if (j >= a->num_values) { break; } body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",179,-6.539313953789199,-0.036532480188766474
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; if(a -> values [ j ] . len > 0) { body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",180,-7.307392006781104,-0.04059662225989502
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if(j < a-> num_values) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",177,-8.219786675270106,-0.04643947274163902
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { 
+  VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; 
+  int j ; 
+  for ( j = 0 ; j < a -> num_values ; j ++ ) { 
+    body [ j ] = XMALLOC ( VarLenData , 1 ) ; 
+    if (a->values[j].len < 0) {
+        body[j]->len = 0;
+    }
+    else {
+        body [ j ] -> len = a -> values [ j ] . len ; 
+        body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; 
+        memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; 
+    }
+  } 
+  return body ; 
+}",230,-20.607015413971993,-0.08959571919118257
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if(a->values[j].len > 0) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body[j]->data = NULL; } } return body ; }",191,-7.031063470920501,-0.03681185063309163
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if(j < a -> num_values) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",177,-7.055926314109596,-0.039863990475195454
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len + 1 ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; body [ j ] -> data [ a -> values [ j ] . len ] = '\0' ; } return body ; }",189,-8.180835123481849,-0.04328484192318439
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { if ( a -> num_values <= 0 ) { return NULL ; } VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if ( body [ j ] -> len > 0 ) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body [ j ] -> data = NULL ; } } return body ; }",205,-13.207028574479333,-0.0644245296316065
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if(a -> values [ j ] . len > 0 ) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",180,-10.019150519221697,-0.05566194732900943
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; if(a -> values [ j ] . len > 0) { memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",180,-10.548777155387429,-0.05860431752993016
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; if (a->values[j].len < 0 || a->values[j].len > MAX_SIZE) { continue; } body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",193,-13.652132515861503,-0.07073643790601815
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if ( body [ j ] -> len > 0 ) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",178,-5.7792826173478975,-0.032467879872740996
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if(j < a->num_values){ body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",176,-6.031314317610203,-0.034268831350057975
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body ; if ( a -> num_values > 0 ) { body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if ( a -> values [ j ] . len > 0 ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; } else { return NULL ; } }",200,-9.331768084680101,-0.04665884042340051
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if ( j < a -> num_values ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",177,-4.707072414880997,-0.026593629462604504
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { size_t length = a -> values [ j ] . len ; if ( length > SIZE_MAX ) { length = SIZE_MAX ; } body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = length ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , length ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , length ) ; } return body ; }",178,-19.684336238044136,-0.11058615864069739
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if ( a -> values [ j ] . len > 0 ) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body [ j ] -> data = NULL ; } } return body ; }",192,-5.177135360492995,-0.02696424666923435
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if(a->values[j].len > 0 && a->values[j].len < MAX_LEN){ body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",191,-13.405738877254409,-0.070187114540599
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:"," 
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if ( a -> values [ j ] . len > 0 ) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body [ j ] -> data = NULL ; } } return body ; }",193,-8.155303932650906,-0.04225546079093734
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; if (a->values[j].len >= 0) { body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",179,-8.672682639402302,-0.0484507410022475
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData ** get_html_data(MAPI_Attr *a) { 
+    VarLenData **body; 
+    int j; 
+    if (a->num_values > 0) { 
+        body = XCALLOC(VarLenData *, a->num_values + 1); 
+        for (j = 0; j < a->num_values; j++) { 
+            body[j] = XMALLOC(VarLenData, 1); 
+            if (a->values[j].len > 0) { 
+                body[j]->len = a->values[j].len; 
+                body[j]->data = CHECKED_XCALLOC(unsigned char, a->values[j].len); 
+                memmove(body[j]->data, a->values[j].data.buf, body[j]->len); 
+            } 
+        } 
+        return body; 
+    } 
+    else { 
+        return NULL; 
+    }
+}",241,-24.552407737211446,-0.10187721052784833
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j <= a -> num_values ; j ++ ) { if(j < a -> num_values) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",177,-8.953860351996132,-0.05058678164969566
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if(a->values[j].len > 0) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",179,-7.483494759712604,-0.041807233294483825
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values && j >= 0; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; if ( j >=0 && j < a -> values [ j ] . len) { memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",188,-24.19277837304094,-0.12868499134596245
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if (a->values[j].len <= 0 || a->values[j].len > MAX_ALLOWED_LEN) { return NULL; } body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",199,-15.5668438703914,-0.07822534608236885
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; if (a->values[j].len > 0){ body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; }else{ return NULL; } } return body ; }",184,-14.472638459570598,-0.07865564380201412
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if ( body [ j ] -> len > 0 ) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",178,-5.8144312960452,-0.03266534435980449
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if (j >= a->num_values) { break; } body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",179,-6.549463722179803,-0.03658918280547376
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData ** get_html_data ( MAPI_Attr * a ) { VarLenData** body = XCALLOC(VarLenData*, a->num_values + 1); 
+int j; for (j = 0; j < a->num_values && j < a->num_values + 1; j++) { body[j] = XMALLOC(VarLenData, 1); body[j]->len = a->values[j].len; body[j]->data = CHECKED_XCALLOC(unsigned char, a->values[j].len); memmove(body[j]->data, a->values[j].data.buf, body[j]->len); }
+return body;
+}",168,-25.800502188387213,-0.1535744177880191
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if (body[j]->len > 0 && a->values[j].data.buf != NULL) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",190,-12.301370191708097,-0.06474405364056893
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if ( a -> values [ j ] . len > 0 ) { body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } else { body [ j ] -> data = NULL ; } } return body ; }",192,-5.177135360492995,-0.02696424666923435
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if ( j <= a -> num_values ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",177,-7.614869774834603,-0.04302186313465878
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; 
+int j ; for ( j = 0 ; j < a -> num_values && j < a->num_values+1; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",177,-13.159456244870446,-0.07434721042299687
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { if ( j < a -> num_values ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } } return body ; }",177,-4.7438455363479015,-0.026801387211005095
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if(a -> values[j].len < 0) { body[j]->len = 0; } body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , body[j]->len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",186,-14.2093103730869,-0.0763941417907898
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; if (a -> values[j].len < 0) { fprintf(stderr, ""Error: Invalid length detected. Exiting...\n""); exit(EXIT_FAILURE); } body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }",208,-27.437996573753292,-0.1319134450661216
+"The Original Code is vulnerable to CWE-125: Out-of-bounds Read. Fix the vulnerability.
+Original Code:
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; body [ j ] -> len = a -> values [ j ] . len ; body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; } return body ; }
+Fixed code:","
+
+static VarLenData * * get_html_data ( MAPI_Attr * a ) { VarLenData * * body = XCALLOC ( VarLenData * , a -> num_values + 1 ) ; int j ; for ( j = 0 ; j < a -> num_values ; j ++ ) { body [ j ] = XMALLOC ( VarLenData , 1 ) ; 
+// Check that the data fits in the allocated buffer
+if(j >= 0 && j < a -> num_values) {
+    body [ j ] -> len = a -> values [ j ] . len ; 
+    // Allocate a buffer of the required size
+    body [ j ] -> data = CHECKED_XCALLOC ( unsigned char , a -> values [ j ] . len ) ; 
+    // Copy the data into the buffer
+    memmove ( body [ j ] -> data , a -> values [ j ] . data . buf , body [ j ] -> len ) ; 
+} 
+}
+return body ; }",228,-61.664643630854115,-0.2704589632932198

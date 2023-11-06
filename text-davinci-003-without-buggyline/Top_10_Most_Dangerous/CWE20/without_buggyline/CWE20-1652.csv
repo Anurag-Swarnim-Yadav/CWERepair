@@ -1,0 +1,359 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if (offset+len > PAGE_SIZE) return -EINVAL; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-10.931950043714952,-0.08219511311063873
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) || offset < 0 || len < 0 ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",125,-4.06382365129175,-0.032510589210334
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) || offset < 0 || len < 0 ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",125,-4.06382365129175,-0.032510589210334
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; //Validate input if (!kvm || !gfn || !data || offset < 0 || len < 0) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",147,-16.02742524612886,-0.10903010371516232
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( len <= 0 ) return - EINVAL ; if ( offset + len < 0 ) return - EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",143,-15.522625713551752,-0.10854983016469757
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( len < 0 || offset < 0) return - EINVAL; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-11.07158316605895,-0.08324498621096955
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:"," 
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if (offset < 0 || len < 0 || offset + len > PAGE_SIZE) return -EINVAL; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",142,-9.788145689100338,-0.06893060344436858
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset < 0 || len < 0 ) return - EINVAL ; if ( offset + len > PAGE_SIZE ) return - EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",149,-7.242113965603051,-0.048604791715456716
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( offset < 0 || len < 0 ) { return - EINVAL ; } addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",135,-6.492063270638147,-0.048089357560282577
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; 
+if(offset >= 0 && len >= 0){
+    addr = gfn_to_hva ( kvm , gfn ) ; 
+    if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; 
+    r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; 
+    if ( r ) return - EFAULT ; 
+    return 0 ;
+}
+else{
+    return - EINVAL;
+}
+}",159,-19.365612496267204,-0.12179630500796984
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset < 0 || len < 0 || offset + len > PAGE_SIZE ) return - EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",141,-6.024927986933752,-0.04272998572293441
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; // Perform input validation on len and offset 
+if (len < 0 || offset < 0) 
+return -EINVAL; 
+addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",147,-23.385100684389343,-0.15908231758087987
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset + len > PAGE_SIZE ) return -EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-8.193898847500455,-0.06160826201128161
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if (offset < 0 || len < 0) return -EINVAL; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if (offset + len > PAGE_SIZE) return -EINVAL; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",149,-7.5627851862796485,-0.050756947558923814
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( len < 0 || offset < 0 ) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-6.001526153815452,-0.0451242567956049
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if (offset < 0 || len < 0) return -EINVAL; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",134,-9.56396781948953,-0.071372894175295
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset + len > PAGE_SIZE ) return - EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-5.043206550341751,-0.037918846243171066
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) {
+ int r ; unsigned long addr ;
+ 
+ if ( offset >= PAGE_SIZE || len > PAGE_SIZE || len < 0 )
+  return - EINVAL ;
+ 
+ addr = gfn_to_hva ( kvm , gfn ) ;
+ if ( kvm_is_error_hva ( addr ) )
+  return - EFAULT ;
+ 
+ r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ;
+ if ( r )
+  return - EFAULT ;
+ 
+ return 0 ;
+}",163,-27.98469775654295,-0.17168526231007944
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if(offset < 0) return -EINVAL; if(len < 0) return -EINVAL; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",141,-7.997010489236547,-0.056716386448486145
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if (offset + len > PAGE_SIZE || offset < 0 || len < 0) return -EINVAL; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",141,-8.95445930330135,-0.06350680356951312
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if (offset < 0 || len < 0) return - EINVAL; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if (offset + len > PAGE_SIZE) return - EINVAL; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",149,-10.309101172768855,-0.06918859847495876
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if(len <= 0 || offset < 0) return -EINVAL; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-9.677268668016652,-0.07276141855651617
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( offset < 0 || len < 0 ) { return - EINVAL ; } addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",135,-6.481478550957251,-0.04801095222931297
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset < 0 || len < 0 ) return - EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-5.491104417777552,-0.04128649938178611
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page (struct kvm *kvm, gfn_t gfn, void *data, int offset, int len) { 
+    int r; 
+    unsigned long addr; 
+    if (len < 0) {
+        return -EINVAL; //check if input is valid
+    }
+    addr = gfn_to_hva(kvm, gfn); 
+    if (kvm_is_error_hva(addr)) return -EFAULT; 
+    r = copy_from_user(data, (void __user *)addr + offset, len); 
+    if (r) return -EFAULT; 
+    return 0; 
+}",162,-28.427872696540636,-0.17548069565765825
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset + len > PAGE_SIZE ) return -EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-8.133699466060747,-0.06115563508316351
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page (struct kvm *kvm, gfn_t gfn, void *data, int offset, int len) { 
+    int r; 
+    unsigned long addr; 
+    addr = gfn_to_hva(kvm, gfn); 
+    if (kvm_is_error_hva(addr) || (offset + len > PAGE_SIZE)) 
+        return -EFAULT; 
+    r = copy_from_user(data, (void __user *)addr + offset, len); 
+    if (r) 
+        return -EFAULT; 
+    return 0; 
+}",152,-16.827919526994567,-0.11070999688812215
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset < 0 || len < 0 ) return -EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-8.79171080748855,-0.0661030887781094
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( len > 0 && len <= PAGE_SIZE && offset >= 0 && offset + len <= PAGE_SIZE ) { addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; } else { return - EINVAL ; } }",152,-11.927227992552352,-0.07846860521416021
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if (offset < 0 || len < 0) { return -EINVAL; } addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",135,-6.040041769025849,-0.044741050140932215
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; 
+
+addr = gfn_to_hva ( kvm , gfn ) ; 
+if ( kvm_is_error_hva ( addr ) || offset < 0 || len < 0) return - EFAULT ; 
+r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; 
+if ( r ) return - EFAULT ; 
+return 0 ; }",136,-12.297661227108646,-0.09042397961109298
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:"," 
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) || offset < 0 || len > MAX_SIZE ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",128,-12.4174285225555,-0.09701116033246485
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( ! kvm || ! gfn || ! data || offset < 0 || len < 0 ) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",144,-9.41173439519655,-0.06535926663330938
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if (offset < 0 || len < 0 || (offset + len) > PAGE_SIZE) { return -EINVAL; } addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",145,-8.862261879714252,-0.06111904744630518
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( offset < 0 || len < 0 ) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-4.3571572879046485,-0.03276058111206503
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset + len > PAGE_SIZE || offset < 0 || len < 0 ) { return - EINVAL ; } r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",143,-10.316165673363745,-0.07214101869485136
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( offset < 0 || len < 0 ) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-4.3571572879046485,-0.03276058111206503
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) || offset < 0 || len < 0 ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",125,-4.043072390592252,-0.03234457912473802
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( ! kvm || kvm -> magic != KVM_MAGIC || len < 0 || offset < 0 ) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",148,-16.79731090857747,-0.11349534397687479
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; // Add proper input validation for offset and len if ( offset < 0 || len < 0 ) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",142,-17.32197444674044,-0.12198573554042565
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset < 0 || offset + len > PAGE_SIZE ) return -EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",137,-9.838630994671952,-0.07181482477862738
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if ( offset < 0 || len < 0 ) return - EINVAL ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",133,-5.510317559796251,-0.04143095909621241
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; if (len > 0 && offset >= 0 && (offset + len) <= PAGE_SIZE) { r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; } else { return -EINVAL; } return 0 ; }",148,-11.893357540916844,-0.08036052392511381
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if ( offset < 0 || len < 0 ) return - EINVAL ; if ( offset + len > PAGE_SIZE ) return - EINVAL ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",149,-7.961158523247451,-0.0534305941157547
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { 
+    int r ; unsigned long addr ; 
+    
+    //Validate input
+    if(data == NULL || offset < 0 || len < 0)
+        return -EINVAL;
+    
+    addr = gfn_to_hva ( kvm , gfn ) ; 
+    if ( kvm_is_error_hva ( addr ) ) 
+        return - EFAULT ; 
+    
+    //Add additional length check
+    if(offset + len > PAGE_SIZE)
+        return -EFAULT;
+    
+    r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; 
+    if ( r ) 
+        return - EFAULT ; 
+    return 0 ; 
+}",207,-37.989983233432454,-0.18352648905039834
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; if (offset < 0 || len < 0) { return -EINVAL; } addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",135,-6.071270531382946,-0.04497237430654034
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) || offset < 0 || len < 0 ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",125,-4.066763886086251,-0.03253411108869001
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:"," 
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; 
+// check for valid offset and len
+if (offset < 0 || len < 0) {
+return -EINVAL; 
+} 
+addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; 
+//check if offset and len within range 
+if (offset + len > PAGE_SIZE) {
+return -EINVAL; 
+} 
+r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",186,-43.3066190569497,-0.23283128525241775
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; 
+
+if ( offset < 0 || len < 0 || offset + len > PAGE_SIZE ) {
+   return -EINVAL;
+}
+
+addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",151,-17.061970548527636,-0.11299318244058038
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }
+Fixed code:","
+int kvm_read_guest_page ( struct kvm * kvm , gfn_t gfn , void * data , int offset , int len ) { int r ; unsigned long addr ; 
+// Validate offset and len before proceeding
+if (offset < 0 || len < 0) {
+    return -EINVAL;
+}
+
+if (len > PAGE_SIZE - offset) {
+    return -EINVAL;
+}
+
+addr = gfn_to_hva ( kvm , gfn ) ; if ( kvm_is_error_hva ( addr ) ) return - EFAULT ; 
+// Validate user pointer before proceeding
+if (!access_ok(VERIFY_READ, (void __user *)addr + offset, len)) {
+    return -EFAULT;
+}
+
+r = copy_from_user ( data , ( void __user * ) addr + offset , len ) ; if ( r ) return - EFAULT ; return 0 ; }",219,-36.94953876190105,-0.16871935507717375

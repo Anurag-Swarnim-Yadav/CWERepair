@@ -1,0 +1,331 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 //Add input validation if (strcmp("".git/foobar"", ""refs/heads/git_tilde1"") == 0) { return; } test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }",93,-16.8660759361845,-0.18135565522779035
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( strchr ( ""refs/heads/git_tilde1"" , '~' ) == NULL ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } else { printf ( ""Input is invalid. Please enter a valid input.
+} # endif }",104,-23.013496207833548,-0.22128361738301489
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( isValidGitPath ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",83,-12.498085716768905,-0.15057934598516753
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (!is_valid_input("".git/foobar"")) { return; } test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }",77,-9.2624646667879,-0.12029174891932337
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validateInput ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }
+
+bool validateInput(char* input) {
+    for (int i = 0; i < strlen(input); i++) {
+        if (!isalnum(input[i]) && input[i] != '_') {
+            return false;
+        }
+    }
+    return true;
+}",149,-21.0158201645634,-0.1410457729165329
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( strncmp ( ""refs/heads/git_tilde1"", "".git/foobar"", 15 ) == 0 ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",90,-13.595593035962695,-0.15106214484402994
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 // Validate input is a string if ( typeof(refs/heads/git_tilde1) !== ""string"" ) { // return an error return ""Input must be a string"" } else { // if input is valid, call test_checkout_fails test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif } }",119,-53.482927379114194,-0.4494363645303714
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { #ifdef GIT_WIN32 if (strlen("".git/foobar"") > 0) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } #endif }",75,-8.351328392549227,-0.1113510452339897
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( ( strlen ( ""refs/heads/git_tilde1"" ) > 0 ) && ( strlen ( "".git/foobar"" ) > 0 ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",99,-9.722876966984902,-0.09821087845439296
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:"," 
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validate_input ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",82,-8.365406633296601,-0.10201715406459269
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 # if !defined(GIT_TILDE_1) 
+      test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # else
+      char* git_tilde1 = validate_input(GIT_TILDE_1);
+      test_checkout_fails ( git_tilde1, "".git/foobar"" ) ; # endif 
+# endif }",129,-45.0916711872406,-0.3495478386607798
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strcmp(""refs/heads/git_tilde1"", "".git/foobar"") != 0) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",86,-6.4226761142008,-0.07468228039768372
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 // sanitize input string before passing to test_checkout_fails char sanitizedInput[256]; int isValidInput = sanitizeInput(sanitizedInput, ""refs/heads/git_tilde1""); // only proceed if sanitizeInput returned true if(isValidInput) { test_checkout_fails (sanitizedInput, "".git/foobar"") ; } # endif }",116,-49.0388032033633,-0.4227483034772698
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validateInput ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",80,-4.747086584929401,-0.05933858231161752
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validate_input ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif } 
+bool validate_input ( char * input1 , char * input2 ) { // Perform validation logic here }",112,-23.551946187346402,-0.2102852338155929
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:"," 
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( strstr ( ""refs/heads/git_tilde1"", "".git/foobar"" ) != NULL ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",89,-12.171225530426595,-0.13675534303850106
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (check_valid_ref_name(""refs/heads/git_tilde1"")) {test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }
+boolean check_valid_ref_name(string ref_name) { //Write code to check if ref_name is valid or not return true or false; }",118,-42.62346132797231,-0.361215773965867
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strcmp("".git/foobar"", ""refs/heads/git_tilde1"") == 0 ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",87,-10.736236576478298,-0.1234050181204402
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { 
+#ifdef GIT_WIN32 
+if (strcmp("".git/foobar"", ""refs/heads/git_tilde1"") != 0) {
+    test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ;
+}
+#endif 
+}",97,-14.132030464439394,-0.14569103571587005
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strchr("".git/foobar"", '~') == NULL) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",79,-7.73909237610913,-0.09796319463429279
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 
+
+// Added input validation 
+if(strlen("".git/foobar"") > 0) {
+ test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; 
+}
+# endif }",88,-21.23529047655004,-0.24131011905170502
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strcmp(""refs/heads/git_tilde1"", "".git/foobar"") == 0){ test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",85,-10.125980949422798,-0.11912918764026821
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( ! validate_input ( ""refs/heads/git_tilde1"" , "".git/foobar"" )) { return ; } test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }",90,-12.4434078648994,-0.13826008738777112
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (!checkInput("".git/foobar"")) { return; } test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif } bool checkInput(char *input) { // Do input validation and return true if valid, false if invalid }",97,-31.371503868331907,-0.32341756565290625
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strncmp(.git/foobar,""refs/heads/git_tilde1"",strlen(.git/foobar)) == 0) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",96,-18.8625581219274,-0.19648498043674376
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( is_valid_input ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }
+
+bool is_valid_input ( const char *input ) { // Implement input validation logic here. return true ; }",109,-21.482050656037696,-0.19708303354163023
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( !refs_heads_git_tilde1() ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",76,-18.683017576688506,-0.24582917864063825
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( strchr ( ""refs/heads/git_tilde1"" , '~' ) == NULL ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",87,-7.2899372594631995,-0.08379238229268045
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validate_input ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",81,-5.008995475985099,-0.06183945032080369
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strncmp(""refs/heads/git_tilde1"", "".git/foobar"", strlen("".git/foobar"") != 0) test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }",94,-13.647189134239499,-0.14518286313020742
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validateInput ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",80,-4.7121471159107005,-0.058901838948883754
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( strstr ( "".git/foobar"" , ""~"" ) == NULL ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",80,-7.269189077682448,-0.0908648634710306
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strlen("".git/foobar"") > 0) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",75,-5.768064391158949,-0.07690752521545265
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validateInput ( ""refs/heads/git_tilde1"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }
+
+bool validateInput ( const char * input ) { 
+    // Implement proper input validation logic here 
+    return true ; 
+}",111,-23.643305233080795,-0.21300274984757472
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if(!strcmp("".git/foobar"", ""refs/heads/git_tilde1"")) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",85,-9.76671909339774,-0.11490257756938517
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (checkInputValidation( ""refs/heads/git_tilde1"" , "".git/foobar"")) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif } 
+
+bool checkInputValidation(char *input1, char *input2) {
+  // Perform input validation checks
+  if(input1 == NULL || input2 == NULL) {
+    return false;
+  }
+
+  // Check for valid input
+  if(strlen(input1) < 5 || strlen(input2) < 5) {
+    return false;
+  }
+
+  return true;
+}",182,-44.70931939055369,-0.2456556010469983
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if(strcmp(input, ""refs/heads/git_tilde1"") == 0) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",83,-10.301482749988704,-0.12411424999986391
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (validateInput("".git/foobar"") == 0) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ;  } # endif }",77,-13.771256464330296,-0.1788474865497441
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( ! validateInput ( ""refs/heads/git_tilde1"" ) ) { return ; } test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }",83,-8.073944476669503,-0.09727643947794581
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( strlen ( ""refs/heads/git_tilde1"" ) > 0 ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",82,-6.00945577637233,-0.07328604605332109
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 
+//Validate the input
+if (strlen(refs/heads/git_tilde1) < 0) {
+   return;
+}
+if (strlen(.git/foobar) < 0) {
+   return;
+}
+test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }",117,-28.20980334631939,-0.24110943031042215
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (validate_input_string(""refs/heads/git_tilde1"") { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } else { printf(""Input string validation failed.\n""); } # endif }",94,-22.6828877115378,-0.24130731608018935
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (validate_input("".git/foobar"")) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",74,-6.392071831128299,-0.08637934906930134
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validate_input ( "".git/foobar"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",75,-5.400078963590699,-0.07200105284787599
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (strcmp(refs/heads/git_tilde1, "".git/foobar"") != 0) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; #endif } else { printf(""Inputs do not match.""); } }",98,-21.913984425055194,-0.22361208596995097
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if( check_input_validation('.git/foobar') ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif } 
+
+boolean check_input_validation(char* input) {
+  // validate input here and return true/false
+  return true;
+}",112,-37.07486097343681,-0.3310255444056858
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if(validateInput("".git/foobar"") == true) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif } 
+
+bool validateInput(const char *input) {
+  // Perform input validation checks here
+  // Return true if input is valid, false if not
+}",112,-28.93368890433473,-0.2583365080744172
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validate_input_string ( "".git/foobar"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif }",77,-9.549646860687995,-0.12402138780114279
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if ( validate_input ( "".git/foobar"" ) ) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } # endif } 
+// Added a check to validate the input before executing the rest of the function.",93,-24.549629945029597,-0.26397451553795265
+"The Original Code is vulnerable to CWE-20: Improper Input Validation. Fix the vulnerability.
+Original Code:
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; # endif }
+Fixed code:","
+void test_checkout_nasty__git_tilde1 ( void ) { # ifdef GIT_WIN32 if (!check_input_validation(""refs/heads/git_tilde1"", "".git/foobar"")) { test_checkout_fails ( ""refs/heads/git_tilde1"" , "".git/foobar"" ) ; } else { // Return an error message printf(""Input validation failed!""); } # endif } 
+
+bool check_input_validation(char *input1, char *input2)
+{ 
+    if (strlen(input1) > 0 && strlen(input2) > 0 && strlen(input1) < 256 && strlen(input2) < 256) {
+        // Proper input validation checks
+        return true;
+    }
+    else {
+        return false;
+    }
+}",196,-65.22038072271266,-0.332757044503636

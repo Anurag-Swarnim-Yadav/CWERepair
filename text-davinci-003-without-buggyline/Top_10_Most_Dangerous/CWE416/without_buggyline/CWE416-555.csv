@@ -1,0 +1,976 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; free(packet); }",393,-6.992043045947931,-0.017791458132183028
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ; 
+
+// Free any memory allocated during this function
+if (packet->http_url_name.ptr && packet->http_url_name.len > 0) {
+    free(packet->http_url_name.ptr);
+    packet->http_url_name.ptr = NULL;
+}
+if (packet->http_encoding.ptr && packet->http_encoding.len > 0) {
+    free(packet->http_encoding.ptr);
+    packet->http_encoding.ptr = NULL;
+}
+if (packet->http_transfer_encoding.ptr && packet->http_transfer_encoding.len > 0) {
+    free(packet->http_transfer_encoding.ptr);
+    packet->http_transfer_encoding.ptr = NULL;
+}
+if (packet->http_contentlen.ptr && packet->http_contentlen.len > 0) {
+    free(packet->http_contentlen.ptr);
+    packet->http_contentlen.ptr = NULL;
+}
+if (packet->http_cookie.ptr && packet->http_cookie.len > 0) {
+    free(packet->http_cookie.ptr);
+    packet->http_cookie.ptr = NULL;
+}
+if (packet->http_origin.ptr && packet->http_origin.len > 0) {
+    free(packet->http_origin.ptr);
+    packet->http_origin.ptr = NULL;
+}
+if (packet->http_x_session_type.ptr && packet->http_x_session_type.len > 0) {
+    free(packet->http_x_session_type.ptr);
+    packet->http_x_session_type.ptr = NULL;
+}
+if (packet->http_method.ptr && packet->http_method.len > 0) {
+    free(packet->http_method.ptr);
+    packet->http_method.ptr = NULL;
+}
+if (packet->http_response.ptr && packet->http_response.len > 0) {
+    free(packet->http_response.ptr);
+    packet->http_response.ptr = NULL;
+}
+
+packet -> http_num_headers = 0 ;  }",897,-43.15614129069752,-0.048111640234891326
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , if (packet -> host_line . ptr != NULL) free(packet -> host_line . ptr); packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , if (packet -> referer_line . ptr != NULL) free(packet -> referer_line . ptr); packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , if (packet -> content_line . ptr != NULL) free(packet -> content_line . ptr); packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , if (packet -> accept_line . ptr != NULL) free(packet -> accept_line . ptr); packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , if (packet -> user_agent_line . ptr != NULL) free(packet -> user_agent_line . ptr); packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , if (packet -> http_url_name . ptr != NULL) free(packet -> http_url_name . ptr); packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , if (packet -> http_encoding.ptr != NULL) free(packet -> http_encoding . ptr); packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , if (packet -> http_transfer_encoding . ptr != NULL) free(packet -> http_transfer_encoding . ptr); packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , if (packet -> http_contentlen . ptr != NULL) free(packet -> http_contentlen . ptr); packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , if (packet -> http_cookie . ptr != NULL) free(packet -> http_cookie . ptr); packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , if (packet -> http_origin . ptr != NULL) free(packet -> http_origin . ptr); packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , if (packet -> http_x_session_type . ptr != NULL) free(packet -> http_x_session_type . ptr); packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , if (packet -> server_line . ptr != NULL) free(packet -> server_line . ptr);  packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , if (packet -> http_method . ptr != NULL) free(packet -> http_method . ptr); packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , if (packet -> http_response . ptr != NULL) free(packet -> http_response . ptr); packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",777,-22.869482510365703,-0.029433053423894084
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; if ( packet -> host_line.ptr ) { free ( packet -> host_line.ptr ) ; packet -> host_line . ptr = NULL , packet -> host_line . len = 0 ; } if ( packet -> referer_line.ptr ) { free ( packet -> referer_line.ptr ) ; packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 ; } if ( packet -> content_line.ptr ) { free ( packet -> content_line.ptr ) ; packet -> content_line . ptr = NULL , packet -> content_line . len = 0 ; } if ( packet -> accept_line.ptr ) { free ( packet -> accept_line.ptr ) ; packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 ; } if ( packet -> user_agent_line.ptr ) { free ( packet -> user_agent_line.ptr ) ; packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 ; } if ( packet -> http_url_name.ptr ) { free ( packet -> http_url_name.ptr ) ; packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 ; } if ( packet -> http_encoding.ptr ) { free ( packet -> http_encoding.ptr ) ; packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 ; } if ( packet -> http_transfer_encoding.ptr ) { free ( packet -> http_transfer_encoding.ptr ) ; packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 ; } if ( packet -> http_contentlen.ptr ) { free ( packet -> http_contentlen.ptr ) ; packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 ; } if ( packet -> http_cookie.ptr ) { free ( packet -> http_cookie.ptr ) ; packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 ; } if ( packet -> http_origin.ptr ) { free ( packet -> http_origin.ptr ) ; packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL ; } if ( packet -> http_x_session_type.ptr ) { free ( packet -> http_x_session_type.ptr ) ; packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 ; } if ( packet -> server_line.ptr ) { free ( packet -> server_line.ptr ) ; packet -> server_line . ptr = NULL , packet -> server_line . len = 0 ; } if ( packet -> http_method.ptr ) { free ( packet -> http_method.ptr ) ; packet -> http_method . ptr = NULL , packet -> http_method . len = 0 ; } if ( packet -> http_response.ptr ) { free ( packet -> http_response.ptr ) ; packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ; } packet -> http_num_headers = 0 ; }",761,-12.982485635774783,-0.017059770874868308
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { 
+  if (packet != NULL) {
+    packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; 
+  }
+}",406,-5.8540854055340565,-0.014418929570280927
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; 
+if(packet -> host_line.ptr != NULL) { free(packet -> host_line.ptr); packet -> host_line . ptr = NULL , packet -> host_line . len = 0 ; } 
+if(packet -> referer_line.ptr != NULL) { free(packet -> referer_line.ptr); packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 ; } 
+if(packet -> content_line.ptr != NULL) { free(packet -> content_line.ptr); packet -> content_line . ptr = NULL , packet -> content_line . len = 0 ; } 
+if(packet -> accept_line.ptr != NULL) { free(packet -> accept_line.ptr); packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 ; } 
+if(packet -> user_agent_line.ptr != NULL) { free(packet -> user_agent_line.ptr); packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 ; } 
+if(packet -> http_url_name.ptr != NULL) { free(packet -> http_url_name.ptr); packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 ; } 
+if(packet -> http_encoding.ptr != NULL) { free(packet -> http_encoding.ptr); packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 ; } 
+if(packet -> http_transfer_encoding.ptr != NULL) { free(packet -> http_transfer_encoding.ptr); packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 ; } 
+if(packet -> http_contentlen.ptr != NULL) { free(packet -> http_contentlen.ptr); packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 ; } 
+if(packet -> http_cookie.ptr != NULL) { free(packet -> http_cookie.ptr); packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 ; } 
+if(packet -> http_origin.ptr != NULL) { free(packet -> http_origin.ptr); packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL ; } 
+if(packet -> http_x_session_type.ptr != NULL) { free(packet -> http_x_session_type.ptr); packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 ; } 
+if(packet -> server_line.ptr != NULL) { free(packet -> server_line.ptr); packet -> server_line . ptr = NULL , packet -> server_line . len = 0 ; } 
+if(packet -> http_method.ptr != NULL) { free(packet -> http_method.ptr); packet -> http_method . ptr = NULL , packet -> http_method . len = 0 ; } 
+if(packet -> http_response.ptr != NULL) { free(packet -> http_response.ptr); packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ; } 
+packet -> http_num_headers = 0 ; }",839,-12.43419538100933,-0.014820256711572503
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0;
+if(packet-> host_line.ptr != NULL) { free(packet-> host_line.ptr); }
+packet -> host_line . ptr = NULL , packet -> host_line . len = 0;
+if(packet-> referer_line.ptr != NULL) { free(packet-> referer_line.ptr); }
+packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0;
+if(packet-> content_line.ptr != NULL) { free(packet-> content_line.ptr); }
+packet -> content_line . ptr = NULL , packet -> content_line . len = 0;
+if(packet-> accept_line.ptr != NULL) { free(packet-> accept_line.ptr); }
+packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0;
+if(packet-> user_agent_line.ptr != NULL) { free(packet-> user_agent_line.ptr); }
+packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0;
+if(packet-> http_url_name.ptr != NULL) { free(packet-> http_url_name.ptr); }
+packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0;
+if(packet-> http_encoding.ptr != NULL) { free(packet-> http_encoding.ptr); }
+packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0;
+if(packet-> http_transfer_encoding.ptr != NULL) { free(packet-> http_transfer_encoding.ptr); }
+packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0;
+if(packet-> http_contentlen.ptr != NULL) { free(packet-> http_contentlen.ptr); }
+packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0;
+if(packet-> http_cookie.ptr != NULL) { free(packet-> http_cookie.ptr); }
+packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0;
+if(packet-> http_origin.ptr != NULL) { free(packet-> http_origin.ptr); }
+packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL;
+if(packet-> http_x_session_type.ptr != NULL) { free(packet-> http_x_session_type.ptr); }
+packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0;
+if(packet-> server_line.ptr != NULL) { free(packet-> server_line.ptr); }
+packet -> server_line . ptr = NULL , packet -> server_line . len = 0;
+if(packet-> http_method.ptr != NULL) { free(packet-> http_method.ptr); }
+packet -> http_method . ptr = NULL , packet -> http_method . len = 0;
+if(packet-> http_response.ptr != NULL) { free(packet-> http_response.ptr); }
+packet -> http_response . ptr = NULL , packet -> http_response . len = 0;
+packet -> http_num_headers = 0;
+}",854,-22.432912521330085,-0.026268047448864268
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info(struct ndpi_packet_struct *packet) {
+  //Free any allocated memory before reseting
+  if(packet->host_line.ptr != NULL) {
+    free(packet->host_line.ptr);
+  }
+  if(packet->referer_line.ptr != NULL) {
+    free(packet->referer_line.ptr);
+  }
+  if(packet->content_line.ptr != NULL) {
+    free(packet->content_line.ptr);
+  }
+  if(packet->accept_line.ptr != NULL) {
+    free(packet->accept_line.ptr);
+  }
+  if(packet->user_agent_line.ptr != NULL) {
+    free(packet->user_agent_line.ptr);
+  }
+  if(packet->http_url_name.ptr != NULL) {
+    free(packet->http_url_name.ptr);
+  }
+  if(packet->http_encoding.ptr != NULL) {
+    free(packet->http_encoding.ptr);
+  }
+  if(packet->http_transfer_encoding.ptr != NULL) {
+    free(packet->http_transfer_encoding.ptr);
+  }
+  if(packet->http_contentlen.ptr != NULL) {
+    free(packet->http_contentlen.ptr);
+  }
+  if(packet->http_cookie.ptr != NULL) {
+    free(packet->http_cookie.ptr);
+  }
+  if(packet->http_origin.ptr != NULL) {
+    free(packet->http_origin.ptr);
+  }
+  if(packet->http_x_session_type.ptr != NULL) {
+    free(packet->http_x_session_type.ptr);
+  }
+  if(packet->server_line.ptr != NULL) {
+    free(packet->server_line.ptr);
+  }
+  if(packet->http_method.ptr != NULL) {
+    free(packet->http_method.ptr);
+  }
+  if(packet->http_response.ptr != NULL) {
+    free(packet->http_response.ptr);
+  }
+
+  //reset values
+  packet->parsed_lines = 0, 
+  packet->empty_line_position_set = 0, 
+  packet->host_line.ptr = NULL, 
+  packet->host_line.len = 0, 
+  packet->referer_line.ptr = NULL,
+  packet->referer_line.len = 0, 
+  packet->content_line.ptr = NULL, 
+  packet->content_line.len = 0, 
+  packet->accept_line.ptr = NULL, 
+  packet->accept_line.len = 0, 
+  packet->user_agent_line.ptr = NULL, 
+  packet->user_agent_line.len = 0, 
+  packet->http_url_name.ptr = NULL, 
+  packet->http_url_name.len = 0, 
+  packet->http_encoding.ptr = NULL, 
+  packet->http_encoding.len = 0, 
+  packet->http_transfer_encoding.ptr = NULL, 
+  packet->http_transfer_encoding.len = 0, 
+  packet->http_contentlen.ptr = NULL, 
+  packet->http_contentlen.len = 0, 
+  packet->http_cookie.ptr = NULL, 
+  packet->http_cookie.len = 0, 
+  packet->http_origin.len = 0, 
+  packet->http_origin.ptr = NULL, 
+  packet->http_x_session_type.ptr = NULL, 
+  packet->http_x_session_type.len = 0, 
+  packet->server_line.ptr = NULL, 
+  packet->server_line.len = 0, 
+  packet->http_method.ptr = NULL, 
+  packet->http_method.len = 0, 
+  packet->http_response.ptr = NULL, 
+  packet->http_response.len = 0, 
+ ",1000,-37.875049064169154,-0.03787504906416916
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { if (packet) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; } }",395,-5.401768142650034,-0.013675362386455782
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; 
+if (packet->host_line.ptr != NULL) { free(packet->host_line.ptr); }
+packet -> host_line . ptr = NULL , packet -> host_line . len = 0 ; 
+if (packet->referer_line.ptr != NULL) { free(packet->referer_line.ptr); }
+packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 ; 
+if (packet->content_line.ptr != NULL) { free(packet->content_line.ptr); }
+packet -> content_line . ptr = NULL , packet -> content_line . len = 0 ; 
+if (packet->accept_line.ptr != NULL) { free(packet->accept_line.ptr); }
+packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 ; 
+if (packet->user_agent_line.ptr != NULL) { free(packet->user_agent_line.ptr); }
+packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 ; 
+if (packet->http_url_name.ptr != NULL) { free(packet->http_url_name.ptr); }
+packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 ; 
+if (packet->http_encoding.ptr != NULL) { free(packet->http_encoding.ptr); }
+packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 ; 
+if (packet->http_transfer_encoding.ptr != NULL) { free(packet->http_transfer_encoding.ptr); }
+packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 ; 
+if (packet->http_contentlen.ptr != NULL) { free(packet->http_contentlen.ptr); }
+packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 ; 
+if (packet->http_cookie.ptr != NULL) { free(packet->http_cookie.ptr); }
+packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 ; 
+if (packet->http_origin.ptr != NULL) { free(packet->http_origin.ptr); }
+packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL ; 
+if (packet->http_x_session_type.ptr != NULL) { free(packet->http_x_session_type.ptr); }
+packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 ; 
+if (packet->server_line.ptr != NULL) { free(packet->server_line.ptr); }
+packet -> server_line . ptr = NULL , packet -> server_line . len = 0 ; 
+if (packet->http_method.ptr != NULL) { free(packet->http_method.ptr); }
+packet -> http_method . ptr = NULL , packet -> http_method . len = 0 ; 
+if (packet->http_response.ptr != NULL) { free(packet->http_response.ptr); }
+packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ; 
+packet -> http_num_headers = 0 ; 
+}",871,-14.596989365060915,-0.016758885608565918
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet->host_line.ptr != NULL ? free(packet->host_line.ptr) : 0, packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet->referer_line.ptr != NULL ? free(packet->referer_line.ptr) : 0, packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet->content_line.ptr != NULL ? free(packet->content_line.ptr) : 0, packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet->accept_line.ptr != NULL ? free(packet->accept_line.ptr) : 0, packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet->user_agent_line.ptr != NULL ? free(packet->user_agent_line.ptr) : 0, packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet->http_url_name.ptr != NULL ? free(packet->http_url_name.ptr) : 0, packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet->http_encoding.ptr != NULL ? free(packet->http_encoding.ptr) : 0, packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet->http_transfer_encoding.ptr != NULL ? free(packet->http_transfer_encoding.ptr) : 0, packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet->http_contentlen.ptr != NULL ? free(packet->http_contentlen.ptr) : 0, packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet->http_cookie.ptr != NULL ? free(packet->http_cookie.ptr) : 0, packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet->http_origin.ptr != NULL ? free(packet->http_origin.ptr) : 0, packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet->http_x_session_type.ptr != NULL ? free(packet->http_x_session_type.ptr) : 0, packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet->server_line.ptr != NULL ? free(packet->server_line.ptr) : 0, packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet->http_method.ptr != NULL ? free(packet->http_method.ptr) : 0, packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet->http_response.ptr != NULL ? free(packet->http_response.ptr) : 0, packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+
+The fixed code is now checking if the pointer is not NULL before attempting to free it. This ensures that no memory is freed after it has already been released.",810,-32.67748068826524,-0.04034256875094474
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 if ( packet -> host_line . ptr != NULL ) free ( packet -> host_line . ptr ) , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 if ( packet -> content_line . ptr != NULL ) free ( packet -> content_line . ptr ) , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 if ( packet -> accept_line . ptr != NULL ) free ( packet -> accept_line . ptr ) , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 if ( packet -> user_agent_line . ptr != NULL ) free ( packet -> user_agent_line . ptr ) , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 if ( packet -> http_url_name . ptr != NULL ) free ( packet -> http_url_name . ptr ) , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 if ( packet -> http_encoding . ptr != NULL ) free ( packet -> http_encoding . ptr ) , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 if ( packet -> http_transfer_encoding . ptr != NULL ) free ( packet -> http_transfer_encoding . ptr ) , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 if ( packet -> http_contentlen . ptr != NULL ) free ( packet -> http_contentlen . ptr ) , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 if ( packet -> http_cookie . ptr != NULL ) free ( packet -> http_cookie . ptr ) , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL if ( packet -> http_origin . ptr != NULL ) free ( packet -> http_origin . ptr ) , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 if ( packet -> http_x_session_type . ptr != NULL ) free ( packet -> http_x_session_type . ptr ) , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 if ( packet -> server_line . ptr != NULL ) free ( packet -> server_line . ptr ) , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 if ( packet -> http_method . ptr != NULL ) free ( packet -> http_method . ptr ) , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 if ( packet -> http_response . ptr != NULL ) free ( packet -> http_response . ptr ) , packet -> http_num_headers = 0 ; }",722,-16.249863265003484,-0.02250673582410455
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 if ( packet -> host_line . ptr != NULL ) { free ( packet -> host_line . ptr ) ; packet -> host_line . ptr = NULL ; } if ( packet -> referer_line . ptr != NULL ) { free ( packet -> referer_line . ptr ) ; packet -> referer_line . ptr = NULL ; } if ( packet -> content_line . ptr != NULL ) { free ( packet -> content_line . ptr ) ; packet -> content_line . ptr = NULL ; } if ( packet -> accept_line . ptr != NULL ) { free ( packet -> accept_line . ptr ) ; packet -> accept_line . ptr = NULL ; } if ( packet -> user_agent_line . ptr != NULL ) { free ( packet -> user_agent_line . ptr ) ; packet -> user_agent_line . ptr = NULL ; } if ( packet -> http_url_name . ptr != NULL ) { free ( packet -> http_url_name . ptr ) ; packet -> http_url_name . ptr = NULL ; } if ( packet -> http_encoding . ptr != NULL ) { free ( packet -> http_encoding . ptr ) ; packet -> http_encoding . ptr = NULL ; } if ( packet -> http_transfer_encoding . ptr != NULL ) { free ( packet -> http_transfer_encoding . ptr ) ; packet -> http_transfer_encoding . ptr = NULL ; } if ( packet -> http_contentlen . ptr != NULL ) { free ( packet -> http_contentlen . ptr ) ; packet -> http_contentlen . ptr = NULL ; } if ( packet -> http_cookie . ptr != NULL ) { free ( packet -> http_cookie . ptr ) ; packet -> http_cookie . ptr = NULL ; } if ( packet -> http_origin . ptr != NULL ) { free ( packet -> http_origin . ptr ) ; packet -> http_origin . ptr = NULL ; } if ( packet -> http_x_session_type . ptr != NULL ) { free ( packet -> http_x_session_type . ptr ) ; packet -> http_x_session_type . ptr = NULL ; } if ( packet -> server_line . ptr != NULL ) { free ( packet -> server_line . ptr ) ; packet -> server_line . ptr = NULL ; } if ( packet -> http_method . ptr != NULL ) { free ( packet -> http_method . ptr ) ; packet -> http_method . ptr = NULL ; } if ( packet -> http_response . ptr != NULL ) { free ( packet -> http_response . ptr ) ; packet -> http_response . ptr = NULL ; } packet -> host_line . len = 0 , packet -> referer_line . len = 0 , packet -> content_line . len = 0 , packet -> accept_line . len = 0 , packet -> user_agent_line . len = 0 , packet -> http_url_name . len = 0 , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . len = 0 , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_x_session_type . len = 0 , packet -> server_line . len = 0 , packet -> http_method . len = 0 , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",790,-9.45924454471443,-0.011973727271790418
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , free(packet->host_line.ptr); packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , free(packet->referer_line.ptr); packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , free(packet->content_line.ptr); packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , free(packet->accept_line.ptr); packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , free(packet->user_agent_line.ptr); packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , free(packet->http_url_name.ptr); packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , free(packet->http_encoding.ptr); packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , free(packet->http_transfer_encoding.ptr); packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , free(packet->http_contentlen.ptr); packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , free(packet->http_cookie.ptr); packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , free(packet->http_origin.ptr); packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , free(packet->http_x_session_type.ptr); packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , free(packet->server_line.ptr); packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , free(packet->http_method.ptr); packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , free(packet->http_response.ptr); packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",567,-6.773446760952495,-0.011946114216847433
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { 
+	if(packet->host_line.ptr != NULL)
+		free(packet->host_line.ptr);
+	if(packet->referer_line.ptr != NULL)
+		free(packet->referer_line.ptr);
+	if(packet->content_line.ptr != NULL)
+		free(packet->content_line.ptr);
+	if(packet->accept_line.ptr != NULL)
+		free(packet->accept_line.ptr);
+	if(packet->user_agent_line.ptr != NULL)
+		free(packet->user_agent_line.ptr);
+	if(packet->http_url_name.ptr != NULL)
+		free(packet->http_url_name.ptr);
+	if(packet->http_encoding.ptr != NULL)
+		free(packet->http_encoding.ptr);
+	if(packet->http_transfer_encoding.ptr != NULL)
+		free(packet->http_transfer_encoding.ptr);
+	if(packet->http_contentlen.ptr != NULL)
+		free(packet->http_contentlen.ptr);
+	if(packet->http_cookie.ptr != NULL)
+		free(packet->http_cookie.ptr);
+	if(packet->http_origin.ptr != NULL)
+		free(packet->http_origin.ptr);
+	if(packet->http_x_session_type.ptr != NULL)
+		free(packet->http_x_session_type.ptr);
+	if(packet->server_line.ptr != NULL)
+		free(packet->server_line.ptr);
+	if(packet->http_method.ptr != NULL)
+		free(packet->http_method.ptr);
+	if(packet->http_response.ptr != NULL)
+		free(packet->http_response.ptr);
+	
+	packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",857,-12.376772833703898,-0.014441975301871525
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; 
+if(packet -> host_line.ptr != NULL) { free(packet -> host_line.ptr);  packet -> host_line.ptr = NULL; packet -> host_line.len = 0; } 
+if(packet -> referer_line.ptr != NULL) { free(packet -> referer_line.ptr); packet -> referer_line.ptr = NULL; packet -> referer_line.len = 0; } 
+if(packet -> content_line.ptr != NULL) { free(packet -> content_line.ptr); packet -> content_line.ptr = NULL; packet -> content_line.len = 0; } 
+if(packet -> accept_line.ptr != NULL) { free(packet -> accept_line.ptr); packet -> accept_line.ptr = NULL; packet -> accept_line.len = 0; } 
+if(packet -> user_agent_line.ptr != NULL) { free(packet -> user_agent_line.ptr); packet -> user_agent_line.ptr = NULL; packet -> user_agent_line.len = 0; } 
+if(packet -> http_url_name.ptr != NULL) { free(packet -> http_url_name.ptr); packet -> http_url_name.ptr = NULL; packet -> http_url_name.len = 0; } 
+if(packet -> http_encoding.ptr != NULL) { free(packet -> http_encoding.ptr); packet -> http_encoding.ptr = NULL; packet -> http_encoding.len = 0; } 
+if(packet -> http_transfer_encoding.ptr != NULL) { free(packet -> http_transfer_encoding.ptr); packet -> http_transfer_encoding.ptr = NULL; packet -> http_transfer_encoding.len = 0; } 
+if(packet -> http_contentlen.ptr != NULL) { free(packet -> http_contentlen.ptr); packet -> http_contentlen.ptr = NULL; packet -> http_contentlen.len = 0; } 
+if(packet -> http_cookie.ptr != NULL) { free(packet -> http_cookie.ptr); packet -> http_cookie.ptr = NULL; packet -> http_cookie.len = 0; } 
+if(packet -> http_origin.ptr != NULL) { free(packet -> http_origin.ptr); packet -> http_origin.ptr = NULL; packet -> http_origin.len = 0; } 
+if(packet -> http_x_session_type.ptr != NULL) { free(packet -> http_x_session_type.ptr); packet -> http_x_session_type.ptr = NULL; packet -> http_x_session_type.len = 0; } 
+if(packet -> server_line.ptr != NULL) { free(packet -> server_line.ptr); packet -> server_line.ptr = NULL; packet -> server_line.len = 0; } 
+if(packet -> http_method.ptr != NULL) { free(packet -> http_method.ptr); packet -> http_method.ptr = NULL; packet -> http_method.len = 0; } 
+if(packet -> http_response.ptr != NULL) { free(packet -> http_response.ptr); packet -> http_response.ptr = NULL; packet -> http_response.len = 0; } 
+packet -> http_num_headers = 0 ; 
+}",842,-21.573426715496385,-0.02562164693051827
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) {
+  if(packet != NULL){
+    packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ;
+  }
+}",403,-7.430315386007305,-0.018437507161308448
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , free(packet -> host_line . ptr), packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , free(packet -> referer_line . ptr), packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , free(packet -> content_line . ptr), packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , free(packet -> accept_line . ptr), packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , free(packet -> user_agent_line . ptr), packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , free(packet -> http_url_name . ptr), packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , free(packet -> http_encoding . ptr), packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , free(packet -> http_transfer_encoding . ptr), packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , free(packet -> http_contentlen . ptr), packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , free(packet -> http_cookie . ptr), packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , free(packet -> http_origin . ptr), packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , free(packet -> http_x_session_type . ptr), packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , free(packet -> server_line . ptr), packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , free(packet -> http_method . ptr), packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , free(packet -> http_response . ptr), packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",567,-5.772289319270671,-0.01018040444315815
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { 
+  packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; 
+
+  if(packet -> host_line.ptr != NULL) { 
+    free(packet -> host_line . ptr) ; 
+    packet -> host_line . ptr = NULL ; 
+    packet -> host_line . len = 0 ;
+  } 
+
+  if(packet -> referer_line.ptr != NULL) { 
+    free(packet -> referer_line . ptr) ; 
+    packet -> referer_line . ptr = NULL ; 
+    packet -> referer_line . len = 0 ;
+  } 
+
+  if(packet -> content_line.ptr != NULL) { 
+    free(packet -> content_line . ptr) ; 
+    packet -> content_line . ptr = NULL ; 
+    packet -> content_line . len = 0 ;
+  } 
+
+  if(packet -> accept_line.ptr != NULL) { 
+    free(packet -> accept_line . ptr) ; 
+    packet -> accept_line . ptr = NULL ; 
+    packet -> accept_line . len = 0 ;
+  } 
+
+  if(packet -> user_agent_line.ptr != NULL) { 
+    free(packet -> user_agent_line . ptr) ; 
+    packet -> user_agent_line . ptr = NULL ; 
+    packet -> user_agent_line . len = 0 ;
+  } 
+
+  if(packet -> http_url_name.ptr != NULL) { 
+    free(packet -> http_url_name . ptr) ; 
+    packet -> http_url_name . ptr = NULL ; 
+    packet -> http_url_name . len = 0 ;
+  } 
+
+  if(packet -> http_encoding.ptr != NULL) { 
+    free(packet -> http_encoding . ptr) ; 
+    packet -> http_encoding . ptr = NULL ; 
+    packet -> http_encoding . len = 0 ;
+  } 
+
+  if(packet -> http_transfer_encoding.ptr != NULL) { 
+    free(packet -> http_transfer_encoding . ptr) ; 
+    packet -> http_transfer_encoding . ptr = NULL ; 
+    packet -> http_transfer_encoding . len = 0 ;
+  } 
+
+  if(packet -> http_contentlen.ptr != NULL) { 
+    free(packet -> http_contentlen . ptr) ; 
+    packet -> http_contentlen . ptr = NULL ; 
+    packet -> http_contentlen . len = 0 ;
+  } 
+
+  if(packet -> http_cookie.ptr != NULL) { 
+    free(packet -> http_cookie . ptr) ; 
+    packet -> http_cookie . ptr = NULL ; 
+    packet -> http_cookie . len = 0 ;
+  } 
+
+  if(packet -> http_origin.ptr != NULL) { 
+    free(packet -> http_origin . ptr) ; 
+    packet -> http_origin . ptr = NULL ; 
+    packet -> http_origin . len = 0 ;
+  } 
+
+  if(packet -> http_x_session_type.ptr != NULL) { 
+    free(packet -> http_x_session_type . ptr) ; 
+    packet -> http_x_session_type . ptr = NULL ; 
+    packet -> http_x_session_type . len = 0 ;
+  } 
+
+  if(packet -> server_line.ptr != NULL) { 
+    free(packet -> server_line . ptr) ; 
+    packet -> server_line . ptr = NULL ; 
+    packet -> server_line . len = 0 ;
+  } 
+
+  if(packet -> http_method.ptr != NULL) { 
+    free(packet -> http_method . ptr) ; 
+    packet -> http_method . ptr = NULL ; 
+    packet -> http_method . len = 0 ;
+  } 
+
+  if(packet -> http_response.ptr != NULL) { 
+    free(packet -> http_response . ptr) ; 
+    packet -> http",1000,-27.227759896616547,-0.027227759896616546
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { if (packet != NULL) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; } }",397,-4.770072325859409,-0.012015295531132012
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) {
+  if ( packet ) {
+    packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ,
+    packet -> host_line . ptr = NULL , packet -> host_line . len = 0 ,
+    packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 ,
+    packet -> content_line . ptr = NULL , packet -> content_line . len = 0 ,
+    packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 ,
+    packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 ,
+    packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 ,
+    packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 ,
+    packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 ,
+    packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 ,
+    packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 ,
+    packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL ,
+    packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 ,
+    packet -> server_line . ptr = NULL , packet -> server_line . len = 0 ,
+    packet -> http_method . ptr = NULL , packet -> http_method . len = 0 ,
+    packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ,
+    packet -> http_num_headers = 0 ; 
+  }
+}",434,-14.79111672490501,-0.03408091411268435
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { if ( packet != NULL ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; } }",396,-4.5928948971514565,-0.011598219437251154
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; if (packet->host_line.ptr != NULL) { free(packet->host_line.ptr); packet->host_line.ptr = NULL; packet->host_line.len = 0; } if (packet->referer_line.ptr != NULL) { free(packet->referer_line.ptr); packet->referer_line.ptr = NULL; packet->referer_line.len = 0; } if (packet->content_line.ptr != NULL) { free(packet->content_line.ptr); packet->content_line.ptr = NULL; packet->content_line.len = 0; } if (packet->accept_line.ptr != NULL) { free(packet->accept_line.ptr); packet->accept_line.ptr = NULL; packet->accept_line.len = 0; } if (packet->user_agent_line.ptr != NULL) { free(packet->user_agent_line.ptr); packet->user_agent_line.ptr = NULL; packet->user_agent_line.len = 0; } if (packet->http_url_name.ptr != NULL) { free(packet->http_url_name.ptr); packet->http_url_name.ptr = NULL; packet->http_url_name.len = 0; } if (packet->http_encoding.ptr != NULL) { free(packet->http_encoding.ptr); packet->http_encoding.ptr = NULL; packet->http_encoding.len = 0; } if (packet->http_transfer_encoding.ptr != NULL) { free(packet->http_transfer_encoding.ptr); packet->http_transfer_encoding.ptr = NULL; packet->http_transfer_encoding.len = 0; } if (packet->http_contentlen.ptr != NULL) { free(packet->http_contentlen.ptr); packet->http_contentlen.ptr = NULL; packet->http_contentlen.len = 0; } if (packet->http_cookie.ptr != NULL) { free(packet->http_cookie.ptr); packet->http_cookie.ptr = NULL; packet->http_cookie.len = 0; } if (packet->http_origin.ptr != NULL) { free(packet->http_origin.ptr); packet->http_origin.len = 0; packet->http_origin.ptr = NULL; } if (packet->http_x_session_type.ptr != NULL) { free(packet->http_x_session_type.ptr); packet->http_x_session_type.ptr = NULL; packet->http_x_session_type.len = 0; }if (packet->server_line.ptr != NULL) { free(packet->server_line.ptr); packet->server_line.ptr = NULL; packet->server_line.len = 0; } if (packet->http_method.ptr != NULL) { free(packet->http_method.ptr); packet->http_method.ptr = NULL; packet->http_method.len = 0; } if (packet->http_response.ptr != NULL) { free(packet->http_response.ptr); packet->http_response.ptr = NULL; packet->http_response.len = 0; } packet -> http_num_headers = 0 ; }",806,-17.688824779846954,-0.02194643272933865
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; 
+	if ( packet -> host_line . ptr != NULL ) {
+		free ( packet -> host_line . ptr );
+		packet -> host_line . ptr = NULL ;
+		packet -> host_line . len = 0 ;
+	}
+	if ( packet -> referer_line . ptr != NULL ) {
+		free ( packet -> referer_line . ptr );
+		packet -> referer_line . ptr = NULL ;
+		packet -> referer_line . len = 0 ;
+	}
+	if ( packet -> content_line . ptr != NULL ) {
+		free ( packet -> content_line . ptr );
+		packet -> content_line . ptr = NULL ;
+		packet -> content_line . len = 0 ;
+	}
+	if ( packet -> accept_line . ptr != NULL ) {
+		free ( packet -> accept_line . ptr );
+		packet -> accept_line . ptr = NULL ;
+		packet -> accept_line . len = 0 ;
+	}
+	if ( packet -> user_agent_line . ptr != NULL ) {
+		free ( packet -> user_agent_line . ptr );
+		packet -> user_agent_line . ptr = NULL ;
+		packet -> user_agent_line . len = 0 ;
+	}
+	if ( packet -> http_url_name . ptr != NULL ) {
+		free ( packet -> http_url_name . ptr );
+		packet -> http_url_name . ptr = NULL ;
+		packet -> http_url_name . len = 0 ;
+	}
+	if ( packet -> http_encoding . ptr != NULL ) {
+		free ( packet -> http_encoding . ptr );
+		packet -> http_encoding . ptr = NULL ;
+		packet -> http_encoding . len = 0 ;
+	}
+	if ( packet -> http_transfer_encoding . ptr != NULL ) {
+		free ( packet -> http_transfer_encoding . ptr );
+		packet -> http_transfer_encoding . ptr = NULL ;
+		packet -> http_transfer_encoding . len = 0 ;
+	}
+	if ( packet -> http_contentlen . ptr != NULL ) {
+		free ( packet -> http_contentlen . ptr );
+		packet -> http_contentlen . ptr = NULL ;
+		packet -> http_contentlen . len = 0 ;
+	}
+	if ( packet -> http_cookie . ptr != NULL ) {
+		free ( packet -> http_cookie . ptr );
+		packet -> http_cookie . ptr = NULL ;
+		packet -> http_cookie . len = 0 ;
+	}
+	if ( packet -> http_origin . ptr != NULL ) {
+		free ( packet -> http_origin . ptr );
+		packet -> http_origin . ptr = NULL ;
+		packet -> http_origin . len = 0 ;
+	}
+	if ( packet -> http_x_session_type . ptr != NULL ) {
+		free ( packet -> http_x_session_type . ptr );
+		packet -> http_x_session_type . ptr = NULL ;
+		packet -> http_x_session_type . len = 0 ;
+	}
+	if ( packet -> server_line . ptr != NULL ) {
+		free ( packet -> server_line . ptr );
+		packet -> server_line . ptr = NULL ;
+		packet -> server_line . len = 0 ;
+	}
+	if ( packet -> http_method . ptr != NULL ) {
+		free ( packet -> http_method . ptr );
+		packet -> http_method . ptr = NULL ;
+		packet -> http_method . len = 0 ;
+	}
+	if ( packet -> http_response . ptr != NULL ) {
+		free ( packet -> http_response . ptr );
+		packet -> http_response . ptr = NULL ;
+		packet -> http_response . len = 0 ;
+	}
+	packet -> http_num_",1000,-15.107071822359943,-0.015107071822359944
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { 
+    if (packet != NULL) {
+        packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ;
+    }
+}",405,-6.0395552046257315,-0.014912481986730201
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { if (packet -> host_line . ptr != NULL) { free (packet -> host_line . ptr); } if (packet -> referer_line . ptr != NULL) { free (packet -> referer_line . ptr); } if (packet -> content_line . ptr != NULL) { free (packet -> content_line . ptr); } if (packet -> accept_line . ptr != NULL) { free (packet -> accept_line . ptr); } if (packet -> user_agent_line . ptr != NULL) { free (packet -> user_agent_line . ptr); } if (packet -> http_url_name . ptr != NULL) { free (packet -> http_url_name . ptr); } if (packet -> http_encoding . ptr != NULL) { free (packet -> http_encoding . ptr); } if (packet -> http_transfer_encoding . ptr != NULL) { free (packet -> http_transfer_encoding . ptr); } if (packet -> http_contentlen . ptr != NULL) { free (packet -> http_contentlen . ptr); } if (packet -> http_cookie . ptr != NULL) { free (packet -> http_cookie . ptr); } if (packet -> http_origin . ptr != NULL) { free (packet -> http_origin . ptr); } if (packet -> http_x_session_type . ptr != NULL) { free (packet -> http_x_session_type . ptr); } if (packet -> server_line . ptr != NULL) { free (packet -> server_line . ptr); } if (packet -> http_method . ptr != NULL) { free (packet -> http_method . ptr); } if (packet -> http_response . ptr != NULL) { free (packet -> http_response . ptr); } packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",806,-10.247558490660237,-0.012714092420173993
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , 
+
+if (packet -> host_line . ptr) {
+free(packet -> host_line . ptr);
+}
+packet -> host_line . ptr = NULL , packet -> host_line . len = 0 ,
+
+if (packet -> referer_line . ptr) {
+free(packet -> referer_line . ptr);
+}
+packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 ,
+
+if (packet -> content_line . ptr) {
+free(packet -> content_line . ptr);
+}
+packet -> content_line . ptr = NULL , packet -> content_line . len = 0 ,
+
+if (packet -> accept_line . ptr) {
+free(packet -> accept_line . ptr);
+}
+packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 ,
+
+if (packet -> user_agent_line . ptr) {
+free(packet -> user_agent_line . ptr);
+}
+packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 ,
+
+if (packet -> http_url_name . ptr) {
+free(packet -> http_url_name . ptr);
+}
+packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 ,
+
+if (packet -> http_encoding . ptr) {
+free(packet -> http_encoding . ptr);
+}
+packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 ,
+
+if (packet -> http_transfer_encoding . ptr) {
+free(packet -> http_transfer_encoding . ptr);
+}
+packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 ,
+
+if (packet -> http_contentlen . ptr) {
+free(packet -> http_contentlen . ptr);
+}
+packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 ,
+
+if (packet -> http_cookie . ptr) {
+free(packet -> http_cookie . ptr);
+}
+packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 ,
+
+if (packet -> http_origin . ptr) {
+free(packet -> http_origin . ptr);
+}
+packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL ,
+
+if (packet -> http_x_session_type . ptr) {
+free(packet -> http_x_session_type . ptr);
+}
+packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 ,
+
+if (packet -> server_line . ptr) {
+free(packet -> server_line . ptr);
+}
+packet -> server_line . ptr = NULL , packet -> server_line . len = 0 ,
+
+if (packet -> http_method . ptr) {
+free(packet -> http_method . ptr);
+}
+packet -> http_method . ptr = NULL , packet -> http_method . len = 0 ,
+
+if (packet -> http_response . ptr) {
+free(packet -> http_response . ptr);
+}
+packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",867,-19.918140182027386,-0.022973633427943927
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ; }
+
+/* Add this line to free any existing memory before overwriting the pointers */
+if (packet->http_url_name.ptr != NULL) free(packet->http_url_name.ptr);
+if (packet->http_encoding.ptr != NULL) free(packet->http_encoding.ptr);
+if (packet->http_transfer_encoding.ptr != NULL) free(packet->http_transfer_encoding.ptr);
+if (packet->http_contentlen.ptr != NULL) free(packet->http_contentlen.ptr);
+if (packet->http_cookie.ptr != NULL) free(packet->http_cookie.ptr);
+if (packet->http_origin.ptr != NULL) free(packet->http_origin.ptr);
+if (packet->http_x_session_type.ptr != NULL) free(packet->http_x_session_type.ptr);
+if (packet->server_line.ptr != NULL) free(packet->server_line.ptr);
+if (packet->http_method.ptr != NULL) free(packet->http_method.ptr);
+if (packet->http_response.ptr != NULL) free(packet->http_response.ptr);",668,-39.488259938197054,-0.05911416158412733
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; if ( packet -> host_line . ptr != NULL ) { free ( packet -> host_line . ptr ); packet -> host_line . ptr = NULL ; packet -> host_line . len = 0 ; } if ( packet -> referer_line . ptr != NULL ) { free ( packet -> referer_line . ptr ); packet -> referer_line . ptr = NULL ; packet -> referer_line . len = 0 ; } if ( packet -> content_line . ptr != NULL ) { free ( packet -> content_line . ptr ); packet -> content_line . ptr = NULL ; packet -> content_line . len = 0 ; } if ( packet -> accept_line . ptr != NULL ) { free ( packet -> accept_line . ptr ); packet -> accept_line . ptr = NULL ; packet -> accept_line . len = 0 ; } if ( packet -> user_agent_line . ptr != NULL ) { free ( packet -> user_agent_line . ptr ); packet -> user_agent_line . ptr = NULL ; packet -> user_agent_line . len = 0 ; } if ( packet -> http_url_name . ptr != NULL ) { free ( packet -> http_url_name . ptr ); packet -> http_url_name . ptr = NULL ; packet -> http_url_name . len = 0 ; } if ( packet -> http_encoding . ptr != NULL ) { free ( packet -> http_encoding . ptr ); packet -> http_encoding . ptr = NULL ; packet -> http_encoding . len = 0 ; } if ( packet -> http_transfer_encoding . ptr != NULL ) { free ( packet -> http_transfer_encoding . ptr ); packet -> http_transfer_encoding . ptr = NULL ; packet -> http_transfer_encoding . len = 0 ; } if ( packet -> http_contentlen . ptr != NULL ) { free ( packet -> http_contentlen . ptr ); packet -> http_contentlen . ptr = NULL ; packet -> http_contentlen . len = 0 ; } if ( packet -> http_cookie . ptr != NULL ) { free ( packet -> http_cookie . ptr ); packet -> http_cookie . ptr = NULL ; packet -> http_cookie . len = 0 ; } if ( packet -> http_origin . ptr != NULL ) { free ( packet -> http_origin . ptr ); packet -> http_origin . ptr = NULL ; packet -> http_origin . len = 0 ; } if ( packet -> http_x_session_type . ptr != NULL ) { free ( packet -> http_x_session_type . ptr ); packet -> http_x_session_type . ptr = NULL ; packet -> http_x_session_type . len = 0 ; } if ( packet -> server_line . ptr != NULL ) { free ( packet -> server_line . ptr ); packet -> server_line . ptr = NULL ; packet -> server_line . len = 0 ; } if ( packet -> http_method . ptr != NULL ) { free ( packet -> http_method . ptr ); packet -> http_method . ptr = NULL ; packet -> http_method . len = 0 ; } if ( packet -> http_response . ptr != NULL ) { free ( packet -> http_response . ptr ); packet -> http_response . ptr = NULL ; packet -> http_response . len = 0 ; } packet -> http_num_headers = 0 ; }",776,-7.298510474162098,-0.009405297002786209
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { if ( packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; } }",394,-4.879960880292052,-0.012385687513431604
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; if (packet -> host_line . ptr != NULL) { free(packet -> host_line . ptr); packet -> host_line . ptr = NULL; } packet -> host_line . len = 0 ; /* other lines omitted for brevity */ if (packet -> server_line . ptr != NULL) { free(packet -> server_line . ptr); packet -> server_line . ptr = NULL; } packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",200,-26.037656632235205,-0.13018828316117603
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , free(packet -> host_line . ptr), packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , free(packet -> referer_line . ptr), packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , free(packet -> content_line . ptr), packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , free(packet -> accept_line . ptr), packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , free(packet -> user_agent_line . ptr), packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , free(packet -> http_url_name . ptr), packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , free(packet -> http_encoding . ptr), packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , free(packet -> http_transfer_encoding . ptr), packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , free(packet -> http_contentlen . ptr), packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , free(packet -> http_cookie . ptr), packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , free(packet -> http_x_session_type . ptr), packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , free(packet -> server_line . ptr), packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , free(packet -> http_method . ptr), packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , free(packet -> http_response . ptr), packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",556,-9.96813138348616,-0.017928293855190933
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { 
+    if (packet != NULL) {
+        packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; 
+    }
+}",406,-5.7156328535061816,-0.014077913432281236
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { 
+    if(packet != NULL) {
+        packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; 
+    }
+}",406,-6.163903721999956,-0.015182028871921074
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 if(packet->host_line.ptr != NULL) { free(packet->host_line.ptr); packet -> host_line . ptr = NULL ; packet -> host_line . len = 0 ; } if(packet->referer_line.ptr != NULL) { free(packet->referer_line.ptr); packet -> referer_line . ptr = NULL ; packet -> referer_line . len = 0 ; } if(packet->content_line.ptr != NULL) { free(packet->content_line.ptr); packet -> content_line . ptr = NULL ; packet -> content_line . len = 0 ; } if(packet->accept_line.ptr != NULL) { free(packet->accept_line.ptr); packet -> accept_line . ptr = NULL ; packet -> accept_line . len = 0 ; } if(packet->user_agent_line.ptr != NULL) { free(packet->user_agent_line.ptr); packet -> user_agent_line . ptr = NULL ; packet -> user_agent_line . len = 0 ; } if(packet->http_url_name.ptr != NULL) { free(packet->http_url_name.ptr); packet -> http_url_name . ptr = NULL ; packet -> http_url_name . len = 0 ; } if(packet->http_encoding.ptr != NULL) { free(packet->http_encoding.ptr); packet -> http_encoding . ptr = NULL ; packet -> http_encoding . len = 0 ; } if(packet->http_transfer_encoding.ptr != NULL) { free(packet->http_transfer_encoding.ptr); packet -> http_transfer_encoding . ptr = NULL ; packet -> http_transfer_encoding . len = 0 ; } if(packet->http_contentlen.ptr != NULL) { free(packet->http_contentlen.ptr); packet -> http_contentlen . ptr = NULL ; packet -> http_contentlen . len = 0 ; } if(packet->http_cookie.ptr != NULL) { free(packet->http_cookie.ptr); packet -> http_cookie . ptr = NULL ; packet -> http_cookie . len = 0 ; } if(packet->http_origin.ptr != NULL) { free(packet->http_origin.ptr); packet -> http_origin . len = 0 ; packet -> http_origin . ptr = NULL ; } if(packet->http_x_session_type.ptr != NULL) { free(packet->http_x_session_type.ptr); packet -> http_x_session_type . ptr = NULL ; packet -> http_x_session_type . len = 0 ; } if(packet->server_line.ptr != NULL) { free(packet->server_line.ptr); packet -> server_line . ptr = NULL ; packet -> server_line . len = 0 ; } if(packet->http_method.ptr != NULL) { free(packet->http_method.ptr); packet -> http_method . ptr = NULL ; packet -> http_method . len = 0 ; } if(packet->http_response.ptr != NULL) { free(packet->http_response.ptr); packet -> http_response . ptr = NULL ; packet -> http_response . len = 0 ; } packet -> http_num_headers = 0 ; }",805,-11.917536020383702,-0.01480439257190522
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , if (packet->host_line.ptr != NULL) { free(packet->host_line.ptr); packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , } if (packet->referer_line.ptr != NULL) { free(packet -> referer_line . ptr); packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , } if (packet->content_line.ptr != NULL) { free(packet -> content_line . ptr); packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , } if (packet->accept_line.ptr != NULL) { free(packet -> accept_line . ptr); packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , } if (packet->user_agent_line.ptr != NULL) { free(packet -> user_agent_line . ptr); packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , } if (packet->http_url_name.ptr != NULL) { free(packet -> http_url_name . ptr); packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , } if (packet->http_encoding.ptr != NULL) { free(packet -> http_encoding . ptr); packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , } if (packet->http_transfer_encoding.ptr != NULL) { free(packet -> http_transfer_encoding . ptr); packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , } if (packet->http_contentlen.ptr != NULL) { free(packet -> http_contentlen . ptr); packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , } if (packet->http_cookie.ptr != NULL) { free(packet -> http_cookie . ptr); packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , } if (packet->http_origin.ptr != NULL) { free(packet -> http_origin . ptr); packet -> http_origin . ptr = NULL , packet -> http_origin . len = 0 , } if (packet->http_x_session_type.ptr != NULL) { free(packet -> http_x_session_type . ptr); packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , } if (packet->server_line.ptr != NULL) { free(packet -> server_line . ptr); packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , } if (packet->http_method.ptr != NULL) { free(packet -> http_method . ptr); packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , } if (packet->http_response.ptr != NULL) { free(packet -> http_response . ptr); packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , } packet -> http_num_headers = 0 ; }",806,-22.13968080525247,-0.02746858660701299
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , free(packet -> host_line.ptr), packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , free(packet -> referer_line.ptr), packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , free(packet -> content_line.ptr), packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , free(packet -> accept_line.ptr), packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , free(packet -> user_agent_line.ptr), packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , free(packet -> http_url_name.ptr), packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , free(packet -> http_encoding.ptr), packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , free(packet -> http_transfer_encoding.ptr), packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , free(packet -> http_contentlen.ptr), packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , free(packet -> http_cookie.ptr), packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , free(packet -> http_origin.ptr), packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , free(packet -> http_x_session_type.ptr), packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , free(packet -> server_line.ptr), packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , free(packet -> http_method.ptr), packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , free(packet -> http_response.ptr), packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",567,-8.359050134516885,-0.014742592829835775
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet-> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; free(packet); //Added line to free the packet after it has been processed }",405,-24.77863936016083,-0.06118182558064403
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , free(packet -> host_line . ptr); packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , free(packet -> referer_line . ptr); packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , free(packet -> content_line . ptr); packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , free(packet -> accept_line . ptr); packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , free(packet -> user_agent_line . ptr); packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , free(packet -> http_url_name . ptr); packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , free(packet -> http_encoding . ptr); packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , free(packet -> http_transfer_encoding . ptr); packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , free(packet -> http_contentlen . ptr); packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , free(packet -> http_cookie . ptr); packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , free(packet -> http_origin . ptr); packet -> http_origin . ptr = NULL , free(packet -> http_x_session_type . ptr); packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , free(packet -> server_line . ptr); packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , free(packet -> http_method . ptr); packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , free(packet -> http_response . ptr); packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",567,-8.920308967023193,-0.015732467313973885
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; 
+if(packet -> host_line.ptr) { free(packet->host_line.ptr); }
+packet -> host_line . ptr = NULL , packet -> host_line . len = 0 ; 
+if(packet -> referer_line.ptr) { free(packet->referer_line.ptr); }
+packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 ; 
+if(packet -> content_line.ptr) { free(packet->content_line.ptr); }
+packet -> content_line . ptr = NULL , packet -> content_line . len = 0 ; 
+if(packet -> accept_line.ptr) { free(packet->accept_line.ptr); }
+packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 ; 
+if(packet -> user_agent_line.ptr) { free(packet->user_agent_line.ptr); }
+packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 ; 
+if(packet -> http_url_name.ptr) { free(packet->http_url_name.ptr); }
+packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 ; 
+if(packet -> http_encoding.ptr) { free(packet->http_encoding.ptr); }
+packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 ; 
+if(packet -> http_transfer_encoding.ptr) { free(packet->http_transfer_encoding.ptr); }
+packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 ; 
+if(packet -> http_contentlen.ptr) { free(packet->http_contentlen.ptr); }
+packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 ; 
+if(packet -> http_cookie.ptr) { free(packet->http_cookie.ptr); }
+packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 ; 
+if(packet -> http_origin.ptr) { free(packet->http_origin.ptr); }
+packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL ; 
+if(packet -> http_x_session_type.ptr) { free(packet->http_x_session_type.ptr); }
+packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 ; 
+if(packet -> server_line.ptr) { free(packet->server_line.ptr); }
+packet -> server_line . ptr = NULL , packet -> server_line . len = 0 ; 
+if(packet -> http_method.ptr) { free(packet->http_method.ptr); }
+packet -> http_method . ptr = NULL , packet -> http_method . len = 0 ; 
+if(packet -> http_response.ptr) { free(packet->http_response.ptr); }
+packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ; 
+packet -> http_num_headers = 0 ; }",839,-16.193820569372157,-0.01930133560115871
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; if ( packet -> host_line . ptr != NULL ) { free ( packet -> host_line . ptr ) ; packet -> host_line . ptr = NULL ; } packet -> host_line . len = 0 ; if ( packet -> referer_line . ptr != NULL ) { free ( packet -> referer_line . ptr ) ; packet -> referer_line . ptr = NULL ; } packet -> referer_line . len = 0 ; if ( packet -> content_line . ptr != NULL ) { free ( packet -> content_line . ptr ) ; packet -> content_line . ptr = NULL ; } packet -> content_line . len = 0 ; if ( packet -> accept_line . ptr != NULL ) { free ( packet -> accept_line . ptr ) ; packet -> accept_line . ptr = NULL ; } packet -> accept_line . len = 0 ; if ( packet -> user_agent_line . ptr != NULL ) { free ( packet -> user_agent_line . ptr ) ; packet -> user_agent_line . ptr = NULL ; } packet -> user_agent_line . len = 0 ; if ( packet -> http_url_name . ptr != NULL ) { free ( packet -> http_url_name . ptr ) ; packet -> http_url_name . ptr = NULL ; } packet -> http_url_name . len = 0 ; if ( packet -> http_encoding . ptr != NULL ) { free ( packet -> http_encoding . ptr ) ; packet -> http_encoding . ptr = NULL ; } packet -> http_encoding . len = 0 ; if ( packet -> http_transfer_encoding . ptr != NULL ) { free ( packet -> http_transfer_encoding . ptr ) ; packet -> http_transfer_encoding . ptr = NULL ; } packet -> http_transfer_encoding . len = 0 ; if ( packet -> http_contentlen . ptr != NULL ) { free ( packet -> http_contentlen . ptr ) ; packet -> http_contentlen . ptr = NULL ; } packet -> http_contentlen . len = 0 ; if ( packet -> http_cookie . ptr != NULL ) { free ( packet -> http_cookie . ptr ) ; packet -> http_cookie . ptr = NULL ; } packet -> http_cookie . len = 0 ; if ( packet -> http_origin . ptr != NULL ) { free ( packet -> http_origin . ptr ) ; packet -> http_origin . ptr = NULL ; } packet -> http_origin . len = 0 ; if ( packet -> http_x_session_type . ptr != NULL ) { free ( packet -> http_x_session_type . ptr ) ; packet -> http_x_session_type . ptr = NULL ; } packet -> http_x_session_type . len = 0 ; if ( packet -> server_line . ptr != NULL ) { free ( packet -> server_line . ptr ) ; packet -> server_line . ptr = NULL ; } packet -> server_line . len = 0 ; if ( packet -> http_method . ptr != NULL ) { free ( packet -> http_method . ptr ) ; packet -> http_method . ptr = NULL ; } packet -> http_method . len = 0 ; if ( packet -> http_response . ptr != NULL ) { free ( packet -> http_response . ptr ) ; packet -> http_response . ptr = NULL ; } packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",791,-8.836768144032412,-0.011171641142898118
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { if ( packet != NULL ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; } }",396,-4.834761616767527,-0.01220899398173618
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { 
+     packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ;
+     if(packet -> host_line . ptr)
+          free(packet -> host_line . ptr);
+     packet -> host_line . len = 0 ;
+     if(packet -> referer_line . ptr)
+          free(packet -> referer_line . ptr);
+     packet -> referer_line . len = 0 ;
+     if(packet -> content_line . ptr)
+          free(packet -> content_line . ptr);
+     packet -> content_line . len = 0 ;
+     if(packet -> accept_line . ptr)
+          free(packet -> accept_line . ptr);
+     packet -> accept_line . len = 0 ;
+     if(packet -> user_agent_line . ptr)
+          free(packet -> user_agent_line . ptr);
+     packet -> user_agent_line . len = 0 ;
+     if(packet -> http_url_name . ptr)
+          free(packet -> http_url_name . ptr);
+     packet -> http_url_name . len = 0 ;
+     if(packet -> http_encoding . ptr)
+          free(packet -> http_encoding . ptr);
+     packet -> http_encoding . len = 0 ;
+     if(packet -> http_transfer_encoding . ptr)
+          free(packet -> http_transfer_encoding . ptr);
+     packet -> http_transfer_encoding . len = 0 ;
+     if(packet -> http_contentlen . ptr)
+          free(packet -> http_contentlen . ptr);
+     packet -> http_contentlen . len = 0 ;
+     if(packet -> http_cookie . ptr)
+          free(packet -> http_cookie . ptr);
+     packet -> http_cookie . len = 0 ;
+     if(packet -> http_origin . ptr)
+          free(packet -> http_origin . ptr);
+     packet -> http_origin . len = 0 ;
+     if(packet -> http_x_session_type . ptr)
+          free(packet -> http_x_session_type . ptr);
+     packet -> http_x_session_type . len = 0 ;
+     if(packet -> server_line . ptr)
+          free(packet -> server_line . ptr);
+     packet -> server_line . len = 0 ;
+     if(packet -> http_method . ptr)
+          free(packet -> http_method . ptr);
+     packet -> http_method . len = 0 ;
+     if(packet -> http_response . ptr)
+          free(packet -> http_response . ptr);
+     packet -> http_response . len = 0 ;
+     packet -> http_num_headers = 0 ;
+}",678,-22.310933103440295,-0.032906980978525506
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; if ( packet -> host_line . ptr ) { free ( packet -> host_line . ptr ) ; packet -> host_line . ptr = NULL ; packet -> host_line . len = 0 ; } if ( packet -> referer_line . ptr ) { free ( packet -> referer_line . ptr ) ; packet -> referer_line . ptr = NULL ; packet -> referer_line . len = 0 ; } if ( packet -> content_line . ptr ) { free ( packet -> content_line . ptr ) ; packet -> content_line . ptr = NULL ; packet -> content_line . len = 0 ; } if ( packet -> accept_line . ptr ) { free ( packet -> accept_line . ptr ) ; packet -> accept_line . ptr = NULL ; packet -> accept_line . len = 0 ; } if ( packet -> user_agent_line . ptr ) { free ( packet -> user_agent_line . ptr ) ; packet -> user_agent_line . ptr = NULL ; packet -> user_agent_line . len = 0 ; } if ( packet -> http_url_name . ptr ) { free ( packet -> http_url_name . ptr ) ; packet -> http_url_name . ptr = NULL ; packet -> http_url_name . len = 0 ; } if ( packet -> http_encoding . ptr ) { free ( packet -> http_encoding . ptr ) ; packet -> http_encoding . ptr = NULL ; packet -> http_encoding . len = 0 ; } if ( packet -> http_transfer_encoding . ptr ) { free ( packet -> http_transfer_encoding . ptr ) ; packet -> http_transfer_encoding . ptr = NULL ; packet -> http_transfer_encoding . len = 0 ; } if ( packet -> http_contentlen . ptr ) { free ( packet -> http_contentlen . ptr ) ; packet -> http_contentlen . ptr = NULL ; packet -> http_contentlen . len = 0 ; } if ( packet -> http_cookie . ptr ) { free ( packet -> http_cookie . ptr ) ; packet -> http_cookie . ptr = NULL ; packet -> http_cookie . len = 0 ; } if ( packet -> http_origin . ptr ) { free ( packet -> http_origin . ptr ) ; packet -> http_origin . len = 0 ; packet -> http_origin . ptr = NULL ; } if ( packet -> http_x_session_type . ptr ) { free ( packet -> http_x_session_type . ptr ) ; packet -> http_x_session_type . ptr = NULL ; packet -> http_x_session_type . len = 0 ; } if ( packet -> server_line . ptr ) { free ( packet -> server_line . ptr ) ; packet -> server_line . ptr = NULL ; packet -> server_line . len = 0 ; } if ( packet -> http_method . ptr ) { free ( packet -> http_method . ptr ) ; packet -> http_method . ptr = NULL ; packet -> http_method . len = 0 ; } if ( packet -> http_response . ptr ) { free ( packet -> http_response . ptr ) ; packet -> http_response . ptr = NULL ; packet -> http_response . len = 0 ; } packet -> http_num_headers = 0 ; }",761,-8.036917066835647,-0.010560994831584293
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet->free_host_line = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet->free_referer_line = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet->free_content_line = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet->free_accept_line = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet->free_user_agent_line = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet->free_http_url_name = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet->free_http_encoding = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet->free_http_transfer_encoding = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet->free_http_contentlen = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet->free_http_cookie = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet->free_http_origin = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet->free_http_x_session_type = 0 , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet->free_server_line = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet->free_http_method = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet->free_http_response = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; 
+if(packet->host_line.ptr != NULL) {
+    free(packet->host_line.ptr);
+    packet->host_line.ptr = NULL;
+    packet->free_host_line = 1;
+}
+if(packet->referer_line.ptr != NULL) {
+    free(packet->referer_line.ptr);
+    packet->referer_line.ptr = NULL;
+    packet->free_referer_line = 1;
+}
+if(packet->content_line.ptr != NULL) {
+    free(packet->content_line.ptr);
+    packet->content_line.ptr = NULL;
+    packet->free_content_line = 1;
+}
+if(packet->accept_line.ptr != NULL) {
+    free(packet->accept_line.ptr);
+    packet->accept_line.ptr = NULL;
+    packet->free_accept_line = 1;
+}
+if(packet->user_agent_line.ptr != NULL) {
+    free(packet->user_agent_line.ptr);
+    packet->user_agent_line.ptr = NULL;
+    packet->free_user_agent_line = 1;
+}
+if(packet->http_url_name.ptr != NULL) {
+    free(packet->http_url_name.ptr);
+    packet->http_url_name.ptr = NULL;
+    packet->free_http_url_name = 1;
+}
+if(packet->http_encoding.ptr != NULL) {
+    free(packet->http_encoding.ptr);
+    packet->http_encoding.ptr = NULL;
+    packet->free_http_encoding = 1;
+}
+if(packet->http_transfer_encoding.ptr != NULL) {
+    free(packet->http_transfer_encoding.ptr);
+    packet->http_transfer_encoding.ptr",1000,-21.737524395042087,-0.021737524395042087
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 if (packet->host_line.ptr != NULL) { free(packet->host_line.ptr); packet -> host_line . ptr = NULL , packet -> host_line . len = 0 } if (packet->referer_line.ptr != NULL) { free(packet->referer_line.ptr); packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 } if (packet->content_line.ptr != NULL) { free(packet->content_line.ptr); packet -> content_line . ptr = NULL , packet -> content_line . len = 0 } if (packet->accept_line.ptr != NULL) { free(packet->accept_line.ptr); packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 } if (packet->user_agent_line.ptr != NULL) { free(packet->user_agent_line.ptr); packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 } if (packet->http_url_name.ptr != NULL) { free(packet->http_url_name.ptr); packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 } if (packet->http_encoding.ptr != NULL) { free(packet->http_encoding.ptr); packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 } if (packet->http_transfer_encoding.ptr != NULL) { free(packet->http_transfer_encoding.ptr); packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 } if (packet->http_contentlen.ptr != NULL) { free(packet->http_contentlen.ptr); packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 } if (packet->http_cookie.ptr != NULL) { free(packet->http_cookie.ptr); packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 } if (packet->http_origin.ptr != NULL) { free(packet->http_origin.ptr); packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL } if (packet->http_x_session_type.ptr != NULL) { free(packet->http_x_session_type.ptr); packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 } if (packet->server_line.ptr != NULL) { free(packet->server_line.ptr); packet -> server_line . ptr = NULL , packet -> server_line . len = 0 } if (packet->http_method.ptr != NULL) { free(packet->http_method.ptr); packet -> http_method . ptr = NULL , packet -> http_method . len = 0 } if (packet->http_response.ptr != NULL) { free(packet->http_response.ptr); packet -> http_response . ptr = NULL , packet -> http_response . len = 0 } packet -> http_num_headers = 0 ; }",790,-10.809316908663009,-0.013682679631218999
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; 
+if(packet -> host_line.ptr) free(packet -> host_line.ptr);
+if(packet -> referer_line.ptr) free(packet -> referer_line.ptr);
+if(packet -> content_line.ptr) free(packet -> content_line.ptr);
+if(packet -> accept_line.ptr) free(packet -> accept_line.ptr);
+if(packet -> user_agent_line.ptr) free(packet -> user_agent_line.ptr);
+if(packet -> http_url_name.ptr) free(packet -> http_url_name.ptr);
+if(packet -> http_encoding.ptr) free(packet -> http_encoding.ptr);
+if(packet -> http_transfer_encoding.ptr) free(packet -> http_transfer_encoding.ptr);
+if(packet -> http_contentlen.ptr) free(packet -> http_contentlen.ptr);
+if(packet -> http_cookie.ptr) free(packet -> http_cookie.ptr);
+if(packet -> http_origin.ptr) free(packet -> http_origin.ptr);
+if(packet -> http_x_session_type.ptr) free(packet -> http_x_session_type.ptr);
+if(packet -> server_line.ptr) free(packet -> server_line.ptr);
+if(packet -> http_method.ptr) free(packet -> http_method.ptr);
+if(packet -> http_response.ptr) free(packet -> http_response.ptr);
+
+packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }",765,-11.504837602805635,-0.015039003402360307
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { if (packet->host_line.ptr) { free (packet->host_line.ptr); packet->host_line.ptr = NULL; } if (packet->referer_line.ptr) { free (packet->referer_line.ptr); packet->referer_line.ptr = NULL; } if (packet->content_line.ptr) { free (packet->content_line.ptr); packet->content_line.ptr = NULL; } if (packet->accept_line.ptr) { free (packet->accept_line.ptr); packet->accept_line.ptr = NULL; } if (packet->user_agent_line.ptr) { free (packet->user_agent_line.ptr); packet->user_agent_line.ptr = NULL; } if (packet->http_url_name.ptr) { free (packet->http_url_name.ptr); packet->http_url_name.ptr = NULL; } if (packet->http_encoding.ptr) { free (packet->http_encoding.ptr); packet->http_encoding.ptr = NULL; } if (packet->http_transfer_encoding.ptr) { free (packet->http_transfer_encoding.ptr); packet->http_transfer_encoding.ptr = NULL; } if (packet->http_contentlen.ptr) { free (packet->http_contentlen.ptr); packet->http_contentlen.ptr = NULL; } if (packet->http_cookie.ptr) { free (packet->http_cookie.ptr); packet->http_cookie.ptr = NULL; } if (packet->http_origin.ptr) { free (packet->http_origin.ptr); packet->http_origin.ptr = NULL; } if (packet->http_x_session_type.ptr) { free (packet->http_x_session_type.ptr); packet->http_x_session_type.ptr = NULL; } if (packet->server_line.ptr) { free (packet->server_line.ptr); packet->server_line.ptr = NULL; } if (packet->http_method.ptr) { free (packet->http_method.ptr); packet->http_method.ptr = NULL; } if (packet->http_response.ptr) { free (packet->http_response.ptr); packet->http_response.ptr = NULL; } packet->parsed_lines = 0; packet->empty_line_position_set = 0; packet->host_line.len = 0; packet->referer_line.len = 0; packet->content_line.len = 0; packet->accept_line.len = 0; packet->user_agent_line.len = 0; packet->http_url_name.len = 0; packet->http_encoding.len = 0; packet->http_transfer_encoding.len = 0; packet->http_contentlen.len = 0; packet->http_cookie.len = 0; packet->http_origin.len = 0; packet->http_x_session_type.len = 0; packet->server_line.len = 0; packet->http_method.len = 0; packet->http_response.len = 0; packet->http_num_headers = 0; }",778,-11.718918038425043,-0.01506287665607332
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0; 
+
+if (packet->host_line.ptr != NULL) { free(packet->host_line.ptr); }
+packet -> host_line . ptr = NULL , packet -> host_line . len = 0;
+
+if (packet->referer_line.ptr != NULL) { free(packet->referer_line.ptr); }
+packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0;
+
+if (packet->content_line.ptr != NULL) { free(packet->content_line.ptr); }
+packet -> content_line . ptr = NULL , packet -> content_line . len = 0;
+
+if (packet->accept_line.ptr != NULL) { free(packet->accept_line.ptr); }
+packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0;
+
+if (packet->user_agent_line.ptr != NULL) { free(packet->user_agent_line.ptr); }
+packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0;
+
+if (packet->http_url_name.ptr != NULL) { free(packet->http_url_name.ptr); }
+packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0;
+
+if (packet->http_encoding.ptr != NULL) { free(packet->http_encoding.ptr); }
+packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0;
+
+if (packet->http_transfer_encoding.ptr != NULL) { free(packet->http_transfer_encoding.ptr); }
+packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0;
+
+if (packet->http_contentlen.ptr != NULL) { free(packet->http_contentlen.ptr); }
+packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0;
+
+if (packet->http_cookie.ptr != NULL) { free(packet->http_cookie.ptr); }
+packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0;
+
+if (packet->http_origin.ptr != NULL) { free(packet->http_origin.ptr); }
+packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL;
+
+if (packet->http_x_session_type.ptr != NULL) { free(packet->http_x_session_type.ptr); }
+packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0;
+
+if (packet->server_line.ptr != NULL) { free(packet->server_line.ptr); }
+packet -> server_line . ptr = NULL , packet -> server_line . len = 0;
+
+if (packet->http_method.ptr != NULL) { free(packet->http_method.ptr); }
+packet -> http_method . ptr = NULL , packet -> http_method . len = 0;
+
+if (packet->http_response.ptr != NULL) { free(packet->http_response.ptr); }
+packet -> http_response . ptr = NULL , packet -> http_response . len = 0;
+
+packet -> http_num_headers = 0 ; }",870,-15.099056486578707,-0.017355237340895065
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 , packet -> host_line . ptr = NULL , packet -> host_line . len = 0 , packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 , packet -> content_line . ptr = NULL , packet -> content_line . len = 0 , packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 , packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 , packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 , packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 , packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 , packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 , packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 , packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL , packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 , packet -> server_line . ptr = NULL , packet -> server_line . len = 0 , packet -> http_method . ptr = NULL , packet -> http_method . len = 0 , packet -> http_response . ptr = NULL , packet -> http_response . len = 0 , packet -> http_num_headers = 0 ; }
+Fixed code:","
+static void ndpi_reset_packet_line_info ( struct ndpi_packet_struct * packet ) { packet -> parsed_lines = 0 , packet -> empty_line_position_set = 0 ; if (packet -> host_line.ptr != NULL) { free (packet -> host_line.ptr); packet -> host_line . ptr = NULL , packet -> host_line . len = 0 ; } if (packet -> referer_line.ptr != NULL) { free (packet -> referer_line.ptr); packet -> referer_line . ptr = NULL , packet -> referer_line . len = 0 ; } if (packet -> content_line.ptr != NULL) { free (packet -> content_line.ptr); packet -> content_line . ptr = NULL , packet -> content_line . len = 0 ; } if (packet -> accept_line.ptr != NULL) { free (packet -> accept_line.ptr); packet -> accept_line . ptr = NULL , packet -> accept_line . len = 0 ; } if (packet -> user_agent_line.ptr != NULL) { free (packet -> user_agent_line.ptr); packet -> user_agent_line . ptr = NULL , packet -> user_agent_line . len = 0 ; } if (packet -> http_url_name.ptr != NULL) { free (packet -> http_url_name.ptr); packet -> http_url_name . ptr = NULL , packet -> http_url_name . len = 0 ; } if (packet -> http_encoding.ptr != NULL) { free (packet -> http_encoding.ptr); packet -> http_encoding . ptr = NULL , packet -> http_encoding . len = 0 ; } if (packet -> http_transfer_encoding.ptr != NULL) { free (packet -> http_transfer_encoding.ptr); packet -> http_transfer_encoding . ptr = NULL , packet -> http_transfer_encoding . len = 0 ; } if (packet -> http_contentlen.ptr != NULL) { free (packet -> http_contentlen.ptr); packet -> http_contentlen . ptr = NULL , packet -> http_contentlen . len = 0 ; } if (packet -> http_cookie.ptr != NULL) { free (packet -> http_cookie.ptr); packet -> http_cookie . ptr = NULL , packet -> http_cookie . len = 0 ; } if (packet -> http_origin.ptr != NULL) { free (packet -> http_origin.ptr); packet -> http_origin . len = 0 , packet -> http_origin . ptr = NULL ; } if (packet -> http_x_session_type.ptr != NULL) { free (packet -> http_x_session_type.ptr); packet -> http_x_session_type . ptr = NULL , packet -> http_x_session_type . len = 0 ; } if (packet -> server_line.ptr != NULL) { free (packet -> server_line.ptr); packet -> server_line . ptr = NULL , packet -> server_line . len = 0 ; } if (packet -> http_method.ptr != NULL) { free (packet -> http_method.ptr); packet -> http_method . ptr = NULL , packet -> http_method . len = 0 ; } if (packet -> http_response.ptr != NULL) { free (packet -> http_response.ptr); packet -> http_response . ptr = NULL , packet -> http_response . len = 0 ; } packet -> http_num_headers = 0 ; }",806,-11.705919591625474,-0.014523473438741283

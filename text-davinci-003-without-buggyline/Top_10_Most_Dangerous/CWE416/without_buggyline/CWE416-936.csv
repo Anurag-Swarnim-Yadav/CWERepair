@@ -1,0 +1,287 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = calloc ( 26 , sizeof ( char ) ) ; asctime_r ( tm , str ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+
+The vulnerability in the original code is that the memory allocated by g_strdup could be freed or used elsewhere before the return statement is executed, leading to a use-after-free error. The fixed code replaces the g_strdup with calloc, which allocates memory that is not freed until the end of the program, avoiding the use-after-free error.",174,-65.8414382486719,-0.37839907039466614
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; //added a backslash to the string return str ; } 
+
+//free the allocated memory
+free(str);",108,-32.433945738754,-0.30031431239587036
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { str [ len - 1 ] = '\0' ; free ( str ) ; } return str ; }",93,-6.6211717386785,-0.07119539503955376
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = calloc ( 32, sizeof(char) ) ; strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",97,-12.212126730644908,-0.12589821371798873
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char*)malloc(sizeof(char) * (strlen(asctime(tm)) + 1)); strcpy(str, asctime(tm)); len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",108,-9.529230116223996,-0.08823361218725922
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; free (str); return str ; }",90,-6.765659360454001,-0.07517399289393335
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; g_free(str); return str ; }",92,-5.022999859598499,-0.05459782456085325
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc ( sizeof ( char ) * 32 ) ; strcpy ( str , asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",97,-7.281509079070599,-0.07506710390794431
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc ( sizeof ( char ) * 26 ) ; strcpy ( str , asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",97,-5.275209990463002,-0.05438360814910311
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc (sizeof(char)* (strlen ( asctime ( tm ) ) + 1) ) ; strcpy(str,asctime(tm)); len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",108,-20.929605550341602,-0.19379264398464446
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { /* Added freeing of str before reassigning same pointer to new memory */ g_free ( str ) ; str = g_strdup ( asctime ( tm ) ) ; str [ len - 1 ] = '\0' ; } return str ; }",126,-41.6421640843475,-0.3304933657487897
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; g_free ( str ) ; return str ; }",93,-4.527562555484,-0.04868346833853763
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; g_free ( str ) ; return str ; }",93,-4.4413195373985,-0.04775612405804839
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { str [ len - 1 ] = '\\0' ; free ( str ) ; } return str ; }",93,-5.097668882994002,-0.05481364390316131
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime (time_t t) {
+struct tm *tm;
+char *str;
+int len;
+tm = localtime(&t);
+str = calloc(32, sizeof(char));
+strcpy(str, asctime(tm));
+len = strlen(str);
+if (len > 0)
+str[len - 1] = '\0';
+return str;
+}",97,-20.118026613661595,-0.20740233622331541
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc ( sizeof ( char ) * 26 ) ; strcpy ( str , asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; } 
+
+The fixed code is no longer vulnerable to CWE-416 because it has replaced the g_strdup call with a call to malloc to allocate memory for the string. g_strdup can potentially return memory that has already been freed if the GLib library has released it, leading to the potential for a use-after-free vulnerability. By using malloc, we ensure that the memory is freshly allocated and not already freed.",191,-86.8753516930284,-0.45484477326192885
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char *)malloc(sizeof(char)*26); strcpy(str, asctime ( tm ) ); len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",98,-10.2451926849239,-0.10454278249922347
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char *)g_malloc(strlen(asctime(tm)) + 1); strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",106,-14.588388668849898,-0.13762630819669716
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; g_free ( str ) ; return str ; }",93,-4.521517444213439,-0.048618467142079985
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_malloc ( sizeof ( char ) * ( strlen ( asctime ( tm ) ) + 1 ) ) ; strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",113,-8.024725228749297,-0.07101526751105572
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { char * temp = str ; str = strndup ( temp, len - 1 ) ; free ( temp ) ; } return str ; }",100,-16.330245049417446,-0.16330245049417447
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; /* Use a null byte instead */ /*  Add free the string before returning it */ free(str); return NULL; }",107,-45.099886663463444,-0.42149426788283595
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_malloc ( MAX_STR_LEN ) ; memcpy ( str , asctime ( tm ) , MAX_STR_LEN ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",106,-12.686541311249899,-0.11968435199292357
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc ( sizeof ( char ) * 26 ) ; strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",97,-6.068675950921301,-0.06256366959712681
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { str [ len - 1 ] = '\\0' ; free ( str ) ; } return str ; }",93,-5.04395859514344,-0.05423611392627355
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; g_free(str); return str ; }",92,-5.011117545803441,-0.05446866897612436
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; 
+
+if ( tm != NULL ) { str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; } else { str = NULL ; }
+
+return str ; }",108,-17.523622710147603,-0.16225576583470003
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = asctime ( tm ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return strdup ( str ) ; }",84,-7.6524413975313,-0.09110049282775357
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:"," 
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char*)malloc(len); str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; free(str); return str ; }",101,-16.163820480620203,-0.1600378265407941
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_malloc ( strlen ( asctime ( tm ) ) + 1 ) ; strcpy ( str , asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",106,-5.316398006213299,-0.050154698171823574
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; //free string after use  free(str); return str ; }",96,-19.049557192953444,-0.19843288742659837
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc ( 32 ) ; strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",92,-7.407673834108299,-0.08051819384900324
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { 
+struct tm * tm ; 
+char * str ; 
+int len ; 
+tm = localtime ( & t ) ; 
+str = g_malloc ( 26 * sizeof ( char ) ) ;
+strcpy ( str, asctime ( tm ) ) ; 
+len = strlen ( str ) ; 
+if ( len > 0 ) 
+str [ len - 1 ] = '\\0' ; 
+return str ; 
+}",119,-18.606590644436306,-0.15635790457509502
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { str [ len - 1 ] = '\\0' ; g_free ( str ) ; } return str ; }",95,-5.131995100200741,-0.05402100105474464
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc ( 64 ) ; if ( str != NULL ) { strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; } else return NULL ; return str ; }",104,-14.459875657121705,-0.13903726593386254
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char*)calloc(strlen(asctime ( tm )) + 1, sizeof(char)); strcpy(str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; free(str); }",113,-17.5593392060127,-0.1553923823540947
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { str [ len - 1 ] = '\\0' ; free ( str ) ; } return str ; }",93,-4.53860883125074,-0.04880224549731979
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char*)malloc(sizeof(char) * (strlen(asctime(tm)) + 1)); strcpy(str, asctime(tm)); len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",108,-9.796477428196193,-0.09070812433514994
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc(sizeof(char) * 26); strcpy(str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",97,-8.869917329251695,-0.09144244669331644
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_malloc ( sizeof ( char ) * 26 ) ; strcpy ( str , asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",99,-6.2150014595437,-0.06277779252064343
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_malloc ( strlen ( asctime ( tm ) ) + 1 ) ; strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",106,-5.743406125693698,-0.05418307665748772
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char *)malloc(26); strcpy(str, asctime(tm)); len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; return str ; }",92,-13.366000015389497,-0.14528260886292932
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_malloc (strlen (asctime ( tm ))) ; strcpy ( str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",102,-14.743335756386701,-0.14454250741555588
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) { str [ len - 1 ] = '\0' ; free ( str ) ; } return str ; }",93,-5.95445925925074,-0.06402644364785742
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char *)malloc(strlen(asctime(tm))+1); strcpy(str, asctime(tm)); len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; return str ; }",101,-9.888019588754299,-0.09790118404707226
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = ( char * ) malloc ( sizeof ( char ) * 256 ) ; strcpy ( str , asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",101,-8.738419778513396,-0.08651900770805343
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\0' ; g_free ( str ) ; return str ; }",93,-4.855160048260743,-0.05220602202430906
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = malloc ( sizeof ( char ) * 26 ) ; strcpy ( str , asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",97,-5.3363210196696995,-0.055013618759481436
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char *) malloc (sizeof (char) * 26); strcpy (str, asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; free (str); }",104,-11.080516979459299,-0.10654343249480094
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the vulnerability.
+Original Code:
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = g_strdup ( asctime ( tm ) ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }
+Fixed code:","
+char * my_asctime ( time_t t ) { struct tm * tm ; char * str ; int len ; tm = localtime ( & t ) ; str = (char*) malloc ( sizeof ( char ) * 30 ) ; strncpy ( str , asctime ( tm ) , 30 ) ; len = strlen ( str ) ; if ( len > 0 ) str [ len - 1 ] = '\\0' ; return str ; }",102,-16.102892730984497,-0.1578714973625931

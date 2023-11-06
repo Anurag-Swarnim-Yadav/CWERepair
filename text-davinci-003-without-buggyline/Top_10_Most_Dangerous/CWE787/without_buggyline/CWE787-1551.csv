@@ -1,0 +1,390 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context != NULL && context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",90,-5.113583812303099,-0.05681759791447887
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( rowstride > 0 && bmpdata != NULL ) {  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",103,-11.441671936010898,-0.11108419355350387
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:"," 
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",107,-7.781456736641542,-0.07272389473496768
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-5.049792610258681,-0.04763955292696869
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { 
+if ( rowstride > 0 ) {
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+    if ( context -> ChromaSubsamplingLevel ) {
+        nsc_encode_subsampling ( context ) ; 
+    }
+}
+}",110,-13.907108984150701,-0.1264282634922791
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context == NULL || bmpdata == NULL || rowstride == NULL) { return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",108,-9.986403891187202,-0.0924667026961778
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context == NULL || bmpdata == NULL || rowstride == 0) { return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",108,-6.080531039483137,-0.05630121332854757
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) {
+  
+if (rowstride > 0 && rowstride < context->Size){
+   nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ;
+   if ( context->ChromaSubsamplingLevel ) {
+      nsc_encode_subsampling ( context ) ;
+   }
+ }
+}",116,-33.510427603528456,-0.28888299658214184
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:"," 
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel && rowstride > 0 ) { nsc_encode_subsampling ( context ) ; } }",93,-7.1759401361807,-0.07716064662559893
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if(bmpdata != NULL) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",96,-8.037422765087642,-0.08372315380299628
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( rowstride <= 0 ) { return ; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",99,-12.192465679446753,-0.12315621898431064
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel && context -> ChromaSubsamplingLevel <= rowstride) { nsc_encode_subsampling ( context ) ; } }",99,-7.272038032883593,-0.0734549296250868
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) {
+  int dataSize = 0;
+  if (context->ChromaSubsamplingLevel) {
+    dataSize = (rowstride / context->ChromaSubsamplingLevel);
+  }
+
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ;
+  if ( context -> ChromaSubsamplingLevel ) {
+    if (dataSize > 0) {
+      nsc_encode_subsampling ( context , dataSize) ;
+    }
+  }
+}",155,-31.108685242352205,-0.2007011951119497
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { 
+  if (context == NULL || bmpdata == NULL || rowstride == 0 ) {
+      return;
+  }
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+  if ( context -> ChromaSubsamplingLevel ) { 
+    nsc_encode_subsampling ( context ) ; 
+  } 
+}",128,-16.388284446675698,-0.1280334722396539
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( rowstride < context->width * 4 ) { return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",102,-7.6040625486040305,-0.07454963282945128
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if(rowstride>context->MaxSize) return; nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",99,-18.24341310538918,-0.18427690005443617
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { 
+  UINT32 maxSize = context->height * context->width * 4;
+  if(maxSize >= rowstride) {
+     nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+  	if ( context -> ChromaSubsamplingLevel ) {
+    	nsc_encode_subsampling ( context ) ; 
+  	} 
+  }
+}",135,-43.93716888558128,-0.32546051026356504
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context && bmpdata && rowstride <= (UINT32)context->width*sizeof(BYTE)) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",115,-21.796281528186434,-0.18953288285379508
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+if (context->ChromaSubsamplingLevel > 0 && context->ChromaSubsamplingLevel < MAX_SUBSAMPLING_LEVEL) { 
+    nsc_encode_subsampling ( context ) ; 
+} }",115,-15.614789659028135,-0.13578077964372293
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",102,-6.719482671722831,-0.06587728109532187
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( context && bmpdata && rowstride >= 0 ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",102,-7.688987910862749,-0.07538223442022303
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context && context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",88,-5.762681408646101,-0.06548501600734205
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context != NULL && bmpdata != NULL && rowstride >= 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-7.208225068872632,-0.06800212329125124
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context == NULL) {return;} nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",95,-10.9835877579469,-0.11561671324154632
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) {
+  if (rowstride < 0 || rowstride > context->row_stride) {
+    return;
+  }
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ;
+  if ( context -> ChromaSubsamplingLevel ) { 
+    nsc_encode_subsampling ( context ) ;
+  }
+}",125,-22.365793835907187,-0.17892635068725748
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) {
+  if (context == NULL || bmpdata == NULL || rowstride == 0) {
+    return;
+  }
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; }
+}",117,-14.38561432637824,-0.12295396860152343
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { 
+  // Ensure the rowstride does not exceed the boundaries of bmpdata
+  if (rowstride > (context->imageWidth * 4)) {
+    return;
+  }
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+  if ( context -> ChromaSubsamplingLevel ) { 
+    nsc_encode_subsampling ( context ) ; 
+  } 
+}",141,-32.67410435349723,-0.23173123654962574
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:"," 
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { 
+if (context && bmpdata && rowstride) { 
+nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+if ( context -> ChromaSubsamplingLevel ) { 
+nsc_encode_subsampling ( context ) ; 
+} 
+}
+else {
+printf(""Error: Invalid arguments""); 
+}
+}",128,-28.4670677366627,-0.22239896669267734
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { 
+if (context==NULL || bmpdata==NULL || rowstride < 0){
+	printf(""Error: invalid input"");
+	return;
+}
+
+nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+if ( context -> ChromaSubsamplingLevel ) { 
+	if(context -> ChromaSubsamplingLevel < 0){
+		printf(""Error: invalid ChromaSubsamplingLevel"");
+		return;
+	}
+	nsc_encode_subsampling ( context ) ; 
+} 
+}",170,-38.017263072572604,-0.22363095925042709
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (rowstride > UINT32_MAX - 5){ return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }",103,-15.716006436555906,-0.1525825867626787
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( rowstride >= context -> stride) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } 
+ } 
+ else { 
+ printf(""Error: rowstride does not exceed context->stride!"");
+ } 
+}",126,-46.42134520018296,-0.3684233746046267
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel > 0 ) { nsc_encode_subsampling ( context ) ; } }",88,-7.4458065809540726,-0.08461143841993264
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) {
+ 
+ if (context == NULL || bmpdata == NULL)
+    return;
+ 
+ if (rowstride == 0) 
+    return; 
+ 
+ nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+ 
+ if ( context -> ChromaSubsamplingLevel ) { 
+    nsc_encode_subsampling ( context ) ; 
+ } 
+}",136,-29.299569993677927,-0.21543801465939652
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (rowstride > 0 && rowstride < context->buffer_length) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-12.624458457819104,-0.11909866469640665
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel && rowstride > 0 ) { nsc_encode_subsampling ( context ) ; } }",92,-4.940736744681943,-0.05370366026828199
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( context -> ChromaSubsamplingLevel >= 0 && context -> ChromaSubsamplingLevel <= 2 ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",112,-11.851591871982302,-0.10581778457127056
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode(NSC_CONTEXT *context, const BYTE *bmpdata, UINT32 rowstride) { 
+    
+    nsc_encode_argb_to_aycocg(context, bmpdata, rowstride); 
+    if (context->ChromaSubsamplingLevel && (rowstride >= context->ChromaSubsamplingLevel)) { 
+        nsc_encode_subsampling(context); 
+    } 
+}",114,-19.224670019933097,-0.1686374563152026
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-5.030454757509387,-0.047457120353862146
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (rowstride > 0 && rowstride <= MAX_ROWSTRIDE) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",107,-9.556403124267002,-0.08931217873146731
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) {
+  // Check for valid arguments
+  if (context == NULL || bmpdata == NULL || rowstride == 0) {
+    return;
+  }
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+  if ( context -> ChromaSubsamplingLevel ) { 
+    nsc_encode_subsampling ( context ) ; 
+  } 
+}",134,-18.70963062153103,-0.1396241091159032
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (rowstride >= context->width * 4) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } else { /* Handle error case */ } }",108,-17.441175896122754,-0.16149236940854403
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (rowstride > 0 && bmpdata != NULL) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",102,-6.4726328317837405,-0.06345718462533079
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( context -> ChromaSubsamplingLevel && rowstride > 0 ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; nsc_encode_subsampling ( context ) ; } }",92,-6.8466854871008,-0.07442049442500868
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context != NULL && bmpdata != NULL && rowstride >= 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-7.173924993265129,-0.06767853767231254
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( rowstride > 0 && rowstride <= context -> rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-9.782350270364597,-0.09228632330532639
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context != NULL && bmpdata != NULL && rowstride != 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-6.6886907404811025,-0.06310085604227456
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if ( bmpdata != NULL && rowstride > 0 && context != NULL ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-8.044882908866496,-0.0758951217817594
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",106,-5.030454757509387,-0.047457120353862146
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { if (rowstride > 0 && rowstride <= context->MaxRowStride) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",107,-9.596855901708079,-0.08969024207203811
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the vulnerability.
+Original Code:
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { 
+	if (bmpdata == NULL || context == NULL){
+		return;
+	}
+	if (rowstride > 0 && rowstride <= context->width * context->bpp)
+	{
+		nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ;
+		if ( context -> ChromaSubsamplingLevel ) {
+			nsc_encode_subsampling ( context ) ;
+		}
+	} else {
+		return;
+	}
+}",162,-38.60089021107287,-0.23827710006835107
