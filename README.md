@@ -36,20 +36,54 @@ these models.
 </div>
 
 
+<div align="center">
+
+## Real-World Software Vulnerabilities
+
+</div>
+
+
 <details open="open">
-<summary></summary>
+<summary>text-davinvi-003: without buggy line</summary>
 
 <h3>
     <b>
         <div align="center">
-            text-davinci-003 (without buggy line): Performance on Top- 10 Most Dangerous CWEs in 2021</a>
+            Performance on Top- 10 Most Dangerous CWEs in 2021</a>
         </div>
     </b>
 </h3>
   
 <div align="center">
 
-### CWERepair -  text-davinci-003: without buggyline
+| Rank | CWE Type | Name                                                                                       | Count | VRepair | VulRepair | CWERepair |
+|------|----------|--------------------------------------------------------------------------------------------|-------|---------|-----------|-----------|
+| 1    | CWE-787  | Out-of-bounds Write                                                                        | 53    |         | 16        |           |
+| 2    | CWE-79   | Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')       | 1     |         | 0         |           |
+| 3    | CWE-125  | Out-of-bounds Read                                                                         | 170   |         | 54        |           |
+| 4    | CWE-20   | Improper Input Validation                                                                  | 152   |         | 68        |           |
+| 5    | CWE-78   | Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection') | 3     |         | 1         |           |
+| 6    | CWE-89   | Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')       | 5     |         | 1         |           |
+| 7    | CWE-416  | Use After Free                                                                             | 55    |         | 29        |           |
+| 8    | CWE-22   | Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')             | 8     |         | 2         |           |
+| 9    | CWE-352  | Cross-Site Request Forgery (CSRF)                                                          | 2     |         | 0         |           |
+| 10   | CWE-434  | Unrestricted Upload of File with Dangerous Type                                            | -     | -       | -         |           |
+
+</div>
+
+
+<details open="open">
+<summary>text-davinvi-003: with buggy line</summary>
+
+<h3>
+    <b>
+        <div align="center">
+            Performance on Top- 10 Most Dangerous CWEs in 2021</a>
+        </div>
+    </b>
+</h3>
+  
+<div align="center">
 
 | Rank | CWE Type | Name                                                                                       | Count | VRepair | VulRepair | CWERepair |
 |------|----------|--------------------------------------------------------------------------------------------|-------|---------|-----------|-----------|
