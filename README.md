@@ -36,6 +36,19 @@ these models.
 </div>
 
 
+<details open="open">
+<summary></summary>
+
+<h3>
+    <b>
+        <div align="center">
+            text-davinci-003 (without buggy line): Performance on Top- 10 Most Dangerous CWEs in 2021</a>
+        </div>
+    </b>
+</h3>
+  
+<div align="center">
+
 ### CWERepair -  text-davinci-003: without buggyline
 
 | Rank | CWE Type | Name                                                                                       | Count | VRepair | VulRepair | CWERepair |
@@ -50,3 +63,5 @@ these models.
 | 8    | CWE-22   | Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')             | 8     |         | 2         |           |
 | 9    | CWE-352  | Cross-Site Request Forgery (CSRF)                                                          | 2     |         | 0         |           |
 | 10   | CWE-434  | Unrestricted Upload of File with Dangerous Type                                            | -     | -       | -         |           |
+
+</div>
