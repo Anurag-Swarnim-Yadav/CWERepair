@@ -1,6 +1,6 @@
 <p align="center">
   </a>
-  <h3>CWERepair</a></h3>
+  <h3 align="center">CWERepair</a></h3>
   <p align="center">
     Revisiting Zero-Shot For Real-World Software Vulnerability Repair
   </p>
