@@ -1,0 +1,251 @@
+Original code,Plausible Program,Number of Bugs Present,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { <StartBug> atomic_inc( &peer->refcount ); <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,132,-7.869946321287542,-0.05962080546429956
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { get_net ( peer ) ; if ( peer ) { spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } else { spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return NULL ; } <StartBug> <EndBug> } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return NULL ; }",1,197,-15.603132956557198,-0.0792037205916609
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc( &peer->refcount ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,132,-5.8678456165938,-0.044453375883286364
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-2.5439025987754014,-0.019127087208837604
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-2.6282632970851996,-0.01976137817357293
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) atomic_inc ( & peer -> refcnt ) ; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,125,-5.642543755307199,-0.04514035004245759
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-2.6282632970851996,-0.01976137817357293
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> rcu_read_lock ( ) ; if ( peer ) get_net ( peer ) ; rcu_read_unlock ( ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,151,-8.526445734120747,-0.05646652804053475
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> kref_get ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,134,-3.5611599614248006,-0.026575820607647765
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-2.5439025987754014,-0.019127087208837604
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> if(!try_get_net(peer)) peer = NULL; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,136,-10.825955518803799,-0.07960261410885146
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { atomic_inc ( & peer -> count ) ; <StartBug> // Added atomic_inc to increment the reference count  <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,143,-15.847614646918752,-0.11082248004838288
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { <StartBug> kref_get ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,135,-5.095962743382602,-0.03774787217320446
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer )  <StartBug> if ( get_net ( peer ) ) { <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return NULL ; }",1,162,-13.235061330862445,-0.08169790944976818
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> refcount ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,132,-3.9543909888235986,-0.02995750749108787
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> count ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,131,-3.262645832523999,-0.024905693378045796
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { if ( ! net_eq ( peer , net ) ) atomic_inc ( & peer -> count ) ; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,166,-20.525581671484783,-0.12364808235834207
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { atomic_inc ( & peer -> count ) ; <StartBug> } <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-8.208832282053502,-0.06172054347408648
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { <StartBug> refcount_inc( &peer->refcnt ); <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } else { spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return NULL ; } }",1,167,-9.732402490330301,-0.05827785922353474
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { atomic_inc ( & peer -> count ) ; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } <StartBug>spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; <EndBug> return NULL ; }",1,162,-13.422162476173197,-0.08285285479119257
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> if ( get_net ( peer ) ) <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,130,-5.295708691914001,-0.04073622070703078
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { kref_get ( & peer -> kref ) ; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return NULL ; }",1,156,-7.415460874326643,-0.04753500560465797
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc(&peer->refcnt); <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,131,-4.636593674856039,-0.0353938448462293
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { if ( ! get_net ( peer ) ) peer = NULL ; } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,129,-6.470318757840438,-0.050157509750701074
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { if ( atomic_inc_not_zero ( & peer -> count ) ) { <StartBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; <EndBug> return peer ; } } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return NULL ; }",1,170,-8.521811977678096,-0.050128305751047625
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> count ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,131,-3.6001462090773795,-0.027482032130361676
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { atomic_inc ( & peer -> refcnt ) ; <StartBug>  <EndBug> } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,136,-7.382512787648204,-0.054283182262119145
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> if ( get_net ( peer ) ) <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,130,-5.358212298742239,-0.041217017682632605
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { if ( ! atomic_inc_not_zero ( & peer -> count ) ) peer = NULL ; } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,136,-6.567097023369599,-0.04828747811301176
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { kref_get ( & peer -> kref ) ; <StartBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; <EndBug> return peer ; } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return NULL ; }",1,164,-7.35787990429394,-0.04486512136764598
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net_rcu ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,131,-5.4901980886646005,-0.04190990907377558
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { kref_get ( & peer -> refcnt ) ; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } <StartBug> spin_unlock_bh ( & net -> nsid_lock ) ; <EndBug> rcu_read_unlock ( ) ; return NULL ; }",1,165,-8.081278783896678,-0.04897744717513138
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { <StartBug> kref_get ( & peer -> refcount ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,134,-7.249642891670539,-0.054101812624407004
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) get_net_rcu ( peer ) ; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,123,-5.437720259244901,-0.04420910779873903
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> use_count ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-4.310940503465002,-0.03241308649221806
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> kref_get ( & peer -> kref ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-4.472454299563999,-0.03362747593657142
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( !peer ) <StartBug> return NULL ; <EndBug> else get_net ( peer ) ; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-12.316082351510897,-0.09260212294369095
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) get_net ( net ) ; /* <StartBug> get_net ( peer ) ; <EndBug> */ spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,137,-12.8371948800877,-0.09370215240939928
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) {  if (refcount_inc_not_zero(&peer->count))  get_net ( peer ) ; } spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,139,-16.834992902300584,-0.12111505685108334
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-2.5615232151714986,-0.019259573046402245
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-2.8494073516108998,-0.021424115425645863
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> if (refcount_inc_not_zero(&peer->refcnt)) <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,138,-6.6124359303096405,-0.04791620239354812
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { // <StartBug> if ( get_net ( peer ) ) <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; } else return NULL ; }",1,137,-14.415875349880778,-0.10522536751737795
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> kref_get ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,134,-3.3184590902243,-0.024764620076300745
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { if(atomic_inc_not_zero(&net->refcount)) <StartBug> get_net ( peer ) ; <EndBug> else peer = NULL; spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,149,-12.779140788197205,-0.0857660455583705
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> kref_get ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,134,-3.3184590902243,-0.024764620076300745
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:"," 
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> kref_get ( & peer -> refcnt ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,135,-7.166485732170797,-0.05308507949756146
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { atomic_inc ( & peer -> count ) ; <StartBug> /* Add this line to fix vulnerability */ <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,140,-15.6103582128551,-0.11150255866325072
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> atomic_inc ( & peer -> use_count ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-4.272221308314649,-0.032121964724170296
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) <StartBug> get_net ( peer ) ; <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }
+Fixed code:","
+struct net * get_net_ns_by_id ( struct net * net , int id ) { struct net * peer ; if ( id < 0 ) return NULL ; rcu_read_lock ( ) ; spin_lock_bh ( & net -> nsid_lock ) ; peer = idr_find ( & net -> netns_ids , id ) ; if ( peer ) { <StartBug> atomic_inc( &peer->refcnt ); <EndBug> spin_unlock_bh ( & net -> nsid_lock ) ; rcu_read_unlock ( ) ; return peer ; }",1,133,-6.326048574732799,-0.04756427499799097

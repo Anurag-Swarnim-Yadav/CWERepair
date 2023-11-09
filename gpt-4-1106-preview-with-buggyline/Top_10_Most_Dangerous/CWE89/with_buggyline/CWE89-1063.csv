@@ -1,0 +1,289 @@
+Original code,Plausible Program,Number of Bugs Present,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped mailbox = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , escaped mailbox , 0 , NULL ) ; curl_free ( escaped mailbox ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,156,-13.79476166225275,-0.08842795937341506
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char *escaped_mailbox = curl_easy_escape(data, path, 0); pop3c->mailbox = curl_easy_unescape (data, escaped_mailbox, 0, NULL); curl_free(escaped_mailbox); <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,162,-10.748367806915196,-0.06634794942540244
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path ; int outlength ; <StartBug> path = curl_easy_unescape ( data , data -> state . path , 0 , & outlength ) ; if ( ! path ) return CURLE_OUT_OF_MEMORY ; <EndBug> pop3c -> mailbox = malloc ( outlength + 1 ) ; if ( ! pop3c -> mailbox ) { curl_free ( path ) ; return CURLE_OUT_OF_MEMORY ; } memcpy ( pop3c -> mailbox , path , outlength ) ; pop3c -> mailbox [ outlength ] = '\0' ; curl_free ( path ) ; return CURLE_OK ; }",2,201,-16.768428174405035,-0.08342501579305987
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+ static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; if ( ! escaped_mailbox ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = escaped_mailbox ; <EndBug> return CURLE_OK ; }",2,129,-12.729179618736156,-0.0986758109979547
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; 
+<StartBug> int escapelen ; char * escapedPath = curl_easy_escape ( data , path , 0 ) ; if ( ! escapedPath ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = curl_easy_unescape ( data , escapedPath , 0 , & escapelen ) ; curl_free ( escapedPath ) ; <EndBug>
+
+<StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,189,-25.76853374598861,-0.13634144839147413
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) {
+struct pop3_conn *pop3c = &conn->proto.pop3c;
+struct SessionHandle *data = conn->data;
+
+char *copied_url = strdup(data->state.path);
+if(!copied_url)
+    return CURLE_OUT_OF_MEMORY;
+
+<StartBug>curl_free(pop3c->mailbox);
+pop3c->mailbox = curl_easy_unescape(data, copied_url, 0, NULL);
+curl_free(copied_url);<EndBug>
+
+if(!pop3c->mailbox)
+    return CURLE_OUT_OF_MEMORY;
+
+return CURLE_OK;
+}",2,192,-43.55699353257321,-0.22685934131548546
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char *escaped_path = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , escaped_path , 0 , NULL ) ; curl_free ( escaped_path ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,160,-6.758332597185301,-0.042239578732408134
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; if ( ! escaped_mailbox ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = curl_easy_unescape ( data , escaped_mailbox , 0 , NULL ) ; free ( escaped_mailbox ) ; <EndBug> return CURLE_OK ; }",2,151,-8.940307947455452,-0.05920733740036723
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; char * encoded_mailbox_name = NULL ; const char * path = data -> state . path ; <StartBug> if ( Curl_urldecode ( path , 0 , & encoded_mailbox_name , NULL , FALSE ) == CURLE_OK ) { pop3c -> mailbox = encoded_mailbox_name ; } <EndBug> <StartBug> else { return CURLE_OUT_OF_MEMORY ; } <EndBug> return CURLE_OK ; }",2,160,-30.864621887204038,-0.19290388679502524
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> size_t mailbox_len = 0; char* mailbox = curl_easy_unescape ( data , path , 0 , &mailbox_len ) ; if ( mailbox ) { pop3c -> mailbox = (char*)malloc(mailbox_len + 1); memcpy(pop3c -> mailbox, mailbox, mailbox_len); pop3c -> mailbox[mailbox_len] = '\0' ; curl_free ( mailbox ) ; } <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,205,-34.11360831473191,-0.16640784543771664
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * temp = curl_easy_unescape ( data , path , 0 , NULL ) ; pop3c -> mailbox = malloc ( strlen ( temp ) + 1 ) ; if ( pop3c -> mailbox ) strcpy ( pop3c -> mailbox , temp ) ; curl_free ( temp ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,173,-14.177334080967592,-0.08194990798247163
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = malloc ( strlen ( path ) + 1 ) ; if ( ! pop3c -> mailbox ) { return CURLE_OUT_OF_MEMORY ; } strcpy ( pop3c -> mailbox , path ) ; <EndBug> return CURLE_OK ; }",2,132,-10.406407488962692,-0.07883642037092949
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char *escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; if ( escaped_mailbox ) { pop3c -> mailbox = curl_easy_unescape ( data , escaped_mailbox , 0 , NULL ) ; curl_free ( escaped_mailbox ) ; } else { pop3c -> mailbox = NULL ; <EndBug> } <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,183,-14.536849147703405,-0.07943633414045577
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; size_t len = 0 ; char * mailbox ; <StartBug> len = curl_escape_max_length ( path ) ; mailbox = malloc ( len ) ; if ( ! mailbox ) return CURLE_OUT_OF_MEMORY ; len = curl_escape ( mailbox , path , 0 ) ; <EndBug> <StartBug> pop3c -> mailbox = malloc ( len + 1 ) ; if ( ! pop3c -> mailbox ) { free ( mailbox ) ; return CURLE_OUT_OF_MEMORY ; } strcpy ( pop3c -> mailbox , mailbox ) ; free ( mailbox ) ; <EndBug> return CURLE_OK ; }",2,209,-30.479227180994645,-0.14583362287557247
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char *escaped = curl_easy_escape ( data , path , 0 ) ; if ( ! escaped ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = escaped ; <EndBug> return CURLE_OK ; }",2,121,-8.131888844712252,-0.06720569293150622
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * safe_path = curl_easy_escape ( data , path , 0 ) ; if ( safe_path ) { pop3c -> mailbox = curl_easy_unescape ( data , safe_path , 0 , NULL ) ; curl_free ( safe_path ) ; } <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,167,-10.235666735782045,-0.06129141757953321
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; int outlength; <StartBug> pop3c->mailbox = curl_easy_escape (data, path, 0, &outlength); <EndBug> <StartBug> if (!pop3c->mailbox) <EndBug> return CURLE_OUT_OF_MEMORY; return CURLE_OK; }",2,134,-15.541113087968801,-0.11597845588036419
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char *escaped = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , escaped , 0 , NULL ) ; curl_free ( escaped ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,154,-6.6346868868605,-0.043082382382211036
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> int length = 0 ; const char * escaped_mailbox = curl_easy_escape ( data , path , 0 , & length ) ; pop3c -> mailbox = malloc ( sizeof ( char ) * ( length + 1 ) ) ; if ( ! pop3c -> mailbox ) return CURLE_OUT_OF_MEMORY ; memcpy ( pop3c -> mailbox , escaped_mailbox , length ) ; pop3c -> mailbox [ length ] = '\0' ; curl_free ( escaped_mailbox ) ; <EndBug> return CURLE_OK ; }",2,191,-21.475846344576393,-0.11243898609725861
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped_path = curl_easy_escape ( data , path , 0 ) ; if ( ! escaped_path ) { return CURLE_OUT_OF_MEMORY ; } pop3c -> mailbox = escaped_path ; <EndBug> return CURLE_OK ; }",2,128,-9.495589271428127,-0.07418429118303224
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char* mailbox_escaped = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , mailbox_escaped , 0 , NULL ) ; curl_free ( mailbox_escaped ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,162,-10.3527362670628,-0.06390577942631358
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; 
+pop3c -> mailbox = curl_easy_escape ( data , path , 0 ) ; 
+if ( ! pop3c -> mailbox ) 
+return CURLE_OUT_OF_MEMORY ; 
+return CURLE_OK ; }",2,118,-10.9250541710214,-0.09258520483916441
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> conn -> escape_buffer = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = conn -> escape_buffer ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,138,-11.23300448502395,-0.08139858322481122
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_escape ( data , path , 0 ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,126,-3.1770084396887506,-0.025214352695942466
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; int len ; <StartBug> len = curl_easy_unescape ( data , path , 0 , NULL ) ; pop3c -> mailbox = malloc ( len + 1 ) ; if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; curl_easy_unescape ( data , path , 0 , pop3c -> mailbox ) ; return CURLE_OK ; }",2,154,-17.128362400478593,-0.11122313247064022
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> 
+int path_len = strlen(path);
+char *escaped_path = malloc(sizeof(char) * (2 * path_len + 1));
+if (escaped_path == NULL) {
+  return CURLE_OUT_OF_MEMORY;
+}
+mysql_real_escape_string(conn, escaped_path, path, path_len);
+pop3c->mailbox = curl_easy_unescape(data, escaped_path, 0, NULL);
+free(escaped_path);
+<EndBug>
+
+if (!pop3c->mailbox) 
+return CURLE_OUT_OF_MEMORY; 
+return CURLE_OK; 
+}",2,229,-40.04731872757744,-0.1748791210811242
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_escape ( data , path , 0 ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,126,-3.288583921696551,-0.02609987239441707
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , escaped_mailbox , 0 , NULL ) ; curl_free ( escaped_mailbox ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,162,-5.755605174372949,-0.03552842700230215
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char* escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; if ( ! escaped_mailbox ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = curl_easy_unescape ( data , escaped_mailbox , 0 , NULL ) ; curl_free ( escaped_mailbox ) ; <EndBug> return CURLE_OK ; }",2,153,-9.322139946393103,-0.06092901925747126
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; char * safepath ; <StartBug> safepath = curl_easy_escape ( data , path , 0 ) ; <EndBug> if ( ! safepath ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = curl_easy_unescape ( data , safepath , 0 , NULL ) ; curl_free ( safepath ) ; if ( ! pop3c -> mailbox ) return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,175,-15.405819713742291,-0.08803325550709881
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; char * escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , escaped_mailbox , 0 , NULL ) ; <EndBug> if ( escaped_mailbox ) curl_free ( escaped_mailbox ) ; <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,169,-10.308463736028454,-0.060996826840405055
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * esc_mailbox = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , esc_mailbox , 0 , NULL ) ; free ( esc_mailbox ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,160,-10.020029997651106,-0.06262518748531941
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char* unescaped = curl_easy_unescape ( data , path , 0 , NULL ) ; if ( ! unescaped ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = malloc ( strlen ( unescaped ) + 1 ) ; if ( pop3c -> mailbox == NULL ) { curl_free ( unescaped ) ; return CURLE_OUT_OF_MEMORY ; } strcpy ( pop3c -> mailbox , unescaped ) ; curl_free ( unescaped ) ; <EndBug> return CURLE_OK ; }",2,197,-15.851311850317298,-0.08046351193054466
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * query_escaped = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , query_escaped , 0 , NULL ) ; curl_free ( query_escaped ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,162,-9.571666687481649,-0.059084362268405244
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; char * escaped_path = curl_easy_escape ( data , path , 0 ) ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , escaped_path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) { curl_free ( escaped_path ) ; <EndBug> return CURLE_OUT_OF_MEMORY ; } curl_free ( escaped_path ) ; return CURLE_OK ; }",2,171,-11.302417732736089,-0.06609601013295958
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> if ( ! pop3c -> mailbox ) { pop3c -> mailbox = curl_easy_escape ( data , path , 0 ) ; } <EndBug> if ( ! pop3c -> mailbox ) return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,129,-7.6106287392800995,-0.05899712200992325
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * input = curl_easy_unescape ( data , path , 0 , NULL ) ; if ( input ) { pop3c -> mailbox = mysql_real_escape_string ( input ) ; free ( input ) ; } <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,155,-15.134296605974448,-0.09764062326435129
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> const char * escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , escaped_mailbox , 0 , NULL ) ; curl_free ( escaped_mailbox ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,163,-8.921018026312192,-0.05473017194056559
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , escaped , 0 , NULL ) ; curl_free ( escaped ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,153,-5.943137775020747,-0.038844037745233644
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped_path = curl_easy_escape ( data , path , 0 ) ; pop3c -> mailbox = curl_easy_unescape ( data , escaped_path , 0 , NULL ) ; curl_free ( escaped_path ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,159,-5.813271327466294,-0.03656145488972512
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char* unescaped_mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; if ( ! unescaped_mailbox ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = curl_escap ( unescaped_mailbox , 0 ) ; free ( unescaped_mailbox ) ; <EndBug> return CURLE_OK ; }",2,155,-21.743236278557813,-0.14027894373263106
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; if ( ! path || ! ( pop3c -> mailbox = curl_easy_escape ( data , path , 0 ) ) ) return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,109,-15.2667589032359,-0.1400620082865679
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * safe_mailbox = curl_easy_escape ( data , path , 0 ) ; if ( ! safe_mailbox ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = curl_easy_unescape ( data , safe_mailbox , 0 , NULL ) ; free ( safe_mailbox ) ; <EndBug> if ( ! pop3c -> mailbox ) return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,173,-10.09863202492803,-0.0583735955198152
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> CURLcode result = curl_easy_unescape ( data , path , 0 , &pop3c->mailbox ) ; if ( result != CURLE_OK ) return result ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,147,-12.480511331410726,-0.0849014376286444
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path ; size_t path_size ; <StartBug> path = curl_easy_unescape ( data , data -> state . path , 0 , & path_size ) ; if ( path ) { pop3c -> mailbox = malloc ( path_size + 1 ) ; if ( pop3c -> mailbox ) { memcpy ( pop3c -> mailbox , path , path_size ) ; pop3c -> mailbox [ path_size ] = 0 ; } else { curl_free ( path ) ; return CURLE_OUT_OF_MEMORY ; } curl_free ( path ) ; <EndBug> } else return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,209,-22.114954761972882,-0.10581318067929608
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped_mailbox = curl_easy_escape ( data , path , 0 ) ; if ( ! escaped_mailbox ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = escaped_mailbox ; <EndBug> return CURLE_OK ; }",2,129,-6.520782677521148,-0.05054870292652053
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_escape ( data , path , 0 ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,126,-3.3127337994239507,-0.026291538090666276
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char *escaped = curl_easy_escape(data, path, 0); if(escaped == NULL) { return CURLE_OUT_OF_MEMORY ; } pop3c -> mailbox = escaped; <EndBug> return CURLE_OK ; }",2,124,-18.400032522916508,-0.1483873590557783
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> const char * escaped_path = curl_easy_escape ( data , path , 0 ) ; if ( escaped_path ) pop3c -> mailbox = curl_easy_unescape ( data , escaped_path , 0 , NULL ) ; curl_free ( escaped_path ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,166,-12.744425470786751,-0.07677364741437802
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> pop3c -> mailbox = curl_easy_unescape ( data , path , 0 , NULL ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }
+Fixed code:","
+static CURLcode pop3_parse_url_path ( struct connectdata * conn ) { struct pop3_conn * pop3c = & conn -> proto . pop3c ; struct SessionHandle * data = conn -> data ; const char * path = data -> state . path ; <StartBug> char * escaped = curl_easy_escape ( data , path , 0 ) ; if ( ! escaped ) return CURLE_OUT_OF_MEMORY ; pop3c -> mailbox = curl_easy_unescape ( data , escaped , 0 , NULL ) ; curl_free ( escaped ) ; <EndBug> <StartBug> if ( ! pop3c -> mailbox ) <EndBug> return CURLE_OUT_OF_MEMORY ; return CURLE_OK ; }",2,171,-7.499070853501978,-0.043854215517555424

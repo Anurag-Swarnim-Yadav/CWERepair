@@ -1,0 +1,275 @@
+Original code,Plausible Program,Number of Bugs Present,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if (user) {_ipmi_destroy_user ( user ) ;
+cleanup_srcu_struct ( & user -> release_barrier ) ;
+kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,82,-14.487000714358743,-0.17667074041900907
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,81,-3.966702138650099,-0.04897163134135925
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.589343237658401,-0.032776496679220266
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.589343237658401,-0.032776496679220266
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,81,-3.9691018401734985,-0.04900125728609257
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,81,-2.7842490726629974,-0.03437344534151848
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; <EndBug> kref_put ( & user -> refcount , free_user ) ; kfree ( user ) ; return 0 ; }",1,79,-6.866212749565598,-0.08691408543753922
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.589343237658401,-0.032776496679220266
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> kref_put ( & user -> refcount , free_user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; _ipmi_destroy_user ( user ) ; return 0 ; }",1,73,-3.5532604773998004,-0.048674801060271236
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug>  if ( user != NULL ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,82,-7.543409294893303,-0.09199279627918662
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.6022661820717983,-0.0329400782540734
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { 
+      if ( user ) {
+            _ipmi_destroy_user ( user ) ;
+            cleanup_srcu_struct ( & user -> release_barrier ) ;
+            kref_put ( & user -> refcount , free_user ) ;
+      }
+      return 0 ; 
+}",1,86,-16.210155099032303,-0.18849017557014305
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; }<EndBug> return 0 ; }",1,79,-7.1024158457112,-0.08990399804697721
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,81,-3.966702138650099,-0.04897163134135925
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) {
+synchronize_srcu ( & user -> release_barrier ) ; <StartBug> kref_put ( & user -> refcount , free_user ) ; free_user ( user ) ; <EndBug> return 0 ; }",1,70,-12.973842211705998,-0.1853406030243714
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,81,-2.7842490726629974,-0.03437344534151848
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if (user) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; } else { return -1; } <EndBug> }",1,86,-9.6475796593914,-0.11218115883013256
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.589343237658401,-0.032776496679220266
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.6090607312487,-0.03302608520567975
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { _ipmi_destroy_user ( user ) ; <StartBug> if ( user ) { cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-4.4736739538033,-0.05662878422535823
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,81,-2.7905389355512993,-0.034451097969769126
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { synchronize_srcu ( & user -> release_barrier ) ; <StartBug> kfree ( user ) ; <EndBug> return 0 ; }",1,51,-11.375453674757098,-0.22304811126974702
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,77,-4.576333722528541,-0.05943290548738365
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) {_ipmi_destroy_user ( user ) ;} <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,81,-7.4824357072304,-0.09237574947198025
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if (user != NULL) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,81,-4.3657522291031405,-0.05389817566794001
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,79,-3.4083160940743,-0.04314324169714304
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; _ipmi_destroy_user ( user ) ; <EndBug> return 0 ; }",1,73,-5.789210793509003,-0.0793042574453288
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if (user) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-4.591410173850002,-0.05811911612468357
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> // Acquire the release barrier lock before destroying user 
+	rcu_read_lock ( ) ; 
+	_ipmi_destroy_user ( user ) ; 
+	rcu_read_unlock ( ) ; <EndBug> 
+	cleanup_srcu_struct ( & user -> release_barrier ) ; 
+	kref_put ( & user -> refcount , free_user ) ; 
+	return 0 ; 
+}",1,123,-26.642821977631613,-0.21660830876123263
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.589343237658401,-0.032776496679220266
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> kref_put ( & user -> refcount , free_user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; _ipmi_destroy_user ( user ) ; return 0 ; }",1,73,-3.5393082145489014,-0.04848367417190276
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.589343237658401,-0.032776496679220266
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,79,-3.394227655917998,-0.042964907036936686
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,81,-2.7914500653369,-0.03446234648564074
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if (user) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; } else { return -1; } <EndBug> }",1,86,-9.656369636016503,-0.11228336786065701
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { 
+sync_rcu ( ) ; <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,82,-13.132152922471947,-0.16014820637160912
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> synchronize_srcu ( & user -> release_barrier ) ; _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,88,-4.420488730840303,-0.05023282648682162
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> refcount_dec ( &user->refcount ) ; if ( refcount_read ( &user->refcount ) == 0 ) { _ipmi_destroy_user ( user ); free_user ( & user->refcount ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; return 0 ; }",1,97,-25.619639425755995,-0.26411999407995873
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,79,-3.394227655917998,-0.042964907036936686
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,79,-3.3597811471840986,-0.042528875280811375
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { int ret ; <StartBug> ret = _ipmi_destroy_user ( user ) ; <EndBug> if ( ret == 0 ) { cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } return ret ; }",1,86,-4.5923165139152,-0.05339902923157209
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user != NULL ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,81,-2.7623352366083993,-0.03410290415565925
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.633486253559898,-0.033335269032403775
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:"," 
+int ipmi_destroy_user ( struct ipmi_user * user ) { 
+	if (user) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> 
+	cleanup_srcu_struct ( & user -> release_barrier ) ; 
+	kref_put ( & user -> refcount , free_user ) ;
+	}
+	return 0 ; 
+}",1,96,-19.084350246439257,-0.1987953150670756
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.633486253559898,-0.033335269032403775
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-2.612901404627299,-0.03307470132439619
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if (user != NULL) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,81,-4.81216363759414,-0.05940942762461902
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> kref_put ( & user -> refcount , free_user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; _ipmi_destroy_user ( user ) ; return 0 ; }",1,73,-3.5104273132146995,-0.048088045386502735
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if ( user ) { _ipmi_destroy_user ( user ) ; } <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }",1,79,-3.443686284668001,-0.04359096562870888
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> _ipmi_destroy_user ( user ) ; <EndBug> cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; return 0 ; }
+Fixed code:","
+int ipmi_destroy_user ( struct ipmi_user * user ) { <StartBug> if (user) { _ipmi_destroy_user ( user ) ; cleanup_srcu_struct ( & user -> release_barrier ) ; kref_put ( & user -> refcount , free_user ) ; } <EndBug> return 0 ; }",1,79,-4.633842920095601,-0.058656239494881024
