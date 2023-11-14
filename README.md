@@ -59,7 +59,7 @@ these models.
 | Rank | CWE Type | Name                                                                                       | Count | VRepair | VulRepair | CWERepair |
 |------|----------|--------------------------------------------------------------------------------------------|-------|---------|-----------|-----------|
 | 1    | CWE-787  | Out-of-bounds Write                                                                        | 53    |         | 16        |           |
-| 2    | CWE-79   | Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')       | 1     |         | 0         |           |
+| 2    | CWE-79   | Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')       | 1     |         | 0         |   0       |
 | 3    | CWE-125  | Out-of-bounds Read                                                                         | 170   |         | 54        |           |
 | 4    | CWE-20   | Improper Input Validation                                                                  | 152   |         | 68        |           |
 | 5    | CWE-78   | Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection') | 3     |         | 1         |           |
@@ -88,7 +88,7 @@ these models.
 | Rank | CWE Type | Name                                                                                       | Count | VRepair | VulRepair | CWERepair |
 |------|----------|--------------------------------------------------------------------------------------------|-------|---------|-----------|-----------|
 | 1    | CWE-787  | Out-of-bounds Write                                                                        | 53    |         | 16        |           |
-| 2    | CWE-79   | Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')       | 1     |         | 0         |           |
+| 2    | CWE-79   | Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')       | 1     |         | 0         |  0        |
 | 3    | CWE-125  | Out-of-bounds Read                                                                         | 170   |         | 54        |           |
 | 4    | CWE-20   | Improper Input Validation                                                                  | 152   |         | 68        |           |
 | 5    | CWE-78   | Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection') | 3     |         | 1         |           |
