@@ -44,7 +44,7 @@ these models.
 
 
 <details open="open">
-<summary>text-davinvi-003: without buggy line</summary>
+<summary>text-davinvi-003: without-buggy-line</summary>
 
 <h3>
     <b>
@@ -73,7 +73,7 @@ these models.
 </details>
 
 <details open="open">
-<summary>text-davinvi-003: with buggy line</summary>
+<summary>text-davinvi-003: with-buggy-line</summary>
 
 <h3>
     <b>
