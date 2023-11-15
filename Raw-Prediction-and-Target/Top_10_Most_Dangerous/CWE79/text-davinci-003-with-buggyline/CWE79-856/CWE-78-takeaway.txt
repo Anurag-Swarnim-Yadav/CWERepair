@@ -1,0 +1,14 @@
+With Buggyline
+
+It did not work on all the bugs.
+It sometimes added its own <Startbug> and <EndBug> to compare
+the origina with the target.
+Sometimes it shifted the <EndBug>
+
+For 2-3 examples it tried to filter out the integer vaule
+The purpose was to ensure that s_poll_interval contains a valid string
+and that any special characters in the string are properly escaped
+when dealing with XML data.
+
+
+

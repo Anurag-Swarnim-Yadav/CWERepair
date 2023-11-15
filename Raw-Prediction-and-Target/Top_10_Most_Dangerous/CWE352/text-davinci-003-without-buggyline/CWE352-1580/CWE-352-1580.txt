@@ -1,0 +1,6 @@
+Without buggyline
+
+Most of the generated sample added a line where they are 
+generating the CSRF token that should be added to the 
+data to make it more secure.
+CWE-352-1580 performed better without buggyline

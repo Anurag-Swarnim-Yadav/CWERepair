@@ -1,0 +1,2 @@
+In most of the cases, it just adds a new line where 
+it calculates the data length and add the varible in the socket_print
