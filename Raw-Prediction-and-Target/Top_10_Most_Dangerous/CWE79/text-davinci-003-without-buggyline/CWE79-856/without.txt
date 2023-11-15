@@ -1,0 +1,3 @@
+It did not work on all the bug.
+For almost 95% it tried to compare the origin with the target and add
+filtering of special character.
