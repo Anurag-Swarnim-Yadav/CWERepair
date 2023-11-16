@@ -1,0 +1,4 @@
+The first buggy line is wrong. We are trying to delete a int len statement.
+
+Also it is most changing the curl_easy_unescape function to curl_easy_escape variable.
+It is removing the first buggy line in most of the cases.

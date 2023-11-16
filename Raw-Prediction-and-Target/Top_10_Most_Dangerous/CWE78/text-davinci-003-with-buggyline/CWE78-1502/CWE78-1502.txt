@@ -1,0 +1,2 @@
+It understands, it needs to add a new case to filter out the vulnerabilies.
+Mainly switched all the sect to IF and Else condition.

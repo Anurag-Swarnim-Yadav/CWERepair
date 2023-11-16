@@ -1,0 +1,23 @@
+CWE-78 OS Command Injection
+
+Result: 0/3
+This vulnerability is about filtering the data string. Like special charaters etc.
+1) The model know it needs to add more special character to filter special character but never added '=' as special character.
+
+
+
+
+CWE89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
+
+Result: (1/5)
+
+1) In most of the cases the curl_easy_unescape() that decodes the url from the user was updated using "Curl_urldecode" that
+seemed to be a human created function to decode the URL.
+The model got confused and in most of the cases it changed it to curl_easy_escape that encodes the URL.
+So that it neutralize the special elements.  
+In other case it uses depricated sql  mysql_real_escape_string().
+
+
+Buggyline vs without buggyline
+The chances of fixing the vulnerability in this case is better with without buggyline instead of buggyline. 
+Buggyline is useful when if we want to correct a bug within the suspicious line.

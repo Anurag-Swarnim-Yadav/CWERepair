@@ -1,0 +1,3 @@
+It is mainly filtering out the data or user input. In few cases it adds the sanitizer function 
+That filter special symbols. Even with the given <StartBug> and <EndBug> line. It did not help.
+It never considered the suspicious line.

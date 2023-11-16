@@ -1,0 +1,8 @@
+It is most changing the curl_easy_unescape function to curl_easy_escape variable.
+THAT IS INSTEAD OF DECODING THE STRING. IT IS ENCODING THE STRING. 
+
+This is wrong!!!
+
+Another thing is: It is adding input sanitization to prevent SQL injection patch but the
+Function it is using my mysql_real_escape_string() is specific to the MySQL database. If you're using other database systems like PostgreSQL or SQLite, you should use their respective escape functions (e.g., pg_escape_string() for PostgreSQL).
+t's important to mention that the mysql_real_escape_string() function is deprecated as of PHP 5.5.0, and it has been removed in PHP 7.0.0 because the MySQL extension itself has been deprecated.

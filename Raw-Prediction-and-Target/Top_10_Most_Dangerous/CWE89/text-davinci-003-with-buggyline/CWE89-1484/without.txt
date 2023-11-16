@@ -1,0 +1,4 @@
+For most it was filtering of special character.
+I think the fix is not related to SQL injection error.
+
+Its more like type safety of the code but we got the Correct Solution (Matched).

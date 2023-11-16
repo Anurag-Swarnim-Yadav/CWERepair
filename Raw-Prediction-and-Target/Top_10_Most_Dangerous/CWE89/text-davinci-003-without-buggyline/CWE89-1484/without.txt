@@ -1,0 +1,2 @@
+For most it was filtering of special character.
+I think the fix is not related to SQL injection error.
