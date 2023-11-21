@@ -1,0 +1,50 @@
+CWE22-212
+
+Detection: Yes
+Prediction Behavior:
+Did the model detected the correct variable to work on: Yes 
+Did it fix it? No
+
+Expectation:
+We expect the model to delete the full function and add new function that will filter out the file path
+Traversal. 
+
+
+Dataset Problem: The marked several lines as <Buggyline> but in reality we need the full function to be
+Replaced with new function. This will confuse the model.
+
+
+With Buggyline and without buggline:
+Function it uses and we can expect:
+real_path() comparing the absolute path but never checks for the return value of the realpath
+strstr(_,_)  for finding substring
+strncmp() this function basically compares to two string upto the length to the main string and if they don't
+Match it will return NULL.
+
+
+Behavior: It never produced the required result but did made the program more robust in few examples.
+
+<------------------------------------------------------------------------------------------------------->
+
+CWE22-512
+
+Detection: Yes
+Prediction Behavior:
+Did the model detected the correct variable to work on: Yes 
+Did it fix it? 
+
+Expectation:
+We expect the mode to work on the page variable as it directly uses it in file operations 
+like access, file_read, file_write, and unlink.
+
+Dataset Problem: No! It is marked correctly but in the original Target function. The developer has implemented a 
+Custom function to filter out CWE-22 vulnerabilities. 
+
+
+With Buggyline and without buggline:
+Function it uses and we can expect:
+real_path()
+The code does not check the return value of realpath()
+
+
+Behavior: 
