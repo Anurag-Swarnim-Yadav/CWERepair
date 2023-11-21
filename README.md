@@ -103,7 +103,7 @@ these models.
 
 
 <details open="open">
-<summary>CWE-79:Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') </summary>
+<summary>CWE-79 : Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') </summary>
 
 <h3>
     <b>
