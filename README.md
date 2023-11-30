@@ -49,7 +49,7 @@ these models.
 <h3>
     <b>
         <div align="center">
-            Performance on Top- 10 Most Dangerous CWEs in 2021</a>
+            Performance on Top- 10 Most Dangerous CWEs in 2021
         </div>
     </b>
 </h3>
@@ -78,7 +78,7 @@ these models.
 <h3>
     <b>
         <div align="center">
-            Performance on Top- 10 Most Dangerous CWEs in 2021</a>
+            Performance on Top- 10 Most Dangerous CWEs in 2021
         </div>
     </b>
 </h3>
@@ -108,16 +108,18 @@ these models.
 <h3>
     <b>
         <div align="center">
-            Performance on all the samples of CWE-79 </a>
+            Detection and Fixing Performance on all the samples of CWE-79
         </div>
     </b>
 </h3>
   
-<div align="center">
+<div align="center"> Detection Performance on all the samples of CWE-79
 
 |  Sample  |  Detection  | gpt-4-1106  | text-davinci-003  |
 |----------|-------------|-------------|-------------------|
 | CWE79-856|  --         |   -         | --                |
+
+Fixing Performance on all the samples of CWE-79
 
 
 |  Sample  |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
@@ -134,7 +136,7 @@ these models.
 <h3>
     <b>
         <div align="center">
-            Performance on all the samples of CWE-89 </a>
+            Detection and Fixing Performance on all the samples of CWE-89
         </div>
     </b>
 </h3>
