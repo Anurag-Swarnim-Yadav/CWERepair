@@ -103,7 +103,7 @@ these models.
 
 
 <details open="open">
-<summary>CWE-79 : Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') </summary>
+<summary>CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') </summary>
 
 <h3>
     <b>
@@ -118,6 +118,7 @@ these models.
 |  Sample  |  Detection  | gpt-4-1106  | text-davinci-003  |
 |----------|-------------|-------------|-------------------|
 | CWE79-856|  --         |   -         | --                |
+
 
 Fixing Performance on all the samples of CWE-79
 
