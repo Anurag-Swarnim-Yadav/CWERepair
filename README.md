@@ -183,13 +183,14 @@ Fixing Performance on all the samples of CWE-89
 
 |  Sample   |  GPT-4-1106-Detection  | gpt-4-1106-CWEtype  | text-davinci-003-Detection  | text-davinci-003-CWEtype  |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|
-| CWE22-212 |  Yes                   |   W:CWE-120 (80%)   | No                          |     -                     |
-| CWE22-512 |  Yes                   |   W:CWE-20 (80%)    | No                          |     -                     |
-| CWE22-692 |  Yes                   |   W:CWE-120 (90%)   | Yes                         |  W:CWE-121 (90%)          |
-| CWE22-964 |  Yes                   |   W:CWE-120 (80%)   | Yes                         |  W:CWE-120 (90%)          |
-| CWE22-1027|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |
-| CWE22-1436|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |
-| CWE22-1656|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |
+| CWE22-212 |  Yes                   |   W:CWE-120 (90%)   | No                          |     -                     |
+| CWE22-402 |  Yes                   |   Y:CWE-22  (70%)   | Yes                         |  Y:CWE-22 (90%)           |
+| CWE22-512 |  Yes                   |   Y:CWE-22  (90%)   | Yes                         |  W:CWE-284 (90%), CWE-78 (90%)  |
+| CWE22-692 |  Yes                   |   W:CWE-476 (90%)   | Yes                         |  W:CWE-732 (90%)          |
+| CWE22-964 |  Yes                   |   W:CWE-120 (80%)   | No                          |  -                        |
+| CWE22-1027|  Yes                   |   Y:CWE-22  (90%)   | Yes                         |  W:CWE-284 (90%), CWE-78 (90%)  |
+| CWE22-1436|  Yes                   |   Y:CWE-22  (80%)   | Yes                         |  Y:CWE-22 (95%)           |
+| CWE22-1656|  Yes                   |   Y:CWE-22  (80%)   | No                          |     -                     |
 
 
 Fixing Performance on all the samples of CWE-89
@@ -197,13 +198,14 @@ Fixing Performance on all the samples of CWE-89
 
 |  Sample    |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
 |------------|------------------|---------------------------|--------------------------|----------------------------------|------------------------------|
-| CWE22-212 |  Yes                   |   W:CWE-120 (80%)   | No                          |     -                     |  |
-| CWE22-512 |  Yes                   |   W:CWE-20 (80%)    | No                          |     -                     |  |
-| CWE22-692 |  Yes                   |   W:CWE-120 (90%)   | Yes                         |  W:CWE-121 (90%)          |  |
-| CWE22-964 |  Yes                   |   W:CWE-120 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
-| CWE22-1027|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
-| CWE22-1436|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
-| CWE22-1656|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
+| CWE22-212 |  |  |  |  |  |
+| CWE22-402 |  |  |  |  |  |
+| CWE22-512 |  |  |  |  |  |
+| CWE22-692 |  |  |  |  |  |
+| CWE22-964 |  |  |  |  |  |
+| CWE22-1027|  |  |  |  |  |  
+| CWE22-1436|  |  |  |  |  |  
+| CWE22-1656|  |  |  |  |  |  
 
 </div>
 </details>
