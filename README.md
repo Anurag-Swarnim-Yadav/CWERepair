@@ -108,7 +108,7 @@ these models.
 <h3>
     <b>
         <div align="center">
-            Detection and Fixing Performance on all the samples of CWE-79
+            Detection and Fixing Performance on all the samples of CWE-79. Here, W or Y as a prefix for the CWEtype column determines if the model classifies the CWE wrong or correctly. 
         </div>
     </b>
 </h3>
@@ -142,7 +142,7 @@ Fixing Performance on all the samples of CWE-79
     </b>
 </h3>
   
-<div align="center"> Detection Performance on all the samples of CWE-89. Here, W or Y as a prefix for the CWEtype column determines if the model classifies the CWE wrongly or correctly. 
+<div align="center"> Detection Performance on all the samples of CWE-89. Here, W or Y as a prefix for the CWEtype column determines if the model classifies the CWE wrong or correctly. 
 
 |  Sample   |  GPT-4-1106-Detection  | gpt-4-1106-CWEtype  | text-davinci-003-Detection  | text-davinci-003-CWEtype  |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|
@@ -163,6 +163,47 @@ Fixing Performance on all the samples of CWE-89
 | CWE89-1484 NW|   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
 | CWE89-1671 NW|   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
 | CWE89-1691 NW|   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
+
+</div>
+</details>
+
+
+<details open="open">
+<summary>CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')</summary>
+
+<h3>
+    <b>
+        <div align="center">
+            Detection and Fixing Performance on all the samples of CWE-22
+        </div>
+    </b>
+</h3>
+  
+<div align="center"> Detection Performance on all the samples of CWE-89. Here, W or Y as a prefix for the CWEtype column determines if the model classifies the CWE wrong or correctly. 
+
+|  Sample   |  GPT-4-1106-Detection  | gpt-4-1106-CWEtype  | text-davinci-003-Detection  | text-davinci-003-CWEtype  |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|
+| CWE22-212 |  Yes                   |   W:CWE-120 (80%)   | No                          |     -                     |
+| CWE22-512 |  Yes                   |   W:CWE-20 (80%)    | No                          |     -                     |
+| CWE22-692 |  Yes                   |   W:CWE-120 (90%)   | Yes                         |  W:CWE-121 (90%)          |
+| CWE22-964 |  Yes                   |   W:CWE-120 (80%)   | Yes                         |  W:CWE-120 (90%)          |
+| CWE22-1027|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |
+| CWE22-1436|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |
+| CWE22-1656|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |
+
+
+Fixing Performance on all the samples of CWE-89
+
+
+|  Sample    |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
+|------------|------------------|---------------------------|--------------------------|----------------------------------|------------------------------|
+| CWE22-212 |  Yes                   |   W:CWE-120 (80%)   | No                          |     -                     |  |
+| CWE22-512 |  Yes                   |   W:CWE-20 (80%)    | No                          |     -                     |  |
+| CWE22-692 |  Yes                   |   W:CWE-120 (90%)   | Yes                         |  W:CWE-121 (90%)          |  |
+| CWE22-964 |  Yes                   |   W:CWE-120 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
+| CWE22-1027|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
+| CWE22-1436|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
+| CWE22-1656|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |  |
 
 </div>
 </details>
