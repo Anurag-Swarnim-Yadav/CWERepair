@@ -115,9 +115,40 @@ these models.
   
 <div align="center">
 
-|  Sample  |  Detection  |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
-|----------|-------------|------------------|---------------------------|--------------------------|----------------------------------|------------------------------|
-| CWE79-856|  --  |   2 | --     | --  | -- |  --|
+|  Sample  |  Detection  | gpt-4-1106  | text-davinci-003  |
+|----------|-------------|-------------|-------------------|
+| CWE79-856|  --         |   -         | --                |
+
+
+|  Sample  |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
+|----------|------------------|---------------------------|--------------------------|----------------------------------|------------------------------|
+| CWE79-856|   2              | --                        | --                       | --                               |  --                          |
+
+</div>
+</details>
+
+
+<details open="open">
+<summary>CWE-89:Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')</summary>
+
+<h3>
+    <b>
+        <div align="center">
+            Performance on all the samples of CWE-89 </a>
+        </div>
+    </b>
+</h3>
+  
+<div align="center">
+
+|  Sample  |  Detection  | gpt-4-1106  | text-davinci-003  |
+|----------|-------------|-------------|-------------------|
+| CWE89-|  --         |   -         | --                |
+
+
+|  Sample  |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
+|----------|------------------|---------------------------|--------------------------|----------------------------------|------------------------------|
+| CWE89-|   2              | --                        | --                       | --                               |  --                          |
 
 </div>
 </details>
