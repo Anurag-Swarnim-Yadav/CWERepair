@@ -139,11 +139,15 @@ these models.
     </b>
 </h3>
   
-<div align="center">
+<div align="center"> Detection Performance on all the samples of CWE-89
 
 |  Sample  |  Detection  | gpt-4-1106  | text-davinci-003  |
 |----------|-------------|-------------|-------------------|
 | CWE89-|  --         |   -         | --                |
+
+
+
+Fixing Performance on all the samples of CWE-89
 
 
 |  Sample  |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
