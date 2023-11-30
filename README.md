@@ -156,9 +156,13 @@ Fixing Performance on all the samples of CWE-79
 Fixing Performance on all the samples of CWE-89
 
 
-|  Sample  |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
-|----------|------------------|---------------------------|--------------------------|----------------------------------|------------------------------|
-| CWE89-|   2              | --                        | --                       | --                               |  --                          |
+|  Sample    |  Number of Bugs  |  gpt-4-1106 (without BL)  |   gpt-4-1106 (with BL)   |   text-davinci-003 (without BL)  |  text-davinci-003 (with BL)  |
+|------------|------------------|---------------------------|--------------------------|----------------------------------|------------------------------|
+| CWE89-57   NW|   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
+| CWE89-1063 NW |   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
+| CWE89-1484 NW|   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
+| CWE89-1671 NW|   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
+| CWE89-1691 NW|   1              | 0/1                       | 0/1                       | 0/1                             |  0/1                         |
 
 </div>
 </details>
