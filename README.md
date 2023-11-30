@@ -115,9 +115,9 @@ these models.
   
 <div align="center"> Detection Performance on all the samples of CWE-79
 
-|  Sample  |  Detection  | gpt-4-1106  | text-davinci-003  |
-|----------|-------------|-------------|-------------------|
-| CWE79-856|  --         |   -         | --                |
+|  Sample  |  GPT-4-1106-Detection  | gpt-4-1106-CWEtype  | text-davinci-003-Detection  | text-davinci-003-CWEtype|
+|----------|------------------------|---------------------|-----------------------------|-------------------------|
+| CWE79-856|  NO                    |   -                 | --                          |                         |
 
 
 Fixing Performance on all the samples of CWE-79
@@ -142,12 +142,15 @@ Fixing Performance on all the samples of CWE-79
     </b>
 </h3>
   
-<div align="center"> Detection Performance on all the samples of CWE-89
+<div align="center"> Detection Performance on all the samples of CWE-89. Here, W or Y as a prefix for the CWEtype column determines if the model classifies the CWE wrongly or correctly. 
 
-|  Sample  |  Detection  | gpt-4-1106  | text-davinci-003  |
-|----------|-------------|-------------|-------------------|
-| CWE89-|  --         |   -         | --                |
-
+|  Sample   |  GPT-4-1106-Detection  | gpt-4-1106-CWEtype  | text-davinci-003-Detection  | text-davinci-003-CWEtype  |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|
+| CWE89-57  |  Yes                   |   W:CWE-120 (80%)   | No                          |     -                     |
+| CWE89-1063|  Yes                   |   W:CWE-20 (80%)    | No                          |     -                     |
+| CWE89-1484|  Yes                   |   W:CWE-120 (90%)   | Yes                         |  W:CWE-121 (90%)          |
+| CWE89-1671|  Yes                   |   W:CWE-120 (80%)   | Yes                         |  W:CWE-120 (90%)          |
+| CWE89-1691|  Yes                   |   W:CWE-193 (80%)   | Yes                         |  W:CWE-120 (90%)          |
 
 
 Fixing Performance on all the samples of CWE-89
