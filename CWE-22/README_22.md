@@ -42,6 +42,7 @@
     <b>
         <div align="center">
             Detection Performance of text-davinvi-003 in three different settings.
+          -------------------------------------------------------------------------
         </div>
     </b>
 </h3>
