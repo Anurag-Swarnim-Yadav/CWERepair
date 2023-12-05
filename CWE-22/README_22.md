@@ -26,7 +26,7 @@
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE22-212  |  Yes  |  CWE-120 (90%), CWE-126 (80%), CWE-170 (75%), CWE-131 (70%) CWE-190 (80%)  |  Yes  |  ###CWE-22 (90%)  |  Yes  |  **CWE-22 (80%)**  |
+|  CWE22-212  |  Yes  |  CWE-120 (90%), CWE-126 (80%), CWE-170 (75%), CWE-131 (70%) CWE-190 (80%)  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (80%) ; code: Yes** |
 
 |  CWE22-402  |  Yes  |   Y:CWE-22  (70%)   
               |  Yes  |  Y:CWE-22 (90%)           
