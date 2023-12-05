@@ -32,9 +32,9 @@
 |  CWE22-692  |  Yes  | CWE-476 (90%)  | Yes  |  CWE-476 ((90%)  | Yes  | CWE-476 (90%); **code: Yes (2/2)**  |
 |  CWE22-964  |  Yes  | CWE-120 (70%)  | Yes  | CWE-120 (70%), CWE-416 (60%), CWE-252 (80%). CWE-391 (60%), CWE-404 (60%), CWE-319 (70%) | Yes  | CWE-120 (90%); code: No  |
 |  CWE22-1027 |  Yes  |  **CWE-22 (90%)**  |  Yes  | **CWE-22 (90%)**  | Yes  | **CWE-22 (90%) code: Yes (4/4)**  |  
-|  CWE22-1436 |  
-|  CWE22-1656 | 
-|  Total      |
+|  CWE22-1436 |  Yes  | CWE- 120 (90%); CWE-367 (80%)  |  Yes  |  CWE-120 (90%); CWE-362 (90%); **CWE-22 (90%)** | Yes  | CWE-120 (90%); CWE-367 (80%) **code: Yes (1/1)**  |  
+|  CWE22-1656 |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (90%); code: Yes (1/1)**  |  
+|  Total      |  |  |  |  |  |  |
 
 </div>
 
@@ -42,7 +42,6 @@
     <b>
         <div align="center">
             Detection Performance of text-davinvi-003 in three different settings.
-          -------------------------------------------------------------------------
         </div>
     </b>
 </h3>
@@ -57,8 +56,8 @@
 | CWE22-692 |  Yes  | CWE-732 (90%)  |  Yes  | CWE-476 (100%)  | CWE-476 (95%); **code: yes (1/2)**  |
 | CWE22-964 |  Yes  | CWE-20  |  Yes |  CWE-119  | Yes  | CWE-120 (95%); code: No|
 | CWE22-1027|  Yes  | CWE-284 (90%), CWE-78 (90%)  | Yes  | **CWE-22 (90%)**  | Yes | **CWE-22 (90%); code: Yes (1/4)**  | 
-| CWE22-1436|
-| CWE22-1656|
-| Total     |
+| CWE22-1436| Yes  | CWE-22 (95%)  |  CWE-120 (90%)  | Yes  |  **CWE-22 (95%) code: yes (1/1)**|  
+| CWE22-1656|  No  |  -  |  No  |  -  |  No  |  -  |  
+| Total     |  |  |  |  |  |  |
 </div>
 </details>
