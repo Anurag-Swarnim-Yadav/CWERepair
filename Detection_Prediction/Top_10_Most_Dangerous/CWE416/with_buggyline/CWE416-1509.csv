@@ -1,0 +1,260 @@
+Original code,Plausible Program,Number of Bugs Present,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8289063819700508,-0.016934318351574544
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8289063819700508,-0.016934318351574544
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5236846294101007,-0.013135212322500868
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:"," void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,115,-9.299174230525987,-0.08086238461326944
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8289063819700508,-0.016934318351574544
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5264228470419994,-0.013158817646913788
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_list_rem ( writers , 0 ) ; <StartBug> gf_free ( writer ) ; <EndBug> } }",1,116,-4.490786078021389,-0.03871367308639129
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_list_rem ( writers , 0 ) ; gf_free ( writer ) ; } }",1,108,-6.415330623087049,-0.05940120947302823
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5236846294101007,-0.013135212322500868
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5264228470419994,-0.013158817646913788
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5236846294101007,-0.013135212322500868
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_free ( writer ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; } }",1,116,-4.2997177836937475,-0.03706653261804955
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5236846294101007,-0.013135212322500868
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8149514034286507,-0.016805105587302322
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5236846294101007,-0.013135212322500868
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8149514034286507,-0.016805105587302322
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8558590788522504,-0.01718388035974306
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8558590788522504,-0.01718388035974306
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_list_rem ( writers , 0 ); <StartBug> gf_free ( writer ) ; <EndBug> } }",1,115,-10.39424796505435,-0.09038476491351607
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5213889165141992,-0.013115421694087925
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5061541784532004,-0.012984087745286211
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5213889165141992,-0.013115421694087925
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5061541784532004,-0.012984087745286211
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.833293566196151,-0.016974940427742138
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8558590788522504,-0.01718388035974306
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.833293566196151,-0.016974940427742138
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8558590788522504,-0.01718388035974306
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.833293566196151,-0.016974940427742138
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5061541784532004,-0.012984087745286211
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; <StartBug> } <EndBug> }",1,116,-4.06589728055715,-0.03505083862549267
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:"," 
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,117,-4.262163306153432,-0.036428746206439586
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_del ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,104,-6.2129130809066,-0.059739548854871156
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5123106575916998,-0.013037160841307757
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer ; <StartBug> writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,118,-4.3157524324909,-0.03657417315670254
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_free ( writer ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_list_rem ( writers , 0 ) ; } }",1,116,-3.403681436552631,-0.029342081349591646
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8571840999536504,-0.01719614907364491
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_free ( writer ) ;<EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_list_rem ( writers , 0 ) ; } }",1,116,-6.817866846233631,-0.058774714191669235
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5161450077687986,-0.013070215584213781
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5123106575916998,-0.013037160841307757
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5161450077687986,-0.013070215584213781
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8350078277966506,-0.01699081322033936
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5161450077687986,-0.013070215584213781
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { 
+while ( gf_list_count ( writers ) ) { 
+<StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; 
+gf_list_rem ( writers , 0 ) ; // Fixed the code to remove pointer from list before freeing it
+<EndBug> 
+gf_isom_box_del ( writer -> stco ) ; 
+gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; 
+gf_free ( writer ) ; 
+} 
+}",1,145,-38.49707730204404,-0.26549708484168305
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer; <StartBug> writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,118,-5.258865202190697,-0.044566654255853363
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8350078277966506,-0.01699081322033936
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = NULL; <StartBug> int index = gf_list_find(writers, writer); if (index>=0) { gf_list_rem(writers, index); } <EndBug> writer = ( TrackWriter * ) gf_list_get(writers , 0); gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }",1,154,-29.503189510864367,-0.19157915266795042
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5123106575916998,-0.013037160841307757
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,116,-1.5161450077687986,-0.013070215584213781
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; gf_list_rem ( writers , 0 ) ; gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; } }",1,108,-1.8015472998027509,-0.01668099351669214
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ; gf_free ( writer ) ; gf_list_rem ( writers , 0 ) ; } }
+Fixed code:","
+void CleanWriters ( GF_List * writers ) { while ( gf_list_count ( writers ) ) { <StartBug> TrackWriter * writer = ( TrackWriter * ) gf_list_get ( writers , 0 ) ;  gf_list_rem ( writers , 0 ) ; gf_free ( writer ) ; <EndBug> gf_isom_box_del ( writer -> stco ) ; gf_isom_box_del ( ( GF_Box * ) writer -> stsc ) ;  } }",1,118,-7.742233131780549,-0.06561214518458092
