@@ -22,7 +22,7 @@
     </b>
 </h3>
   
-<div align="center"> Detection Performance of gpt-4-preview in three different settings. Here, W or Y as a prefix for the CWEtype column determines if the model classifies the CWE wrong or correctly. 
+<div align="center"> Detection Performance of gpt-4-preview in three different settings. 
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
@@ -38,7 +38,7 @@
 
 </div>
 
-<div align="center"> Detection Performance of text-davinvi-003 in three different settings. Here, W or Y as a prefix for the CWEtype column determines if the model classifies the CWE wrong or correctly.
+<div align="center"> Detection Performance of text-davinvi-003 in three different settings.
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
