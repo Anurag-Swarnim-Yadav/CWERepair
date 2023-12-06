@@ -27,9 +27,9 @@
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  CWE22-212  |  Yes  |  CWE-120 (90%), CWE-126 (80%), CWE-170 (75%), CWE-131 (70%) CWE-190 (60%)  |  Yes  |  **CWE-22 (90%)**; CWE-120 (90%)  |  Yes  |  CWE-120 (90%); **CWE-22 (80%);  code: Maybe** |
-|  CWE22-402 :mag: :heavy_exclamation_mark:  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (100%), **CWE-22 (70%)**   |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**; code: No|
+|  :mag: :heavy_exclamation_mark: CWE22-402  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (100%), **CWE-22 (70%)**   |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**; code: No|
 |  CWE22-512  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (90%); code: Yes (4/4)**  |
-|  CWE22-692 :mag: :heavy_exclamation_mark:|  Yes  | CWE-476 (90%)  | Yes  |  CWE-476 ((90%)  | Yes  |  CWE-476 (90%); **code: Yes (2/2)**  |
+|  :mag: :heavy_exclamation_mark: CWE22-692  |  Yes  | CWE-476 (90%)  | Yes  |  CWE-476 ((90%)  | Yes  |  CWE-476 (90%); **code: Yes (2/2)**  |
 |  CWE22-964  |  Yes  | CWE-120 (70%)  | Yes  | CWE-120 (70%), CWE-416 (60%), CWE-252 (80%). CWE-391 (60%), CWE-404 (60%), CWE-319 (70%) | Yes  | CWE-120 (90%); code: No  |
 |  CWE22-1027 |  Yes  |  **CWE-22 (90%)**  |  Yes  | **CWE-22 (90%)**  | Yes  | **CWE-22 (90%) code: Yes (4/4)**  |  
 |  CWE22-1436 |  Yes  | CWE- 120 (90%); CWE-367 (80%)  |  Yes  |  CWE-120 (90%); CWE-362 (90%); **CWE-22 (90%)** | Yes  | CWE-120 (90%); CWE-367 (80%) **code: Yes (1/1)**  |  
