@@ -58,6 +58,6 @@
 | CWE22-1027|  Yes  | CWE-284 (90%), CWE-78 (90%)  | Yes  | **CWE-22 (90%)**  | Yes | **CWE-22 (90%); code: Yes (1/4)**  | 
 | CWE22-1436| Yes  | **CWE-22 (95%)**  |  Yes  |  CWE-120 (90%)  | Yes  |  **CWE-22 (95%) code: yes (1/1)**|  
 | CWE22-1656|  No  |  -  |  No  |  -  |  No  |  -  |  
-| Total     |  |  |  |  |  |  |
+| Total     |  6/8  |  2/8  |  6/8  |  3/8  |  7/8  |  3/8  |
 </div>
 </details>
