@@ -50,7 +50,7 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE22-212  |  No  |  -  | No  |  -  |  Yes  |  CWE-119;  code: No  |
+|  CWE22-212  |  No  |  -  | No  |  -  |  Yes  |  CWE-119 (90%);  code: No  |
 |  CWE22-402  |  Yes  |  CWE-22 (90%)  |  Yes  |  CWE-22 (90%)  |  Yes  |  CWE-119; code:No|
 | CWE22-512 |  Yes  |  CWE-284 (95%),  CWE-78 (90%)  | Yes  |  **CWE-22 (90%)**  | Yes  | **CWE-22 (90%);  code: Yes (1/3)**  |
 | CWE22-692 |  Yes  | CWE-732 (90%)  |  Yes  | CWE-476 (100%)  | CWE-476 (95%); **code: yes (1/2)**  |
