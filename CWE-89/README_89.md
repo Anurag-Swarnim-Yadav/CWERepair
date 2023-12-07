@@ -47,7 +47,11 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE79-856  |  Yes  |  **CWE-79 (90%)**  |  Yes  |  **CWE-79 (90%)**  |  Yes  |  **CWE-79 (90%)**;  code: No |
-| Total     |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |
+|  :warning: :triangular_flag_on_post: CWE89-57           |  No   |  -                                                          |  Yes  |  CWE-119 (100%)  |  No   |  -   |
+|  :warning: :triangular_flag_on_post: CWE89-1063         |  No   |  -                                                          |  No   |  -               |  No   |  -   |
+|  :warning: :triangular_flag_on_post: CWE89-1484         |  Yes  |  CWE-120 (90%), CWE-457 (90%), CWE-20 (90%), CWE-676 (90%)  |  Yes  |  CWE-120 (90%)   |  Yes  |  CWE-119 (90%)  code: No    |
+|  :warning: :triangular_flag_on_post: CWE89-1671         |  Yes  |  CWE-120 (90%)                                              |  Yes  |  CWE-119 (95%)   |  Yes  |  CWE-119 (90%)  code: No    |
+|  :warning: :triangular_flag_on_post: (SAME) CWE89-1691  |  Yes  |  CWE-120 (90%)                                              |  Yes  |  CWE-119 (95%)   |  Yes  |  CWE-119 (90%)  code: No    |
+|  Total                                                  |  3/5  |  0/5                                                        |  4/5  |  0/5             |  3/5  |  0/5                        |
 </div>
 </details>
