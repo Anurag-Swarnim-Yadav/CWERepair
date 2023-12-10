@@ -20,9 +20,10 @@
   
 <div align="center">
 
-|  CWE Sample   | VulRepair Classified As  | Correct CWE       |  Reason  |
-|---------------|--------------------------|-------------------|----------|
-| CWE352-1540   | CWE-352                  | CWE-352; CWE-79   | 1. CWE-352 is very difficult to understand, adding a security token in code  <br>2. Input is appended directed   |
-| CWE352-1580   | CWE-352                  | CWE-352; CWE-319  | 1. Add the CSRF token to the Post method in HTTP <br>2. Does not use HTTPS method (SSL protocol, can lead to clear text)  |
+|  CWE Sample    | VulRepair Classified As  | Correct CWE       |  Reason  |
+|----------------|--------------------------|-------------------|----------|
+|  CWE352-1540   | CWE-352                  | CWE-352; CWE-79   | 1. CWE-352 is very difficult to understand, adding a security token in code  <br>2. Input is appended directed   |
+|  CWE352-1580   | CWE-352                  | CWE-352; CWE-319  | 1. Add the CSRF token to the Post method in HTTP <br>2. Does not use HTTPS method (SSL protocol, can lead to clear text)  |
+|  CWE78-1012    | CWE-78                   |  Not sure         | Definitely not command injection for the given program and vulnerable line.  |
 </div>
 </details>
