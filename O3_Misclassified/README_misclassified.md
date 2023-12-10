@@ -1,9 +1,5 @@
 <p align="center">
-  </a>
-  <h3 align="center">CWE-22</a></h3>
-  <p align="center">
-    Misclassified CWEs with sample
-  </p>
+  <h3 align="center"> Misclassified CWEs with sample</h3>
 </p>
 <div align="center">
 
@@ -25,8 +21,8 @@
 <div align="center">
 
 |  CWE Sample   | VulRepair Classified As  | Correct CWE       |  Reason  |
-|---------------|--------------------------|-------------------|
+|---------------|--------------------------|-------------------|----------|
 | CWE352-1540   | CWE-352                  | CWE-352; CWE-79   | 1. CWE-352 is very difficult to understand. Adding a security token in the code 2. |
-| CWE352-1580   | CWE-352                  | CWE-352; CWE-319  | 1. Adding (CSRF token to the Post method in HTTP 2. Does not use HTTPS method (can lead to clear text)
+| CWE352-1580   | CWE-352                  | CWE-352; CWE-319  | 1. Adding (CSRF token to the Post method in HTTP 2. Does not use HTTPS method (can lead to clear text)  |
 </div>
 </details>
