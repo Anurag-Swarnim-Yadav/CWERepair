@@ -36,7 +36,6 @@
 |  CWE522-21    | CWE-522  | CWE-20  | Based on the given code. Also, Check the NVD page: https://nvd.nist.gov/vuln/detail/CVE-2020-11008  |
 |  CWE732-276   | CWE-732  | Code Duplicate  | There is no code change. I think they deleted some code changes. So they wrote back.  |
 |  CWE732-1575  | CWE-732  |  CWE-459; CWE-909  | Check the NVD page: https://nvd.nist.gov/vuln/detail/CVE-2019-25016 |
-|  CWE611-7  | CWE-611  | I don't think this program is relevant.  | 1. I checked both the vulnerable program and the correct program. The main difference between the programs is Function Signature, Argument Processing, Parsing Options, Instance Variables in Ruby Object, and Flexibility.<br> 2. The correct program represents an enhanced and more flexible version of the Buggy program. The key improvements in the correct program include handling variable arguments, including parsing options, and providing additional information in the Ruby object. |
                                                                      
                                                                       
 </div>
