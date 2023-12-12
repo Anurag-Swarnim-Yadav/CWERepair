@@ -36,6 +36,7 @@
 |  CWE522-21    | CWE-522  | CWE-20  | Based on the given code. Also, Check the NVD page: https://nvd.nist.gov/vuln/detail/CVE-2020-11008  |
 |  CWE732-276   | CWE-732  | Code Duplicate  | There is no code change. I think they deleted some code changes. So they wrote back.  |
 |  CWE732-1575  | CWE-732  |  CWE-459; CWE-909  | Check the NVD page: https://nvd.nist.gov/vuln/detail/CVE-2019-25016 |
+|  CWE611-351   | CWE-611  | Garbage Sample  | The required change is "ModSecurity: Invalid value for SecRuleEngine: %s" to "ModSecurity: Invalid value for SexHasEngine: %s" . It has nothing to do with CWE611  |
                                                                      
                                                                       
 </div>
