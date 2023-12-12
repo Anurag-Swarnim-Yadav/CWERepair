@@ -29,6 +29,7 @@
 |  CWE22-1436    |  CWE-22                  | CWE-120, CWE-367  | 1) The name string has no information. It does not say what it is and how it is used.<br> 2. There are vulnerabilities related to "iface" variable  and "access" function that can lead to CWE-120 or CWE-787, and CWE-367. See the explanation in the detection folder.  |
 |  CWE-89-1484  | CWE-89  |  CWE-120  |  Changing strindex from an int to a size_t is a significant improvement. size_t is an unsigned type that is specifically designed for measuring the size of objects and is commonly used for array indexing and loop counting in C. This change prevents potential issues with negative indices and aligns with best practices for array indexing.  |
 | CWE89-1671/1691  | CWE-89  |  CWE-89, CWE-120  |1. Uses int for alloc and strindex. It need to be size_t for alloc and strindex. This change is significant as size_t is an unsigned type and typically more suitable for sizes and indices.  |
+|  CWE287-287  |  CWE287  | No  CWE  | 1. oidc_scrub_headers is declared as static void. The static keyword in this context means it cannot be called from other source files, even if the function declaration is included in those files.<br> 2. The change is without the static keyword, meaning it has an external linkage. It has nothing to do with Improper Authentication.  |
                                                                      
                                                                       
 </div>
