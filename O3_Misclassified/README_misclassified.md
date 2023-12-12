@@ -32,8 +32,7 @@
 |  CWE287-287  |  CWE-287  | No  CWE  | 1. oidc_scrub_headers is declared as static void. The static keyword in this context means it cannot be called from other source files, even if the function declaration is included in those files.<br> 2. The change is without the static keyword, meaning it has an external linkage. It has nothing to do with Improper Authentication.  |
 |  CWE287-975  |  CWE-287  |  Missing the code  | The required change is addition of boolean to the line err = scm_send(sock, msg, siocb->scm);. The correct change is err = scm_send(sock, msg, siocb->scm, false);<br> 2. We are missing the definition of the function; without the definition, it does not make sense, but when the function is added. It makes sense that it has improper authentication.(ASK DR. WILSON)  |
 |  CWE522-21  | CWE-522  |  CWE-755; CWE-287  | Check the NVD page: https://nvd.nist.gov/vuln/detail/CVE-2020-28896  |
-|  CWE522-21  | CWE-522  |  Missing code | 1.tpm_kdfa function is part of CWE522-370 sampple. This sample needs to be added to the other sample. Otherwise, This sample has no meaning.<br>
-2. Since in the other sample, an argument to the function is removed. |
+|  CWE522-21  | CWE-522  |  Missing code | 1.tpm_kdfa function is part of CWE522-370 sample. This sample needs to be added to the other sample. Otherwise, This sample has no meaning.<br>2. Since in the other sample, an argument to the function is removed. |
 |  CWE522-21  | CWE-522  |  CWE-522; CWE-20  | Check the NVD page: https://nvd.nist.gov/vuln/detail/CVE-2020-11008  |
                                                                      
                                                                       
