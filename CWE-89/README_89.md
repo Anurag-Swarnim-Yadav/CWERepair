@@ -30,7 +30,7 @@
 |   CWE89-1063    |  Yes  |  CWE-20 (80%)   |  Yes  |  CWE-20 (90%)   |  Yes  |  CWE-20 (80%)  **code: Yes (1/1)** |
 |  :warning: :triangular_flag_on_post: :mag: :heavy_exclamation_mark: CWE89-1484    |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-120 (90%)  code: No    |
 |  :warning: :triangular_flag_on_post: :mag: :heavy_exclamation_mark: CWE89-1671    |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%), CWE-170 (80%), CWE-391 (70%)  |  Yes  |  CWE-120 (90%)  code: No    |
-|   CWE89-1691  |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%), CWE-170 (80%), CWE-391 (70%)  |  Yes  |  CWE-120 (90%)  code: No    |
+|  :heavy_plus_sign: CWE89-1691  |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%), CWE-170 (80%), CWE-391 (70%)  |  Yes  |  CWE-120 (90%)  code: No    |
 |  Total                                                                            |  5/5  |  0/5            |  5/5  |  0/5            |  5/5  |  0/5                        |
 
 </div>
@@ -51,7 +51,7 @@
 |   CWE89-1063         |  No   |  -                                                          |  No   |  -               |  No   |  -   |
 |  :warning: :triangular_flag_on_post: CWE89-1484         |  Yes  |  CWE-120 (90%), CWE-457 (90%), CWE-20 (90%), CWE-676 (90%)  |  Yes  |  CWE-120 (90%)   |  Yes  |  CWE-119 (90%)  code: No    |
 |  :warning: :triangular_flag_on_post: CWE89-1671         |  Yes  |  CWE-120 (90%)                                              |  Yes  |  CWE-119 (95%)   |  Yes  |  CWE-119 (90%)  code: No    |
-|  CWE89-1691  |  Yes  |  CWE-120 (90%)                                              |  Yes  |  CWE-119 (95%)   |  Yes  |  CWE-119 (90%)  code: No    |
+|  :heavy_plus_sign: CWE89-1691  |  Yes  |  CWE-120 (90%)                                              |  Yes  |  CWE-119 (95%)   |  Yes  |  CWE-119 (90%)  code: No    |
 |  Total                                                  |  3/5  |  0/5                                                        |  4/5  |  0/5             |  3/5  |  0/5                        |
 </div>
 </details>
