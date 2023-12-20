@@ -29,7 +29,7 @@
 |  CWE287-231   |  Yes  |  CWE-90 (80%)  |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (90%); code: No  |
 |  :warning: :triangular_flag_on_post: CWE287-287   |  No  |  -   |  Yes  |  CWE-113 (60%)       |  Yes  |  CWE-20 (70%); code: No  |    
 |  CWE287-413   |  Yes  | CWE-120 (80%), CWE-676 (70%), CWE-170 (70%), CWE-252 (60%), CWE-404 (70%), CWE-20 (60%)  |  Yes  |  CWE-120 (90%), CWE-457 (90%), CWE-401 (90%), CWE-755 (90%), **CWE-287 (90%)**, CWE-476 (90%)  |  Yes  |  CWE-120 (90%), CWE-676 (90%), CWE-252 (90%), CWE-401 (90%), CWE-170 (90%), CWE-697 (90%); code: No        |
-|  :heavy_plus_sign: CWE287-516   |  Yes  |       |  Yes  |       |  Yes  |        |  
+|  :heavy_plus_sign: CWE287-516   |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (80%); code: No  | 
 |  :warning: :triangular_flag_on_post: CWE287-975   |  Yes  |       |  Yes  |       |  Yes  |        |
 |  CWE287-1635  |  Yes  |       |  Yes  |       |  Yes  |        |
 |  Total        |  8/6  |  4/6  |  8/6  |  5/6  |  8/6  |  5/6   |
