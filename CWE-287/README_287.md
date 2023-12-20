@@ -26,8 +26,8 @@
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE287-231   |  Yes  |       |  Yes  |       |  Yes  |        |
-|  :warning: :triangular_flag_on_post: CWE287-287   |  Yes  |       |  Yes  |       |  Yes  |        |    
+|  CWE287-231   |  Yes  |  CWE-90 (80%)  |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (90%); code: No  |
+|  :warning: :triangular_flag_on_post: CWE287-287   |  No  |  -   |  Yes  |  CWE-113 (60%)       |  Yes  |  CWE-20 (70%); code: No  |    
 |  CWE287-413   |  Yes  |       |  Yes  |       |  Yes  |        |
 |  :heavy_plus_sign: CWE287-516   |  Yes  |       |  Yes  |       |  Yes  |        |  
 |  :warning: :triangular_flag_on_post: CWE287-975   |  Yes  |       |  Yes  |       |  Yes  |        |
