@@ -26,7 +26,7 @@
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  :mag: :heavy_exclamation_mark: CWE522-21       |  Yes  | CWE-476 (90%)  | Yes  |  CWE-476 ((90%)  | Yes  |  CWE-476 (90%); **code: Yes (2/2)**  |
+|  :mag: :heavy_exclamation_mark: CWE522-21       |  Yes  | CWE-319 (80%); CWE-295 (60%), CWE-754 (70%), CWE-770 (60%)  | Yes  |  CWE-20 ((70%), CWE-319 (80%), CWE-404 (60%), CWE-120 (50%)  | Yes  |  CWE-20 (80%), CWE-319 (75%), CWE-404 (70%); **code: Yes (2/2)**  |
 |  CWE522-370                                     |  Yes  | CWE-120 (75%)  | Yes  | CWE-120 (70%), CWE-416 (60%), CWE-252 (80%). CWE-391 (60%), CWE-404 (60%), CWE-319 (70%) | Yes  | CWE-120 (90%); code: No  |
 |  :warning: :triangular_flag_on_post: CWE522-773 |  Yes  |  CWE-20 (85%), CWE-200 (75%), **CWE-22 (90%)**  |  Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%)**  | Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%); code: Yes (4/4)**  |  
 |  :mag: :heavy_exclamation_mark: CWE522-1655     |  Yes  | CWE-120 (90%), CWE-367 (80%)  |  Yes  |  CWE-120 (90%), CWE-367 (80%) | Yes  | CWE-120 (90%), CWE-367 (80%); **code: Yes (1/1)**  |  
