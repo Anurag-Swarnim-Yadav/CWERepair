@@ -47,11 +47,11 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|   CWE89-57                     |  No   |  -                                                              |  Yes  |  CWE-119 (100%)  |  No   |  -   |
-|   CWE89-1063                   |  No   |  -                                                              |  No   |  -               |  No   |  -   |
+|   CWE89-57                     |  No   |  -                                                              |  Yes  |  CWE-119 (100%)      |  No   |  -   |
+|   CWE89-1063                   |  No   |  -                                                              |  No   |  -                   |  No   |  -   |
 |  :x: CWE89-1484                |  Yes  |  **CWE-120 (90%)**, CWE-457 (90%), CWE-20 (90%), CWE-676 (90%)  |  Yes  |  **CWE-120 (90%)**   |  Yes  |  CWE-119 (90%)  code: No    |
-|  :x: CWE89-1671                |  Yes  |  **CWE-120 (90%)**                                              |  Yes  |  CWE-119 (95%)   |  Yes  |  CWE-119 (90%)  code: No    |
-|  :heavy_plus_sign: CWE89-1691  |  Yes  |  CWE-120 (90%)                                                  |  Yes  |  CWE-119 (95%)   |  Yes  |  CWE-119 (90%)  code: No    |
-|  Total                         |  3/5  |  0/5                                                            |  4/5  |  0/5             |  3/5  |  0/5                        |
+|  :x: CWE89-1671                |  Yes  |  **CWE-120 (90%)**                                              |  Yes  |  CWE-119 (95%)       |  Yes  |  CWE-119 (90%)  code: No    |
+|  :heavy_plus_sign: CWE89-1691  |  Yes  |  CWE-120 (90%)                                                  |  Yes  |  CWE-119 (95%)       |  Yes  |  CWE-119 (90%)  code: No    |
+|  Total                         |  3/5  |  1/5                                                            |  4/5  |  1/5                 |  3/5  |  0/5                        |
 </div>
 </details>
