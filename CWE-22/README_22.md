@@ -34,7 +34,7 @@
 |  CWE22-1027 |  Yes  |  CWE-20 (85%), CWE-200 (75%), **CWE-22 (90%)**  |  Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%)**  | Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%); code: Yes (4/4)**  |  
 |  :mag: :heavy_exclamation_mark: CWE22-1436 |  Yes  | **CWE-120 (90%), CWE-367 (80%**)  |  Yes  |  **CWE-120 (90%), CWE-367 (80%)** | Yes  | **CWE-120 (90%), CWE-367 (80%); code: Yes (1/1)**  |  
 |  CWE22-1656 |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (90%); code: Yes (1/1)**  |  
-|  Total      |  8/8  |  4/8  |  8/8  |  5/8  |  8/8  |  5/8  |
+|  Total      |  8/8  |  6/8  |  8/8  |  7/8  |  8/8  |  7/8  |
 
 </div>
 
