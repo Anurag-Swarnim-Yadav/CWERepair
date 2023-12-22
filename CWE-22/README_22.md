@@ -29,10 +29,10 @@
 |   CWE22-212  |  Yes  |  CWE-120 (90%), CWE-126 (80%), CWE-170 (75%), CWE-131 (70%), CWE-190 (60%)  |  Yes  |  **CWE-22 (90%)**, CWE-120 (90%)  |  Yes  |  CWE-120 (90%), **CWE-22 (80%);  code: Maybe** |
 |   CWE22-402  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (100%), **CWE-22 (70%)**   |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**; code: No|
 |  CWE22-512  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (90%); code: Yes (4/4)**  |
-|  :x: CWE22-692  |  Yes  | **CWE-476 (90%)**  | Yes  |  **CWE-476 ((90%)**  | Yes  |  **CWE-476 (90%); code: Yes (2/2)**  |
+|  :x: CWE22-692 [:recycle: CWE-476]  |  Yes  | **CWE-476 (90%)**  | Yes  |  **CWE-476 ((90%)**  | Yes  |  **CWE-476 (90%); code: Yes (2/2)**  |
 |  CWE22-964  |  Yes  | CWE-120 (75%)  | Yes  | CWE-120 (70%), CWE-416 (60%), CWE-252 (80%). CWE-391 (60%), CWE-404 (60%), CWE-319 (70%) | Yes  | CWE-120 (90%); code: No  |
 |  CWE22-1027 |  Yes  |  CWE-20 (85%), CWE-200 (75%), **CWE-22 (90%)**  |  Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%)**  | Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%); code: Yes (4/4)**  |  
-|  :x: CWE22-1436 |  Yes  | **CWE-120 (90%), CWE-367 (80%**)  |  Yes  |  **CWE-120 (90%), CWE-367 (80%)** | Yes  | **CWE-120 (90%), CWE-367 (80%); code: Yes (1/1)**  |  
+|  :x: CWE22-1436 [:recycle: CWE-120, CWE-367] |  Yes  | **CWE-120 (90%), CWE-367 (80%**)  |  Yes  |  **CWE-120 (90%), CWE-367 (80%)** | Yes  | **CWE-120 (90%), CWE-367 (80%); code: Yes (1/1)**  |  
 |  CWE22-1656 |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (90%); code: Yes (1/1)**  |  
 |  Total      |  8/8  |  6/8  |  8/8  |  7/8  |  8/8  |  7/8  |
 
@@ -53,10 +53,10 @@
 |  CWE22-212  |  No  |  -  | No  |  -  |  Yes  |  CWE-119 (90%);  code: No  |
 |  CWE22-402  |  Yes  |  **CWE-22 (90%)**, CWE-79 (80%), CWE-120 (80%)  |  Yes  |  **CWE-22 (90%)**, CWE-120 (95%)  |  Yes  |  CWE-119 (95%); code: No (adds strncpy instead of strcpy|
 | CWE22-512 |  Yes  |  CWE-284 (95%),  CWE-78 (90%)  | Yes  |  **CWE-22 (90%)**, CWE-78 (90%)  | Yes  | **CWE-22 (90%);  code: Yes (1/4)**  |
-| :x: CWE22-692 |  Yes  | CWE-732 (90%)  |  Yes  | **CWE-476 (100%)**  |  Yes  |  **CWE-476 (95%); code: yes (1/2)**  |
+| :x: CWE22-692 [:recycle: CWE-476] |  Yes  | CWE-732 (90%)  |  Yes  | **CWE-476 (100%)**  |  Yes  |  **CWE-476 (95%); code: yes (1/2)**  |
 | CWE22-964 |  Yes  | CWE-20 (95%)  |  Yes |  CWE-119 (90%) | Yes  | CWE-120 (95%); code: No|
 | CWE22-1027|  Yes  | CWE-284 (90%), CWE-78 (90%)  | Yes  | **CWE-22 (90%)**  | Yes | **CWE-22 (90%); code: Yes (1/4)**  | 
-| :x: CWE22-1436| Yes  | CWE-22 (95%)  |  Yes  |  **CWE-120 (90%)**  | Yes  |  CWE-22 (95%); code: No|  
+| :x: CWE22-1436 [:recycle: CWE-120, CWE-367]  | Yes  | CWE-22 (95%)  |  Yes  |  **CWE-120 (90%)**  | Yes  |  CWE-22 (95%); code: No|  
 | CWE22-1656|  No  |  -  |  No  |  -  |  No  |  -  |  
 | Total     |  6/8  |  1/8  |  6/8  |  4/8  |  7/8  |  3/8  |
 </div>
