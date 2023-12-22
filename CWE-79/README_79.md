@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-79</a></h3>
   <p align="center">
-    Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :recycle: correct CWE for misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
+    Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :recycle: correct CWE for misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>- :heavy_plus_sign: - Duplicate CWE samples are not considred in Total
   </p>
 </p>
 <div align="center">
