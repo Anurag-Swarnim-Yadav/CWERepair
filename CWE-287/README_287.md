@@ -54,6 +54,6 @@
 |  :heavy_plus_sign: CWE287-516   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  | 
 |  :warning: CWE287-975   |  No  |  -  |  Yes  | CWE-119 (90%)  |  Yes  | CWE-119 (90%); code: No  |
 |  CWE287-1635  |  Yes  | CWE-20 (95%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-120 (90%); code: No  |
-|  Total        |  -/6  |  -/6  |  -/6  |  -/6  |  -/6  |  -/6   |
+|  Total        |  4/6  |  2/6  |  4/6  |  0/6  |  5/6  |  1/6   |
 </div>
 </details>
