@@ -48,12 +48,12 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE287-231   |  Yes  |       |  Yes  |       |  Yes  |        |
-|  :warning: :triangular_flag_on_post: CWE287-287   |  Yes  |       |  Yes  |       |  Yes  |        |    
-|  CWE287-413   |  Yes  |       |  Yes  |       |  Yes  |        |
-|  :heavy_plus_sign: CWE287-516   |  Yes  |       |  Yes  |       |  Yes  |        |  
-|  :warning: :triangular_flag_on_post: CWE287-975   |  Yes  |       |  Yes  |       |  Yes  |        |
-|  CWE287-1635  |  Yes  |       |  Yes  |       |  Yes  |        |
-|  Total        |  8/6  |  4/6  |  8/6  |  5/6  |  8/6  |  5/6   |
+|  CWE287-231   |  Yes  |  -  |  Yes  |  -  |  Yes  |  -; code: -  |
+|  :warning: CWE287-287   |  No  |  -   |  Yes  |  -       |  Yes  |  -; code: -  |    
+|  CWE287-413   |  Yes  | -  |  Yes  |  -  |  Yes  |  -; code: -   |
+|  :heavy_plus_sign: CWE287-516   |  Yes  |  -  |  Yes  |  -  |  Yes  |  -; code: -  | 
+|  :warning: CWE287-975   |  Yes  |  -  |  Yes  | -  |  Yes  | -; code: -  |
+|  CWE287-1635  |  Yes  | -  |  Yes  |  -  |  Yes  |  -; code: -  |
+|  Total        |  -/6  |  -/6  |  -/6  |  -/6  |  -/6  |  -/6   |
 </div>
 </details>
