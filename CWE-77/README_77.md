@@ -1,8 +1,8 @@
 <p align="center">
   </a>
-  <h3 align="center">CWE-22</a></h3>
+  <h3 align="center">CWE-77</a></h3>
   <p align="center">
-    Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
+    Improper Neutralization of Special Elements used in a Command ('Command Injection')
   </p>
 </p>
 <div align="center">
@@ -12,7 +12,7 @@
 </div>
 
 <details open="open">
-<summary>CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')</summary>
+<summary>CWE-77: Improper Neutralization of Special Elements used in a Command ('Command Injection')</summary>
 
 <h3>
     <b>
