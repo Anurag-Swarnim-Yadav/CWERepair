@@ -44,8 +44,8 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE352-1540 [:recycle: CWE-352, CWE-79]  |  No  |  -             |  Yes  |  CWE-120 (95%)  |  Yes  |  CWE-120 (90%); code: Don't Know  |
-|  CWE352-1580 [:recycle: CWE-352, CWE-319]  |  Yes |  CWE-20 (90%)  |  Yes  |  CWE-20 (90%)   |  Yes  |  CWE-20 (90%); code: No  |
+| :x: CWE352-1540 [:recycle: CWE-352, CWE-79]  |  No  |  -             |  Yes  |  CWE-120 (95%)  |  Yes  |  CWE-120 (90%); code: Don't Know  |
+| :x: CWE352-1580 [:recycle: CWE-352, CWE-319]  |  Yes |  CWE-20 (90%)  |  Yes  |  CWE-20 (90%)   |  Yes  |  CWE-20 (90%); code: No  |
 |  Total        |  1/2 |  0/2           |  2/2  |  0/2            |  2/2  |  0/2                     |
 </div>
 </details>
