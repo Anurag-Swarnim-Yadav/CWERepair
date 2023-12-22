@@ -26,7 +26,7 @@
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  :x: CWE918-806  |  Yes  |  **CWE-20 (80%)**  |  Yes  |  **CWE-20 (90%)**  |  Yes  |  **CWE-20 (90%);  code: Yes** |
+|  :x: CWE918-806 [:recycle: CWE-20]  |  Yes  |  **CWE-20 (80%)**  |  Yes  |  **CWE-20 (90%)**  |  Yes  |  **CWE-20 (90%);  code: Yes** |
 |  Total      |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |
 
 </div>
