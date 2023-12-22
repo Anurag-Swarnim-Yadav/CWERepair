@@ -26,12 +26,12 @@
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|   CWE89-57                                     |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-20 (80%)  **code: Yes (1/1)** |
-|   CWE89-1063    |  Yes  |  CWE-20 (80%)   |  Yes  |  CWE-20 (90%)   |  Yes  |  CWE-20 (80%)  **code: Yes (1/1)** |
-|  :mag: :heavy_exclamation_mark: CWE89-1484    |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-120 (90%)  code: No    |
-|  :mag: :heavy_exclamation_mark: CWE89-1671    |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%), CWE-170 (80%), CWE-391 (70%)  |  Yes  |  CWE-120 (90%)  code: No    |
-|  :heavy_plus_sign: CWE89-1691  |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%), CWE-170 (80%), CWE-391 (70%)  |  Yes  |  CWE-120 (90%)  code: No    |
-|  Total                                                                            |  5/5  |  0/5            |  5/5  |  0/5            |  5/5  |  0/5                        |
+|   CWE89-57                                    |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-20 (80%)  **code: Yes (1/1)** |
+|   CWE89-1063                                  |  Yes  |  CWE-20 (80%)   |  Yes  |  CWE-20 (90%)   |  Yes  |  CWE-20 (80%)  **code: Yes (1/1)** |
+|  :mag: :heavy_exclamation_mark: CWE89-1484    |  Yes  |  **CWE-120 (80%)**  |  Yes  |  **CWE-120 (90%)**  |  Yes  |  **CWE-120 (90%)**  code: No    |
+|  :mag: :heavy_exclamation_mark: CWE89-1671    |  Yes  |  **CWE-120 (80%)**  |  Yes  |  **CWE-120 (90%)**, CWE-170 (80%), CWE-391 (70%)  |  Yes  |  **CWE-120 (90%)**  code: No    |
+|  :heavy_plus_sign: CWE89-1691                 |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%), CWE-170 (80%), CWE-391 (70%)  |  Yes  |  CWE-120 (90%)  code: No    |
+|  Total                                        |  5/5  |  1/5            |  5/5  |  1/5            |  5/5  |  1/5                        |
 
 </div>
 
