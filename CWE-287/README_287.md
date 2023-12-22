@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-287</a></h3>
   <p align="center">
-    Improper Authentication<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
+    Improper Authentication<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :recycle: correct CWE for misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
   </p>
 </p>
 <div align="center">
