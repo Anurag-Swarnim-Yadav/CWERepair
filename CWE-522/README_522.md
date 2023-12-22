@@ -30,7 +30,7 @@
 |  CWE522-370                                     |  Yes  | CWE-120 (90%), CWE-121 (90%), CWE-252 (80%), CWE-190 (70%), CWE-197 (60%)  | Yes  | CWE-120 (90%), CWE-252 (90%), CWE-190 (90%), CWE-197 (90%), CWE-20 (90%), CWE-404 (90%) | Yes  | CWE-120 (90%); code: No  |
 |  :warning: :triangular_flag_on_post: CWE522-773 |  Yes  | CWE-321 (70%), CWE-330 (80%), CWE-327 (90%), CWE-391 (60%), CWE-807 (70%)  |  Yes  | CWE-120 (80%), CWE-327 (80%), CWE-326 (80%), CWE-755 (80%), CWE-20 (80%), CWE-798 (80%)  | Yes  | CWE-120 (90%); code: No  |  
 |  :mag: :heavy_exclamation_mark: CWE522-1655     |  Yes  | **CWE-20 (90%)**, CWE-259 (70%), CWE-319 (80%), CWE-798 (70%), CWE-22 (60%)  |  Yes  |  CWE-319 (80%), **CWE-20 (70%)**, CWE-200 (70%), CWE-787 (60%), CWE-676 (60%), CWE-22 (60%) | Yes  | **CWE-20 (90%)**, CWE-319 (80%), CWE-798 (70%), CWE-676 (60%), CWE-22 (50%), CWE-116 (50%); **code: Yes (1/1)**  |  
-|  Total                                          |  4/4  |  0/4  |  4/4  |  0/4  |  4/4  |  0/4  |
+|  Total                                          |  4/4  |  1/4  |  4/4  |  1/4  |  4/4  |  1/4  |
 
 </div>
 
