@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-862</a></h3>
   <p align="center">
-    Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
+    Missing Authorization
   </p>
 </p>
 <div align="center">
