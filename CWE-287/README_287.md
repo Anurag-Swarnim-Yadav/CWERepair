@@ -48,7 +48,7 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE287-231   |  Yes  |  -  |  Yes  |  -  |  Yes  |  -; code: -  |
+|  CWE287-231   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  |
 |  :warning: CWE287-287   |  No  |  -   |  Yes  |  -       |  Yes  |  -; code: -  |    
 |  CWE287-413   |  Yes  | -  |  Yes  |  -  |  Yes  |  -; code: -   |
 |  :heavy_plus_sign: CWE287-516   |  Yes  |  -  |  Yes  |  -  |  Yes  |  -; code: -  | 
