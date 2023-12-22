@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-522</a></h3>
   <p align="center">
-    Insufficiently Protected Credentials
+    Insufficiently Protected Credentials<br><br><br> ***Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
   </p>
 </p>
 <div align="center">
