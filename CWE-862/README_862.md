@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-862</a></h3>
   <p align="center">
-    Missing Authorization<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
+    Missing Authorization<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :recycle: correct CWE for misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
   </p>
 </p>
 <div align="center">
