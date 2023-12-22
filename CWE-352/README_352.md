@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-352</a></h3>
   <p align="center">
-    Cross-Site Request Forgery (CSRF)<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
+    Cross-Site Request Forgery (CSRF)<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :recycle: correct CWE for misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
   </p>
 </p>
 <div align="center">
