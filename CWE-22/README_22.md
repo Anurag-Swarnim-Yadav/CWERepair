@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-22</a></h3>
   <p align="center">
-    Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
+    Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')<br><br><br> ***Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
   </p>
 </p>
 <div align="center">
