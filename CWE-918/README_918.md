@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-918</a></h3>
   <p align="center">
-    CWE-918: Server-Side Request Forgery (SSRF)
+    Server-Side Request Forgery (SSRF)
   </p>
 </p>
 <div align="center">
