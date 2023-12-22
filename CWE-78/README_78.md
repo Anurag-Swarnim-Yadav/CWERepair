@@ -46,7 +46,7 @@
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  :warning: :triangular_flag_on_post: CWE78-1012  |  No   |  -              |  Yes  |  CWE-119 (90%)     |  Yes  |  CWE-120 (90%); code: No      |
-|  CWE78-1149  |  Yes  |  CWE-843 (90%)  |  Yes  |  CWE-120 (95%)     |  Yes  |  CWE-120 (95%); code: No      |
+|  CWE78-1149  |  Yes  |  CWE-843 (90%)  |  Yes  |  CWE-120 (95%)     |  Yes  |  CWE-120 (100%); code: No      |
 |  CWE78-1502  |  No   |  -              |  Yes  |  **CWE-78 (95%)**  |  Yes  |  **CWE-78 (100%); code: Yes**  |
 |  Total       |  1/3  |  0/3            |  3/3  |  1/3               |  3/3  |  1/3                          |
 </div>
