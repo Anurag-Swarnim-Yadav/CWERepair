@@ -1,8 +1,8 @@
 <p align="center">
   </a>
-  <h3 align="center">CWE-22</a></h3>
+  <h3 align="center">CWE-918</a></h3>
   <p align="center">
-    Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
+    CWE-918: Server-Side Request Forgery (SSRF)
   </p>
 </p>
 <div align="center">
@@ -12,7 +12,7 @@
 </div>
 
 <details open="open">
-<summary>CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')</summary>
+<summary>CWE-918: Server-Side Request Forgery (SSRF)</summary>
 
 <h3>
     <b>
@@ -26,15 +26,8 @@
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  :mag: :heavy_exclamation_mark: CWE22-212  |  Yes  |  CWE-120 (90%), CWE-126 (80%), CWE-170 (75%), CWE-131 (70%), CWE-190 (60%)  |  Yes  |  **CWE-22 (90%)**, CWE-120 (90%)  |  Yes  |  CWE-120 (90%), **CWE-22 (80%);  code: Maybe** |
-|  :mag: :heavy_exclamation_mark: CWE22-402  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (100%), **CWE-22 (70%)**   |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**  |  Yes  |  CWE-120 (90%), CWE-121 (90%), CWE-122 (90%), CWE-676 (90%), **CWE-22 (90%)**; code: No|
-|  CWE22-512  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (90%); code: Yes (4/4)**  |
-|  :mag: :heavy_exclamation_mark: CWE22-692  |  Yes  | CWE-476 (90%)  | Yes  |  CWE-476 ((90%)  | Yes  |  CWE-476 (90%); **code: Yes (2/2)**  |
-|  :mag: :heavy_exclamation_mark: CWE22-964  |  Yes  | CWE-120 (75%)  | Yes  | CWE-120 (70%), CWE-416 (60%), CWE-252 (80%). CWE-391 (60%), CWE-404 (60%), CWE-319 (70%) | Yes  | CWE-120 (90%); code: No  |
-|  :mag: :heavy_exclamation_mark: CWE22-1027 |  Yes  |  CWE-20 (85%), CWE-200 (75%), **CWE-22 (90%)**  |  Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%)**  | Yes  | CWE-20 (90%), CWE-200 (90%), **CWE-22 (90%); code: Yes (4/4)**  |  
-|  :mag: :heavy_exclamation_mark: CWE22-1436 |  Yes  | CWE-120 (90%), CWE-367 (80%)  |  Yes  |  CWE-120 (90%), CWE-367 (80%) | Yes  | CWE-120 (90%), CWE-367 (80%); **code: Yes (1/1)**  |  
-|  CWE22-1656 |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (80%)**  |  Yes  |  **CWE-22 (90%); code: Yes (1/1)**  |  
-|  Total      |  8/8  |  4/8  |  8/8  |  5/8  |  8/8  |  5/8  |
+|  :mag: :heavy_exclamation_mark: CWE918-806  |  Yes  |  **CWE-20 (80%)**  |  Yes  |  **CWE-20 (90%)**  |  Yes  |  **CWE-20 (90%);  code: Yes** |
+|  Total      |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |
 
 </div>
 
