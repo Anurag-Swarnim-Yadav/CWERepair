@@ -34,13 +34,7 @@
 </div>
 </details>
 <details>
-<h3>
-    <b>
-        <div align="center">
-            Detection Performance of text-davinvi-003 in three different settings.
-        </div>
-    </b>
-</h3>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary>
 
 <div align="center">
 
