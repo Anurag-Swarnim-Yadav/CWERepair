@@ -33,7 +33,7 @@
 
 </div>
 </details>
-<details open="open">
+<details>
 <h3>
     <b>
         <div align="center">
