@@ -10,14 +10,11 @@
 ## Real-World Software Vulnerabilities
 
 </div>
-</details>
-
-
 <details>
-  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
+<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br>
 
 
-  <h3>
+<h3>
     <b>
         <div align="center">
             :white_check_mark: - Perfect CWE Samples
@@ -35,11 +32,17 @@
 |  Total                                           |  3/3  |  1/3  |  3/3  |  1/3  |  3/3  |  2/3  |
 
 </div>
+</details>
 
-<h3>
+
+<details>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
+
+
+  <h3>
     <b>
         <div align="center">
-            Detection Performance of text-davinvi-003 in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
