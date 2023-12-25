@@ -54,7 +54,7 @@
 <h3>
     <b>
         <div align="center">
-            Detection Performance of text-davinvi-003 in three different settings (:warning: - Unverifiable CWE Samples)
+            Detection Performance of text-davinvi-003 in three different settings ( :warning: - Unverifiable CWE Samples)
         </div>
     </b>
 </h3>
