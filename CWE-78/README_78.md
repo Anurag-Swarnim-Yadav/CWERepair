@@ -12,7 +12,7 @@
 </div>
 
 <details>
-<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br><br>
+<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br>
   
 <div align="center">
 
@@ -26,7 +26,7 @@
 </div>
 </details>
 <details>
-  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
   
 <div align="center">
 
