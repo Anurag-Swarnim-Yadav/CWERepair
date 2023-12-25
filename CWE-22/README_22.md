@@ -11,13 +11,13 @@
 
 </div>
 
-<details open="open">
-<summary>CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')</summary>
+<details>
+<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br>
 
 <h3>
     <b>
         <div align="center">
-            Detection Performance of gpt-4-1106-preview in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
@@ -37,11 +37,15 @@
 |  Total      |  8/8  |  6/8  |  8/8  |  7/8  |  8/8  |  7/8  |
 
 </div>
+</details>
+<details>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
 
-<h3>
+
+  <h3>
     <b>
         <div align="center">
-            Detection Performance of text-davinvi-003 in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
