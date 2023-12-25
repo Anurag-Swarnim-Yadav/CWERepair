@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-287</a></h3>
   <p align="center">
-    <b>Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')</b><br><br><br> **Note:** :white_check_mark: - Perfect CWE Samples, :warning: - Unverifiable CWE Samples, :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
+    <b>Improper Authentication</b><br><br><br> **Note:** :white_check_mark: - Perfect CWE Samples, :warning: - Unverifiable CWE Samples, :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
   </p>
 </p>
 <div align="center">
