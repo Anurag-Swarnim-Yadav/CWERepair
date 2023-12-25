@@ -61,4 +61,38 @@
 |  :heavy_plus_sign: CWE89-1691  |  Yes  |  CWE-120 (90%)                                                  |  Yes  |  CWE-119 (95%)       |  Yes  |  CWE-119 (90%)  code: No    |
 |  Total                         |  3/5  |  1/5                                                            |  4/5  |  1/5                 |  3/5  |  0/5                        |
 </div>
+
+
+  <h3>
+    <b>
+        <div align="center">
+            :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :x: CWE89-1484 [:recycle: CWE-120]  |  Yes  |  **CWE-120 (90%)**, CWE-457 (90%), CWE-20 (90%), CWE-676 (90%)  |  Yes  |  **CWE-120 (90%)**   |  Yes  |  CWE-119 (90%)  code: No    |
+|  :x: CWE89-1671 [:recycle: CWE-89, CWE-120]                |  Yes  |  **CWE-120 (90%)**                                              |  Yes  |  CWE-119 (95%)       |  Yes  |  CWE-119 (90%)  code: No    |
+|  Total                         |  3/2  |  1/2                                                            |  4/2  |  1/2                 |  3/2  |  0/2                        |
+</div>
+
+  <h3>
+    <b>
+        <div align="center">
+            :heavy_plus_sign: - Duplicate CWE samples
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :heavy_plus_sign: CWE89-1691  |  Yes  |  CWE-120 (90%)                                                  |  Yes  |  CWE-119 (95%)       |  Yes  |  CWE-119 (90%)  code: No    |
+
+</div>
 </details>
