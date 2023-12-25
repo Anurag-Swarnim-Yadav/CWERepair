@@ -11,13 +11,14 @@
 
 </div>
 
-<details open="open">
-<summary>CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')</summary>
+<details>
+<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br>
+
 
 <h3>
     <b>
         <div align="center">
-            Detection Performance of gpt-4-1106-preview in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
@@ -34,11 +35,17 @@
 |  Total                                        |  5/5  |  1/5            |  5/5  |  1/5            |  5/5  |  1/5                        |
 
 </div>
+</details>
 
-<h3>
+
+<details>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
+
+
+  <h3>
     <b>
         <div align="center">
-            Detection Performance of text-davinvi-003 in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
