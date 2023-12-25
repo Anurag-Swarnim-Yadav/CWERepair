@@ -51,6 +51,15 @@
 |  Total                 |  2/3  |  0/3            |  2/3  |  1/3               |  2/3  |  1/3                           |
 </div>
 
+<h3>
+    <b>
+        <div align="center">
+            :warning: - Unverifiable CWE Samples
+        </div>
+    </b>
+</h3>
+
+
 <div align="center">
   
 
