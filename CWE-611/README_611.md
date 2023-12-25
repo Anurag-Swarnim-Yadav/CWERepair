@@ -10,18 +10,21 @@
 ## Real-World Software Vulnerabilities
 
 </div>
+</details>
 
-<details open="open">
-<summary>CWE-611: Improper Restriction of XML External Entity Reference</summary>
 
-<h3>
+<details>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
+
+
+  <h3>
     <b>
         <div align="center">
-            Detection Performance of gpt-4-1106-preview in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
-  
+
 <div align="center">
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
