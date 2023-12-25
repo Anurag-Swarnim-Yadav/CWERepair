@@ -17,7 +17,7 @@
 <h3>
     <b>
         <div align="center">
-            Detection Performance of gpt-4-1106-preview in three different settings.
+           
         </div>
     </b>
 </h3>
