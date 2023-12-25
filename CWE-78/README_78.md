@@ -12,7 +12,7 @@
 </div>
 
 <details>
-<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary>
+<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br><br>
   
 <div align="center">
 
