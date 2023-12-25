@@ -11,13 +11,14 @@
 
 </div>
 
-<details open="open">
-<summary>CWE-522: Insufficiently Protected Credentials</summary>
+<details>
+<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br>
+
 
 <h3>
     <b>
         <div align="center">
-            Detection Performance of gpt-4-1106-preview in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
@@ -33,11 +34,17 @@
 |  Total                                          |  4/4  |  1/4  |  4/4  |  1/4  |  4/4  |  1/4  |
 
 </div>
+</details>
 
-<h3>
+
+<details>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
+
+
+  <h3>
     <b>
         <div align="center">
-            Detection Performance of text-davinvi-003 in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
