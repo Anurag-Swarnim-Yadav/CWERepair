@@ -43,10 +43,9 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  :warning: CWE78-1012  |  No   |  -              |  Yes  |  CWE-119 (90%)     |  Yes  |  CWE-120 (90%); code: No      |
 |  CWE78-1149            |  Yes  |  CWE-843 (90%)  |  Yes  |  CWE-120 (95%)     |  Yes  |  CWE-120 (100%); code: No      |
 |  CWE78-1502            |  No   |  -              |  Yes  |  **CWE-78 (95%)**  |  Yes  |  **CWE-78 (100%); code: Yes**  |
-|  Total                 |  2/3  |  0/3            |  2/3  |  1/3               |  2/3  |  1/3                           |
+|  Total                 |  1/2  |  0/2            |  2/2  |  1/2               |  2/2  |  1/2                           |
 
 </div>
 
@@ -64,7 +63,7 @@
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  :warning: CWE78-1012  |  No   |  -              |  Yes  |  CWE-119 (90%)     |  Yes  |  CWE-120 (90%); code: No      |
-|  Total                 |  2/3  |  0/3            |  2/3  |  1/3               |  2/3  |  1/3                           |
+|  Total                 |  1/1  |  1/1            |  0/1  |  0/1               |  0/1  |  0/1                          |
 
 </div>
 
