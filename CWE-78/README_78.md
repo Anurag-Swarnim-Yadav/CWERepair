@@ -25,6 +25,8 @@
 
 </div>
 </details>
+
+
 <details>
   <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
   
