@@ -11,13 +11,14 @@
 
 </div>
 
-<details open="open">
-<summary>CWE-287: Improper Authentication</summary>
+<details>
+<summary>Detection Performance of gpt-4-1106-preview in three different settings.</summary><br>
+
 
 <h3>
     <b>
         <div align="center">
-            Detection Performance of gpt-4-1106-preview in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
@@ -35,11 +36,17 @@
 |  Total        |  6/6  |  1/6  |  5/6  |  1/6  |  5/6  |  0/6   |
 
 </div>
+</details>
 
-<h3>
+
+<details>
+  <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
+
+
+  <h3>
     <b>
         <div align="center">
-            Detection Performance of text-davinvi-003 in three different settings.
+            :white_check_mark: - Perfect CWE Samples
         </div>
     </b>
 </h3>
