@@ -29,6 +29,15 @@
 
 <details>
   <summary>Detection Performance of text-davinvi-003 in three different settings.</summary><br>
+
+
+  <h3>
+    <b>
+        <div align="center">
+            :white_check_mark: - Perfect CWE Samples
+        </div>
+    </b>
+</h3>
   
 <div align="center">
 
