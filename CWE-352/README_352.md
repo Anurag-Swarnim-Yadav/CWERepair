@@ -2,7 +2,7 @@
   </a>
   <h3 align="center">CWE-352</a></h3>
   <p align="center">
-    Cross-Site Request Forgery (CSRF)<br><br><br> **Note:** :warning: - Unverifiable CWE Samples, :x: - misclassified CWE samples, :recycle: correct CWE for misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
+    <b>Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')</b><br><br><br> **Note:** :white_check_mark: - Perfect CWE Samples, :warning: - Unverifiable CWE Samples, :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified, :heavy_plus_sign: - Duplicate CWE samples <br><br><br>
   </p>
 </p>
 <div align="center">
