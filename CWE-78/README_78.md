@@ -24,6 +24,23 @@
 |  Total                                      |  2/3  |  0/3  |  2/3  |  0/3  |  2/3  |  2/3  |
 
 </div>
+
+<h3>
+    <b>
+        <div align="center">
+            :warning: - Unverifiable CWE Samples
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :warning: CWE78-1012  |  Yes  |  CWE-319 (90%), CWE-20 (80%), CWE-476 (70%), CWE-787 (60%), CWE-400 (50%), CWE-613 (40%), CWE-918 (30%) |  Yes  |  CWE-20 (90%), CWE-120 (80%), CWE-170 (70%), CWE-798 (60%), CWE-209 (75%), CWE-319 (90%), CWE-404 (70%), CWE-391 (80%)  |  Yes  |  CWE-319 (90%), CWE-20 (80%), CWE-400 (70%), CWE-79 (60%), CWE-770 (70%); code: No  |
+|  Total                 |  1/1  |  1/1            |  0/1  |  0/1               |  0/1  |  0/1                          |
+
+</div>
 </details>
 
 
