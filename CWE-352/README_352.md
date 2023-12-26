@@ -18,7 +18,7 @@
 <h3>
     <b>
         <div align="center">
-            :white_check_mark: - Perfect CWE Samples
+            :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
         </div>
     </b>
 </h3>
@@ -42,7 +42,7 @@
   <h3>
     <b>
         <div align="center">
-            :white_check_mark: - Perfect CWE Samples
+            :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
         </div>
     </b>
 </h3>
