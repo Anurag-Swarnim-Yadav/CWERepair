@@ -57,11 +57,27 @@
 |  CWE22-212  |  No  |  -  | No  |  -  |  Yes  |  CWE-119 (90%);  code: No  |
 |  CWE22-402  |  Yes  |  **CWE-22 (90%)**, CWE-79 (80%), CWE-120 (80%)  |  Yes  |  **CWE-22 (90%)**, CWE-120 (95%)  |  Yes  |  CWE-119 (95%); code: No (adds strncpy instead of strcpy|
 | CWE22-512 |  Yes  |  CWE-284 (95%),  CWE-78 (90%)  | Yes  |  **CWE-22 (90%)**, CWE-78 (90%)  | Yes  | **CWE-22 (90%);  code: Yes (1/4)**  |
-| :x: CWE22-692 [:recycle: CWE-476] |  Yes  | CWE-732 (90%)  |  Yes  | **CWE-476 (100%)**  |  Yes  |  **CWE-476 (95%); code: yes (1/2)**  |
 | CWE22-964 |  Yes  | CWE-20 (95%)  |  Yes |  CWE-119 (90%) | Yes  | CWE-120 (95%); code: No|
 | CWE22-1027|  Yes  | CWE-284 (90%), CWE-78 (90%)  | Yes  | **CWE-22 (90%)**  | Yes | **CWE-22 (90%); code: Yes (1/4)**  | 
-| :x: CWE22-1436 [:recycle: CWE-120, CWE-367]  | Yes  | CWE-22 (95%)  |  Yes  |  **CWE-120 (90%)**  | Yes  |  CWE-22 (95%); code: No|  
 | CWE22-1656|  No  |  -  |  No  |  -  |  No  |  -  |  
-| Total     |  6/8  |  1/8  |  6/8  |  4/8  |  7/8  |  3/8  |
+| Total     |  6/6  |  1/6  |  6/6  |  4/6  |  7/6  |  3/6  |
+</div>
+
+
+  <h3>
+    <b>
+        <div align="center">
+            :warning: - Unverifiable CWE Samples, :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+| :x: CWE22-692 [:recycle: CWE-476] |  Yes  | CWE-732 (90%)  |  Yes  | **CWE-476 (100%)**  |  Yes  |  **CWE-476 (95%); code: yes (1/2)**  |
+| :x: CWE22-1436 [:recycle: CWE-120, CWE-367]  | Yes  | CWE-22 (95%)  |  Yes  |  **CWE-120 (90%)**  | Yes  |  CWE-22 (95%); code: No|  
+| Total     |  6/2  |  1/2  |  6/2  |  4/2  |  7/2  |  3/2  |
 </div>
 </details>
