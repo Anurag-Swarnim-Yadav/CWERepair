@@ -29,10 +29,43 @@
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |   CWE89-57                                    |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-20 (80%)  **code: Yes (1/1)** |
 |   CWE89-1063                                  |  Yes  |  CWE-20 (80%)   |  Yes  |  CWE-20 (90%)   |  Yes  |  CWE-20 (80%)  **code: Yes (1/1)** |
+|  Total                                        |  2/2  |  0/2            |  2/2  |  0/2            |  2/2  |  0/2                        |
+
+</div>
+
+
+<h3>
+    <b>
+        <div align="center">
+            :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
+        </div>
+    </b>
+</h3>
+  
+<div align="center">
+
+|  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  :x: CWE89-1484 [:recycle: CWE-120]  |  Yes  |  **CWE-120 (80%)**  |  Yes  |  **CWE-120 (90%)**  |  Yes  |  **CWE-120 (90%)**  code: No    |
 |  :x: CWE89-1671 [:recycle: CWE-89, CWE-120]    |  Yes  |  **CWE-120 (80%)**  |  Yes  |  **CWE-120 (90%)**, CWE-170 (80%), CWE-391 (70%)  |  Yes  |  **CWE-120 (90%)**  code: No    |
+|  Total                                        |  2/2  |  1/2            |  2/2  |  1/2            |  2/2  |  1/2                        |
+
+</div>
+
+
+<h3>
+    <b>
+        <div align="center">
+            :heavy_plus_sign: - Duplicate CWE samples
+        </div>
+    </b>
+</h3>
+  
+<div align="center">
+
+|  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  :heavy_plus_sign: CWE89-1691                 |  Yes  |  CWE-120 (80%)  |  Yes  |  CWE-120 (90%), CWE-170 (80%), CWE-391 (70%)  |  Yes  |  CWE-120 (90%)  code: No    |
-|  Total                                        |  5/5  |  1/5            |  5/5  |  1/5            |  5/5  |  1/5                        |
 
 </div>
 </details>
