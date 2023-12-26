@@ -63,4 +63,39 @@
 |  CWE287-1635  |  Yes  | CWE-20 (95%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-120 (90%); code: No  |
 |  Total        |  4/6  |  2/6  |  4/6  |  0/6  |  5/6  |  1/6   |
 </div>
+
+
+  <h3>
+    <b>
+        <div align="center">
+            :warning: - Unverifiable CWE Samples
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :warning: CWE287-287   |  No  |  -   |  Yes  |  CWE-113 (90%)       |  No  |  -; code: -  |    
+|  :warning: CWE287-975   |  No  |  -  |  Yes  | CWE-119 (90%)  |  Yes  | CWE-119 (90%); code: No  |
+|  Total        |  2/2  |  2/2  |  0/2  |  0/2  |  1/2  |  1/2   |
+</div>
+
+
+  <h3>
+    <b>
+        <div align="center">
+            :heavy_plus_sign: - Duplicate CWE samples
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :heavy_plus_sign: CWE287-516   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  | 
+
+</div>
 </details>
