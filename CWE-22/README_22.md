@@ -67,7 +67,7 @@
   <h3>
     <b>
         <div align="center">
-            :warning: - Unverifiable CWE Samples, :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
+            :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
         </div>
     </b>
 </h3>
