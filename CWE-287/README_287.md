@@ -55,13 +55,10 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE287-231   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  |
-|  :warning: CWE287-287   |  No  |  -   |  Yes  |  CWE-113 (90%)       |  No  |  -; code: -  |    
+|  CWE287-231   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  |   
 |  CWE287-413   |  Yes  | CWE-20 (90%), CWE-78 (80%)  |  Yes  |  CWE-120 (95%)  |  Yes  |  CWE-119 (90%); code: No   |
-|  :heavy_plus_sign: CWE287-516   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  | 
-|  :warning: CWE287-975   |  No  |  -  |  Yes  | CWE-119 (90%)  |  Yes  | CWE-119 (90%); code: No  |
 |  CWE287-1635  |  Yes  | CWE-20 (95%)  |  Yes  |  CWE-120 (90%)  |  Yes  |  CWE-120 (90%); code: No  |
-|  Total        |  4/6  |  2/6  |  4/6  |  0/6  |  5/6  |  1/6   |
+|  Total        |  4/3  |  2/3  |  4/3  |  0/3  |  5/3  |  1/3   |
 </div>
 
 
