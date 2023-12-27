@@ -68,14 +68,25 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  CWE22-212  |  No  |  -  | No  |  -  |  Yes  |  CWE-119 (90%);  code: No  |
-|  CWE22-402  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  **CWE-22 (90%)**  |  Yes  |  CWE-119; code: No (adds strncpy instead of strcpy|
-| CWE22-512 |  Yes  |  CWE-284 (95%),  CWE-78 (90%)  | Yes  |  **CWE-22 (90%)**  | Yes  | **CWE-22 (90%);  code: Yes (1/4)**  |
-| CWE22-692 |  Yes  | CWE-732 (90%)  |  Yes  | CWE-476 (100%)  |  Yes  |  CWE-476 (95%); **code: yes (1/2)**  |
-| CWE22-964 |  Yes  | CWE-20  |  Yes |  CWE-119  | Yes  | CWE-120 (95%); code: No|
-| CWE22-1027|  Yes  | CWE-284 (90%), CWE-78 (90%)  | Yes  | **CWE-22 (90%)**  | Yes | **CWE-22 (90%); code: Yes (1/4)**  | 
-| CWE22-1436| Yes  | **CWE-22 (95%)**  |  Yes  |  CWE-120 (90%)  | Yes  |  **CWE-22 (95%); code: yes (1/1)**|  
-| CWE22-1656|  No  |  -  |  No  |  -  |  No  |  -  |  
-| Total     |  6/8  |  2/8  |  6/8  |  3/8  |  7/8  |  3/8  |
+|  CWE611-7                                        |  No  | -  | No  |  -  | No  |  -; code: -  |
+|  CWE611-1274                                     |  -   | -  |  -  |  -  | -   | -            |  
+|  Total                                           |  0/2  |  0/2  |  0/2  |  0/2  |  0/2  |  0/2  |
+</div>
+
+
+  <h3>
+    <b>
+        <div align="center">
+            :warning: - Unverifiable CWE Samples
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :warning: CWE611-351  |  Yes   | CWE-20 (90%)    | Yes   | CWE-78 (90%)      | Yes    | CWE-119 (100%); code: No     |
+|  Total                 |  0/1  |  0/1  |  0/1  |  0/1  |  0/1  |  0/1  |
 </div>
 </details>
