@@ -18,7 +18,25 @@
 <h3>
     <b>
         <div align="center">
-            :white_check_mark: - Perfect CWE Samples
+            :x: - Misclassified CWE Samples, :recycle: Correct CWE for Misclassified
+        </div>
+    </b>
+</h3>
+  
+<div align="center">
+
+|  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :x: CWE732-1575 [:recycle: CWE-459, CWE-909]      |  Yes  | CWE-120 (90%)  | Yes  |  CWE-121 ((90%)  | Yes  |  CWE-121 (90%); code: No (2/2)  |
+|  Total                                           |  1/1  |  0/1  |  1/1  |  0/1  |  1/1  |  0/1  |
+
+</div>
+
+
+<h3>
+    <b>
+        <div align="center">
+            :warning: - Unverifiable CWE Samples
         </div>
     </b>
 </h3>
@@ -28,8 +46,7 @@
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  :warning: CWE732-276  |  No  |  -     |  Yes  |  CWE-367 (75%)  |  Yes  |  CWE-367 (75%); code: No  |
-|  :x: CWE732-1575 [:recycle: CWE-459, CWE-909]      |  Yes  | CWE-120 (90%)  | Yes  |  CWE-121 ((90%)  | Yes  |  CWE-121 (90%); code: No (2/2)  |
-|  Total                                           |  2/2  |  1/2  |  1/2  |  0/2  |  1/2  |  0/2  |
+|  Total                 |  1/1  |  1/1  |  0/1  |  0/1  |  0/1  |  0/1  |
 
 </div>
 </details>
