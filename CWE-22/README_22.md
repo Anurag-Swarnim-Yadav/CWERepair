@@ -72,7 +72,7 @@
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  CWE22-212  |  No  |  -  | No  |  -  |  Yes  |  CWE-119 (90%);  code: No  |
-|  CWE22-402  |  Yes  |  **CWE-22 (90%)**, CWE-79 (80%), CWE-120 (80%)  |  Yes  |  **CWE-22 (90%)**, CWE-120 (95%)  |  Yes  |  CWE-119 (95%); code: No (adds strncpy instead of strcpy|
+|  CWE22-402  |  Yes  |  **CWE-22 (90%)**, CWE-78 (80%), CWE-120 (80%)  |  Yes  |  **CWE-22 (90%)**, CWE-120 (95%)  |  Yes  |  CWE-119 (95%); code: No (adds strncpy instead of strcpy|
 | CWE22-512 |  Yes  |  CWE-284 (95%),  CWE-78 (90%)  | Yes  |  **CWE-22 (90%)**, CWE-78 (90%)  | Yes  | **CWE-22 (90%);  code: Yes (1/4)**  |
 | CWE22-964 |  Yes  | CWE-20 (95%)  |  Yes |  CWE-119 (90%) | Yes  | CWE-120 (95%); code: No|
 | CWE22-1027|  Yes  | CWE-284 (90%), CWE-78 (90%)  | Yes  | **CWE-22 (90%)**  | Yes | **CWE-22 (90%); code: Yes (1/4)**  | 
