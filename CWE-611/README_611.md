@@ -27,9 +27,26 @@
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
 |  CWE611-7                                        |  Yes  | CWE-20 (70%)  | Yes  |  CWE-776 (70%), CWE-190 (60%)  | Yes  |  **CWE-611 (90%); code: Yes (1/1)**  |
-|  :warning: CWE611-351  |  No   | -             | No   | -                              | No   | -  |
 |  CWE611-1274                                     |  Yes  | CWE-476 (60%), CWE-787 (60%), CWE-665 (60%), CWE-200 (60%), CWE-404 (60%)  |  Yes  |  CWE-215 (80%), CWE-476 (80%), CWE-20 (80%), CWE-532 (80%), CWE-665 (80%), CWE-404 (80%) | Yes  | CWE-20 (70%); code: No  |  
-|  Total                                           |  3/3  |  1/3  |  3/3  |  1/3  |  3/3  |  2/3  |
+|  Total                                           |  2/2  |  0/2  |  2/2  |  0/2  |  2/2  |  1/2  |
+
+</div>
+
+
+<h3>
+    <b>
+        <div align="center">
+            :warning: - Unverifiable CWE Samples
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+
+|  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
+|-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
+|  :warning: CWE611-351  |  No   | -     | No   | -      | No    | -     |
+|  Total                 |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |  1/1  |
 
 </div>
 </details>
