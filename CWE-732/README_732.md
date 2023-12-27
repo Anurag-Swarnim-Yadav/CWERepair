@@ -68,7 +68,7 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  :x: CWE732-1575 [:recycle: CWE-459, CWE-909]      |  Yes  | CWE-787 (95%)  | Yes  |  CWE-121 ((90%)  | Yes  |  CWE-119 (95%); code: No (2/2)  |
+|  :x: CWE732-1575 [:recycle: CWE-459, CWE-909]      |  Yes  | CWE-787 (95%)  | Yes  |  CWE-121 (90%)  | Yes  |  CWE-119 (95%); code: No (2/2)  |
 |  Total                                           |  1/1  |  0/1  |  1/1  |  0/1  |  1/1  |  0/1  |
 </div>
 
