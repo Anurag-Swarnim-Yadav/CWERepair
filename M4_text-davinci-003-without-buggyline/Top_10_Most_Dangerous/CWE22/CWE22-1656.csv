@@ -1,0 +1,887 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname ( struct archive_write_disk * a ) {
+  char * dest , * src ;
+  char separator = '\\0' ;
+  dest = src = a -> name ;
+
+  // Check if the input is empty
+  if ( * src == '\\0' ) {
+    archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ;
+    return ( ARCHIVE_FAILED ) ;
+  }
+
+# if defined ( __CYGWIN__ )
+  cleanup_pathname_win ( a ) ;
+# endif
+
+  // Check if the path starts with a '/'
+  if ( * src == '/' ) {
+    separator = * src ++ ;
+  }
+
+  for ( ; ; ) {
+    if ( src [ 0 ] == '\\0' ) {
+      break ;
+    } else if ( src [ 0 ] == '/' ) {
+      src ++ ;
+      continue ;
+    } else if ( src [ 0 ] == '.' ) {
+      if ( src [ 1 ] == '\\0' ) {
+        break ;
+      } else if ( src [ 1 ] == '/' ) {
+        src += 2 ;
+        continue ;
+      } else if ( src [ 1 ] == '.' ) {
+        // Check if the path contains '..'
+        if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) {
+          if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) {
+            archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ;
+            return ( ARCHIVE_FAILED ) ;
+          }
+        }
+      }
+    }
+
+    // Check if the path is valid
+    if ( strstr ( src , ""../"" ) || strstr ( src , ""..\\"" ) ) {
+      archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path traversal detected"" ) ;
+      return ( ARCHIVE_FAILED ) ;
+    }
+
+    if ( separator ) {
+      * dest ++ = '/' ;
+    }
+
+    while ( * src != '\\0' && * src != '/' ) {
+      * dest ++ = * src ++ ;
+    }
+
+    if ( * src == '\\0' ) {
+      break ;
+    }
+
+    separator = * src ++ ;
+  }
+
+  if ( dest == a -> name ) {
+    if ( separator ) {
+      * dest ++ = '/' ;
+    } else {
+      * dest ++ = '.' ;
+    }
+  }
+
+  * dest = '\\0' ;
+  return ( ARCHIVE_OK ) ;
+}",663,-51.95684035850497,-0.0783662750505354
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' && src [ 1 ] != '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } } else if ( src [ 0 ] == '.' && src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 3; continue; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",454,-15.831537097612895,-0.03487122708725307
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { 
+char * dest , * src ; 
+char separator = '\\0' ; 
+dest = src = a -> name ; 
+if ( * src == '\\0' ) { 
+archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; 
+return ( ARCHIVE_FAILED ) ; 
+} 
+# if defined ( __CYGWIN__ ) 
+cleanup_pathname_win ( a ) ; 
+# endif 
+if ( * src == '/' ) separator = * src ++ ; 
+for ( ; ; ) { 
+if ( src [ 0 ] == '\\0' ) { 
+break ; 
+} 
+else if ( src [ 0 ] == '/' ) { 
+src ++ ; 
+continue ; 
+} 
+else if ( src [ 0 ] == '.' ) { 
+if ( src [ 1 ] == '\\0' ) { 
+break ; 
+} 
+else if ( src [ 1 ] == '/' ) { 
+src += 2 ; 
+continue ; 
+} 
+else if ( src [ 1 ] == '.' ) { 
+if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { 
+if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { 
+if (a->name[0] != '/'){
+//added condition to check for absolute paths
+archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; 
+return ( ARCHIVE_FAILED ) ; 
+}
+}
+} 
+} 
+} 
+if ( separator ) * dest ++ = '/' ; 
+while ( * src != '\\0' && * src != '/' ) { 
+* dest ++ = * src ++ ; 
+} 
+if ( * src == '\\0' ) break ; 
+separator = * src ++ ; 
+} 
+if ( dest == a -> name ) { 
+if ( separator ) * dest ++ = '/' ; 
+else * dest ++ = '.' ; 
+} 
+* dest = '\\0' ; 
+return ( ARCHIVE_OK ) ; 
+}",553,-39.95217832992326,-0.07224625376116321
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\0' ; dest = src = a -> name ; if ( * src == '\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif 
+
+// The following code block is added to prevent path traversal
+char* absolute_path = realpath(src, NULL);
+if(!absolute_path)
+{
+	archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path not found"" ) ; 
+	return ( ARCHIVE_FAILED ) ;
+}
+
+if ( absolute_path [ 0 ] == '/' ) separator = * absolute_path ++ ;
+for ( ; ; ) { 
+	if ( absolute_path [ 0 ] == '\0' ) { 
+		break ; 
+	} else if ( absolute_path [ 0 ] == '/' ) { 
+		absolute_path ++ ; 
+		continue ; 
+	} else if ( absolute_path [ 0 ] == '.' ) { 
+		if ( absolute_path [ 1 ] == '\0' ) { 
+			break ; 
+		} else if ( absolute_path [ 1 ] == '/' ) { 
+			absolute_path += 2 ; 
+			continue ; 
+		} else if ( absolute_path [ 1 ] == '.' ) { 
+			if ( absolute_path [ 2 ] == '/' || absolute_path [ 2 ] == '\0' ) { 
+				if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { 
+					archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; 
+					return ( ARCHIVE_FAILED ) ; 
+				} 
+			} 
+		} 
+	} 
+	if ( separator ) * dest ++ = '/' ; 
+	while ( * absolute_path != '\0' && * absolute_path != '/' ) { 
+		* dest ++ = * absolute_path ++ ; 
+	} 
+	if ( * absolute_path == '\0' ) break ; 
+	separator = * absolute_path ++ ; 
+} 
+
+if ( dest == a -> name ) { 
+	if ( separator ) * dest ++ = '/' ; 
+	else * dest ++ = '.' ; 
+} 
+* dest = '\0' ; 
+
+// Free the absolute path
+if(absolute_path)
+{
+	free(absolute_path);
+}
+
+return ( ARCHIVE_OK ) ; 
+}",711,-72.86007715296975,-0.10247549529250316
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { if (( strcmp ( src , "".."" ) == 0 ) || ( strncmp ( src , ""../"", 3 ) == 0 )) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",459,-19.778455778952683,-0.0430903176012041
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 2; continue; } } } if ( strncmp ( src , ""../"" , 3 ) == 0 || strcmp ( src , "".."" ) == 0 ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path traversal detected"" ) ; return ( ARCHIVE_FAILED ) ; } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",510,-24.091236191188887,-0.047237718021939
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } src += 3 ; continue ; } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",434,-8.334104497795291,-0.019203005755288688
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname ( struct archive_write_disk * a ) {
+ char * dest , * src ;
+ char separator = '\\0' ;
+ dest = src = a -> name ;
+ if ( * src == '\\0' ) {
+ archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ;
+ return ( ARCHIVE_FAILED ) ;
+ }
+ # if defined ( __CYGWIN__ )
+ cleanup_pathname_win ( a ) ;
+ # endif
+ if ( * src == '/' ) separator = * src ++ ;
+ for ( ; ; ) {
+ if ( src [ 0 ] == '\\0' ) {
+ break ;
+ } 
+ else if ( src [ 0 ] == '/' ) {
+ src ++ ;
+ continue ;
+ } 
+ else if ( src [ 0 ] == '.' ) {
+ if ( src [ 1 ] == '\\0' ) {
+ break ;
+ } 
+ else if ( src [ 1 ] == '/' ) {
+ src += 2 ;
+ continue ;
+ } 
+ else if ( src [ 1 ] == '.' ) {
+ if (( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) && ( strstr ( src , ""../"" ) == NULL ) && ( strstr ( src , ""..\\"" ) == NULL ))  {
+ if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) {
+ archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ;
+ return ( ARCHIVE_FAILED ) ;
+ }
+ }
+ }
+ }
+ if ( separator ) * dest ++ = '/' ;
+ while ( * src != '\\0' && * src != '/' ) {
+ * dest ++ = * src ++ ;
+ }
+ if ( * src == '\\0' ) break ;
+ separator = * src ++ ;
+ }
+ if ( dest == a -> name ) {
+ if ( separator ) * dest ++ = '/' ;
+ else * dest ++ = '.' ;
+ }
+ * dest = '\\0' ;
+ return ( ARCHIVE_OK ) ;
+ }",514,-38.32158748717872,-0.07455561767933602
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } // Check for out-of-bound directory access if (strstr(src, "".."") == NULL) { continue; } else { archive_set_error ( & a->archive, ARCHIVE_ERRNO_MISC , ""Path contains out-of-bound directory access""); return ( ARCHIVE_FAILED ) ; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",502,-42.9432271203414,-0.08554427713215418
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { // newly added code if ( * src == '/' && * ( src + 1 ) ! = '/' ) { ++ src ; continue ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src ! = '\\0' && * src ! = '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",463,-39.169263598154956,-0.08459884146469752
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src , * end ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; end = src + strlen ( src ) ; for ( ; ; ) { if ( src == end ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else if ( ( src + 2 ) == end ) { src += 2 ; } } } } if ( separator ) * dest ++ = '/' ; while ( src != end && * src != '/' ) { * dest ++ = * src ++ ; } if ( src == end ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",444,-28.9529114587924,-0.06520926004232523
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname ( struct archive_write_disk * a ) { 
+  char * dest , * src , *path_prefix ; 
+  char separator = '\\0' ; 
+  dest = src = a -> name ; 
+  if ( * src == '\\0' ) { 
+    archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; 
+    return ( ARCHIVE_FAILED ) ; 
+  } 
+  
+  /* Get the absolute path of the directory */
+  path_prefix = getcwd(NULL, 0);
+  
+  # if defined ( __CYGWIN__ ) 
+    cleanup_pathname_win ( a ) ; 
+  # endif 
+  
+  /* Prepend the absolute path to the source string */
+  char absolute_path[strlen(path_prefix) + strlen(src) + 1];
+  snprintf(absolute_path, sizeof(absolute_path), ""%s%s"", path_prefix, src);
+  src = absolute_path;
+  
+  /* Reset the destination pointer */
+  dest = a->name;
+  
+  if ( * src == '/' ) separator = * src ++ ; 
+  for ( ; ; ) { 
+    if ( src [ 0 ] == '\\0' ) { 
+      break ; 
+    } 
+    else if ( src [ 0 ] == '/' ) { 
+      src ++ ; 
+      continue ; 
+    } 
+    else if ( src [ 0 ] == '.' ) { 
+      if ( src [ 1 ] == '\\0' ) { 
+        break ; 
+      } 
+      else if ( src [ 1 ] == '/' ) { 
+        src += 2 ; 
+        continue ; 
+      } 
+      else if ( src [ 1 ] == '.' ) { 
+        if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { 
+          if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { 
+            archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; 
+            return ( ARCHIVE_FAILED ) ; 
+          } 
+        } 
+      } 
+    } 
+    if ( separator ) * dest ++ = '/' ; 
+    while ( * src != '\\0' && * src != '/' ) { 
+      * dest ++ = * src ++ ; 
+    } 
+    if ( * src == '\\0' ) break ; 
+    separator = * src ++ ; 
+  } 
+  if ( dest == a -> name ) { 
+    if ( separator ) * dest ++ = '/' ; 
+    else * dest ++ = '.' ; 
+  } 
+  * dest = '\\0' ; 
+  return ( ARCHIVE_OK ) ; 
+}",705,-74.2103611702333,-0.10526292364572098
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; 
+
+//addition of external checks 
+char dir_path[PATH_MAX] = ""/allowed/directory/path/"";
+if(strstr(a->name, dir_path) == NULL) {
+	archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path is not within allowed directory"" ) ; return ( ARCHIVE_FAILED ) ;
+}
+//end of external checks
+
+for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } 
+
+if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",534,-80.9136498756044,-0.15152368890562623
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 2 ; continue ; } // Add else clause to continue past dot-dot directory } } if ( separator ) * dest ++ = '/' ; if ( dest - a->name >= PATH_MAX) { // Add check for path length to prevent buffer overflow. archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path is too long"" ) ; return ( ARCHIVE_FAILED ) ; } while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",514,-58.262356829921,-0.11335088877416538
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' || src[0] == '..' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",336,-13.148016528501097,-0.03913100157291993
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 3; // Skip over the '..' continue; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } // Check if the characters after '/' are valid if ( isValidPathname(src + 1) == false ) { return ARCHIVE_FAILED; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; } 
+
+bool isValidPathname(char * s) {
+    for (int i = 0; i < strlen(s); i++) {
+        if (s[i] == '.' || s[i] == '\\' || s[i] == '..' || s[i] == '~') {
+            return false;
+        }
+    }
+    return true;
+}",569,-75.07766490697045,-0.13194668700697795
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," 
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } // add a check to ensure that the path is not trying to move outside of the directory's allowed path if ( strstr ( a -> name , ""../"" ) != NULL ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\' and is trying to move outside of the directory's allowed path"" ) ; return ( ARCHIVE_FAILED ) ; } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",522,-57.1972401273992,-0.1095732569490406
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } // Add restriction to allowed pathname length if ( strlen ( src ) > MAX_PATH_LENGTH ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path exceeds allowed length"" ) ; return ( ARCHIVE_FAILED ) ; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",495,-29.672622397555806,-0.059944691712233954
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," 
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; char * restrict_path = strncpy ( dest , src , MAX_PATH ) ; for ( ; ; ) { if ( restrict_path [ 0 ] == '\\0' ) { break ; } else if ( restrict_path [ 0 ] == '/' ) { restrict_path ++ ; continue ; } else if ( restrict_path [ 0 ] == '.' ) { if ( restrict_path [ 1 ] == '\\0' ) { break ; } else if ( restrict_path [ 1 ] == '/' ) { restrict_path += 2 ; continue ; } else if ( restrict_path [ 1 ] == '.' ) { if ( restrict_path [ 2 ] == '/' || restrict_path [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * restrict_path != '\\0' && * restrict_path != '/' ) { if ( dest - a -> name > MAX_PATH - 1 ) { //Limit the path to MAX_PATH characters archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path exceeds the maximum path length"" ) ; return ( ARCHIVE_FAILED ) ; } * dest ++ = * restrict_path ++ ; } if ( restrict_path == '\\0' ) break ; separator = * restrict_path ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",546,-60.44053247843787,-0.1106969459312049
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else {//added this line src += 3;//added this line continue;//added this line } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",450,-18.285510718054418,-0.040634468262343154
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } if ( a -> flags & ARCHIVE_EXTRACT_SECURE_PATH_TRAVERSAL ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; # Securing against Path Traversal if ( dest == a -> name || * src != '..' ) { separator = * src ++ ; } else { return ( ARCHIVE_FAILED ) ; } } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",535,-46.0074285567445,-0.08599519356400841
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; char * cleanPath = calloc ( 1 , strlen ( src ) + 1 ) ; int i = 0 ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } cleanPath [ i ++ ] = * src ; src ++; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; src = cleanPath ; while ( * src ) { * dest ++ = * src ++ ; } * dest = '\\0' ; free ( cleanPath ) ; return ( ARCHIVE_OK ) ; }",442,-42.68993528422989,-0.09658356399147033
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { 
+	char * dest , * src ; 
+	char separator = '\\0' ; 
+	dest = src = a -> name ; 
+	if ( * src == '\\0' ) { 
+		archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; 
+		return ( ARCHIVE_FAILED ) ; 
+	} 
+	# if defined ( __CYGWIN__ ) 
+		cleanup_pathname_win ( a ) ; 
+	# endif 
+	if ( * src == '/' ) separator = * src ++ ; 
+	for ( ; ; ) { 
+		if ( src [ 0 ] == '\\0' ) { 
+			break ; 
+		} else if ( src [ 0 ] == '/' ) { 
+			src ++ ; 
+			continue ; 
+		} else if ( src [ 0 ] == '.' ) { 
+			if ( src [ 1 ] == '\\0' ) { 
+				break ; 
+			} else if ( src [ 1 ] == '/' ) { 
+				src += 2 ; 
+				continue ; 
+			} else if ( src [ 1 ] == '.' ) { 
+				if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { 
+					if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) {
+						//Check if src path is in the same directory as the application
+						char srcPath[PATH_MAX];
+						realpath(src, srcPath);
+						char curPath[PATH_MAX];
+						getcwd(curPath, PATH_MAX);
+						if(strcmp(dirname(srcPath), curPath)) {
+							archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path outside application directory"" ) ; 
+							return ( ARCHIVE_FAILED ) ; 
+						}
+					} 
+				} 
+			} 
+		} 
+		if ( separator ) * dest ++ = '/' ; 
+		while ( * src != '\\0' && * src != '/' ) { 
+			* dest ++ = * src ++ ; 
+		} 
+		if ( * src == '\\0' ) break ; 
+		separator = * src ++ ; 
+	} 
+	if ( dest == a -> name ) { 
+		if ( separator ) * dest ++ = '/' ; 
+		else * dest ++ = '.' ; 
+	} 
+	* dest = '\\0' ; 
+	return ( ARCHIVE_OK ) ; 
+}",743,-65.39507164963725,-0.08801490127811204
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src , * end ; char separator = '\\0' ; dest = src = a -> name ; end = src + strlen ( a -> name ) ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( src < end && * src != '/' ) { * dest ++ = * src ++ ; } if ( src == end ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",436,-18.445146392640176,-0.04230538163449581
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," 
+
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src , * end ; char separator = '\\0' ; dest = src = a -> name ; end = a -> name + strlen ( a -> name ) ; if ( * src == '\\0' || src == end ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src == end ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src + 1 == end ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src + 2 == end || ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( ( dest + 1 ) >= end ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } else { if ( separator ) * dest ++ = '/' ; while ( ( src + 1 ) < end && * src != '/' ) { * dest ++ = * src ++ ; } } if ( src + 1 == end ) break ; separator = * src ++ ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",453,-46.230326637490066,-0.10205370118651229
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { 
+char * dest , * src ; 
+char separator = '\\0' ; 
+dest = src = a -> name ; 
+
+if ( * src == '\\0' ) { 
+archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; 
+return ( ARCHIVE_FAILED ) ; 
+} 
+# if defined ( __CYGWIN__ ) 
+cleanup_pathname_win ( a ) ; 
+# endif 
+if ( * src == '/' ) 
+separator = * src ++ ; 
+
+for ( ; ; ) { 
+if ( src [ 0 ] == '\\0' ) { 
+break ; 
+} else if ( src [ 0 ] == '/' ) { 
+src ++ ; 
+continue ; 
+} else if ( src [ 0 ] == '.' ) { 
+if ( src [ 1 ] == '\\0' ) { 
+break ; 
+} else if ( src [ 1 ] == '/' ) { 
+src += 2 ; 
+continue ; 
+} else if ( src [ 1 ] == '.' ) { 
+if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { 
+if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { 
+archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; 
+return ( ARCHIVE_FAILED ) ; 
+} 
+if ( src[2] != '\0' ) {
+archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path traversal is not allowed"" );
+return ARCHIVE_FAILED;
+} 
+} 
+} 
+if ( separator ) * dest ++ = '/' ; 
+while ( * src != '\\0' && * src != '/' ) { 
+* dest ++ = * src ++ ; 
+} 
+if ( * src == '\\0' ) 
+break ; 
+separator = * src ++ ; 
+} 
+if ( dest == a -> name ) { 
+if ( separator ) * dest ++ = '/' ; 
+else * dest ++ = '.' ; 
+} 
+* dest = '\\0' ; 
+return ( ARCHIVE_OK ) ; 
+}",583,-44.10937977529231,-0.07565931350822008
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { // Add code to check for directory traversal if(strstr(src, "".."") != NULL) { archive_set_error(&a->archive, ARCHIVE_ERRNO_MISC, ""Path contains \'..\'""); return (ARCHIVE_FAILED); } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",492,-25.735746750278196,-0.052308428354223974
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; // Check if file is outside of the directory if ( strstr ( a -> name , ""../"" ) != NULL ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",497,-27.84695537541705,-0.05603009129862586
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\0' ; dest = src = a -> name ; if ( * src == '\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; if ( strstr ( src , ""../"" ) ! = NULL || strstr ( src , ""..\\"" ) ! = NULL ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains '..'"" ) ; return ( ARCHIVE_FAILED ) ; } } for ( ; ; ) { if ( src [ 0 ] == '\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } } if ( separator ) * dest ++ = '/' ; while ( * src != '\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\0' ; return ( ARCHIVE_OK ) ; }",423,-19.94349338646929,-0.04714773850229146
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 2 ; continue ; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",437,-7.5707640558354035,-0.017324402873765226
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," 
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } src+=2;  //Add this line of code to jump over the '..'  continue;   //Add this line of code to skip the current iteration  } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",463,-44.67974570174607,-0.09650053067331765
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { // Prevent path traversal attacks by limiting paths to the current directory. if (realpath(src, dest) == NULL) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid path"" ) ; return ( ARCHIVE_FAILED ) ; } break; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",455,-34.4030877298384,-0.07561118182382065
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } continue ; } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",346,-14.590288979151294,-0.0421684652576627
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 2 ; continue ; } } } if ( separator ) { if ( dest - a -> name > MAX_DIR_PATH_LEN ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path is too long"" ) ; return ( ARCHIVE_FAILED ) ; } * dest ++ = '/' ; } while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",499,-24.236116576807706,-0.048569371897410236
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { if ( dest == a -> name ) { dest += 2 ; } else { dest -= 2 ; while ( dest != a -> name && * dest != '/' ) { dest -- ; } if ( * dest == '/' ) { dest ++ ; } } src += 2 ; continue ; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { if ( * src == '.' || * src == '*' || * src == '?' || * src == '<' || * src == '>' || * src == '|' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains illegal character"" ) ; return ( ARCHIVE_FAILED ) ; } * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",574,-43.58214064655023,-0.07592707429712584
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { 
+    const char * rootDir = ""/home/username/""; 
+    char * dest , * src ; 
+    char separator = '\\0' ; 
+    dest = src = a -> name ; 
+    if ( * src == '\\0' ) { 
+        archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; 
+        return ( ARCHIVE_FAILED ) ; 
+    } 
+    # if defined ( __CYGWIN__ )
+    cleanup_pathname_win ( a ) ; 
+    # endif 
+    if ( strncmp(src, rootDir, strlen(rootDir)) == 0 ) {
+        src += strlen(rootDir);
+    }
+    else {
+        archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path not within the allowed directory ."" ) ; 
+        return ( ARCHIVE_FAILED ) ; 
+    } 
+    if ( * src == '/' ) separator = * src ++ ; 
+    for ( ; ; ) { 
+        if ( src [ 0 ] == '\\0' ) { 
+            break ; 
+        } 
+        else if ( src [ 0 ] == '/' ) { 
+            src ++ ; 
+            continue ; 
+        } 
+        else if ( src [ 0 ] == '.' ) { 
+            if ( src [ 1 ] == '\\0' ) { 
+                break ; 
+            } 
+            else if ( src [ 1 ] == '/' ) { 
+                src += 2 ; 
+                continue ; 
+            } 
+            else if ( src [ 1 ] == '.' ) { 
+                if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { 
+                    if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { 
+                        archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; 
+                        return ( ARCHIVE_FAILED ) ; 
+                    } 
+                } 
+            } 
+        } 
+        if ( separator ) * dest ++ = '/' ; 
+        while ( * src != '\\0' && * src != '/' ) { 
+            * dest ++ = * src ++ ; 
+        } 
+        if ( * src == '\\0' ) break ; 
+        separator = * src ++ ; 
+    } 
+    if ( dest == a -> name ) { 
+        if ( separator ) * dest ++ = '/' ; 
+        else * dest ++ = '.' ; 
+    } 
+    * dest = '\\0' ; 
+    return ( ARCHIVE_OK ) ; 
+}",685,-62.44358825407148,-0.09115852299864449
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname ( struct archive_write_disk * a ) { 
+    char * dest , * src ; 
+    char separator = '\\0' ; 
+    dest = src = a -> name ; 
+    if ( * src == '\\0' ) { 
+        archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; 
+        return ( ARCHIVE_FAILED ) ; 
+    } 
+    # if defined ( __CYGWIN__ ) 
+        cleanup_pathname_win ( a ) ; 
+    # endif 
+    if ( * src == '/' ) separator = * src ++ ; 
+    for ( ; ; ) { 
+        if ( src [ 0 ] == '\\0' ) { 
+            break ; 
+        } else if ( src [ 0 ] == '/' ) { 
+            src ++ ; 
+            continue ; 
+        } else if ( src [ 0 ] == '.' ) { 
+            if ( src [ 1 ] == '\\0' ) { 
+                break ; 
+            } else if ( src [ 1 ] == '/' ) { 
+                src += 2 ; 
+                continue ; 
+            } else if ( src [ 1 ] == '.' ) {
+                if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { 
+                    if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { 
+                        // Verify that the directory traversal is not going outside of the root directory
+                        char *s = src;
+                        int slash_count = 0;
+                        int valid = 1;
+                        while(*s != '\0') {
+                            if(*s == '/') {
+                                slash_count++;
+                            }
+
+                            if(slash_count > 3) {
+                                valid = 0;
+                                break;
+                            }
+
+                            s++;
+                        }
+                        if(!valid) {
+                            archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; 
+                            return ( ARCHIVE_FAILED ) ; 
+                        }
+                    } 
+                } 
+            } 
+        } 
+        if ( separator ) * dest ++ = '/' ; 
+        while ( * src != '\\0' && * src != '/' ) { 
+            * dest ++ = * src ++ ; 
+        } 
+        if ( * src == '\\0' ) break ; 
+        separator = * src ++ ; 
+    } 
+    if ( dest == a -> name ) { 
+        if ( separator ) * dest ++ = '/' ; 
+        else * dest ++ = '.' ; 
+    } 
+    * dest = '\\0' ; 
+    return ( ARCHIVE_OK ) ; 
+}",689,-78.10072185458857,-0.11335373273525191
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } //additional code to prevent path traversal attack if ( strstr ( src , ""/../"" ) != NULL ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path traversal detected"" ) ; return ( ARCHIVE_FAILED ) ; } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",494,-26.348260499247502,-0.053336559715075914
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) {
+char * dest , * src ;
+char separator = '\\0' ;
+dest = src = a -> name ;
+if ( * src == '\\0' ) {
+ archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ;
+ return ( ARCHIVE_FAILED ) ;
+}
+#if defined ( __CYGWIN__ )
+cleanup_pathname_win ( a ) ;
+#endif
+
+if ( * src == '/' ) separator = * src ++ ;
+for ( ; ; ) {
+ if ( src [ 0 ] == '\\0' ) {
+  break ;
+ } else if ( src [ 0 ] == '/' ) {
+  src ++ ;
+  continue ;
+ } else if ( src [ 0 ] == '.' ) {
+  if ( src [ 1 ] == '\\0' ) {
+   break ;
+  } else if ( src [ 1 ] == '/' ) {
+   src += 2 ;
+   continue ;
+  } else if ( src [ 1 ] == '.' ) {
+   if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) {
+    if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) {
+     char * canonical_path = realpath(a->name, NULL);
+     archive_set_error (&a->archive, ARCHIVE_ERRNO_MISC, ""Path contains \'..\'"");
+     if (canonical_path != NULL) {
+       free(canonical_path);
+     }
+     return (ARCHIVE_FAILED);
+    }
+   }
+  }
+ }
+ if ( separator ) * dest ++ = '/' ;
+ while ( * src != '\\0' && * src != '/' ) {
+  * dest ++ = * src ++ ;
+ }
+ if ( * src == '\\0' ) break ;
+ separator = * src ++ ;
+}
+if ( dest == a -> name ) {
+ if ( separator ) * dest ++ = '/' ;
+ else * dest ++ = '.' ;
+}
+* dest = '\\0' ;
+return ( ARCHIVE_OK ) ;
+}",530,-41.204520662667086,-0.07774437860880583
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+
+static int cleanup_pathname(struct archive_write_disk *a) {
+  char *dest, *src;
+  char separator = '\0';
+  dest = src = a->name;
+  if (*src == '\0') {
+    archive_set_error(&a->archive, ARCHIVE_ERRNO_MISC, ""Invalid empty pathname"");
+    return(ARCHIVE_FAILED);
+  }
+#if defined(__CYGWIN__)
+  cleanup_pathname_win(a);
+#endif
+  if (*src == '/') separator = *src++;
+  for (;;) {
+    if (src[0] == '\0') {
+      break;
+    } else if (src[0] == '/') {
+      src++;
+      continue;
+    } else if (src[0] == '.') {
+      if (src[1] == '\0') {
+        break;
+      } else if (src[1] == '/') {
+        src += 2;
+        continue;
+      } else if (src[1] == '.') {
+        if (src[2] == '/' || src[2] == '\0') {
+          if (a->flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT) {
+            archive_set_error(&a->archive, ARCHIVE_ERRNO_MISC, ""Path contains \'..\'"");
+            return(ARCHIVE_FAILED);
+          }
+        }
+      }
+    }
+    if (separator) *dest++ = '/';
+    while (*src != '\0' && *src != '/') {
+      if (src[0] == '.' && src[1] == '.' && (src[2] == '/' || src[2] == '\0')) {
+        archive_set_error(&a->archive, ARCHIVE_ERRNO_MISC, ""Path contains \'..\'"");
+        return(ARCHIVE_FAILED);
+      }
+      *dest++ = *src++;
+    }
+    if (*src == '/') separator = *src++;
+  }
+  if (dest == a->name) {
+    if (separator) *dest++ = '/';
+    else *dest++ = '.';
+  }
+  *dest = '\0';
+  return(ARCHIVE_OK);
+}",562,-35.161656854956476,-0.06256522572056313
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 3; continue; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",436,-7.3656217179158014,-0.016893627793384866
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 3 ; continue ; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } /* Check for directory traversal */ if ( strstr ( dest , ""../"" ) || strstr ( dest , ""./"" ) ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\' or \'.\'"" ) ; return ARCHIVE_FAILED ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",511,-34.2949034264553,-0.06711331394609647
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," 
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else if ( strlen(src) > 2 && src[2] == '.') { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path traversal attack detected"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",493,-24.812224427654055,-0.05032905563418672
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) {
+  char * dest , * src ;
+  char separator = '\\0' ;
+  dest = src = a -> name ;
+  if ( * src == '\\0' ) {
+    archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ;
+    return ( ARCHIVE_FAILED ) ;
+  }
+  #if defined ( __CYGWIN__ )
+  cleanup_pathname_win ( a ) ;
+  #endif
+  if ( * src == '/' ) separator = * src ++ ;
+  for ( ; ; ) {
+    if ( src [ 0 ] == '\\0' ) {
+      break ;
+    } else if ( src [ 0 ] == '/' ) {
+      src ++ ;
+      continue ;
+    } else if ( src [ 0 ] == '.' ) {
+      if ( src [ 1 ] == '\\0' ) {
+        break ;
+      } else if ( src [ 1 ] == '/' ) {
+        src += 2 ;
+        continue ;
+      } else if ( src [ 1 ] == '.' ) {
+        if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) {
+          if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) {
+            archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ;
+            return ( ARCHIVE_FAILED ) ;
+          }
+        }
+        /* check if the path contains any directory traversal attempts */
+        if (strstr(src, "".."") != NULL) {
+            archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ;
+            return ( ARCHIVE_FAILED ) ;
+        }
+      }
+    }
+    if ( separator ) * dest ++ = '/' ;
+    while ( * src != '\\0' && * src != '/' ) {
+      * dest ++ = * src ++ ;
+    }
+    if ( * src == '\\0' ) break ;
+    separator = * src ++ ;
+  }
+  if ( dest == a -> name ) {
+    if ( separator ) * dest ++ = '/' ;
+    else * dest ++ = '.' ;
+  }
+  * dest = '\\0' ;
+  return ( ARCHIVE_OK ) ;
+}",599,-36.22954972859156,-0.06048338852853349
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { // Check if the path is located within the allowed directory char * dir_path = getenv ( ""ALLOWED_DIR"" ) ; if ( strncmp ( src , dir_path , strlen ( dir_path ) ) == 0 ) { src += 2 ; continue ; } else { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid pathname - outside restricted directory"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",537,-48.98658695683239,-0.09122269451924095
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," 
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\0' ; dest = src = a -> name ; if ( * src == '\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { //Check if the path is inside the top level directory const char *tld = getenv(""TLD""); if (strncmp(a->name, tld, strlen(tld)) == 0) { src += 3; continue; } else { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\0' ; return ( ARCHIVE_OK ) ; }",485,-50.20112641966521,-0.10350747715394888
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; /* Adding this line to check for absolute path */ if ( * src == '/' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path traversal attempt detected"" ) ; return ( ARCHIVE_FAILED ) ; } return ( ARCHIVE_OK ) ; }",459,-39.24947620994296,-0.08551084141599774
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) { // If src points to the root folder, return an error  if (src == a->name && strlen(src) == 1) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid root pathname"" ) ; return ( ARCHIVE_FAILED ) ; } separator = * src ++ ; } for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } // Check if the pathname is outside the root folder if (strlen(a->name) >= strlen(src)) { if (strncmp(a->name, src, strlen(a->name)) != 0) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path outside the root folder"" ) ; return ( ARCHIVE_FAILED ) ; } } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",596,-77.53703718540659,-0.1300956999755144
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:","
+static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { continue; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",389,-7.808334048341199,-0.02007283817054293
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }
+Fixed code:"," static int cleanup_pathname ( struct archive_write_disk * a ) { char * dest , * src ; char separator = '\\0' ; dest = src = a -> name ; if ( * src == '\\0' ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Invalid empty pathname"" ) ; return ( ARCHIVE_FAILED ) ; } # if defined ( __CYGWIN__ ) cleanup_pathname_win ( a ) ; # endif if ( * src == '/' ) separator = * src ++ ; for ( ; ; ) { if ( src [ 0 ] == '\\0' ) { break ; } else if ( src [ 0 ] == '/' ) { src ++ ; continue ; } else if ( src [ 0 ] == '.' ) { if ( src [ 1 ] == '\\0' ) { break ; } else if ( src [ 1 ] == '/' ) { src += 2 ; continue ; } else if ( src [ 1 ] == '.' ) { if ( src [ 2 ] == '/' || src [ 2 ] == '\\0' ) { if ( a -> flags & ARCHIVE_EXTRACT_SECURE_NODOTDOT ) { archive_set_error ( & a -> archive , ARCHIVE_ERRNO_MISC , ""Path contains \'..\'"" ) ; return ( ARCHIVE_FAILED ) ; } else { src += 2 ; continue ; } } } if ( separator ) * dest ++ = '/' ; while ( * src != '\\0' && * src != '/' ) { * dest ++ = * src ++ ; } if ( * src == '\\0' ) break ; separator = * src ++ ; } if ( dest == a -> name ) { if ( separator ) * dest ++ = '/' ; else * dest ++ = '.' ; } * dest = '\\0' ; return ( ARCHIVE_OK ) ; }",436,-6.915734131555099,-0.015861775531089677

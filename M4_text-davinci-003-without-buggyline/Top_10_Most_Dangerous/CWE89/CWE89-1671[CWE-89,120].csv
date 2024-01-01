@@ -1,0 +1,1181 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; //Check length of input before copying if (alloc - 2 >= sizeof(char)){ res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",301,-30.673325844093856,-0.10190473702356763
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) {
+  int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ;
+  char * ns = malloc ( alloc ) ;
+  unsigned char in ;
+  int strindex = 0 ;
+  unsigned long hex ;
+  CURLcode res ;
+  if ( ! ns ) return NULL ;
+  while ( -- alloc > 0 ) {
+    in = * string ;
+    //Check if string is a valid hexadecimal value
+    if ( ( '%' == in ) && ISXDIGIT(string[1]) && ISXDIGIT(string[2]) && alloc > 2 ) {
+      char hexstr[3];
+      char * ptr;
+      hexstr[0] = string[1];
+      hexstr[1] = string[2];
+      hexstr[2] = 0;
+      hex = strtoul(hexstr, &ptr, 16);
+      in = curlx_ultouc(hex);
+      res = Curl_convert_from_network(handle, &in, 1);
+      if (res) {
+        free(ns);
+        return NULL;
+      }
+      string += 2;
+      alloc -= 2;
+    }
+    //Checking is done here to prevent buffer overflow
+    if (strindex < alloc) {
+      ns[strindex++] = in;
+    }
+    string++;
+  }
+  ns[strindex] = 0;
+  if (olen) *olen = strindex;
+  return ns;
+}",377,-59.42661140062891,-0.15763026896718543
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; // Check for SQL injection if ( ( '%' == in ) && !(ISALPHA(string[1]) || !ISALPHA(string[2])) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // Check for buffer overflow by making sure alloc is greater than 2 if (alloc > 2) { string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",307,-48.570177576888796,-0.15820904748172246
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape(CURL * handle, const char * string, int length, int * olen) {
+  int alloc = (length ? length : (int)strlen(string)) + 1;
+  char * ns = malloc(alloc);
+  unsigned char in;
+  int strindex = 0;
+  unsigned long hex;
+  CURLcode res;
+  if(!ns) return NULL;
+  while(--alloc > 0) {
+    in = *string;
+    if(('%' == in) && ISXDIGIT(string[1]) && ISXDIGIT(string[2])) {
+      char hexstr[3];
+      char * ptr;
+      hexstr[0] = string[1];
+      hexstr[1] = string[2];
+      hexstr[2] = 0;
+      hex = strtoul(hexstr, &ptr, 16);
+      in = curlx_ultouc(hex);
+      res = Curl_convert_from_network(handle, &in, 1);
+      if(res) {
+        free(ns);
+        return NULL;
+      }
+      if (!curl_isprint(in)) { //check if character is valid
+        free(ns);
+        return NULL;
+      }
+      string += 2;
+      alloc -= 2;
+    }
+    ns[strindex++] = in;
+    string++;
+  }
+  ns[strindex] = 0;
+  if(olen) *olen = strindex;
+  return ns;
+}",364,-38.06271069879789,-0.10456788653515904
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+  int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+  char * ns = malloc ( alloc ) ; 
+  unsigned char in ; 
+  int strindex = 0 ; 
+  unsigned long hex ; 
+  CURLcode res ; 
+  if ( ! ns ) return NULL ; 
+  while ( -- alloc > 0 ) { 
+    in = * string ; 
+    if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { 
+      char hexstr [ 3 ] ; 
+      char * ptr ; 
+      hexstr [ 0 ] = string [ 1 ] ; 
+      hexstr [ 1 ] = string [ 2 ] ; 
+      hexstr [ 2 ] = 0 ; 
+      hex = strtoul ( hexstr , & ptr , 16 ) ; 
+      if ( hex <= UCHAR_MAX ) {  
+        in = curlx_ultouc ( hex ) ; 
+        res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+        if ( res ) { 
+          free ( ns ) ; 
+          return NULL ; 
+        } 
+        string += 2 ; 
+        alloc -= 2 ; 
+      }
+    } 
+    ns [ strindex ++ ] = in ; 
+    string ++ ; 
+  } 
+  ns [ strindex ] = 0 ; 
+  if ( olen ) * olen = strindex ; 
+  return ns ; 
+}",394,-22.95346623963144,-0.05825752852698335
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) {
+  int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ;
+  char * ns = malloc ( alloc ) ;
+  unsigned char in ;
+  int strindex = 0 ;
+  unsigned long hex ;
+  CURLcode res ;
+  if ( ! ns ) return NULL ;
+  while ( -- alloc > 0 ) {
+    in = * string ;
+    if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) {
+      char hexstr [ 3 ] ;
+      char * ptr ;
+      hexstr [ 0 ] = string [ 1 ] ;
+      hexstr [ 1 ] = string [ 2 ] ;
+      hexstr [ 2 ] = 0 ;
+      hex = strtoul ( hexstr , & ptr , 16 ) ;
+      in = curlx_ultouc ( hex ) ;
+      res = Curl_convert_from_network ( handle , & in , 1 ) ;
+      if ( res ) {
+        free ( ns ) ;
+        return NULL ;
+      }
+      string += 2 ;
+      alloc -= 2 ;
+    }
+    if (strindex < alloc - 1) {
+      ns [ strindex ++ ] = in ;
+      string ++ ;
+    }
+  }
+  ns [ strindex ] = 0 ;
+  if ( olen ) * olen = strindex ;
+  return ns ;
+}",360,-17.337716918432598,-0.048160324773423885
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+    int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+    char * ns = malloc ( alloc ) ; 
+    unsigned char in ; 
+    int strindex = 0 ; 
+    unsigned long hex ; 
+    CURLcode res ; 
+    if ( ! ns ) return NULL ; 
+    while ( -- alloc > 0 ) { 
+        in = * string ; 
+        if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { 
+            char hexstr [ 3 ] ; 
+            char * ptr ; 
+            hexstr [ 0 ] = string [ 1 ] ; 
+            hexstr [ 1 ] = string [ 2 ] ; 
+            hexstr [ 2 ] = 0 ; 
+            hex = strtoul ( hexstr , & ptr , 16 ) ; 
+            in = curlx_ultouc ( hex ) ; 
+            res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+            if ( res ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } 
+            string += 2 ; 
+            alloc -= 2 ; 
+        } 
+        //validate in to prevent SQL injection
+        if(!validate_input(in)){
+            free(ns);
+            return NULL;
+        }
+        //check for buffer overflows
+        if(strindex >= alloc - 1){
+            free(ns);
+            return NULL;
+        }
+        ns [ strindex ++ ] = in ; 
+        string ++ ; 
+    } 
+    ns [ strindex ] = 0 ; 
+    if ( olen ) * olen = strindex ; 
+    return ns ; 
+}
+
+bool validate_input(unsigned char in){
+    //add validation logic
+    return true;
+}",471,-53.25435521186983,-0.11306657157509518
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) {
+  if (length == 0 || length < 0 || string == NULL) {
+    return NULL;
+  }
+  
+  int alloc = (length ? length : (int)strlen(string)) + 1;
+  char * ns = malloc(alloc);
+  unsigned char in;
+  int strindex = 0;
+  unsigned long hex;
+  CURLcode res;
+  
+  if (! ns) {
+    return NULL;
+  } 
+  
+  while (--alloc > 0) {
+    in = *string;
+  
+    if (('%' == in) && ISXDIGIT(string[1]) && ISXDIGIT(string[2])) {
+      char hexstr[3];
+      char * ptr;
+      hexstr[0] = string[1];
+      hexstr[1] = string[2];
+      hexstr[2] = 0;
+      
+      if (strtoul(hexstr, &ptr, 16) <= UCHAR_MAX) {
+        hex = strtoul(hexstr, &ptr, 16);
+        in = curlx_ultouc(hex);
+        res = Curl_convert_from_network(handle, &in, 1);
+        
+        if (res) {
+          free(ns);
+          return NULL;
+        }
+        
+        string += 2;
+        alloc -= 2;
+      }
+      else {
+        free(ns);
+        return NULL;
+      }
+    }
+    ns[strindex++] = in;
+    string++;
+  }
+  ns[strindex] = 0;
+  
+  if (olen) 
+    *olen = strindex;
+  
+  return ns;
+}",427,-55.96596095909997,-0.1310678242601873
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { //prevent SQL injection by preventing special characters from being exposed char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = sanitize_character(string[1]); hexstr [ 1 ] = sanitize_character(string[2]); hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } //prevent buffer overflow by limiting the number of characters to be copied if(alloc > 0 && strindex < alloc-1) { ns [ strindex ++ ] = in ; string ++ ; } } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+
+//sanitize_character() function
+char sanitize_character(char c) {
+    //add other characters to be filtered out
+    const char *filtered_chars = ""/"";
+    
+    if(!strchr(filtered_chars, c)) {
+        return c;
+    }
+    else {
+        return '_';
+    }
+}",422,-111.17868488046473,-0.2634565992428074
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+  int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+  char * ns = malloc ( alloc ) ; 
+  unsigned char in ; 
+  int strindex = 0 ; 
+  unsigned long hex ; 
+  CURLcode res ; 
+  if ( ! ns ) return NULL ; 
+  
+  while ( -- alloc > 0 ) { 
+    in = * string ; 
+    if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { 
+      char hexstr [ 3 ] ; 
+      char * ptr ; 
+      hexstr [ 0 ] = string [ 1 ] ; 
+      hexstr [ 1 ] = string [ 2 ] ; 
+      hexstr [ 2 ] = 0 ; 
+      hex = strtoul ( hexstr , & ptr , 16 ) ; 
+      in = curlx_ultouc ( hex ) ; 
+      res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+      if ( res ) { 
+        free ( ns ) ; 
+        return NULL ; 
+      } 
+      string += 2 ; 
+      alloc -= 2 ; 
+    } 
+    if (alloc > 0) {
+        ns [ strindex ++ ] = in ; 
+        string ++ ;
+    }
+  }
+  ns [ strindex ] = 0 ; 
+  if ( olen ) * olen = strindex ; 
+  return ns ; 
+}",389,-24.062081092447215,-0.06185624959497999
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { // Initialize variables int alloc = 0; int strindex = 0; unsigned long hex = 0; CURLcode res = CURLE_OK; // Check if length is provided, else set length to string length if (length) { alloc = length + 1; } else { alloc = strlen(string) + 1; } // Allocate memory for the new string char *ns = malloc(alloc); // Check if allocation was successful if (ns == NULL) { return NULL; } // Prevent buffer overflow while(--alloc > 0) { // Assign current character from string to 'in' unsigned char in = *string; // Check if current character is '%', and the next two characters are hexadecimal if(('%' == in) && ISXDIGIT(string[1]) && ISXDIGIT(string[2])) { char hexstr[3]; char *ptr; hexstr[0] = string[1]; hexstr[1] = string[2]; hexstr[2] = 0; hex = strtoul(hexstr, &ptr, 16); // Check if strtoul was successful if (hex != 0) { in = curlx_ultouc(hex); // Check if CURL conversion was successful res = Curl_convert_from_network(handle, &in, 1); // Return NULL if CURL conversion was unsuccessful if (res) { free(ns); return NULL; } string += 2; alloc -= 2; } } // Copy character to new string ns[strindex++] = in; string++; } ns[strindex] = 0; // Check if olen was provided, and set it to strindex if (olen) { *olen = strindex; } return ns; }",408,-133.16961682403482,-0.326396119666752
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+	int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+	char * ns = malloc ( alloc ) ; 
+	unsigned char in ; 
+	int strindex = 0 ; 
+	unsigned long hex ; 
+	CURLcode res ; 
+	if ( ! ns ) return NULL ;
+	while ( -- alloc > 0 ) {
+		in = * string ; 
+		if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) {
+			char hexstr [ 3 ] ; 
+			char * ptr ; 
+			hexstr [ 0 ] = string [ 1 ] ; 
+			hexstr [ 1 ] = string [ 2 ] ; 
+			hexstr [ 2 ] = 0 ; 
+			hex = strtoul ( hexstr , & ptr , 16 ) ; 
+			in = curlx_ultouc ( hex ) ; 
+			res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+			if ( res ) {
+				free ( ns ) ; 
+				return NULL ; 
+			}
+			string += 2 ; 
+			alloc -= 2 ; 
+		}
+		
+		// Escape any special characters using prepared statements, to protect against SQL injection
+		in = mysql_real_escape_string(ns, string, length);
+		
+		ns [ strindex ++ ] = in ; 
+		string ++ ; 
+		
+		// Add buffer overflow protection
+		if (strlen(string) > alloc) {
+			free(ns);
+			return NULL;
+		}
+	}
+	ns [ strindex ] = 0 ; 
+	if ( olen ) * olen = strindex ; 
+	return ns ; 
+}",491,-76.68060187882661,-0.1561723052521927
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } else { //add a check to ensure the hex is valid if (hex < 0x20 || hex > 0x7E) { //not valid - exit free(ns); return NULL; } } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",323,-47.244777842787094,-0.14626866205197242
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) {
+int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ;
+char * ns = malloc ( alloc ) ;
+unsigned char in ;
+int strindex = 0 ;
+unsigned long hex ;
+CURLcode res ;
+if ( ! ns ) return NULL ;
+while ( -- alloc > 0 ) {
+in = * string ;
+if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) {
+char hexstr [ 3 ] ;
+char * ptr ;
+hexstr [ 0 ] = string [ 1 ] ;
+hexstr [ 1 ] = string [ 2 ] ;
+hexstr [ 2 ] = 0 ;
+hex = strtoul ( hexstr , & ptr , 16 ) ;
+if (hex < 256)
+{
+in = curlx_ultouc ( hex ) ;
+res = Curl_convert_from_network ( handle , & in , 1 ) ;
+if ( res ) {
+free ( ns ) ;
+return NULL ;
+}
+string += 2 ;
+alloc -= 2 ;
+}
+else
+{
+alloc = 0;
+break;
+}
+}
+ns [ strindex ++ ] = in ;
+string ++ ;
+}
+ns [ strindex ] = 0 ;
+if ( olen ) * olen = strindex ;
+return ns ;
+}",339,-23.10309845781613,-0.0681507329139119
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+	int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+	char * ns = malloc ( alloc ) ; 
+	unsigned char in ; 
+	int strindex = 0 ; 
+	unsigned long hex ; 
+	CURLcode res ; 
+	if ( ! ns ) return NULL ; 
+	while ( -- alloc > 0 ) { 
+		in = * string ; 
+		if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { 
+			char hexstr [ 3 ] ; 
+			char * ptr ; 
+			hexstr [ 0 ] = string [ 1 ] ; 
+			hexstr [ 1 ] = string [ 2 ] ; 
+			hexstr [ 2 ] = 0 ; 
+			hex = strtoul ( hexstr , & ptr , 16 ) ; 
+			in = curlx_ultouc ( hex ) ; 
+			res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+			if ( res ) { 
+				free ( ns ) ; 
+				return NULL ; 
+			} 
+			string += 2 ; 
+			alloc -= 2 ; 
+		} 
+		//Check if the size of string is longer than allocated
+		if(strindex + 1 >= alloc) {
+			free(ns);
+			return NULL;
+		}
+		//Check for special characters
+		if(in == ';' || in == '(' || in == ')' || in == '|' || in == '&' || in == '$' || in == '*' || in == '<' || in == '>' || in == '?' || in == '#') {
+			free(ns);
+			return NULL;
+		}
+		ns [ strindex ++ ] = in ; 
+		string ++ ; 
+	} 
+	ns [ strindex ] = 0 ; 
+	if ( olen ) * olen = strindex ; 
+	return ns ; 
+}",553,-68.0495631309353,-0.12305526786787577
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+int alloc;
+if (length == 0) {
+	alloc = (int) strlen(string) + 1;
+}
+else {
+	alloc = length + 1;
+}
+
+char * ns = malloc ( alloc ) ;
+unsigned char in ;
+int strindex = 0 ;
+unsigned long hex ;
+CURLcode res ;
+if ( ! ns ) return NULL ;
+while ( -- alloc > 0 ) {
+	in = * string ;
+	if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) {
+		char hexstr [3] ;
+		char * ptr ;
+		hexstr [ 0 ] = string [ 1 ] ; 
+		hexstr [ 1 ] = string [ 2 ] ; 
+		hexstr [ 2 ] = 0 ;
+		
+		hex = strtoul ( hexstr , & ptr , 16 ) ;		
+		in = curlx_ultouc ( hex ) ;		
+		res = Curl_convert_from_network ( handle , & in , 1 ) ;
+		
+		if ( res ) {
+			free ( ns ) ;
+			return NULL ;
+		}
+		
+		string += 2 ;
+		alloc -= 2 ;
+	}
+	
+	ns [ strindex ++ ] = in ; 
+	string ++ ;
+
+}
+ns [ strindex ] = 0 ;
+if ( olen ) * olen = strindex ;
+return ns ;
+}",391,-64.76255740177295,-0.1656331391349692
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+
+//Check if length of input is greater than 0 
+if (length < 0){ 
+  return NULL; 
+} 
+
+//Calculate length of string 
+int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+
+//Allocate memory for string 
+char * ns = malloc ( alloc ) ; 
+unsigned char in ; 
+int strindex = 0 ; 
+unsigned long hex ; 
+CURLcode res ; 
+
+//Check if memory was successfully allocated 
+if ( ! ns ) return NULL ; 
+
+//Loop through characters in the string 
+while ( -- alloc > 0 ) { 
+  in = * string ; 
+
+//Check if a hex code is present 
+if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { 
+  char hexstr [ 3 ] ; 
+  char * ptr ; 
+  hexstr [ 0 ] = string [ 1 ] ; 
+  hexstr [ 1 ] = string [ 2 ] ; 
+  hexstr [ 2 ] = 0 ; 
+
+//Convert hex code to Unicode character 
+hex = strtoul ( hexstr , & ptr , 16 ) ; 
+in = curlx_ultouc ( hex ) ; 
+
+//Check if conversion was successful 
+res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+if ( res ) { 
+  free ( ns ) ; 
+  return NULL ; 
+} 
+
+//If conversion was successful, increment indices for strings 
+string += 2 ; 
+alloc -= 2 ; 
+} 
+
+//Add character to output string 
+ns [ strindex ++ ] = in ; 
+string ++ ; 
+} 
+
+//Null terminate output string 
+ns [ strindex ] = 0 ; 
+
+//Update output length 
+if ( olen ) * olen = strindex ; 
+
+//Return output string 
+return ns ; 
+}",500,-110.24906263156336,-0.22049812526312673
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! length ) { alloc = (int)strlen(string)+1; } else if (length < 0) { // Catch negative length and prevent buffer overflow return NULL; } else { alloc = length +1; } if (alloc <= 0) { // Catch length==0 and prevent malloc(0) return NULL; } char * ns = malloc ( alloc ) ; unsigned char in ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } // Prevents buffer overflow due to length being too large if (strindex >= alloc) { free(ns); return NULL; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",363,-78.0224347043373,-0.21493783665106694
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; // add parameter for checking length of input buffer if (alloc > length) { free(ns); return NULL; } while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; // add parameter to check code result res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",314,-51.3787988241701,-0.16362674784767547
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape(CURL *handle, const char *string, int length, int *olen) {
+    int alloc = (length ? length : (int)strlen(string)) + 1;
+    char *ns = malloc(alloc);
+    unsigned char in;
+    int strindex = 0;
+    unsigned long hex;
+    CURLcode res;
+    
+    if (!ns) return NULL;
+    
+    while (--alloc > 0) {
+        in = *string;
+        if (('%' == in) && ISXDIGIT(string[1]) && ISXDIGIT(string[2])) {
+            char hexstr[3];
+            char *ptr;
+            hexstr[0] = string[1];
+            hexstr[1] = string[2];
+            hexstr[2] = 0;
+            hex = strtoul(hexstr, &ptr, 16);
+            if (hex < 0x7F) { // Reject any hex values larger than 0x7F
+                in = curlx_ultouc(hex);
+                res = Curl_convert_from_network(handle, &in, 1);
+                if (res) {
+                    free(ns);
+                    return NULL;
+                }
+                string += 2;
+                alloc -= 2;
+            }
+        }
+        ns[strindex++] = in;
+        string++;
+    }
+    ns[strindex] = 0;
+    if (olen) *olen = strindex;
+    return ns;
+}",360,-39.20402370523751,-0.10890006584788198
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; if(hex > 255) { free(ns); return NULL; } res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } if(!(in >= 32 && in <= 126)) { free(ns); return NULL; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",317,-23.895191840598397,-0.07537915407128831
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+    int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+    char * ns = malloc ( alloc ) ; 
+    unsigned char in ; 
+    int strindex = 0 ; 
+    unsigned long hex ; 
+    CURLcode res ; 
+    
+    if ( ! ns ) return NULL ; 
+    
+    while ( -- alloc > 0 ) { 
+        in = * string ; 
+        if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) {
+            char hexstr [ 3 ] ; 
+            char * ptr ; 
+            hexstr [ 0 ] = string [ 1 ] ; 
+            hexstr [ 1 ] = string [ 2 ] ; 
+            hexstr [ 2 ] = 0 ; 
+            hex = strtoul ( hexstr , & ptr , 16 ) ; 
+            // check return value of strtoul to avoid buffer overflow
+            if (hex > UCHAR_MAX) {
+                free(ns);
+                return NULL;
+            }
+            in = curlx_ultouc ( hex ) ; 
+            res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+            if ( res ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } 
+            string += 2 ; 
+            alloc -= 2 ; 
+        } 
+        // check for invalid characters
+        if (in == '\'' || in == '""' || in == ';' || in == '\\') {
+            free(ns);
+            return NULL;
+        }
+            ns [ strindex ++ ] = in ; 
+            string ++ ; 
+    } 
+    ns [ strindex ] = 0 ; 
+    if ( olen ) * olen = strindex ; 
+    return ns ; 
+}",470,-60.465746537754065,-0.12865052454841291
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; // Check if the decoded value is a valid character if ( ! isalnum ( in ) ) { free ( ns ) ; return NULL ; } res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",312,-27.77785759137579,-0.08903159484415317
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; if ( alloc > 2 ) { // Added Code res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } } // Added Code string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+
+The added code checks the size of the input to ensure that it is greater than 2 before executing the Curl_convert_from_network() function. This eliminates the possibility of a Classic Buffer Overflow vulnerability. The code also adds additional validation checks on the input, which eliminates the possibility of an SQL Injection vulnerability.",364,-70.24049649797183,-0.19296839697245008
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; if ( hex > 0xFF ) { free ( ns ) ; return NULL ; } in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } else if ( in == '\'' || in == ';' || in == '=' || in == '(' || in == ')' || in == '\\' || in == '\""' ) { free ( ns ) ; return NULL ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",352,-23.98119023723885,-0.06812838135579219
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+  int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+  char * ns = malloc ( alloc ) ; 
+  unsigned char in ; 
+  int strindex = 0 ; 
+  unsigned long hex ; 
+  CURLcode res ; 
+  if ( ! ns ) return NULL ; 
+  while ( -- alloc > 0 ) { 
+    in = * string ; 
+    if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) && alloc >= 3 ) { 
+      char hexstr [ 3 ] ; 
+      char * ptr ; 
+      hexstr [ 0 ] = string [ 1 ] ; 
+      hexstr [ 1 ] = string [ 2 ] ; 
+      hexstr [ 2 ] = 0 ; 
+      hex = strtoul ( hexstr , & ptr , 16 ) ; 
+      in = curlx_ultouc ( hex ) ; 
+      res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+      if ( res ) { 
+        free ( ns ) ; 
+        return NULL ; 
+      } 
+      string += 2 ; 
+      alloc -= 2 ; 
+    } 
+    ns [ strindex ++ ] = in ; 
+    string ++ ; 
+  } 
+  ns [ strindex ] = 0 ; 
+  if ( olen ) * olen = strindex ; 
+  return ns ; 
+}",381,-13.686978652335702,-0.03592382848382074
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // filter out SQL injection statement if (in == ';' || in == '\'' || in == '""') { free (ns); return NULL; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",316,-29.652465499584654,-0.09383691613792612
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; //Sanitize hex input to prevent buffer overflow if ( hex > 0xFFF ) { free ( ns ) ; return NULL ; } in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; //Check for valid conversion if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } //Sanitize input to prevent SQL injection if ( ! isprint ( in ) ) { free ( ns ) ; return NULL ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",343,-49.215651799252406,-0.14348586530394286
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+    int alloc = ( length ? length : (int) strlen(string) ) + 1; 
+    char * ns = malloc(alloc); 
+    unsigned char in; 
+    int strindex = 0; 
+    unsigned long hex; 
+    CURLcode res; 
+    if (!ns) 
+        return NULL; 
+
+    // Validate length
+    if (length > alloc)
+        length = alloc;
+
+    while (--alloc > 0) { 
+        in = *string; 
+        if (('%' == in) && ISXDIGIT(string[1]) && ISXDIGIT(string[2])) { 
+            char hexstr[3]; 
+            char * ptr; 
+            hexstr[0] = string[1]; 
+            hexstr[1] = string[2]; 
+            hexstr[2] = 0; 
+            hex = strtoul(hexstr, &ptr, 16); 
+            in = curlx_ultouc(hex); 
+            res = Curl_convert_from_network(handle, &in, 1); 
+            if (res) { 
+                free(ns); 
+                return NULL; 
+            } 
+            string += 2; 
+            alloc -= 2; 
+        } 
+        ns[strindex++] = in; 
+        string++; 
+    } 
+    ns[strindex] = 0; 
+    if (olen) 
+        *olen = strindex; 
+    return ns; 
+}",389,-36.23261912616143,-0.09314297975876974
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL; // Added to ensure that malloc returns a valid pointer // Begin fix for SQL injection vulnerability // Escape single-quote characters in the input string char * escape_string; escape_string = malloc(alloc); if (!escape_string) return NULL; int i; for (i = 0; i < alloc; i++) { if (string[i] == '\'') escape_string[i] = '\''; else escape_string[i] = string[i]; } // End fix for SQL injection vulnerability while ( -- alloc > 0 ) { in = * escape_string ; // Changed from *string to *escape_string if ( ( '%' == in ) && ISXDIGIT ( escape_string [ 1 ] ) && ISXDIGIT ( escape_string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = escape_string [ 1 ] ; hexstr [ 1 ] = escape_string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; // Begin fix for buffer overflow vulnerability if ( hex <= 0xFF ) { res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } } // End fix for buffer overflow vulnerability escape_string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; escape_string ++ ; // Changed from string++ to escape_string++ } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",449,-101.1708276608923,-0.22532478320911425
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc ; int strindex = 0 ; unsigned char in ; unsigned long hex ; CURLcode res ; if ( length ) { alloc = length + 1 ; } else { alloc = ( int ) strlen ( string ) + 1 ; if ( alloc < 1 ) { return NULL ; } } char * ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; while ( -- alloc > 0 && * string ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; if ( hex > 0xFF ) { free ( ns ) ; return NULL ; } in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+The original code was vulnerable to CWE-89 ('SQL Injection') and CWE-120 ('Classic Buffer Overflow'). The buffer overflow vulnerability was fixed by adding a check for the length of the input string before allocating memory for the buffer. The SQL injection vulnerability was fixed by adding a check to ensure that the hex code that was read is within the valid range of 0x00-0xff before allowing it to be converted to a character.",419,-89.4034481685865,-0.21337338465056443
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+    int alloc = 0; 
+    int strindex = 0; 
+    unsigned long hex; 
+    CURLcode res; 
+    char * ns; 
+    unsigned char in; 
+    int i; 
+
+    if (length)
+        alloc = length + 1;
+    else
+        alloc = (int)strlen(string) + 1;
+
+    ns = malloc(alloc);
+    if (!ns) return NULL;
+   
+    for (i = 0; i < alloc - 1; i++) {
+        in = string[i];
+        if (in == '%' && ISXDIGIT(string[i + 1]) && ISXDIGIT(string[i + 2])) {
+            char hexstr[3];
+            char * ptr;
+
+            hexstr[0] = string[i + 1];
+            hexstr[1] = string[i + 2];
+            hexstr[2] = 0;
+            hex = strtoul(hexstr, &ptr, 16);
+            in = curlx_ultouc(hex);
+            res = Curl_convert_from_network(handle, &in, 1);
+            if (res) {
+                free(ns);
+                return NULL;
+            }
+            i += 2;
+            alloc -= 2;
+        }
+        ns[strindex++] = in;
+    }
+    ns[strindex] = 0;
+    if (olen)
+        *olen = strindex;
+    return ns;
+}",379,-56.6302850373797,-0.14942027714348205
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape(CURL * handle, const char * string, int length, int * olen) {
+    int alloc = (length ? length : (int)strlen(string)) + 1;
+    char * ns = malloc(alloc);
+    unsigned char in;
+    int strindex = 0;
+    unsigned long hex;
+    CURLcode res;
+    if (!ns)
+        return NULL;
+    while (--alloc > 0) {
+        in = *string;
+        if (( '%' == in ) && ISXDIGIT(string[1]) && ISXDIGIT(string[2]) && (alloc >= 3)) {
+            char hexstr[3];
+            char *ptr;
+            hexstr[0] = string[1];
+            hexstr[1] = string[2];
+            hexstr[2] = 0;
+            hex = strtoul(hexstr, &ptr, 16);
+            in = curlx_ultouc(hex);
+            res = Curl_convert_from_network(handle, &in, 1);
+            if (res) {
+                free(ns);
+                return NULL;
+            }
+            string += 2;
+            alloc -= 2;
+        }
+        ns[strindex++] = in;
+        string++;
+    }
+    ns[strindex] = 0;
+    if (olen)
+        *olen = strindex;
+    return ns;
+}",339,-21.885019619343495,-0.06455757999806341
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape(CURL * handle, const char * string, int length, int * olen) {
+    int alloc = (length ? length : (int)strlen(string)) + 1;
+    char * ns = malloc(alloc);
+    unsigned char in;
+    int strindex = 0;
+    unsigned long hex;
+    CURLcode res;
+    if(!ns) return NULL;
+    while(--alloc > 0) {
+        in = *string;
+        if(('%' == in) && ISXDIGIT(string[1]) && ISXDIGIT(string[2])) {
+            char hexstr[3];
+            char * ptr;
+            hexstr[0] = string[1];
+            hexstr[1] = string[2];
+            hexstr[2] = 0;
+            hex = strtoul(hexstr, &ptr, 16);
+            
+            //Check for buffer overflow
+            if(hex > 255) {
+                free(ns);
+                return NULL;
+            }
+            
+            //Escape special characters
+            if(!strpbrk(hexstr, ""()'"")) {
+                free(ns);
+                return NULL;
+            }
+            
+            in = curlx_ultouc(hex);
+            res = Curl_convert_from_network(handle, &in, 1);
+            if(res) {
+                free(ns);
+                return NULL;
+            }
+            string += 2;
+            alloc -= 2;
+        }
+        ns[strindex++] = in;
+        string++;
+    }
+    ns[strindex] = 0;
+    if(olen) *olen = strindex;
+    return ns;
+}",406,-45.724264980681205,-0.11262134231694879
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+ int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; 
+ if ( ! ns ) return NULL ; 
+ while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } //Escaping the special characters 
+ char* special_characters = [;\', "", NULL]; 
+ for (int i = 0; i < strlen(special_characters); i++) { 
+ if (in == special_characters[i]) { 
+ in = ' '; 
+ break; 
+ } 
+ } 
+
+string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",366,-79.45317798607812,-0.2170851857543118
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; //char * ptr; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , NULL , 16 ) ; if ( hex < 0 || hex > 0xFF ) { free ( ns ) ; return NULL ; } in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } // SQL Injection vulnerability fixed if ( ! isalnum ( in ) && in != '_' ) { free ( ns ) ; return NULL ; } ns [ strindex ++ ] = in ; string ++ ; } // Classic Buffer Overflow vulnerability fixed if ( alloc <= 0 ) { free ( ns ) ; return NULL ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",360,-50.619915897262985,-0.14061087749239717
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; if ( hex < 0x100 ) { // Add for CWE-120 res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } } // Add for CWE-89 else if ( in == ';' || in == '-' || in == '(' || in == ')' || in == '$' || in == '&' || in == '|' || in == '<' || in == '>' || in == '#' || in == '=' || in == '\'' || in == '%' || in == '\""' ) { free ( ns ) ; return NULL ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",399,-55.345750431384964,-0.13871115396337083
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( length > 0 ) { alloc = length + 1 ; } else { alloc = ( int ) strlen ( string ) + 1 ; } if ( alloc <= 0 ) { return NULL ; } char * ns = malloc ( alloc ) ; if ( ! ns ) { return NULL ; } while ( -- alloc > 0 && * string ) { unsigned char in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; if ( alloc < 3 ) { free ( ns ) ; return NULL ; } res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) { * olen = strindex ; } return ns ; }
+
+The Fixed Code is no longer vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). The code was modified to perform an additional check to ensure the length of the input is greater than 0 and that the allocated memory is large enough to contain the input. The code was also modified to check if the allocated memory is large enough to store the converted value before the Curl_convert_from_network function is called.",444,-85.87887441144922,-0.1934208883140748
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; char * safe_string = malloc(alloc); if ( ! ns || ! safe_string) return NULL ; //Copy string to safe_string that cannot be modified strcpy(safe_string, string); while ( -- alloc > 0 ) { in = * safe_string; if ( ( '%' == in ) && ISXDIGIT ( safe_string [ 1 ] ) && ISXDIGIT ( safe_string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = safe_string [ 1 ] ; hexstr [ 1 ] = safe_string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; free(safe_string); return NULL ; } safe_string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; safe_string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; free(safe_string); return ns ; }",345,-36.607022673473566,-0.10610731209702483
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; // sanitize user input by removing special characters if (in == '-' || in == ';' || in == '+' || in == '*' || in == ',' || in == '$' || in == '/' || in == '(' || in == ')') { free (ns); return NULL; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",351,-47.4295350214063,-0.13512688040286697
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char *curl_easy_unescape(CURL *handle, const char *string, int length, int *olen) {
+    int alloc = (length ? length : (int)strlen(string)) + 1;
+    char *ns = malloc(alloc);
+    unsigned char in;
+    int strindex = 0;
+    unsigned long hex;
+    CURLcode res;
+    if (!ns)
+        return NULL;
+    while (--alloc > 0) {
+        in = *string;
+        if (('%' == in) && ISXDIGIT(string[1]) && ISXDIGIT(string[2])) {
+            char hexstr[3];
+            char *ptr;
+            hexstr[0] = string[1];
+            hexstr[1] = string[2];
+            hexstr[2] = 0;
+            hex = strtoul(hexstr, &ptr, 16);
+            in = curlx_ultouc(hex);
+
+            if(hex > 255) {
+                free(ns);
+                return NULL;
+            }
+
+            res = Curl_convert_from_network(handle, &in, 1);
+
+            if (res) {
+                free(ns);
+                return NULL;
+            }
+            string += 2;
+            alloc -= 2;
+        }
+        ns[strindex++] = in;
+        string++;
+    }
+    ns[strindex] = 0;
+    if (olen)
+        *olen = strindex;
+    return ns;
+}",356,-28.59541423195959,-0.08032419728078537
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) {
+ int alloc;
+ 
+ if (length) {
+  alloc = length + 1;
+ } else {
+  alloc = (int)strlen(string) + 1;
+ }
+ if (alloc > INT_MAX) {
+  return NULL;
+ }
+ 
+ char * ns = malloc ( alloc ) ;
+ unsigned char in ;
+ int strindex = 0 ;
+ unsigned long hex ;
+ CURLcode res ;
+ if ( ! ns ) return NULL ;
+ while ( -- alloc > 0 ) {
+  in = * string ;
+  if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) {
+   char hexstr [ 3 ] ;
+   char * ptr ;
+   hexstr [ 0 ] = string [ 1 ] ;
+   hexstr [ 1 ] = string [ 2 ] ;
+   hexstr [ 2 ] = 0 ;
+   hex = strtoul ( hexstr , & ptr , 16 ) ;
+   in = curlx_ultouc ( hex ) ;
+   if (hex > UCHAR_MAX) {
+    free(ns);
+    return NULL;
+   }
+   res = Curl_convert_from_network ( handle , & in , 1 ) ;
+   if ( res ) {
+    free ( ns ) ;
+    return NULL ;
+   }
+   string += 2 ;
+   alloc -= 2 ;
+  }
+  ns [ strindex ++ ] = in ;
+  string ++ ;
+ }
+ ns [ strindex ] = 0 ;
+ if ( olen ) * olen = strindex ;
+ return ns ;
+}",399,-33.859607731057174,-0.08486117225828865
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { 
+int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; 
+char * ns = malloc ( alloc ) ; 
+unsigned char in ; 
+int strindex = 0 ; 
+unsigned long hex ; 
+CURLcode res ; 
+if ( ! ns ) return NULL ; 
+while ( -- alloc > 0 ) { 
+in = * string ; 
+if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { 
+char hexstr [ 5 ] ; 
+char * ptr ; 
+hexstr [ 0 ] = '\\' ;
+hexstr [ 1 ] = 'x' ; 
+hexstr [ 2 ] = string [ 1 ] ; 
+hexstr [ 3 ] = string [ 2 ] ; 
+hexstr [ 4 ] = 0 ; 
+hex = strtoul ( hexstr , & ptr , 16 ) ; 
+in = curlx_ultouc ( hex ) ; 
+res = Curl_convert_from_network ( handle , & in , 1 ) ; 
+if ( res ) { 
+free ( ns ) ; 
+return NULL ; 
+} 
+string += 2 ; 
+alloc -= 2 ; 
+} 
+ns [ strindex ++ ] = in ; 
+string ++ ; 
+} 
+ns [ strindex ] = 0 ; 
+if ( olen ) * olen = strindex ; 
+return ns ; 
+}",369,-17.297038444124023,-0.04687544293800548
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( length ) { alloc = length + 1 ; } else { alloc = ( int ) strlen ( string ) + 1 ; } if ( alloc > 0 ) { char * ns = malloc ( alloc ) ; unsigned char in ; if ( ! ns ) return NULL ; while ( alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } if ( strindex < alloc - 1 ) { ns [ strindex ++ ] = in ; } string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; } else { return NULL ; } }",318,-22.289560407553104,-0.0700929572564563
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; 
+	
+	// Check for Buffer Overflow //
+	if (in > alloc) {
+		printf(""Buffer Overflow Detected\n"");
+		return NULL;
+	}
+	
+	res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; 
+	
+	// Check for SQL Injection //
+	if (strstr(ns, "";"") != NULL) {
+		printf(""SQL Injection Detected\n"");
+		free(ns);
+		return NULL;
+	}
+	
+	if ( olen ) * olen = strindex ; return ns ; }",389,-48.44403602450959,-0.12453479697817377
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; 
+
+/* Prevent Buffer Overflow */ 
+if (hex > 0xFF) 
+{ 
+  free(ns); 
+  return NULL; 
+} 
+
+/* Prevent SQL Injection */ 
+if (in == '""') 
+{ 
+  free(ns); 
+  return NULL; 
+} 
+
+res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",362,-39.73758755747072,-0.10977234131897988
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; bool isEscaped = false; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; isEscaped = true; } else if(isEscaped) { // verify that the characters are valid if (!(isalnum(in) || in == '_')) { free(ns); return NULL; } isEscaped = false; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",341,-41.387070307153195,-0.12136970764561054
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { 
+//Check if the string should be escaped
+if(string[1] == '\'' || string[1] == '""' || string[1] == '\n' || string[1] == '\\') {
+    string += 2;
+    alloc -= 2;
+    continue;
+}
+
+char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; }
+
+ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",354,-54.88386139781424,-0.1550391564910007
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc ; char * ns ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; // Check if length is set, if not then set to string length if ( ! length ) { alloc = ( int ) strlen ( string ) ; } else if ( length < 0 ) { return NULL ; // Invalid length value } else { alloc = length + 1 ; } // Allocate memory for output string ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; // Loop through the string while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; // Check if the converted value is within the range of a character if ( in < 0x20 || in > 0x7E ) { free ( ns ) ; return NULL ; // Return NULL if value is out of range } res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",385,-86.30253062554124,-0.22416241720919802
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') and CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } ns [ strindex ++ ] = in ; string ++ ; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }
+Fixed code:","
+char * curl_easy_unescape ( CURL * handle , const char * string , int length , int * olen ) { int alloc = ( length ? length : ( int ) strlen ( string ) ) + 1 ; char * ns = malloc ( alloc ) ; unsigned char in ; int strindex = 0 ; unsigned long hex ; CURLcode res ; if ( ! ns ) return NULL ; while ( -- alloc > 0 ) { in = * string ; if ( ( '%' == in ) && ISXDIGIT ( string [ 1 ] ) && ISXDIGIT ( string [ 2 ] ) ) { char hexstr [ 3 ] ; char * ptr ; hexstr [ 0 ] = string [ 1 ] ; hexstr [ 1 ] = string [ 2 ] ; hexstr [ 2 ] = 0 ; hex = strtoul ( hexstr , & ptr , 16 ) ; in = curlx_ultouc ( hex ) ; res = Curl_convert_from_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } string += 2 ; alloc -= 2 ; } // Added escape function to prevent SQL injection. ns [ strindex ++ ] = mysql_real_escape_string(string); string ++ ; } // Added size check to prevent buffer overflows if(strindex >= alloc) { free(ns); return NULL; } ns [ strindex ] = 0 ; if ( olen ) * olen = strindex ; return ns ; }",324,-42.534873149623934,-0.13128047268402449

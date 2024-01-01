@@ -1,0 +1,613 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) {
+    size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ;
+    char * ns ;
+    char * testing_ptr = NULL ;
+    unsigned char in ;
+    size_t newlen = alloc ;
+    int strindex = 0 ;
+    size_t length ;
+    CURLcode res ;
+    ns = malloc ( alloc ) ;
+    if ( ! ns ) return NULL ;
+    length = alloc - 1 ;
+    while ( length -- ) {
+        in = * string ;
+        if ( Curl_isunreserved ( in ) ) {
+            ns [ strindex ++ ] = in ;
+        }
+        else {
+            // Escape any single quotes to prevent SQL injection
+            if(in == '\'') {
+                ns [ strindex ++ ] = '\\';
+            }
+            
+            newlen += 2 ;
+            if ( newlen > alloc ) {
+                alloc *= 2 ;
+                testing_ptr = realloc ( ns , alloc ) ;
+                if ( ! testing_ptr ) {
+                    free ( ns ) ;
+                    return NULL ;
+                } else {
+                    ns = testing_ptr ;
+                }
+            }
+            res = Curl_convert_to_network ( handle , & in , 1 ) ;
+            if ( res ) {
+                free ( ns ) ;
+                return NULL ;
+            }
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ;
+            strindex += 3 ;
+        }
+        string ++ ;
+    }
+    ns [ strindex ] = 0 ;
+    return ns ;
+}",405,-26.767870673635034,-0.06609350783613589
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } //Prevent SQL Injection //Escape single quotes in the input string if(in == '\'') { snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } else { snprintf ( & ns [ strindex ] , 4 , ""%c"" , in ) ; strindex += 1 ; } } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",333,-31.810698318016904,-0.09552762257662734
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } 
+
+if (in == '\'') {
+    snprintf(&ns[strindex], 4, ""''"");
+    strindex += 2;
+}
+string ++ ; } ns [ strindex ] = 0 ; return ns ; }",318,-20.908484015036706,-0.06574994973281983
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""\%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+
+The vulnerability was fixed by changing the line:
+
+snprintf(&ns[strindex], 4, ""%%%02X"", in);
+
+to:
+
+snprintf(&ns[strindex], 4, ""\%02X"", in);",335,-22.963010323036702,-0.06854629947175135
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+  size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; 
+  ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; 
+  length = alloc - 1 ; while ( length -- ) { 
+    in = * string ;
+    if ( Curl_isunreserved ( in ) ) {
+      ns [ strindex ++ ] = in ;
+    }
+    else {
+      if ( in == '\'') {
+        ns [ strindex ++ ] = '\\\'';
+      }
+      else {
+        newlen += 2 ;
+        if ( newlen > alloc ) {
+          alloc *= 2 ;
+          testing_ptr = realloc ( ns , alloc ) ;
+          if ( ! testing_ptr ) {
+            free ( ns ) ;
+            return NULL ;
+          } else {
+            ns = testing_ptr ;
+          }
+        }
+        res = Curl_convert_to_network ( handle , & in , 1 ) ;
+        if ( res ) {
+          free ( ns ) ;
+          return NULL ;
+        }
+        snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ;
+        strindex += 3 ;
+      }
+    }
+    string ++ ;
+  }
+  ns [ strindex ] = 0 ;
+  return ns ;
+}",384,-37.18533616289693,-0.09683681292421076
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } //escape special characters like quotation marks, apostrophes, and ampersands if(in == 34 || in == 39 || in == 38) { snprintf(&ns[strindex], 4, ""%%%02X"", in); } strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",309,-37.90673474590691,-0.12267551697704501
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // Added 2 lines below to prevent SQL injection char* newString = malloc(4); memset(newString, 0, 4); //Added above two lines to prevent SQL injection snprintf ( & newString[ 0 ] , 4 , ""%%%02X"" , in ) ; // Modified this line strncpy(&ns[strindex], newString, 3); strindex += 3; free(newString); // Added this line } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",347,-67.86230172795158,-0.19556859287594114
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; } else if ( in == ' ; ' || in == ' -- ' || in == ' * ' ) { free ( ns ) ; return NULL ; } else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",316,-21.778888561845953,-0.06892053342356315
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } int i; for (i=0; i<strlen(string); i++) { if(string[i] == '\'' || string[i] == '""' || string[i] == ';' || string[i] == '%' || string[i] == '-' || string[i] == '_' || string[i] == '#' || string[i] == '(' || string[i] == ')'){ return NULL; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",385,-33.94976664313741,-0.08818121206009716
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // Sanitize special characters in the string if ( in == ';' || in == '%' || in == '\'' || in == '""' || in == ',' || in == '=' ) { snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } else { snprintf ( & ns [ strindex ] , 4 , ""%c"" , in ) ; strindex += 1 ; } } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",357,-39.77981580699588,-0.11142805548178117
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // replaced snprintf with curl_easy_escape to encode characters snprintf ( & ns [ strindex ] , 4 , ""%s"" , curl_easy_escape ( handle , & in , 1 ) ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",303,-24.059234356238708,-0.07940341371695943
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } //use prepared statement to bind parameters res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",288,-23.5414283865019,-0.08174107078646492
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+   size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+   char * ns ; 
+   char * testing_ptr = NULL ; 
+   unsigned char in ; 
+   size_t newlen = alloc ; 
+   int strindex = 0 ; 
+   size_t length ; 
+   CURLcode res ; 
+   ns = malloc ( alloc ) ; 
+   if ( ! ns ) return NULL ; 
+   length = alloc - 1 ; 
+   while ( length -- ) { 
+      in = * string ; 
+      if ( Curl_isunreserved ( in ) ) {
+         ns [ strindex ++ ] = in ;
+      } 
+      else { 
+         //escape special characters 
+         if ( in == ';' || in == '\\' || in == '\'' || in == '""' ) {
+            newlen += 2 ; 
+            if ( newlen > alloc ) { 
+               alloc *= 2 ; 
+               testing_ptr = realloc ( ns , alloc ) ; 
+               if ( ! testing_ptr ) { 
+                  free ( ns ) ; 
+                  return NULL ; 
+               } else { 
+                  ns = testing_ptr ; 
+               }
+            } 
+            res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+            if ( res ) { 
+               free ( ns ) ; 
+               return NULL ; 
+            } 
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+            strindex += 3 ; 
+         }
+      } 
+      string ++ ; 
+   } 
+   ns [ strindex ] = 0 ; 
+   return ns ; 
+}",442,-39.88392793929293,-0.09023513108437314
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+	size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+	char * ns ; 
+	char * testing_ptr = NULL ; 
+	unsigned char in ; 
+	size_t newlen = alloc ; 
+	int strindex = 0 ; 
+	size_t length ; 
+	CURLcode res ; 
+	
+	// Strip out all special characters
+	char * cleanString = malloc(strlen(string) + 1);
+	int i;
+	for(i = 0; i < strlen(string); i++)
+	{
+		if ( ! Curl_isunreserved(string[i])) 
+			cleanString[i] = '\0';
+		else
+			cleanString[i] = string[i];
+	}
+	cleanString[strlen(string)] = '\0';
+	
+	ns = malloc ( alloc ) ; 
+	if ( ! ns ) return NULL ; 
+	length = alloc - 1 ; 
+	while ( length -- ) { 
+		in = * cleanString ; 
+		if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+		else { 
+			newlen += 2 ; 
+			if ( newlen > alloc ) { 
+				alloc *= 2 ; 
+				testing_ptr = realloc ( ns , alloc ) ; 
+				if ( ! testing_ptr ) { 
+					free ( ns ) ; 
+					return NULL ; 
+				} else { 
+					ns = testing_ptr ; 
+				} 
+			} 
+			res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+			if ( res ) { 
+				free ( ns ) ; 
+				return NULL ; 
+			} 
+			snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+			strindex += 3 ; 
+		} 
+		cleanString ++ ; 
+	} 
+	ns [ strindex ] = 0 ; 
+	return ns ; 
+}",579,-52.28879140666077,-0.0903087934484642
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } char buf[4]; snprintf (buf, sizeof(buf), ""%%%02X"" , in ) ; // escape character, replace 'snprintf(&ns[strindex],4,""%%%02X"",in)' strindex += snprintf( &ns[strindex] , sizeof(buf) , ""%s"" , buf); } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",325,-51.517021755207715,-0.15851391309294682
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } in = (unsigned char) curl_escape(string, 0); if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",275,-15.362449552031897,-0.05586345291647963
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; // Repalcement to fix CWE-89 // Call mysql_real_escape_string function here to properly escape special characters ns = mysql_real_escape_string(ns) return ns ; }",321,-53.15085317017331,-0.16557898183854614
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; /* Vulnerable code fixed with mysql_real_escape_string */ char *escaped = mysql_real_escape_string(NULL, string); if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",313,-36.93990570754148,-0.11801886807521239
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; char* escaped_string = mysql_real_escape_string(handle, ns, strlen(ns)); free(ns); return escaped_string; }",310,-18.467760243302198,-0.05957342013968451
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; char * escaped_in ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; string ++ ; } else { escaped_in = malloc ( 5 ); snprintf ( escaped_in , 5 , ""%%%02X"" , in ) ; newlen += 4 ; // 2 characters for escaped representation of in + 2 characters for % if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & escaped_in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } memcpy ( & ns [ strindex ] , escaped_in , 4 ) ; free ( escaped_in ) ; strindex += 3 ; } } ns [ strindex ] = 0 ; return ns ; }",335,-73.23013604860695,-0.21859742104061777
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; }
+// Add input sanitization to prevent SQL Injection
+if(!mysql_real_escape_string(string)) {
+    free(ns);
+    return NULL;
+}
+
+string ++ ; } ns [ strindex ] = 0 ; return ns ; }",325,-32.77109735113681,-0.10083414569580557
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+char * ns ; 
+char * testing_ptr = NULL ; 
+unsigned char in ; 
+size_t newlen = alloc ; 
+int strindex = 0 ; 
+size_t length ; 
+CURLcode res ; 
+ns = malloc ( alloc ) ; 
+if ( ! ns ) return NULL ; 
+length = alloc - 1 ; 
+while ( length -- ) { 
+    in = * string ; 
+    if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+    else { 
+        newlen += 2 ; 
+        if ( newlen > alloc ) { 
+            alloc *= 2 ; 
+            testing_ptr = realloc ( ns , alloc ) ; 
+            if ( ! testing_ptr ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } else { 
+                ns = testing_ptr ; 
+            } 
+        } 
+        res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+        if ( res ) { 
+            free ( ns ) ; 
+            return NULL ; 
+        } 
+        // Escape single quotes
+        if(in == '\'')
+            snprintf ( & ns [ strindex ] , 4 , ""\\%02X"" , in ) ;
+        else
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+        strindex += 3 ; 
+    } 
+    string ++ ; 
+} 
+ns [ strindex ] = 0 ; 
+return ns ; 
+}",426,-24.61000340610323,-0.05776996104719068
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; string ++ ; } else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; string ++ ; } } ns [ strindex ] = 0 ; return ns ; }",286,-8.45138086779851,-0.029550282754540247
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""\\x%02X"" , in ) ; //escape special elements strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",286,-16.925214945360302,-0.059179073235525535
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } strindex += mysql_real_escape_string ( & ns [ strindex ] , & in , 1 ) ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",278,-12.411686062858204,-0.04464635274409426
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," const char *replace_unsafe_char(const char *in, char c) { int i, len = strlen(in); char *out = (char*) malloc(len+1); for (i=0; i<len; i++) { if (in[i] == c) { out [i] = '\''; } else { out[i] = in[i]; } } out[len] = '\0'; return out; } char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%s"" , replace_unsafe_char(""%02X"", in)); strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",389,-72.46678199393408,-0.18628992800497193
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; } else { if ( in == '\'' ) { ns[strindex] = '\''; strindex++; ns[strindex] = '\''; } else if ( in == '""' ) { ns[strindex] = '\''; strindex++; ns[strindex] = '\''; } else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",349,-22.917410234384015,-0.06566593190367913
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; char * escapedString = malloc(2*alloc); if (!escapedString) return NULL; int len = 0; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; escapedString[len++] = in; } else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; escapedString[len++] = '\\'; escapedString[len++] = '0'; escapedString[len++] = '1'; escapedString[len++] = '2'; escapedString[len++] = '3'; escapedString[len++] = '4'; escapedString[len++] = '5'; escapedString[len++] = '6'; escapedString[len++] = '7'; escapedString[len++] = '8'; escapedString[len++] = '9'; escapedString[len++] = 'A'; escapedString[len++] = 'B'; escapedString[len++] = 'C'; escapedString[len++] = 'D'; escapedString[len++] = 'E'; escapedString[len++] = 'F'; escapedString[len++] = in; strindex += 3 ; } string ++ ; } escapedString[len] = 0; ns [ strindex ] = 0 ; free(ns); return escapedString ; }",510,-44.3070976059518,-0.08687666197245451
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } in = sanitize_input(in); snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+
+/*Function to sanitize user input*/
+unsigned char sanitize_input(unsigned char in) {
+    int i;
+    char black_list[] = {' ', '\\', '<', '>', '""', '*', '&', '%'};
+
+    for (i = 0; i < 8; i++) {
+        if (in == black_list[i])
+            in = '\0';
+    }
+
+    return in;
+}",401,-68.38265959672508,-0.17053032318385306
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } if ( in == '\'' ) { res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""''"" ) ; strindex += 2 ; } else { res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",349,-12.655218985856393,-0.036261372452310585
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // Escape single quotes and backslashes before encoding to prevent SQL injection. if (in == '\'' || in == '\\') { snprintf ( & ns [ strindex ] , 4 , ""\\\\%02X"" , in ) ; strindex += 3 ; } else { snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",341,-27.263298117447196,-0.07995102087227916
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+char * curl_easy_escape(CURL * handle, const char * string, int inlength) {
+    size_t alloc = (inlength ? (size_t)inlength : strlen(string)) + 1;
+    char * ns;
+    char * testing_ptr = NULL;
+    unsigned char in;
+    size_t newlen = alloc;
+    int strindex = 0;
+    size_t length;
+    CURLcode res;
+    ns = malloc(alloc);
+    if (!ns) return NULL;
+    length = alloc - 1;
+    while (length--) {
+        in = *string;
+        if (Curl_isunreserved(in)) {
+            ns[strindex++] = in;
+        }
+        else {
+            newlen += 2;
+            if (newlen > alloc) {
+                alloc *= 2;
+                testing_ptr = realloc(ns, alloc);
+                if (!testing_ptr) {
+                    free(ns);
+                    return NULL;
+                }
+                else {
+                    ns = testing_ptr;
+                }
+            }
+            res = Curl_convert_to_network(handle, &in, 1);
+            if (res) {
+                free(ns);
+                return NULL;
+            }
+            if (isalpha(in) || isdigit(in)) {
+                snprintf(&ns[strindex], 4, ""%c"", in);
+                strindex += 1;
+            }
+            else {
+                snprintf(&ns[strindex], 4, ""%%%02X"", in);
+                strindex += 3;
+            }
+        }
+        string++;
+    }
+    ns[strindex] = 0;
+    return ns;
+}",404,-24.62302175222579,-0.06094807364412324
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; // Additions to code below // Copy string to a buffer unsigned char buf[alloc]; memcpy(buf, string, alloc); ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = buf[length]; // Get character from buffer if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } // string ++ ; } ns [ strindex ] = 0 ; return ns ; }",316,-59.98433709558751,-0.1898238515683149
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } if ( in == '\'' ) { snprintf ( & ns [ strindex ] , 6 , ""\\'%%%02X"" , in ) ; strindex += 5 ; } else { res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",323,-16.455992880665114,-0.05094734637976816
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } 
+res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+// sanitizing input data
+if ( in == '""' || in == '\'' || in == '\\' || in == ';' || in == '%' || in == '-' || in == '(' || in == ')'){
+	free ( ns ) ; 
+	return NULL ; 
+}
+snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",343,-51.89101047478042,-0.15128574482443272
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; check_string(ns) } ns [ strindex ] = 0 ; return ns ; }
+
+// Helper function to help detect SQL injection
+void check_string(char *ns) {
+  int i;
+  int len = strlen(ns);
+  int found_special_char = 0; 
+  for (i = 0; i < len; i++) {
+    if (ns[i] == ';' || ns[i] == '!' || ns[i] == '%' || ns[i] == '(' || ns[i] == ')' || ns[i] == '""' || ns[i] == '/' || ns[i] == '\'') {
+      found_special_char = 1;
+    }
+  }
+  if (found_special_char) {
+    printf(""Found special character, aborting..."");
+    exit(1);
+  }
+}",474,-99.6683337714975,-0.21027074635337026
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // escaping single quotes snprintf ( & ns [ strindex ] , 4 , ""''%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",285,-15.174564020407706,-0.0532440842821323
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * mysql_easy_escape ( MYSQL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; MYSQLCode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( MySql_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = MySql_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } sprintf ( & ns [ strindex ] , ""\\x%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+
+The fixed code is not vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') anymore. The original code used the curl_easy_escape function which is vulnerable to SQL injection, so it has been replaced with the mysql_easy_escape function. Additionally, the snprintf function has been replaced with the sprintf function and the Curl_convert_to_network function has been replaced with the MySql_convert_to_network function. The MySql_isunreserved function has also been added to check if a character is unreserved before escaping it.",419,-65.05961062174084,-0.15527353370343877
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } if(in == ';' || in == '\""' || in == '\'' || in == '(' || in == ')' || in == '*' || in == '+' || in == '%' || in == '=' || in == '\\' || in == '<' || in == '>' || in == '?') { free (ns); return NULL; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",367,-40.78313350932543,-0.11112570438508292
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; int slen = strlen(string); char *temp = malloc(slen+1); int i; for(i=0; i<slen; i++) { if(string[i] == '\'' || string[i] == ';' || string[i] == '-' || string[i] == '|' || string[i] == '&' || string[i] == '<' || string[i] == '>' || string[i] == '(' || string[i] == ')' || string[i] == '%' || string[i] == '\\' || string[i] == '/' || string[i] == '!') { temp[i] = '\0'; } else { temp[i] = string[i]; } } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * temp ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } temp ++ ; } ns [ strindex ] = 0 ; free(temp); return ns ; }",463,-57.30621727837404,-0.12377152759908
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_escape(CURL *handle, const char *string, int inlength) { 
+  size_t alloc = (inlength ? (size_t)inlength : strlen(string)) + 1; 
+  char *ns; 
+  char *testing_ptr = NULL; 
+  unsigned char in; 
+  size_t newlen = alloc; 
+  int strindex = 0; 
+  size_t length; 
+  CURLcode res; 
+  
+  ns = malloc(alloc); 
+  if (!ns) return NULL; 
+  
+  length = alloc - 1; 
+  while (length--) { 
+    in = *string; 
+    if (Curl_isunreserved(in)) { 
+      ns[strindex++] = in; 
+    } 
+    else { 
+      if (in == '\'') { 
+        ns[strindex++] = in; 
+      } 
+      else { 
+        newlen += 2; 
+        if (newlen > alloc) { 
+          alloc *= 2; 
+          testing_ptr = realloc(ns, alloc); 
+          if (!testing_ptr) { 
+            free(ns); 
+            return NULL; 
+          } 
+          else { 
+            ns = testing_ptr; 
+          } 
+        } 
+        res = Curl_convert_to_network(handle, &in, 1); 
+        if (res) { 
+          free(ns); 
+          return NULL; 
+        } 
+        snprintf(&ns[strindex], 4, ""%%%02X"", in); 
+        strindex += 3; 
+      } 
+    } 
+    string++; 
+  } 
+  ns[strindex] = 0; 
+  return ns; 
+}",438,-29.284130341062006,-0.06685874507091782
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } /* Escape single quotes to prevent SQL injection */ if ( in == '\'' ) { snprintf ( & ns [ strindex ] , 4 , ""''"" ) ; strindex += 2 ; } /* Escape double quotes to prevent SQL injection */ else if ( in == '\""' ) { snprintf ( & ns [ strindex ] , 4 , ""\\\"""" ) ; strindex += 2 ; } /* Escape forward slash to prevent SQL injection */ else if ( in == '/' ) { snprintf ( & ns [ strindex ] , 4 , ""\\/"" ) ; strindex += 2 ; } else { snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",409,-27.2672956094504,-0.06666820442408411
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) {
+    size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ;
+    char * ns ;
+    char * testing_ptr = NULL ;
+    unsigned char in ; 
+    size_t newlen = alloc ; 
+    int strindex = 0 ;
+    size_t length ;
+    CURLcode res ; 
+    ns = malloc ( alloc ) ;
+    if ( ! ns ) return NULL ; 
+    length = alloc - 1 ; 
+    while ( length -- ) { 
+        in = * string ; 
+        if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+        else { 
+            newlen += 2 ; 
+            if ( newlen > alloc ) { 
+                alloc *= 2 ; 
+                testing_ptr = realloc ( ns , alloc ) ;
+                if ( ! testing_ptr ) { 
+                    free ( ns ) ; 
+                    return NULL ;
+                } else { 
+                    ns = testing_ptr ; 
+                }
+            }
+            res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+            if ( res ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            }
+            if (in == 0) {
+                snprintf ( & ns [ strindex ] , 4 , ""%%00"" );
+            }
+            else {
+                snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+            }
+            strindex += 3 ;
+        }
+        string ++ ; 
+    } 
+    ns [ strindex ] = 0 ; 
+    return ns ; 
+}",422,-49.442185498573956,-0.11716157701083876
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char *curl_easy_escape(CURL *handle, const char *string, int inlength) { size_t alloc = (inlength ? (size_t)inlength : strlen(string)) + 1; char *ns; char *testing_ptr = NULL; unsigned char in; size_t newlen = alloc; int strindex = 0; size_t length; CURLcode res; ns = malloc(alloc); if (!ns) return NULL; length = alloc - 1; while (length--) { in = *string; if (Curl_isunreserved(in)) ns[strindex++] = in; else { newlen += 2; if (newlen > alloc) { alloc *= 2; testing_ptr = realloc(ns, alloc); if (!testing_ptr) { free(ns); return NULL; } else { ns = testing_ptr; } } if(in == '\'';) { char escaped_value[5] = ""\\\'""; strncat(ns, escaped_value, 4); strindex += 3; } else { res = Curl_convert_to_network(handle, &in, 1); if (res) { free(ns); return NULL; } snprintf(&ns[strindex], 4, ""%%%02X"", in); strindex += 3; } string++; } ns[strindex] = 0; return ns; }",309,-44.29829557794867,-0.14336017986391156
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } // Escape any potential attack characters using the appropriate escaping format. snprintf ( & ns [ strindex ] , 4 , ""\\%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",295,-40.32095304902292,-0.13668119677634888
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; 
+
+//Check for single quotes
+if ( in == '\'' ) 
+{
+    free(ns);
+    return NULL;
+}
+ } ns [ strindex ] = 0 ; return ns ; }",315,-33.86573228424239,-0.10751026121981712
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; } else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } int len = snprintf ( NULL , 0 , ""%%%02X"" , in ) ; char * output_string = malloc ( len + 1 ) ; if ( ! output_string ) { free ( ns ) ; return NULL ; } snprintf ( output_string , len + 1 , ""%%%02X"" , in ) ; strcpy ( & ns [ strindex ] , output_string ) ; strindex += len ; free ( output_string ) ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",324,-29.58767873025806,-0.0913199960810434
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ){ //additional check added ns [ strindex ++ ] = in ; } else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+
+The additional check added in the fixed code checks whether the character is unreserved when adding it to a string. This guards against potential invalid characters being added which can lead to an SQL injection attack.",329,-78.1092903629404,-0.23741425642231123
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else if (in == '\'') { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } snprintf ( & ns [ strindex ] , 4 , ""'"" ) ; strindex += 1 ; } else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",370,-18.49112649827209,-0.049976017562897546
+"The Original Code is vulnerable to CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; if ( !string || !inlength ) { free ( ns ) ; return NULL ; } } ns [ strindex ] = 0 ; return ns ; }",302,-24.278238014888245,-0.08039151660559021

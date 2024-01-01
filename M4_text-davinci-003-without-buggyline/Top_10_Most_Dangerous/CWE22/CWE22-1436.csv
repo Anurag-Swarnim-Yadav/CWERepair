@@ -1,0 +1,348 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""./%s"" , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",197,-5.613881910440205,-0.028496862489544188
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+	FILE * fp ; 
+	char spath [ PATH_MAX ] ; 
+	if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; 
+	if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+	fp = fopen ( spath , ""w"" ) ; 
+	if ( ! fp ) { 
+		if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+		return - 1 ; 
+	} 
+	fprintf ( fp , ""%u"" , val ) ; 
+	fclose ( fp ) ; 
+	return 0 ; 
+}",241,-11.39652664943341,-0.04728849232130045
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/var/run/%s/%s"" , iface, var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+
+The code has been modified to ensure that the path is restricted to a specific directory. The directory used is ""/var/run/"" with the iface and var variables appended to it. This prevents the program from writing outside of the restricted directory.",256,-50.44920457217589,-0.19706720536006206
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+	FILE * fp ; 
+	char dirName[64] = ""/restricted/directory"";
+	char spath [ strlen(dirName) + IFNAMSIZ ] ; 
+	if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"", dirName, var ) >= sizeof ( spath ) ) return - 1 ; 
+	if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+	fp = fopen ( spath , ""w"" ) ; 
+	if ( ! fp ) { 
+		if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+		return - 1 ; 
+	} 
+	fprintf ( fp , ""%u"" , val ) ; 
+	fclose ( fp ) ; 
+	return 0 ; 
+}",256,-31.4333330429789,-0.12278645719913633
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( strstr ( spath , "".."" ) != NULL ) { if ( name ) flog ( LOG_ERR , ""Invalid path detected %s"" , spath ) ; return - 1 ; } if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",236,-21.970103414482864,-0.09309365853594434
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""./%s"" , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",196,-6.007529638427901,-0.030650661420550514
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , VAR_PATH_PREFIX ""/%s"" , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+
+The code has been modified to use a static prefix (VAR_PATH_PREFIX) when constructing the path name. This will ensure that the program cannot access any file outside of the restricted directory.",251,-54.26327076113282,-0.21618832972562876
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [PATH_MAX] ; // Limit the path length to the maximum if ( snprintf ( spath , PATH_MAX , ""/sys/class/net/%s/%s"" , iface , var ) >= PATH_MAX ) return - 1 ; // Prevent path traversal if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",211,-33.9585347811793,-0.1609409231335512
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface, var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",207,-6.730519599266702,-0.032514587436071024
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"" , ""/sys/class/net/"" , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",206,-10.736094110822695,-0.05211696170302279
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + PATH_MAX ] ; if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"" , INTERFACE_PATH , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; } 
+The code has been fixed by using the PATH_MAX constant to limit the pathname to a restricted directory, rather than using the IFNAMSIZ constant. This ensures that the pathname is properly limited and prevents any potential Path Traversal attacks. Additionally, the code has been updated to include the INTERFACE_PATH constant, which stores the directory where the interface files are located, before the value of the 'var' variable is appended. This ensures that the file is accessed from the correct directory and prevents any potential Path Traversal attacks.",313,-95.02622805101731,-0.30359817268695627
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""./%s"" , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+
+The code now prepends ./ to the file path, which restricts it to the current working directory, thus preventing path traversal.",226,-33.16334344138754,-0.1467404577052546
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/tmp/%s"" , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",197,-9.022533392999009,-0.04579966189339598
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",208,-8.399354927415795,-0.040381514074114395
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",201,-5.437999164648798,-0.027054722212183076
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/var/run/iface/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",203,-12.0797348435776,-0.059506082973288674
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX + IFNAMSIZ ] ; if ( ! realpath ( var , spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",180,-9.91530848712753,-0.055085047150708506
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 256 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface, var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",205,-9.435495997147695,-0.04602680974218388
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char path [ 64 + IFNAMSIZ ] ; char spath [ 64 + IFNAMSIZ + 2 ] ; strcpy(path,""/etc/""); if ( snprintf ( spath , sizeof ( spath ) , ""%s%s"" , path,var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",221,-27.738316888377277,-0.12551274610125465
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""./%s"" , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+The vulnerability has been fixed by adding ""./"" before the variable ""var"" in the snprintf statement. This restricts the pathname to the current directory which prevents path traversal.",235,-28.70571754060689,-0.12215198953449741
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; char root_path [256] ; if ( getcwd ( root_path , sizeof ( root_path ) ) == NULL ) { 
+	return - 1 ; 
+} 
+
+if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"" , root_path , var ) >= sizeof ( spath ) ) { 
+	return - 1 ;
+} 
+if ( access ( spath , F_OK ) != 0 ) { 
+	return - 1 ; 
+} 
+fp = fopen ( spath , ""w"" ) ; 
+if ( ! fp ) { 
+	if ( name ) { 
+		flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+	} 
+	return - 1 ; 
+} 
+fprintf ( fp , ""%u"" , val ) ; 
+fclose ( fp ) ; 
+return 0 ; 
+}",285,-43.13981093330108,-0.15136775766070554
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"" , INTERFACES_DIR , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",203,-9.0628120389158,-0.044644394280373395
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var(const char *iface, const char *var, const char *name, uint32_t val) { FILE *fp; char spath[64 + IFNAMSIZ]; if (snprintf(spath, sizeof(spath), ""/sys/class/net/%s/%s"", iface, var) >= sizeof(spath)) return -1; if (access(spath, F_OK) != 0) return -1; fp = fopen(spath, ""w""); if (!fp) { if (name) flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno)); return -1; } fprintf(fp, ""%u"", val); fclose(fp); return 0; }",188,-9.246686388851145,-0.04918450206835716
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX ] ; char path [ PATH_MAX ] ; realpath ( var , path ) ; 
+if ( snprintf ( spath , sizeof ( spath ) , path , iface ) >= sizeof ( spath ) ) return - 1 ; 
+if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",208,-20.5595374913746,-0.09884393024699326
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""./%s"" , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; } 
+By prefixing the path with ""./"" the code has been modified to only allow access to a current directory which limits the user access and restricts the application to the current directory only which eliminates the path traversal vulnerability.",244,-69.10768269052731,-0.28322820774806273
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/proc/sys/net/%s/"" , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",202,-12.546492997519143,-0.062111351472867046
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; } 
+
+The vulnerability was fixed by replacing the 64 + IFNAMSIZ with PATH_MAX + IFNAMSIZ, which limits the pathname to a restricted directory. The code was also updated to explicitly state the path of the file being accessed, which is ""/sys/class/net/%s/%s"". This helps to ensure that wildcards and other malicious characters cannot be used to access files outside of the intended directory.",299,-76.93026309699178,-0.25729184982271497
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface, var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",207,-6.660475324859198,-0.0321762092988367
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; char * dir_path = ""/dir/to/restricted/directory""; if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"" , dir_path , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",214,-23.900403434722495,-0.11168412819963783
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( strlen(iface) > IFNAMSIZ || strlen(var) > 64 ) return -1; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",234,-17.73413740421189,-0.07578691198381149
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+
+int set_interface_var(const char* iface, const char* var, const char* name, uint32_t val) {
+    FILE* fp;
+    char spath[64 + IFNAMSIZ];
+    char full_path[PATH_MAX];
+    if (snprintf(spath, sizeof(spath), var, iface) >= sizeof(spath)) return -1;
+
+    //Check for directory traversal
+    if (realpath(spath, full_path) == NULL) return -1;
+
+    if (access(full_path, F_OK) != 0) return -1;
+    fp = fopen(full_path, ""w"");
+    if (!fp) {
+        if (name)
+            flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno));
+        return -1;
+    }
+    fprintf(fp, ""%u"", val);
+    fclose(fp);
+    return 0;
+}",247,-27.832826264311695,-0.11268350714296232
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char dirname [ 64 + IFNAMSIZ ] ; //changed spath to dirname char spath [ 64 + IFNAMSIZ + 1] ; //added array for final path if ( snprintf ( dirname , sizeof ( dirname ) , var , iface ) >= sizeof ( dirname ) ) return - 1 ; if ( ! realpath ( dirname , spath ) ) { //added realpath to check if dirname is valid and get absolute path if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",299,-64.71713337174509,-0.21644526211285983
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+	FILE * fp ; 
+	char spath [ 64 + IFNAMSIZ ] ;
+	char fixed_path[1024];
+	if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ;
+	realpath(spath, fixed_path);
+	if ( access ( fixed_path , F_OK ) != 0 ) return - 1 ; 
+	fp = fopen ( fixed_path , ""w"" ) ; 
+	if ( ! fp ) { 
+		if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+		return - 1 ; 
+	} 
+	fprintf ( fp , ""%u"" , val ) ; 
+	fclose ( fp ) ; 
+	return 0 ; 
+}",252,-22.484438013756236,-0.08922396037204855
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; //Check for valid characters in 'iface' string for (int i = 0; i < strlen(iface); i++) { if (!isalpha(iface[i])) { flog(LOG_ERR,""Error, invalid characters in interface name.""); return -1; } } //Check for valid characters in 'var' string for (int i = 0; i < strlen(var); i++) { if (!isalpha(var[i])) { flog(LOG_ERR,""Error, invalid characters in variable name.""); return -1; } } if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",317,-49.993541145972316,-0.1577083316907644
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { char spath [ PATH_MAX ] ; if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"" , SYS_INTERFACE_PATH , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; FILE * fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",196,-15.544615293411999,-0.07930926170108163
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; if ( ! realpath ( spath , spath ) ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",258,-12.99074321194175,-0.05035171787574322
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; char fixed_spath[64 + IFNAMSIZ]; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( realpath(spath, fixed_spath) == NULL ) return - 1; if ( access ( fixed_spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( fixed_spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",231,-16.363378725032618,-0.07083713733780354
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""%s/%s"" , getcwd(), var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",204,-12.746537142377909,-0.06248302520773485
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) {
+FILE * fp ;
+char spath [ 64 + IFNAMSIZ ] ;
+
+char buf[sizeof(spath)];
+snprintf(buf, sizeof(buf), ""%s/%s"", PATH_PREFIX, var);
+
+if ( snprintf ( spath , sizeof ( spath ) , buf , iface ) >= sizeof ( spath ) ) return - 1 ;
+
+if ( access ( spath , F_OK ) != 0 ) return - 1 ;
+
+fp = fopen ( spath , ""w"" ) ;
+if ( ! fp ) {
+if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ;
+return - 1 ;
+}
+fprintf ( fp , ""%u"" , val ) ;
+fclose ( fp ) ;
+return 0 ;
+}",243,-37.528789694279624,-0.1544394637624676
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" ,iface,var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",206,-10.520919332124604,-0.05107242394235245
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var(const char *iface, const char *var, const char *name, uint32_t val) {
+  FILE *fp;
+  char spath[64 + IFNAMSIZ];
+  char dir[sizeof(spath)];
+
+  strncpy(dir, var, sizeof(dir) - 1);
+  dirname(dir);
+
+  if (snprintf(spath, sizeof(spath), var, iface) >= sizeof(spath))
+    return -1;
+
+  if (strncmp(dir, ""/etc/sysconfig/network-scripts"", sizeof(dir)) != 0)
+    return -1;
+
+  if (access(spath, F_OK) != 0)
+    return -1;
+
+  fp = fopen(spath, ""w"");
+  if (!fp) {
+    if (name)
+      flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno));
+    return -1;
+  }
+  fprintf(fp, ""%u"", val);
+  fclose(fp);
+  return 0;
+}",276,-38.15653072992058,-0.13824829974608907
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath[PATH_MAX + IFNAMSIZ]; if ( snprintf ( spath , sizeof ( spath ) , ""./%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",202,-16.74663065879533,-0.0829041121722541
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; if ( realpath ( spath , spath ) == NULL ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",256,-10.158089689277396,-0.03968003784873983
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/class/net/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",206,-5.718471574114797,-0.02775957074813008
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/etc/sysconfig/network-scripts/%s/%s"" , iface, var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",208,-12.774569017257418,-0.06141619719835297
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var(const char * iface, const char * var, const char * name, uint32_t val) {
+  FILE *fp;
+  char spath[64 + IFNAMSIZ];
+  char prefix[128];
+  if (realpath(""/etc/sysconfig/network-scripts/"", prefix) == NULL) {
+    fprintf(stderr, ""Failed to resolve directory: %s\n"", strerror(errno));
+    return -1;
+  }
+  // Use snprintf to only allow a predefined directory, preventing path traversal
+  if (snprintf(spath, sizeof(spath), ""%s/%s"", prefix, var) >= sizeof(spath)) return -1;
+  if (access(spath, F_OK) != 0) return -1;
+  fp = fopen(spath, ""w"");
+  if (!fp) {
+    if (name) flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno));
+    return -1;
+  }
+  fprintf(fp, ""%u"", val);
+  fclose(fp);
+  return 0;
+}",292,-78.54469894825058,-0.2689886950282554
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ + 32 ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/sys/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",203,-16.027099698667605,-0.07895123004269756
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/tmp/%s"" , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+We fixed the vulnerability by adding a ""/tmp/"" before the var variable in the snprintf statement. This ensures that the spath variable always points to a restricted directory, avoiding the path traversal vulnerability.",240,-48.95493938325525,-0.2039789140968969
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/etc/%s/%s"" , iface , var ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",199,-10.319247468176545,-0.051855514915460026
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ PATH_MAX ] ; if ( snprintf ( spath , sizeof ( spath ) , ""/var/run/net/%s/%s"" , iface , var) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",202,-14.3682140508524,-0.07112977252897228

@@ -1,0 +1,347 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; // check if the path is within the directory limit if (!strncmp(remote_dev->dev_group.cg_item, xop->dst_dev, strlen(xop->dst_dev))) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { fprintf(stderr, ""Error: Path outside restricted directory
+""); } }",223,-48.032303037241896,-0.21539149344054662
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (strncmp(remote_dev->dev_group.cg_item, ""../"", 3) != 0 && strncmp(remote_dev->dev_group.cg_item, ""..\\"", 3) != 0) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { pr_debug ( ""Path traversal detected. Skipping"" "" configfs_undepend_item for remote_dev: %p\\n"" , remote_dev ) ; } }",248,-28.315836666546875,-0.11417676075220515
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; char path[PATH_MAX]; snprintf(path, sizeof(path), ""%s/%s"", sysfs_device_path, remote_dev->dev_group.cg_item.ci_name); pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %s\\n"" , remote_dev , path ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }",189,-20.0333935682719,-0.10599679136651799
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (strstr(remote_dev->dev_group.cg_item, "".."")) { return; } pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }",179,-10.982874105789202,-0.061356838579827946
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { 
+    struct se_device * remote_dev ; 
+    if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) 
+        remote_dev = xop -> dst_dev ; 
+    else 
+        remote_dev = xop -> src_dev ; 
+    
+    if (!remote_dev || !remote_dev->dev_group.cg_item){
+        pr_debug(""Illegal inputs for remote_dev or remote_dev->dev_group.cg_item\n"");
+        return;
+    }
+    
+    pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+    target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+}",241,-39.80405916467839,-0.1651620712227319
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; char * target_path = realpath(remote_dev->dev_group.cg_item, NULL); pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %s\\n"" , remote_dev , target_path ) ; target_undepend_item ( target_path ) ; free ( target_path ) ; }",165,-20.898048228169202,-0.12665483774648
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if ( remote_dev == NULL ) { return ; } else { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",169,-13.19404513969789,-0.07807127301596384
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ;  if ( remote_dev && remote_dev->dev_group.cg_item && strncmp(remote_dev->dev_group.cg_item, RESTRICTED_DIR, strlen(RESTRICTED_DIR)) != 0 ) { target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",213,-27.90542831505869,-0.13101140054018165
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { 
+    struct se_device * remote_dev ; 
+    char path_buf[MAX_PATH_LENGTH];
+    
+    if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) 
+        remote_dev = xop -> dst_dev ; 
+    else 
+        remote_dev = xop -> src_dev ; 
+    
+    if( realpath(remote_dev->dev_group.cg_item, path_buf) == NULL ) {
+        fprintf(stderr, ""Error in realpath()\n"");
+        return;
+    }
+    
+    if(strncmp(""/restricted/directory/"", path_buf, strlen(""/restricted/directory/"")) != 0) {
+        fprintf(stderr, ""Error: Attempted access outside restricted directory\n"");
+        return;
+    } 
+    
+    pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+    target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+}",312,-65.43031708547457,-0.20971255476113645
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; 
+
+//Validate the path to ensure it is within the correct directory before executing
+if (strncmp(remote_dev->dev_group.cg_item, ""/path/to/authorized/directory"", strlen(remote_dev->dev_group.cg_item)) == 0) {
+	pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+	target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+} else {
+	printf(""Incorrect directory accessed. Exiting now.\n"");
+	exit(1);
+}
+}",256,-70.16530250823462,-0.2740832129227915
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if ( ! strstr ( remote_dev -> dev_group . cg_item , "".."" ) ) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",181,-13.323733026673892,-0.07361178467775631
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; char cwd[PATH_MAX]; if(getcwd(cwd, sizeof(cwd)) == NULL) { perror(""getcwd error""); exit(1); } chdir(remote_dev->dev_group.cg_item.path); pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; chdir(cwd); }",218,-26.83065374995901,-0.12307639334843581
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; if (xop->op_origin == XCOL_SOURCE_RECV_OP) { if(check_path_traversal(xop->dst_dev)) { return -EACCES; } } else { if(check_path_traversal(xop->src_dev)) { return -EACCES; } } } 
+
+int check_path_traversal(struct se_device *dev) { 
+ 	char *path = dev->dev_group.cg_item.ci_path; 
+ 	// Check the path for any invalid/dangerous characters
+ 	// If any are found, return -EACCES 
+ 	if (strchr(path, '..')) { 
+ 		return -EACCES; 
+ 	}
+ 	return 0;
+ }",342,-79.58886447190243,-0.2327159779880188
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; if (remote_dev && &remote_dev -> dev_group.cg_item){ target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",176,-18.004624809575102,-0.10229900459985854
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if ( path_is_safe ( & remote_dev -> dev_group . cg_item ) ) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { pr_debug ( ""Path is not safe, skipping configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; } }",241,-20.1959115095839,-0.08380046269536888
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; char* absolutePath = realpath(&remote_dev -> dev_group.cg_item, NULL); pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , absolutePath) ; target_undepend_item ( absolutePath ) ; }",156,-18.996242217248398,-0.12177078344389998
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if(xop != NULL && remote_dev != NULL && remote_dev->dev_group.cg_item != NULL){ pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",182,-17.05153446657191,-0.09368974981632917
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (strstr(remote_dev, ""/"") != NULL) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { pr_debug ( ""Error: Path Traversal detected for remote_dev: %p"" , remote_dev ) ; } }",199,-27.600810379827106,-0.13869753959712114
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; if ( target_undepend_item ( & remote_dev -> dev_group . cg_item ) < 0 ) { pr_err( “Error: Path traversal detected!”); return -1; } }",181,-34.5603237450479,-0.1909410151660105
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }",153,-9.218418672558201,-0.06025110243502092
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (strcmp(remote_dev->dev_group.cg_item->ci_parent_group.cg_item.ci_dentry->d_name.name, ""xop"") != 0){ pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",202,-28.985694423646784,-0.14349353675072665
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { char * absolutePath = realpath ( remote_dev -> dev_group . cg_item ) ; struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , absolutePath ) ; target_undepend_item ( absolutePath ) ; }",153,-21.0737769872958,-0.13773710449212942
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; // Check dirname is valid to prevent path traversal attack if ( is_valid_directory_name ( & remote_dev -> dev_group . cg_item ) ) target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }",191,-40.733173672507725,-0.2132626893848572
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if ( ! is_safe_path ( remote_dev ) ) { pr_debug ( ""Invalid Path \\ n"" ) ; return ; } pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } 
+
+//is_safe_path() is a function that checks that the path is safe and does not contain any attempts to traverse directories.",213,-50.882240205093424,-0.23888375683142452
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; const size_t length = strnlen ( remote_dev -> dev_group . cg_item . ci_name , CONFIGFS_ITEM_NAME_LEN ) ; if ( length < CONFIGFS_ITEM_NAME_LEN ) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { pr_err ( ""Error: The path length of %s exceeds the maximum allowed length %d.\\n"" , remote_dev -> dev_group . cg_item . ci_name , CONFIGFS_ITEM_NAME_LEN ) ; } }",268,-49.24194951590033,-0.18373861759664303
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; if ( strncmp ( remote_dev -> dev_group . cg_item . ci_name , ""/dev/"", 5 ) == 0 ) { target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { pr_debug ( ""Improper path name: %s\\n"" , remote_dev -> dev_group . cg_item . ci_name ) ; } }",227,-25.759911662403606,-0.11347978705904672
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; 
+if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; 
+pr_debug ( ""Calling configfs_undepend_item for remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+if (remote_dev && remote_dev->dev_group.cg_item){ 
+    target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+} 
+}",185,-23.8206469888647,-0.12876025399386323
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; char * normalized_dev_path = canonicalize_file_name(remote_dev); pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; free(normalized_dev_path); }",184,-26.7472397305332,-0.14536543331811522
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { 
+     struct se_device * remote_dev ; 
+     if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) 
+          remote_dev = xop -> dst_dev ; 
+     else 
+          remote_dev = xop -> src_dev ; 
+
+     if (remote_dev->dev_group.cg_item != NULL && remote_dev->dev_group.cg_item[0] == '/') 
+     { 
+          pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+          target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+     } 
+}",223,-27.687165045745296,-0.12415769078809549
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if ( strncmp ( remote_dev -> dev_group . cg_item , RESTRICTED_PATH , MAX_LEN ) != 0 ) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",190,-23.799826873989097,-0.12526224670520578
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; /* Implement path traversal check */ if(strncmp(remote_dev->dev_group.cg_item.ci_name, "".."", 2)) { /* restrict access of files outside the specified directory */ return; } }",202,-59.048240775364604,-0.2923180236404188
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; // check that the pathname is not pointing to a restricted directory if (strstr(&remote_dev->dev_group.cg_item, ""/../"") == NULL) { target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { // do not allow the pathname to access a restricted directory } }",208,-41.03741079137771,-0.1972952441893159
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; if ( strncmp ( remote_dev -> dev_group . cg_item , '\0' , PATH_MAX ) != 0 ) target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }",184,-17.538919708600698,-0.09532021580761249
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; if (remote_dev->dev_group.cg_item.ci_type == CONFIGFS_ITEM_LINK){ const char * path = configfs_get_dentry_path(&remote_dev->dev_group.cg_item); if(path != NULL){ if(strstr(path, ""/../"") != NULL){ pr_err(""Path Traversal detected!\n""); return; } } } }",247,-47.913782973607596,-0.19398292701865424
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { 
+struct se_device * remote_dev ; 
+if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) 
+remote_dev = xop -> dst_dev ; 
+else 
+remote_dev = xop -> src_dev ; 
+pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , 
+remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+//Check if the path is within the restricted directory
+if (xop->op_origin == XCOL_SOURCE_RECV_OP && !check_path_within_restrict_dir(xop->dst_dev)) 
+{ 
+pr_err(""Path Traversal detected in the destination directory. Aborting the operation""); 
+return; 
+} 
+if (xop->op_origin != XCOL_SOURCE_RECV_OP && !check_path_within_restrict_dir(xop->src_dev)) 
+{ 
+pr_err(""Path Traversal detected in the source directory. Aborting the operation""); 
+return; 
+} 
+} 
+//Function to check if the path is within the restricted directory
+bool check_path_within_restrict_dir(char *path) 
+{ 
+if (strstr(path, ""/restricted/"") != NULL) 
+{ 
+return true; 
+} 
+return false; 
+}",395,-84.57687327777703,-0.2141186665260178
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (remote_dev->dev_group.cg_item != NULL)  { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",173,-14.38274075007469,-0.08313722976921786
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (strcmp(remote_dev->dev_group.cg_item, "".."" ) != 0 && strcmp(remote_dev->dev_group.cg_item, ""/"") != 0 ) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",201,-23.0673022298502,-0.11476269766094627
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; char * restricted_path = ""/restrict/""; if(strncmp(remote_dev->dev_group.cg_item, restricted_path, strlen(restricted_path))) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",197,-26.353499646090803,-0.13377410987863353
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if ( remote_dev -> dev_group.cg_item.ci_path && strchr(remote_dev->dev_group.cg_item.ci_path, '..') == NULL ) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",203,-24.165643521333287,-0.11904257892282408
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (remote_dev && strncmp(remote_dev->dev_group->cg_item.ci_name, DIR_ROOT, strlen(DIR_ROOT)) != 0) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",201,-28.853636484412178,-0.14355043027070735
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; char * remote_dev_path ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; remote_dev_path = canonicalize_file_name(remote_dev->dev_group->cg_item); if( remote_dev_path == NULL) { pr_err(""Error while canonicalizing pathname\\n""); return; } //Check if the path is within the allowed directory if(strncmp(allowed_directory, remote_dev_path, strlen(allowed_directory)) != 0) { pr_err(""Path traversal attempt detected\\n""); return; } pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ); target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; free(remote_dev_path); }",273,-67.41813047652349,-0.24695285888836443
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (strncmp(xop->op_path, remote_dev->dev_group.cg_item.ci_path, strlen(xop->op_path) != 0) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } else { pr_err(""The path provided does not match the remote dev path. Aborting.""); } }",220,-41.606143130556795,-0.1891188324116218
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; 
+if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) 
+remote_dev = xop -> dst_dev ; 
+else 
+remote_dev = xop -> src_dev ; 
+
+if (remote_dev->dev_group.cg_item.ci_type & CONFIGFS_ITEM_LINK) {
+   if (xop->op_origin == XCOL_SOURCE_RECV_OP) {
+      if (strcmp(xop->src_dev->dev_group.cg_item.ci_dentry->d_parent->d_name.name,
+                 xop->dst_dev->dev_group.cg_item.ci_dentry->d_parent->d_name.name) != 0) {
+         pr_err(""source and destination device have different parent directories, aborting\n"");
+         return;
+      }
+   } else {
+      if (strcmp(xop->src_dev->dev_group.cg_item.ci_dentry->d_parent->d_name.name,
+                 xop->dst_dev->dev_group.cg_item.ci_dentry->d_parent->d_name.name) != 0) {
+         pr_err(""source and destination device have different parent directories, aborting\n"");
+         return;
+      }
+   }
+   pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+   target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+} 
+}",441,-71.84163556263923,-0.16290620308988488
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; char path[MAX_PATH_SIZE]; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; snprintf(path, MAX_PATH_SIZE, ""%s/%s"", REMOTE_DEV_DIR, remote_dev->dev_group.cg_item.ci_name); pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , path ) ; if (strncmp(path, REMOTE_DEV_DIR, strlen(REMOTE_DEV_DIR)) == 0) target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; else pr_err(""Path traversal attempted""); }",229,-37.457405074208296,-0.1635694544725253
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if (strstr(remote_dev->dev_group.cg_item, ""/"") != 0) { pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; } }",179,-13.688724577108204,-0.07647332165982236
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; if ( strstr ( remote_dev -> dev_group . cg_item , ""/"") ) return ; // Path Traversal prevention pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }",185,-28.803296730577504,-0.15569349584095948
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { 
+    struct se_device * remote_dev ; 
+    if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) {
+        remote_dev = xop -> dst_dev ; 
+    } else if ( xop -> op_origin == XCOL_DESTINATION_OP ) { 
+        remote_dev = xop -> src_dev ; 
+    } 
+    pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; 
+    target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; 
+}",202,-23.98575365634555,-0.11874135473438392
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:","
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) {
+ struct se_device * remote_dev ;
+ char * remote_dev_dir_path ;
+ size_t remote_dev_dir_path_len ;
+ if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; remote_dev_dir_path_len = strlen ( remote_dev -> basedir ) + strlen ( remote_dev -> dev_group . cg_item . ci_name ) + 2 ; remote_dev_dir_path = kmalloc ( remote_dev_dir_path_len , GFP_KERNEL ) ; if ( ! remote_dev_dir_path ) return ; snprintf ( remote_dev_dir_path , remote_dev_dir_path_len , ""%s/%s"" , remote_dev -> basedir , remote_dev -> dev_group . cg_item . ci_name ) ; if ( ! strcmp ( remote_dev_dir_path , remote_dev -> dev_group . cg_item . ci_name ) ) { pr_err ( ""remote_dev_dir_path is not valid.\\n"" ) ; goto out ; } pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; out : kfree ( remote_dev_dir_path ) ; }",395,-64.85641940574553,-0.16419346684998867
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," 
+static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; 
+if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) {
+if (strncmp(xop->dst_dev, "".."", 2) == 0)
+{
+return;
+}
+remote_dev = xop -> dst_dev ;
+} else {
+if (strncmp(xop->src_dev, "".."", 2) == 0)
+{
+return;
+}
+remote_dev = xop -> src_dev ;
+}
+pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }",225,-26.24641103004409,-0.11665071568908485
+"The Original Code is vulnerable to CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'). Fix the vulnerability.
+Original Code: static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; pr_debug ( ""Calling configfs_undepend_item for"" "" remote_dev: %p remote_dev->dev_group: %p\\n"" , remote_dev , & remote_dev -> dev_group . cg_item ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; }
+Fixed code:"," static void xcopy_pt_undepend_remotedev ( struct xcopy_op * xop ) { struct se_device * remote_dev ; char * safe_path = NULL ; if ( xop -> op_origin == XCOL_SOURCE_RECV_OP ) remote_dev = xop -> dst_dev ; else remote_dev = xop -> src_dev ; safe_path = realpath ( ""remote_dev->dev_group"" , NULL ) ; pr_debug ( ""Calling configfs_undepend_item for safe_path: %s\\n"" , safe_path ) ; target_undepend_item ( & remote_dev -> dev_group . cg_item ) ; free ( safe_path ) ; }",162,-26.25585625564771,-0.16207318676325747

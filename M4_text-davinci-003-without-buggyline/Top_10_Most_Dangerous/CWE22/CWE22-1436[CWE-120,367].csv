@@ -1,0 +1,559 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+	FILE * fp ; 
+	char spath [ 64 + IFNAMSIZ ] ; 
+	if ( snprintf ( spath , sizeof ( spath ) - 1 , var , iface ) >= sizeof ( spath ) ) return - 1 ; 
+	if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+	fp = fopen ( spath , ""w"" ) ; 
+	if ( ! fp ) { 
+		if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+		return - 1 ; 
+	} 
+	if ( flock ( fileno ( fp ) , LOCK_EX ) != 0 ) {
+		fprintf ( stderr , ""flock failed: %s\n"" , strerror ( errno ) ) ;
+		fclose ( fp ) ;
+		return - 1 ;
+	}
+	fprintf ( fp , ""%u"" , val ) ; 
+	fclose ( fp ) ; 
+	return 0 ; 
+}",306,-28.67876743054248,-0.09372146219131529
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; size_t path_len = snprintf ( spath , 64 + IFNAMSIZ , var , iface ) ; //check for the size of the array if ( path_len > 64 + IFNAMSIZ ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; //using fwrite() instead of fprintf() to write to the file fwrite ( fp , ""%u"" , path_len , val ) ; //closing the file after writing fclose ( fp ) ; return 0 ; }",255,-70.4723210170041,-0.27636204320393765
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) - 1 , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; //Add fflush to avoid TOCTOU race condition fflush(fp); return 0 ; }",210,-22.684665805185602,-0.10802221811993144
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; int size ; size = snprintf ( spath , sizeof ( spath ) , var , iface ) ; if ( size < 0 || size >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } /* Added a check on the return value to prevent buffer overflow */ if ( fprintf ( fp , ""%u"" , val ) < 0 ) { fclose ( fp ) ; return - 1 ; } fclose ( fp ) ; return 0 ; }",232,-36.26212484461918,-0.15630226226128957
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; size_t len = snprintf ( spath , sizeof ( spath ) , var , iface ) ;  if ( len >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } struct stat st ; fstat ( fp -> _fileno , & st ) ; if ( st . st_mtime != time ( NULL ) ) return - 1 ; fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",235,-28.528279854455505,-0.12139693555087448
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface ,const char * var ,const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ + 1 ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) == sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( fprintf ( fp , ""%u"" , val ) < 0 ) { fclose ( fp ) ; return - 1 ; } fclose ( fp ) ; return 0 ; }",210,-23.687818909362246,-0.11279913766362974
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; 
+//Checking size of input
+if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; 
+
+//Adding extra check with access() system call
+if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+
+//Adding extra check with stat() system call
+struct stat st ; 
+if ( stat ( spath , & st ) != 0 ) return - 1 ; 
+
+//Adding extra check with lstat() system call
+struct stat lst ; 
+if ( lstat ( spath , & lst ) != 0 ) return - 1 ; 
+
+//Opening file in write mode
+fp = fopen ( spath , ""w"" ) ; 
+if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } 
+
+//Writing the value to the file
+fprintf ( fp , ""%u"" , val ) ; 
+fclose ( fp ) ; 
+return 0 ; }",317,-61.997868970959246,-0.19557687372542348
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || ( strlen ( var ) + strlen ( iface ) ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; if ( flock ( fileno ( fp ) , LOCK_EX ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",235,-22.029338941815404,-0.09374186783751236
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) - 1 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fflush ( fp ) ; int result = fsync ( fileno ( fp ) ) ; fclose ( fp ) ; if ( result != 0 ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } return 0 ; }",272,-18.202917066688418,-0.06692248921576624
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: buffer overflow"" , name , val , iface ) ; return - 1 ; } if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( flock ( fileno ( fp ) , LOCK_EX ) < 0 ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",301,-17.55144565533909,-0.05831045068218967
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || strnlen ( spath , sizeof ( spath ) ) == sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; } 
+The vulnerability for CWE-120 is fixed by adding a check to make sure that the string is not longer than the size of the buffer. The vulnerability for CWE-367 is fixed by adding a check to make sure that the file has not been modified since it was last accessed.",271,-40.98120905608306,-0.15122217363868287
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; size_t spath_size = 64 + IFNAMSIZ ; char * spath = ( char * ) malloc ( spath_size ) ; if ( snprintf ( spath , spath_size , var , iface ) >= spath_size ) { free ( spath ) ; return - 1 ; } if ( access ( spath , F_OK ) != 0 ) { free ( spath ) ; return - 1 ; } fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; free ( spath ) ; return - 1 ; } if ( fprintf ( fp , ""%u"" , val ) < 0 ) { fclose ( fp ) ; free ( spath ) ; return - 1 ; } fclose ( fp ) ; free ( spath ) ; return 0 ; }",261,-16.845079955803715,-0.06454053622913301
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ + 1 ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) - 1 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( fprintf ( fp , ""%u"" , val ) < 0) { if (name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; fclose(fp); return - 1 ; } fclose ( fp ) ; return 0 ; }",256,-26.426270906027703,-0.10322762072667072
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= ( sizeof ( spath ) - 1 ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fflush(fp);  // Added fflush to flush the output buffer
+if (fclose(fp) != 0) {  // Added check to ensure that the file is closed properly
+  if (name) flog(LOG_ERR, ""failed to close %s (%u) for %s: %s"", name, val, iface, strerror(errno));
+  return -1;
+}
+return 0;
+}",282,-41.081681486760324,-0.14567972158425646
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || snprintf ( spath , sizeof ( spath ) , var , iface ) < 0 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; if ( fflush ( fp ) == EOF ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fclose ( fp ) ; return 0 ; }",275,-14.988115658343395,-0.05450223875761234
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) == 0 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+The fixed code is now not vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. The vulnerability was fixed by changing the snprintf line to check if the value of the snprintf statement is equal to 0 instead of greater than or equal to the size of the buffer. This ensures that the buffer will not overflow. Additionally, the access() method is used to check for the existence of the path before fopen is called to prevent a race condition.",311,-75.35918321557375,-0.24231248622370982
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) - 1 , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""r+"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } flock ( fileno ( fp ) , LOCK_EX ) ; fseek ( fp , 0 , SEEK_SET ) ; fprintf ( fp , ""%u"" , val ) ; flock ( fileno ( fp ) , LOCK_UN ) ; fclose ( fp ) ; return 0 ; }",240,-14.707745997994232,-0.061282274991642634
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+	FILE * fp ; 
+	char spath [ 64 + IFNAMSIZ] ; 
+	if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= (sizeof ( spath ) -1) ) return - 1 ; 
+	if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+	fp = fopen ( spath , ""w"" ) ; 
+	if ( ! fp ) { 
+		if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+		return - 1 ; 
+	} 
+	// Use fwrite instead of fprintf to reduce possibility of buffer overflow
+	int result = fwrite (&val, sizeof(val), 1, fp);
+	if (result != 1) {
+		if (name) flog ( LOG_ERR , ""failed to write %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ;
+		return -1;
+	}
+	fclose ( fp ) ; 
+	// Check if the file was successfully closed
+	if (fp) {
+		if (name) flog ( LOG_ERR , ""failed to close %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ;
+		return -1;
+	}
+	return 0 ; 
+}",397,-68.25927659666495,-0.17193772442484873
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var(const char *iface, const char *var, const char *name, uint32_t val) {
+    FILE *fp;
+    char spath[64 + IFNAMSIZ];
+    size_t path_len = sizeof(spath);
+    if (snprintf(spath, path_len, var, iface) >= path_len)
+        return -1;
+    if (access(spath, F_OK) != 0)
+        return -1;
+    fp = fopen(spath, ""r+"");
+    if (!fp) {
+        if (name)
+            flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno));
+        return -1;
+    } 
+
+    /*added to fix CWE-367*/
+    if (fgetc(fp)!=EOF){
+        fclose(fp);
+        return -1;
+    }
+    /*end added */
+
+    fprintf(fp, ""%u"", val);
+    fclose(fp);
+    return 0;
+}",269,-61.2890959879373,-0.22784050553136542
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; // CWE-367 // Add a check to make sure the file is not modified between access & open if ( stat ( spath , & stat_buf ) == 0 ) { if ( stat_buf . st_mtime != access_time ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: File modified between access & open"" , name , val , iface ) ; return - 1 ; } } fp = fopen ( spath , ""w"" ) ; // CWE-120 // Check for buffer overflow if ( strlen ( val ) >= sizeof ( spath ) ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: Input value too large"" , name , val , iface ) ; return - 1 ; } if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",361,-61.093125861248325,-0.16923303562672667
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var(const char *iface, const char *var, const char *name, uint32_t val) 
+{ 
+    FILE *fp; 
+    char spath[64 + IFNAMSIZ]; 
+    if (snprintf(spath, sizeof(spath), var, iface) >= (sizeof(spath) - 1)) 
+        return -1; 
+
+    if (access(spath, F_OK) != 0) 
+        return -1; 
+
+    if ((fp = fopen(spath, ""w"")) == NULL) 
+    { 
+        if (name) 
+            flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno)); 
+        return -1; 
+    } 
+
+    if (fprintf(fp, ""%u"", val) < 0) 
+    { 
+        fclose(fp); 
+        return -1; 
+    }
+
+    fclose(fp); 
+    return 0; 
+}",256,-27.7331159571511,-0.10833248420762148
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; size_t path_size = 64 + IFNAMSIZ ; char spath [ path_size ] ; if ( snprintf ( spath , path_size , var , iface ) >= path_size ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if (flock(fp, LOCK_EX | LOCK_NB) == -1) { if (errno == EWOULDBLOCK) { fprintf(stderr, ""The file is being accesssed by another process.\n""); return -1; } else { flog(LOG_ERR, ""Error when locking the file.\n""); return -1; } } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",284,-59.813553395186055,-0.21061110350417625
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } 
+//check size of input
+if(val <= sizeof(uint32_t)){
+  fprintf ( fp , ""%u"" , val ) ; 
+  fclose ( fp ) ; 
+  return 0 ;
+}
+//add TOCTOU
+if(access(spath, F_OK) == 0){
+  fprintf ( fp , ""%u"" , val ) ; 
+  fclose ( fp ) ; 
+  return 0 ;
+}
+return -1;
+}",282,-39.96630912329119,-0.1417245004372028
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+
+int set_interface_var(const char *iface, const char *var, const char *name, uint32_t val) {
+	FILE *fp;
+	char spath[64 + IFNAMSIZ];
+	
+	if (snprintf(spath, sizeof(spath), var, iface) >= sizeof(spath))
+		return -1;
+	
+	if (access(spath, F_OK) != 0)
+		return -1;
+	
+	fp = fopen(spath, ""w"");
+	if (!fp) {
+		if (name)
+			flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno));
+		return -1;
+	}
+	
+	if (fprintf(fp, ""%u"", val) < 0) {
+		fclose(fp);
+		return -1;
+	}
+	fclose(fp);
+	
+	return 0;
+}",248,-25.698273956931285,-0.10362207240698099
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) {
+    FILE * fp ;
+    char spath [ 64 + IFNAMSIZ ] ;
+    if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ;
+    if ( access ( spath , F_OK ) != 0 ) return - 1 ;
+    fp = fopen ( spath , ""r+"" ) ; // Changed mode from w to r+ to prevent TOCTOU race condition
+    if ( ! fp ) {
+        if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ;
+        return - 1 ;
+    }
+    if ( fseek ( fp , 0 , SEEK_SET ) != 0 ) { // Added code to check the size of the file and ensure the buffer is not overflown
+        flog ( LOG_ERR , ""failed to seek file %s: %s"" , spath , strerror ( errno ) ) ;
+        fclose ( fp ) ;
+        return - 1 ; 
+    }
+    if ( fprintf ( fp , ""%u"" , val ) < 0 ) { // Added code to check that written data is the same size as requested
+        flog ( LOG_ERR , ""failed to write %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ;
+        fclose ( fp ) ;
+        return - 1 ;
+    }
+    fclose ( fp ) ;
+    return 0 ;
+}",406,-89.71081015671848,-0.22096258659290266
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || spath[sizeof(spath)-1] != '\0') return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } flock(fileno(fp), LOCK_EX); fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",220,-13.045923248708908,-0.05929965113049503
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( fwrite ( &val , sizeof ( val ) , 1 , fp ) != 1 ) { flog ( LOG_ERR , ""failed to write %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; fclose ( fp ) ; return - 1 ; } fclose ( fp ) ; return 0 ; }",254,-14.43333401051761,-0.05682414964770713
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || snprintf ( spath , sizeof ( spath ) , var , iface ) < 0 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( flock ( fileno ( fp ) , LOCK_EX ) != 0 ) { fclose ( fp ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fflush ( fp ) ; flock ( fileno ( fp ) , LOCK_UN ) ; fclose ( fp ) ; return 0 ; }",267,-15.372736416242128,-0.05757579182113157
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || snprintf ( spath , sizeof ( spath ) , var , iface ) < 0 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; return 0 ; } 
+
+The fixed code is no longer vulnerable to CWE-120 and CWE-367 as the code has been changed to ensure that the size of the input is checked before it is copied and an additional check is performed after the file is written to ensure that it is still accessible.",289,-46.664808643149364,-0.16146992610086286
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+FILE * fp ;
+size_t sz = 64 + IFNAMSIZ;
+char spath [sz] ;
+if ( snprintf ( spath , sz , var , iface ) >= sz ) return - 1 ; 
+if ( access ( spath , W_OK ) != 0 ) return - 1 ; 
+fp = fopen ( spath , ""w"" ) ; 
+if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } 
+if(fprintf(fp, ""%u"", val) < 0) {fclose(fp); return -1;}
+if(fflush(fp) != 0) {fclose(fp); return -1;}
+if(fsync(fileno(fp)) != 0) {fclose(fp); return -1;}
+if(fclose(fp) != 0) {return -1;}
+return 0 ; 
+}",278,-48.30802442566081,-0.1737698720347511
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; size_t path_size = sizeof ( spath ) ; if ( snprintf ( spath , path_size , var , iface ) >= path_size ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; if ( access ( spath , W_OK ) != 0 ) { if ( name ) flog ( LOG_ERR , ""no write permission for %s for %s: %s"" , name , iface , strerror ( errno ) ) ; return - 1 ; } fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; if ( access ( spath , F_OK ) != 0 ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } return 0 ; }",328,-25.89333153852219,-0.07894308395890912
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) > sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } flock ( fileno ( fp ) , LOCK_EX ) ; fprintf ( fp , ""%u"" , val ) ; flock ( fileno ( fp ) , LOCK_UN ) ; fclose ( fp ) ; return 0 ; }",222,-10.295894796997432,-0.04637790449097942
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) == 0 ) return - 1 ;if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ;
+
+if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+
+fp = fopen ( spath , ""w"" ) ; 
+if ( ! fp ) { 
+if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+return - 1 ; 
+} 
+
+if(flock(fileno(fp),LOCK_EX)==-1){
+    if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+    return - 1 ; 
+}
+
+fprintf ( fp , ""%u"" , val ) ; 
+fclose ( fp ) ; 
+return 0 ; 
+}",316,-42.427517731635675,-0.13426429661910025
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; 
+
+if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; 
+
+if ( access ( spath , F_OK ) != 0 || strnlen(spath, sizeof(spath)) != sizeof(spath) - 1) return - 1 ; 
+
+fp = fopen ( spath , ""w"" ) ; 
+
+if ( ! fp || ferror(fp) ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+
+if (fp) fclose(fp);
+
+return - 1 ; } 
+
+fprintf ( fp , ""%u"" , val ) ; 
+
+fclose ( fp ) ; 
+
+return 0 ; }",253,-36.84602256846401,-0.1456364528397787
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 1024 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; if ( name ) { struct stat sb ; if ( stat ( spath , &sb ) != 0 ) { flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( sb . st_mtime != time ( NULL ) ) { flog ( LOG_ERR , ""Inconsistent mtime for %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } } fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",327,-37.58639472420262,-0.1149431031321181
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) - 1, var , iface ) == sizeof ( spath ) - 1 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; if(access(spath,F_OK) == 0) { return 0; } else { return -1; } }",220,-26.768304712095333,-0.12167411232770606
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," 
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; if (name) { //TOCTOU Race Condition Check if (access(spath, F_OK) != 0) { flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno)); return -1; } } fp = fopen ( spath , ""w"" ) ; //Buffer Overflow Check if(fp) { fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; } else { flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, strerror(errno)); return -1; } }",263,-34.70354006105051,-0.1319526238062757
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; 
+
+if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+
+if ( check_buffer_overflow (spath) < 0 ) { 
+	if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+	return - 1 ; 
+}
+
+fp = fopen ( spath , ""w"" ) ; 
+if ( ! fp ) { 
+	if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+	return - 1 ; 
+} 
+
+struct stat st ; 
+if ( fstat ( fileno ( fp ) , & st ) < 0 ) { 
+	if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+	fclose ( fp ) ; 
+	return - 1 ; 
+} 
+if ( st . st_mtime != st . st_ctime ) { 
+	if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+	fclose ( fp ) ; 
+	return - 1 ; 
+} 
+
+fprintf ( fp , ""%u"" , val ) ; 
+fclose ( fp ) ; 
+return 0 ;
+
+} 
+
+The fixed code is now protected from CWE-120 and CWE-367 by using a check_buffer_overflow() function to check the size of the input buffer and a fstat() function to check the modification time of the file.",528,-86.99934364146748,-0.16477148416944598
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 128 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) > sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( fprintf ( fp , ""%u"" , val ) < 0 ) { flog ( LOG_ERR , ""failed to write %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; fclose ( fp ) ; return - 1 ; } fclose ( fp ) ; return 0 ; }
+
+The fixed code is not vulnerable to CWE-120 and CWE-367. The size of the spath buffer was increased to 128 bytes to make sure it is big enough to hold the input string and the size was checked against the returned value of snprintf() instead of the size of the buffer. Additionally, the result of fprintf() was checked to make sure the data was successfully written to the file.",335,-84.12374608051157,-0.25111565994182555
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+FILE * fp ; 
+char spath [ 64 + IFNAMSIZ+1 ] ; 
+if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) 
+    return - 1 ; 
+if ( access ( spath , F_OK ) != 0 ) 
+    return - 1 ; 
+fp = fopen ( spath , ""w"" ) ; 
+if ( ! fp ) { 
+    if ( name ) 
+        flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+    return - 1 ; 
+} 
+if (fprintf ( fp , ""%u"" , val ) < 0) {
+    fclose(fp);
+    return -1;
+}
+fclose ( fp ) ; 
+return 0 ; 
+}",249,-20.2779323571417,-0.08143747934595061
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } if ( fprintf ( fp , ""%u"" , val ) < 0 ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fclose ( fp ) ; return 0 ; }",246,-11.008947085918715,-0.0447518174224338
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; 
+
+// Added Limit Checking
+if (strlen (iface) >= IFNAMSIZ) return -1; 
+if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; 
+
+// Check the file before writing
+if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+
+// Added TOCTOU checking
+struct stat st;
+if(stat(spath, &st) < 0) return -1;
+
+fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } 
+
+// Added TOCTOU checking
+if(stat(spath, &st) != 0 || st.st_mtime != time(NULL)) return -1;
+
+fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",304,-71.59571173141383,-0.23551220964280864
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; 
+//Fixed CWE-120: Added check to make sure snprintf doesn't overflow
+if ( snprintf ( spath , sizeof ( spath ) , var , iface ) < 0 || snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; 
+//Fixed CWE-367: Added check to make sure the file hasn't been changed since access was checked
+struct stat sb ; 
+if ( access ( spath , F_OK ) != 0 || stat ( spath , & sb ) != 0 ) return - 1 ; 
+if ( sb . st_mtime != access ( spath , F_OK ) ) return - 1 ; 
+fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",303,-51.66170192741522,-0.17050066642711295
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || snprintf ( spath , sizeof ( spath ) , var , iface ) < 0 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } 
+
+if ( flock ( fileno ( fp ) , LOCK_EX ) == - 1 ) {
+  if ( name ) {
+    flog ( LOG_ERR , ""failed to acquire lock on file %s for %s: %s"" , name , iface , strerror ( errno ) ) ;
+  }
+  return - 1 ;
+}
+
+fprintf ( fp , ""%u"" , val ) ; 
+
+if ( fflush ( fp ) == EOF ) { 
+  if ( name ) {
+    flog ( LOG_ERR , ""failed to fflush data for %s: %s"" , name , strerror ( errno ) ) ;
+  } 
+  return - 1 ;
+}
+
+if ( flock ( fileno ( fp ) , LOCK_UN ) == - 1 ) {
+  if ( name ) {
+    flog ( LOG_ERR , ""failed to release lock on file %s for %s: %s"" , name , iface , strerror ( errno ) ) ;
+  } 
+  return - 1 ;
+} 
+
+fclose ( fp ) ; 
+return 0 ;
+}",456,-66.67742533679561,-0.1462224239842009
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; size_t len = strlen(var); if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || len > sizeof(spath)) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; // Add a check for a TOCTOU race condition if (access(spath, F_OK) != 0 || strcmp(var, spath) != 0) { flog(LOG_ERR, ""failed to set %s (%u) for %s: %s"", name, val, iface, ""race condition detected""); return -1; } fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",287,-50.376678864533,-0.17552849778582927
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { 
+    FILE * fp ; 
+    char spath [ 64 + IFNAMSIZ ] ; 
+    size_t len = snprintf ( spath , sizeof ( spath ) , var , iface ) ;
+    if ( len >= sizeof ( spath ) || len < 0 ) return - 1 ; 
+    if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+    fp = fopen ( spath , ""w"" ) ; 
+    if ( ! fp ) { 
+        if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; 
+        return - 1 ; 
+    } 
+    struct stat st;
+    if (stat(spath, &st) == -1) {
+        return -1;
+    }
+    if (st.st_uid != geteuid()) {
+        return -1;
+    }
+    fprintf ( fp , ""%u"" , val ) ; 
+    fclose ( fp ) ; 
+    return 0 ; 
+}",299,-31.40297504967422,-0.1050266724069372
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) || snprintf ( spath , sizeof ( spath ) , var , iface ) < 0 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; if ( name && strlen ( name ) > IFNAMSIZ ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",231,-15.915266922723198,-0.06889725940572813
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:"," int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) > sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } flock(fileno(fp), LOCK_EX); //Use Lock to prevent race condition fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",210,-22.85962008105214,-0.1088553337192959
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) - 1 ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } /* Added check for the length of val before copying it to the file */ if ( snprintf ( buf , 64 , ""%u"" , val ) >= 64 ) { fclose ( fp ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }",240,-44.14800328288987,-0.18395001367870778
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') and CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition. Fix the vulnerability.
+Original Code: int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; return 0 ; }
+Fixed code:","
+int set_interface_var ( const char * iface , const char * var , const char * name , uint32_t val ) { FILE * fp ; char spath [ 64 + IFNAMSIZ ] ; if ( snprintf ( spath , sizeof ( spath ) , var , iface ) >= sizeof ( spath ) ) return - 1 ; if ( access ( spath , F_OK ) != 0 ) return - 1 ; 
+// Added check for file size
+if (strlen(spath) > sizeof(spath)) return -1;
+
+fp = fopen ( spath , ""w"" ) ; if ( ! fp ) { if ( name ) flog ( LOG_ERR , ""failed to set %s (%u) for %s: %s"" , name , val , iface , strerror ( errno ) ) ; return - 1 ; } 
+// Added call to fseek
+fseek(fp, 0, SEEK_END);
+
+fprintf ( fp , ""%u"" , val ) ; fclose ( fp ) ; 
+// Added call to fsync
+fsync(fileno(fp));
+
+return 0 ; }",262,-38.03941847098672,-0.1451886201182699

@@ -1,0 +1,849 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; if ( alloc > MAX_SIZE ) return NULL ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- && strindex < MAX_SIZE - 1 ) { in = * string ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; } else { newlen += 2 ; if ( newlen > alloc || strindex > MAX_SIZE - 4 ) { free ( ns ) ; return NULL ; } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",277,-21.890009511401498,-0.07902530509531226
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+size_t alloc ; 
+if(inlength){
+    alloc = ( size_t ) inlength ; 
+} else {
+    alloc = strlen ( string ) + 1;
+} 
+char * ns ; 
+char * testing_ptr = NULL ; 
+unsigned char in ; 
+size_t newlen = alloc ; 
+int strindex = 0 ; 
+size_t length ; 
+CURLcode res ; 
+ns = malloc ( alloc ) ; 
+if ( ! ns ) return NULL ; 
+length = alloc - 1 ; 
+while ( length -- ) { 
+in = * string ; 
+if ( Curl_isunreserved ( in ) ) {
+    ns [ strindex ++ ] = in ;
+} else { 
+    newlen += 2 ; 
+    if ( newlen > alloc ) {
+        alloc += 2 ; 
+        testing_ptr = realloc ( ns , alloc ) ; 
+        if ( ! testing_ptr ) { 
+            free ( ns ) ; 
+            return NULL ; 
+        } else { 
+            ns = testing_ptr ; 
+        } 
+    } 
+    res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+    if ( res ) { 
+        free ( ns ) ; 
+        return NULL ; 
+    } 
+    snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+    strindex += 3 ; 
+} 
+string ++ ; 
+} 
+ns [ strindex ] = 0 ; 
+return ns ; 
+}",396,-38.147230933085815,-0.0963313912451662
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+  size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+  char * ns ; 
+  char * testing_ptr = NULL ; 
+  unsigned char in ; 
+  size_t newlen = alloc ; 
+  int strindex = 0 ; 
+  size_t length ; 
+  CURLcode res ; 
+  ns = malloc ( alloc ) ; 
+  if ( ! ns ) return NULL ; 
+  length = alloc - 1 ;
+  
+  // Added check for string length 
+  if (strlen(string) > length) {
+    free (ns);
+    return NULL;
+  }
+  
+  while ( length -- ) { 
+    in = * string ; 
+    if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+    else { 
+      newlen += 2 ; 
+      if ( newlen > alloc ) { 
+        alloc *= 2 ; 
+        testing_ptr = realloc ( ns , alloc ) ; 
+        if ( ! testing_ptr ) { 
+          free ( ns ) ; 
+          return NULL ; 
+        } else { 
+          ns = testing_ptr ; 
+        } 
+      } 
+      res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+      if ( res ) { 
+        free ( ns ) ; 
+        return NULL ; 
+      } 
+      snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+      strindex += 3 ; 
+    } 
+    string ++ ; 
+  } 
+  ns [ strindex ] = 0 ; 
+  return ns ; 
+}",439,-30.017362329238193,-0.06837667956546285
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = 0 ; int strindex = 0 ; size_t length ; CURLcode res ; if ( inlength ) { alloc = ( size_t ) inlength + 1 ; } else { alloc = strlen ( string ) + 1 ; } if ( alloc > MAX_ALLOWED_ALLOC ) { return NULL ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; if ( alloc > MAX_ALLOWED_ALLOC ) { free ( ns ) ; return NULL ; } testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",334,-21.860176783054,-0.06544963108698802
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; size_t newlen ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t length ; int strindex = 0 ; CURLcode res ; if ( inlength ) { alloc = ( size_t ) inlength ; } else { alloc = strlen ( string ) + 1 ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length ) { in = * string ; if ( Curl_isunreserved ( in ) ) { ns [ strindex ++ ] = in ; } else { newlen += 2 ; if ( newlen > alloc ) { alloc = newlen ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; length -- ; } ns [ strindex ] = 0 ; return ns ; }",292,-25.42803169717881,-0.08708230033280415
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = 0 ; if (inlength <= 0) alloc = (size_t) strlen(string) + 1; else alloc = (size_t) inlength + 1; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { free ( ns ) ; return NULL ; // Exit if we don't have enough memory } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",271,-42.239322667530026,-0.1558646592897787
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+if (alloc > SIZE_MAX) {
+	return NULL;
+}
+
+char * ns ; 
+char * testing_ptr = NULL ; 
+unsigned char in ; 
+size_t newlen = alloc ; 
+int strindex = 0 ; 
+size_t length ; 
+CURLcode res ; 
+ns = malloc ( alloc ) ; 
+if ( ! ns ) return NULL ; 
+length = alloc - 1 ; 
+while ( length -- ) {
+	in = * string ; 
+	if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+	else { 
+		newlen += 2 ; 
+		if ( newlen > alloc ) { 
+			alloc *= 2 ;
+			if (alloc > SIZE_MAX) {
+				free (ns);
+				return NULL;
+			}
+	
+			testing_ptr = realloc ( ns , alloc ) ; 
+			if ( ! testing_ptr ) { 
+				free ( ns ) ; 
+				return NULL ; 
+			} else { 
+				ns = testing_ptr ; 
+			} 
+		} 
+		res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+		if ( res ) { 
+			free ( ns ) ; 
+			return NULL ; 
+		} 
+		snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+		strindex += 3 ; 
+	} 
+	string ++ ; 
+} 
+ns [ strindex ] = 0 ; 
+return ns ; 
+}",469,-29.236286175834884,-0.062337497176620224
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+    size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+    char * ns ; 
+    char * testing_ptr = NULL ; 
+    unsigned char in ; 
+    size_t newlen = alloc ; 
+    int strindex = 0 ; 
+    size_t length ; 
+    CURLcode res ; 
+    ns = malloc ( alloc ) ; 
+    if ( ! ns ) return NULL ; 
+    length = alloc - 1 ; 
+    if (length > 0) { 
+        while ( length -- ) { 
+            in = * string ; 
+            if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+            else { 
+                newlen += 2 ; 
+                if ( newlen > alloc ) { 
+                    alloc *= 2 ; 
+                    testing_ptr = realloc ( ns , alloc ) ; 
+                    if ( ! testing_ptr ) { 
+                        free ( ns ) ; 
+                        return NULL ; 
+                    } else { 
+                        ns = testing_ptr ; 
+                    } 
+                } 
+                res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+                if ( res ) { 
+                    free ( ns ) ; 
+                    return NULL ; 
+                } 
+                snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+                strindex += 3 ; 
+            } 
+            string ++ ; 
+        } 
+    }
+    ns [ strindex ] = 0 ; 
+    return ns ; 
+}",413,-15.591303589325628,-0.03775134040998941
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = 0; 
+    if (inlength) {
+        alloc = (size_t)inlength; 
+    } else {
+        alloc = strlen ( string );
+        if (alloc == 0) {
+            return NULL;
+        }
+    } 
+    alloc += 1; 
+    char * ns ;
+    char * testing_ptr = NULL ;
+    unsigned char in ;
+    size_t newlen = alloc ;
+    int strindex = 0 ;
+    size_t length ;
+    CURLcode res ;
+    ns = malloc ( alloc ) ;
+    if ( ! ns ) return NULL ;
+    length = alloc - 1 ;
+    if (strlen(string) > length) {
+        return NULL;
+    }
+    while ( length-- ) {
+        in = * string ;
+        if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ;
+        else {
+            newlen += 2 ;
+            if ( newlen > alloc ) {
+                alloc *= 2 ;
+                testing_ptr = realloc ( ns , alloc ) ;
+                if ( ! testing_ptr ) {
+                    free ( ns ) ;
+                    return NULL ;
+                } else {
+                    ns = testing_ptr ;
+                }
+            }
+            res = Curl_convert_to_network ( handle , & in , 1 ) ;
+            if ( res ) {
+                free ( ns ) ;
+                return NULL ;
+            }
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ;
+            strindex += 3 ;
+        }
+        string ++ ;
+    }
+    ns [ strindex ] = 0 ;
+    return ns ;
+}",423,-42.33633155473591,-0.1000858902003213
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length-- && strindex < alloc ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",286,-8.392540490160997,-0.02934454716839509
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- && strindex < alloc-1) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",288,-9.0003535834989,-0.03125122772048229
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; if ( length > strlen(string)) { length = strlen(string); } while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",301,-12.397490751833676,-0.04118767691639095
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; if (length > inlength) { length = inlength; } while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",297,-9.912281367589582,-0.03337468473935886
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+if (alloc > INT_MAX) { // Added check for alloc size
+    return NULL;
+}
+char * ns ; 
+char * testing_ptr = NULL ; 
+unsigned char in ; 
+size_t newlen = alloc ; 
+int strindex = 0 ; 
+size_t length ; 
+CURLcode res ; 
+ns = malloc ( alloc ) ; 
+if ( ! ns ) return NULL ; 
+length = alloc - 1 ; 
+while ( length -- ) { 
+    in = * string ; 
+    if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+    else { 
+        newlen += 2 ; 
+        if ( newlen > alloc ) { 
+            alloc *= 2 ;
+            if (alloc > INT_MAX) { // Added check for alloc size
+                free(ns);
+                return NULL;
+            }
+            testing_ptr = realloc ( ns , alloc ) ; 
+            if ( ! testing_ptr ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } else { 
+                ns = testing_ptr ; 
+            } 
+        } 
+        res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+        if ( res ) { 
+            free ( ns ) ; 
+            return NULL ; 
+        } 
+        snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+        strindex += 3 ; 
+    } 
+    string ++ ; 
+} 
+ns [ strindex ] = 0 ; 
+return ns ; 
+}",436,-29.589788170988875,-0.06786648663070843
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+    size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+    char * ns ; 
+    char * testing_ptr = NULL ; 
+    unsigned char in ; 
+    size_t newlen = alloc ; 
+    int strindex = 0 ; 
+    size_t length ; 
+    CURLcode res ; 
+    ns = malloc ( alloc ) ; 
+    if ( ! ns ) return NULL ; 
+    length = alloc - 1 ; 
+    while ( length -- && strindex < alloc - 1) { 
+        in = * string ; 
+        if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+        else { 
+            newlen += 2 ; 
+            if ( newlen > alloc ) { 
+                alloc *= 2 ; 
+                testing_ptr = realloc ( ns , alloc ) ; 
+                if ( ! testing_ptr ) { 
+                    free ( ns ) ; 
+                    return NULL ; 
+                } else { 
+                    ns = testing_ptr ; 
+                } 
+            } 
+            res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+            if ( res ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } 
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+            strindex += 3 ; 
+        } 
+        string ++ ; 
+    } 
+    ns [ strindex ] = 0 ; 
+    return ns ; 
+}",405,-12.526382449544208,-0.030929339381590638
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- && strindex < alloc - 1) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",289,-7.513097557092499,-0.02599687736018166
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length && inlength-- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",284,-8.643997428544393,-0.03043661066388871
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; //ensure length does not exceed MAX_SIZE if (alloc > MAX_SIZE) { return NULL; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { // ensure length does not exceed MAX_SIZE if (alloc > MAX_SIZE) { free(ns); return NULL; } alloc *= 2 ; ns = realloc ( ns , alloc ) ; if ( ! ns ) { return NULL ; } else { res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",306,-44.46983566082558,-0.14532626032949536
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen ; int strindex = 0 ; size_t length ; CURLcode res ; if ( inlength ) { alloc = ( size_t ) inlength + 1 ; } else { alloc = strlen ( string ) + 1 ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { if ( strindex > alloc ) { free ( ns ) ; return NULL ; } in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen = alloc + 2 ; testing_ptr = realloc ( ns , newlen ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; alloc = newlen ; } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",302,-19.001812604956214,-0.06291990928793448
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; if ( strlen ( string ) > alloc ) { return NULL ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",297,-12.312309577503587,-0.04145558780304238
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; if (alloc > SIZE_MAX) { return NULL; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; if (alloc > SIZE_MAX) { free(ns); return NULL; } testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",313,-8.779553812055205,-0.028049692690272222
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; if(alloc > SIZE_MAX) { return NULL; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; if(alloc > SIZE_MAX) { free(ns); return NULL; } testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",313,-9.306798003317802,-0.029734178924338026
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , size_t inlength ) { size_t alloc = ( inlength ? inlength : strlen ( string ) ) + 1 ; if ( alloc > SIZE_MAX ) { return NULL ; } char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { if ( newlen > SIZE_MAX ) { free ( ns ) ; return NULL ; } alloc *= 2 ; if ( alloc > SIZE_MAX ) { alloc = SIZE_MAX ; } testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",331,-18.455501774372006,-0.055756802943722074
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen ; int strindex = 0 ; size_t length ; CURLcode res ; if(inlength < 0) { return NULL; } if(inlength > 0) { alloc = (size_t)inlength + 1; } else { alloc = strlen(string) + 1; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",306,-22.525388445803557,-0.07361238054184169
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+	size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+	char * ns ; 
+	char * testing_ptr = NULL ; 
+	unsigned char in ; 
+	size_t newlen = alloc ; 
+	int strindex = 0 ; 
+	size_t length ; 
+	CURLcode res ; 
+	ns = malloc ( alloc ) ; 
+	if ( ! ns ) return NULL ; 
+	length = alloc - 1 ; 
+	if (strlen(string) > length) {
+		free(ns);
+		return NULL;
+	}
+	while ( length -- ) { 
+		in = * string ; 
+		if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+		else { 
+			newlen += 2 ; 
+			if ( newlen > alloc ) { 
+				alloc *= 2 ; 
+				testing_ptr = realloc ( ns , alloc ) ; 
+				if ( ! testing_ptr ) { 
+					free ( ns ) ; 
+					return NULL ; 
+				} else { 
+					ns = testing_ptr ; 
+				} 
+			} 
+			res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+			if ( res ) { 
+				free ( ns ) ; 
+				return NULL ; 
+			} 
+			snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+			strindex += 3 ; 
+		} 
+		string ++ ; 
+	} 
+	ns [ strindex ] = 0 ; 
+	return ns ; 
+}",481,-12.681664519889804,-0.026365206902057806
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) {
+  size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ;
+  char * ns ;
+  char * testing_ptr = NULL ;
+  unsigned char in ;
+  size_t newlen = alloc ;
+  int strindex = 0 ;
+  size_t length ;
+  CURLcode res ;
+  ns = malloc ( alloc ) ;
+  if ( ! ns ) return NULL ;
+  length = alloc - 1 ;
+  while ( length-- && strindex < alloc - 1 ) {
+    in = * string ;
+    if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ;
+    else {
+      newlen += 2 ;
+      if ( newlen > alloc ) {
+        alloc *= 2 ;
+        testing_ptr = realloc ( ns , alloc ) ;
+        if ( ! testing_ptr ) {
+          free ( ns ) ;
+          return NULL ;
+        } else {
+          ns = testing_ptr ;
+        }
+      }
+      res = Curl_convert_to_network ( handle , & in , 1 ) ;
+      if ( res ) {
+        free ( ns ) ;
+        return NULL ;
+      }
+      snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ;
+      strindex += 3 ;
+    }
+    string ++ ;
+  }
+  ns [ strindex ] = 0 ;
+  return ns ;
+}",366,-11.924041228896202,-0.03257934761993498
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = 0 ; size_t max_alloc = 0 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = 0 ; int strindex = 0 ; size_t length ; CURLcode res ; if (inlength) { alloc = ( size_t ) inlength + 1 ; max_alloc = alloc ; } else { alloc = length = strlen ( string ) + 1 ; max_alloc = alloc * 2 ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { if ( newlen > max_alloc ) { free ( ns ) ; return NULL ; } alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ;  } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",333,-42.91012498624354,-0.12885923419292353
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( ( length > 0 ) && ( strindex < alloc ) && string[strindex] != '\0' ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; length--; } ns [ strindex ] = 0 ; return ns ; }",305,-21.885195064840083,-0.07175473791750847
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- && strindex <= alloc) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",286,-10.433493085693094,-0.03648074505487096
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+    size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+    char * ns ; 
+    char * testing_ptr = NULL ; 
+    unsigned char in ; 
+    size_t newlen = alloc ; 
+    int strindex = 0 ; 
+    size_t length ; 
+    CURLcode res ; 
+
+    //Check for Buffer Overflow
+    if (alloc > SIZE_MAX) {
+        return NULL;
+    }
+
+    ns = malloc ( alloc ) ; 
+    if ( ! ns ) return NULL ; 
+    length = alloc - 1 ; 
+    while ( length -- ) { 
+        in = * string ; 
+        if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+        else { 
+            newlen += 2 ; 
+            if ( newlen > alloc ) { 
+                alloc *= 2 ; 
+                testing_ptr = realloc ( ns , alloc ) ; 
+                if ( ! testing_ptr ) { 
+                    free ( ns ) ; 
+                    return NULL ; 
+                } else { 
+                    ns = testing_ptr ; 
+                }
+            }
+            //Check for Buffer Overflow
+            if (alloc > SIZE_MAX) {
+                free(ns);
+                return NULL;
+            }
+            res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+            if ( res ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } 
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+            strindex += 3 ; 
+        } 
+        string ++ ; 
+    } 
+    ns [ strindex ] = 0 ; 
+    return ns ; 
+}",460,-29.619329140215676,-0.0643898459569906
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; if ( length > 0 ) { while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } } ns [ strindex ] = 0 ; return ns ; }",289,-7.8389705217714996,-0.027124465473257784
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; 
+
+//Check if input length is greater than allocated memory
+if (inlength > alloc) {
+    free(ns);
+    return NULL;
+}
+
+ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",319,-22.105333833730306,-0.06929571734711695
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- && strindex < alloc - 1 ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",288,-6.951181016599742,-0.024136045196526883
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; if ( alloc > SIZE_MAX / 2 ) { return NULL ; } //added line ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; if ( alloc > SIZE_MAX / 2 ) { //added line free ( ns ) ; return NULL ; //added line } testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",328,-20.629846496919704,-0.06289587346621861
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) {
+    size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ;
+    char * ns ;
+    char * testing_ptr = NULL ;
+    unsigned char in ;
+    size_t newlen = alloc ;
+    int strindex = 0 ;
+    size_t length ;
+    CURLcode res ;
+    ns = calloc(alloc, sizeof(char)); // allocate the buffer using calloc and not malloc. 
+    if ( ! ns ) return NULL ;
+    length = alloc - 1 ;
+    while ( length-- && strindex < alloc ) { //add an extra condition to check that the buffer does not overflow 
+        in = * string ;
+        if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ;
+        else {
+            newlen += 2 ;
+            if ( newlen > alloc ) {
+                alloc *= 2 ;
+                testing_ptr = realloc ( ns , alloc ) ;
+                if ( ! testing_ptr ) {
+                    free ( ns ) ;
+                    return NULL ;
+                } else {
+                    ns = testing_ptr ;
+                }
+            }
+            res = Curl_convert_to_network ( handle , & in , 1 ) ;
+            if ( res ) {
+                free ( ns ) ;
+                return NULL ;
+            }
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ;
+            strindex += 3 ;
+        }
+        string ++ ;
+    }
+    ns [ strindex ] = 0 ;
+    return ns ;
+}",395,-64.82136692334836,-0.1641047263882237
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = 0 ; int strindex = 0 ; size_t length ; CURLcode res ; if ( ! inlength ) { alloc = strlen ( string ) + 1 ; } else { if ( inlength > ( SIZE_MAX - 1 ) ) { return NULL ; } alloc = ( size_t ) inlength + 1 ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",312,-15.961015205262306,-0.051157100016866366
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length-- && strindex < alloc - 1) { //Checking the boundaries of the string in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",297,-25.403998203211682,-0.08553534748556121
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen ; int strindex ; size_t length ; CURLcode res ; if ( inlength ) { alloc = ( size_t ) inlength + 1 ; } else { alloc = strlen ( string ) + 1 ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; newlen = alloc ; strindex = 0 ; while ( length -- ) { if ( strindex >= alloc - 1 ) { break ; } in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",311,-19.68602111464709,-0.06329910326253084
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { 
+    size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; 
+    char * ns ; 
+    char * testing_ptr = NULL ; 
+    unsigned char in ; 
+    size_t newlen = alloc ; 
+    int strindex = 0 ; 
+    size_t length ; 
+    CURLcode res ; 
+    
+    // Check if string is too long to fit into buffer
+    if (inlength > strlen(string)) {
+        return NULL;
+    }
+
+    ns = malloc ( alloc ) ; 
+    if ( ! ns ) return NULL ; 
+    length = alloc - 1 ; 
+    while ( length -- ) { 
+        in = * string ; 
+        if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; 
+        else { 
+            newlen += 2 ; 
+            if ( newlen > alloc ) { 
+                alloc *= 2 ; 
+                testing_ptr = realloc ( ns , alloc ) ; 
+                if ( ! testing_ptr ) { 
+                    free ( ns ) ; 
+                    return NULL ; 
+                } else { 
+                    ns = testing_ptr ; 
+                } 
+            } 
+            res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+            if ( res ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } 
+            snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+            strindex += 3 ; 
+        } 
+        string ++ ; 
+    } 
+    ns [ strindex ] = 0 ; 
+    return ns ; 
+}",434,-30.720849006071187,-0.07078536637343591
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = 0 ; int strindex = 0 ; size_t length ; CURLcode res ; //Check for buffer overflow if (inlength > 0 && inlength < strlen(string)) { return NULL; } else { alloc = (inlength ? (size_t) inlength : strlen(string)) + 1; } ns = malloc(alloc); if (!ns) return NULL; length = alloc - 1; while (length--) { in = *string; if (Curl_isunreserved(in)) ns[strindex++] = in; else { newlen += 2; if (newlen > alloc) { alloc *= 2; testing_ptr = realloc(ns, alloc); if (!testing_ptr) { free(ns); return NULL; } else { ns = testing_ptr; } } res = Curl_convert_to_network(handle, &in, 1); if (res) { free(ns); return NULL; } snprintf(&ns[strindex], 4, ""%%%02X"", in); strindex += 3; } string++; } ns[strindex] = 0; return ns; }",298,-24.29323439994591,-0.08152092080518762
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen ; int strindex = 0 ; size_t length ; CURLcode res ; if ( inlength ) { alloc = ( size_t ) inlength ; } else { alloc = strlen ( string ) + 1 ; if ( alloc > SIZE_MAX ) { return NULL ; } } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > SIZE_MAX || newlen > alloc ) { free ( ns ) ; return NULL ; } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",275,-15.04671211376749,-0.05471531677733633
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; if(alloc > SIZE_MAX) { return NULL; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > SIZE_MAX ) { free ( ns ) ; return NULL ; } if ( newlen > alloc ) { alloc *= 2 ; if(alloc > SIZE_MAX) { free ( ns ) ; return NULL ; } testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",334,-13.8486376545155,-0.041462986989567366
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; if ( length > 0 ) { while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } } else { free(ns); return NULL; } ns [ strindex ] = 0 ; return ns ; }",299,-10.5971470572997,-0.03544196340234013
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+
+char * curl_easy_escape(CURL * handle, const char * string, int inlength) {
+  size_t alloc = (inlength ? (size_t) inlength : strlen(string)) + 1;
+  char * ns;
+  char * testing_ptr = NULL;
+  unsigned char in;
+  size_t newlen = alloc;
+  int strindex = 0;
+  size_t length;
+  CURLcode res;
+
+  // Check for buffer overflow
+  if(alloc > INT_MAX) {
+    return NULL;
+  }
+
+  ns = malloc(alloc);
+  if (!ns)
+    return NULL;
+
+  length = alloc - 1;
+  while (length--) {
+    in = *string;
+    if (Curl_isunreserved(in))
+      ns[strindex++] = in;
+    else {
+      newlen += 2;
+      if (newlen > alloc) {
+        alloc *= 2;
+        testing_ptr = realloc(ns, alloc);
+        if (!testing_ptr) {
+          free(ns);
+          return NULL;
+        } else {
+          ns = testing_ptr;
+        }
+      }
+      res = Curl_convert_to_network(handle, &in, 1);
+      if (res) {
+        free(ns);
+        return NULL;
+      }
+      snprintf(&ns[strindex], 4, ""%%%02X"", in);
+      strindex += 3;
+    }
+    string++;
+  }
+  ns[strindex] = 0;
+  return ns;
+}",376,-28.155677147904242,-0.07488212007421341
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape(CURL *handle, const char *string, int inlength) { size_t alloc; size_t limit; char *ns; char *testing_ptr = NULL; unsigned char in; size_t newlen = 0; int strindex = 0; size_t length; CURLcode res; limit = (inlength ? (size_t)inlength : strlen(string)) + 1; // Added limit alloc = (limit < 4096 ? limit : 4096); // Added limit ns = malloc(alloc); if (!ns) return NULL; length = alloc - 1; while (length--) { in = *string; if (Curl_isunreserved(in)) ns[strindex++] = in; else { newlen += 2; if (newlen > limit) { free(ns); return NULL; // Added break statement } if (newlen > alloc) { alloc *= 2; if (alloc > limit) { alloc = limit; // Added limit check } testing_ptr = realloc(ns, alloc); if (!testing_ptr) { free(ns); return NULL; } else { ns = testing_ptr; } } res = Curl_convert_to_network(handle, &in, 1); if (res) { free(ns); return NULL; } snprintf(&ns[strindex], 4, ""%%%02X"", in); strindex += 3; } string++; } ns[strindex] = 0; return ns; }",327,-58.1882569022659,-0.17794573976228104
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; if ( alloc > SIZE_MAX ) return NULL ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > SIZE_MAX ) { free ( ns ) ; return NULL ; } if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",313,-8.9025789168307,-0.028442744143229073
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:","
+char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) { 
+    if (strindex > alloc-1) { //Adding this line
+        free(ns);
+        return NULL;
+    }
+    ns [ strindex ++ ] = in ; 
+}
+    else { 
+        newlen += 2 ; 
+        if ( newlen > alloc ) { 
+            alloc *= 2 ; 
+            testing_ptr = realloc ( ns , alloc ) ; 
+            if ( ! testing_ptr ) { 
+                free ( ns ) ; 
+                return NULL ; 
+            } 
+            else { 
+                ns = testing_ptr ; 
+            } 
+        } 
+        res = Curl_convert_to_network ( handle , & in , 1 ) ; 
+        if ( res ) { 
+            free ( ns ) ; 
+            return NULL ; 
+        } 
+        snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; 
+        strindex += 3 ; 
+    } 
+    string ++ ; 
+} 
+ns [ strindex ] = 0 ; 
+return ns ; 
+}",392,-37.396827423076346,-0.09540006995682741
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength > 0 && inlength < strlen(string) ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- > 0 && strindex < inlength ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",300,-15.984717622067599,-0.053282392073558664
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," 
+
+char * curl_easy_escape(CURL *handle, const char *string, int inlength) { 
+	size_t alloc = (inlength ? (size_t)inlength : strlen(string)) + 1; 
+	char *ns; 
+	char *testing_ptr = NULL; 
+	unsigned char in; 
+	size_t newlen = alloc; 
+	int strindex = 0; 
+	size_t length; 
+	CURLcode res; 
+	if (inlength <= 0 || inlength > strlen(string)) {
+		return NULL;
+	}
+	ns = malloc(alloc); 
+	if (!ns) 
+		return NULL; 
+	length = alloc - 1; 
+	while (length--) { 
+		in = *string; 
+		if (Curl_isunreserved(in)) 
+			ns[strindex++] = in; 
+		else { 
+			newlen += 2; 
+			if (newlen > alloc) { 
+				alloc *= 2; 
+				testing_ptr = realloc(ns, alloc); 
+				if (!testing_ptr) { 
+					free(ns); 
+					return NULL; 
+				} 
+				else { 
+					ns = testing_ptr; 
+				} 
+			} 
+			res = Curl_convert_to_network(handle, &in, 1); 
+			if (res) { 
+				free(ns); 
+				return NULL; 
+			} 
+			snprintf(&ns[strindex], 4, ""%%%02X"", in); 
+			strindex += 3; 
+		} 
+		string++; 
+	} 
+	ns[strindex] = 0; 
+	return ns; 
+}",482,-26.93837517003563,-0.055888745166049025
+"The Original Code is vulnerable to CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow'). Fix the vulnerability.
+Original Code: char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc = ( inlength ? ( size_t ) inlength : strlen ( string ) ) + 1 ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = alloc ; int strindex = 0 ; size_t length ; CURLcode res ; ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }
+Fixed code:"," char * curl_easy_escape ( CURL * handle , const char * string , int inlength ) { size_t alloc ; char * ns ; char * testing_ptr = NULL ; unsigned char in ; size_t newlen = 0 ; int strindex = 0 ; size_t length ; CURLcode res ; /* check for size of input */ if ( inlength ) { alloc = ( size_t ) inlength ; } else { alloc = strlen ( string ) + 1 ; } ns = malloc ( alloc ) ; if ( ! ns ) return NULL ; length = alloc - 1 ; while ( length -- ) { in = * string ; if ( Curl_isunreserved ( in ) ) ns [ strindex ++ ] = in ; else { newlen += 2 ; /* re-allocate only when the size of input is greater than allocated size */ if ( newlen > alloc ) { alloc *= 2 ; testing_ptr = realloc ( ns , alloc ) ; if ( ! testing_ptr ) { free ( ns ) ; return NULL ; } else { ns = testing_ptr ; } } res = Curl_convert_to_network ( handle , & in , 1 ) ; if ( res ) { free ( ns ) ; return NULL ; } snprintf ( & ns [ strindex ] , 4 , ""%%%02X"" , in ) ; strindex += 3 ; } string ++ ; } ns [ strindex ] = 0 ; return ns ; }",314,-44.14300832520399,-0.1405828290611592

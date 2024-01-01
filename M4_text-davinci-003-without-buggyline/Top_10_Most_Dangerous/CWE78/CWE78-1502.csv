@@ -1,0 +1,511 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case ';' : case '\'': case '\""' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",142,-19.68223360713899,-0.13860727892351402
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",131,-5.511428978417598,-0.04207197693448548
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) {
+ r_return_val_if_fail ( arg , NULL ) ;
+ char * a = malloc ( strlen ( arg ) + 1 ) ;
+ if ( ! a ) {
+ return NULL ;
+ }
+ char * b = a ;
+ while ( * arg ) {
+ switch ( * arg ) {
+ // blacklist approach
+ case '@' : case '`' : case '|' : case ';' : case '\\n' :
+ * b ++ = ' '; //replace characters with whitespace
+ break ;
+ default :
+ // whitelist approach
+ if((* arg >= 'a' && * arg <= 'z') || (* arg >= 'A' && * arg <= 'Z') || (* arg >= '0' && * arg <= '9')){
+ * b ++ = * arg ;
+ }
+ break ;
+ }
+ arg ++ ;
+ }
+ * b = 0 ;
+ return a ;
+}",216,-52.6838460205015,-0.2439066945393588
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; // added to check for the null value char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { // replaced switch case with if condition to prevent special elements if ( * arg != '@' && * arg != '`' && * arg != '|' && * arg != ';' && * arg != '\\n' ) { * b ++ = * arg ; } arg ++ ; } * b = 0 ; return a ; }",145,-43.79436989016399,-0.30203013717354477
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : * b = 0 ; break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",130,-7.253225478635,-0.05579404214334615
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; const char * unwantedChars = ""@`|;\\n"" ; int i ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { for ( i = 0 ; i < strlen ( unwantedChars ) ; i ++ ) { if ( * arg == unwantedChars [ i ] ) { break ; } } if ( i == strlen ( unwantedChars ) ) { * b ++ = * arg ; } arg ++ ; } * b = 0 ; return a ; }",155,-20.674478061731996,-0.133383729430529
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\r' : case '\\t' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",137,-6.293612078908001,-0.04593877429859854
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&': case '>': case '<': break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",137,-10.531882535038,-0.07687505500027737
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; case '\\' : if ( * ( arg + 1 ) ) * b ++ = * ( ++ arg ) ; break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",151,-13.275623060180997,-0.08791803351113243
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) { 
+  r_return_val_if_fail ( arg , NULL ) ; 
+  char * a = malloc ( strlen ( arg ) + 1 ) ; 
+  if ( ! a ) { 
+    return NULL ; 
+  } 
+  char * b = a ; 
+  while ( * arg ) { 
+    switch ( * arg ) { 
+      case '@' : 
+      case '`' : 
+      case '|' : 
+      case ';' : 
+      case '\\n' : 
+        break ; 
+      default : 
+        if ( * arg == '$' ) {
+          if ( * ++ arg == '\0' ) {
+            break ;
+          }
+        }
+        * b ++ = * arg ; 
+        break ; 
+    } 
+    arg ++ ; 
+  } 
+  * b = 0 ; 
+  return a ; 
+}",231,-27.162136326471995,-0.117585005742303
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) {
+   r_return_val_if_fail ( arg , NULL ) ;
+
+   char * a = malloc ( strlen ( arg ) + 1 ) ;
+   if ( ! a ) {
+      return NULL ;
+   }
+
+   char * b = a ;
+   while ( * arg ) {
+      switch ( * arg ) {
+         case '@' :
+         case '`' :
+         case '|' :
+         case ';' :
+         case '\\n' :
+            break ;
+         
+         default :
+            /* Added: Escape all special characters in the argument */
+            if ( *arg == '&' || *arg == '$' || *arg == '>' || *arg == '<' || *arg == '(' || *arg == ')' ) {
+               *b++ = '\\';
+            }
+            * b ++ = * arg ;
+            break ;
+      }
+      arg ++ ;
+   }
+   * b = 0 ;
+   return a ;
+}",243,-52.56997592570028,-0.2163373494884785
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",124,-5.339561691957001,-0.043060981386750005
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } int length = strlen(arg); //int length to store string length int i = 0; //int i to iterate through arg string for (i = 0; i < length; i++) { //iterate through the arg string if (arg[i] == '@' || arg[i] == '`' || arg[i] == '|' || arg[i] == ';' || arg[i] == '\\n') { continue; //skip any special characters } else { a[i] = arg[i]; //store character to a string } } //null terminate the string a[i] = '\0'; return a; }",198,-74.46185698189899,-0.3760699847570656
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { 
+	r_return_val_if_fail ( arg , NULL ) ; 
+	char * a = malloc ( strlen ( arg ) + 1 ) ; 
+	if ( ! a ) { 
+		return NULL ; 
+	} 
+	char * b = a ; 
+	while ( * arg ) { 
+		switch ( * arg ) { 
+			case '@' : 
+			case '`' : 
+			case '|' : 
+			case ';' : 
+			case '\\n' : 
+				break ; 
+			default : 
+				* b ++ = * arg ; 
+				break ; 
+		} 
+		if (* arg == '\\') {
+			arg++;
+			if (*arg != 'n') {
+				*b++ = *arg;
+			}
+		}
+		arg++;
+	} 
+	* b = 0 ; 
+	return a ; 
+}",267,-25.19549787572179,-0.09436516058322768
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : free ( a ) ; return NULL ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",131,-7.114837115430998,-0.05431173370558014
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : // Escape special characters with backslash * b ++ = '\\' ; break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",143,-16.152395099983607,-0.11295381188799726
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&': case '<': case '>': case '$': case '*': case '?': case '[': case ']': case '(': case ')': case '{': case '}': case '%': case '#': case '!': case '""': case '\'': break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",193,-22.442306097125606,-0.11628137874158345
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\r' : case '\\t' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",138,-8.195019088108598,-0.05938419629064202
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { 
+case '@' : case '`' : case '|' : case ';' : case '\\n' : return NULL;  //return NULL instead of breaking to prevent unsafe characters from being processed default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",145,-42.00167518452071,-0.28966672541048766
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",124,-5.354764814069001,-0.04318358721023388
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","  static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { if ( isalnum ( * arg ) || * arg == '_' ) { * b ++ = * arg ; } arg ++ ; } * b = 0 ; return a ; }",106,-14.226348347791001,-0.13421083346972643
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; case '&': *b++ = '\&'; break; } arg ++ ; } * b = 0 ; return a ; }",140,-13.767234968880599,-0.09833739263486142
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { 
+	r_return_val_if_fail ( arg , NULL ) ; 
+	char * a = malloc ( strlen ( arg ) + 1 ) ; 
+	if ( ! a ) { 
+		return NULL ; 
+	} 
+	char * b = a ; 
+	while ( * arg ) { 
+		switch ( * arg ) { 
+			case '@' : 
+			case '`' : 
+			case '|' : 
+			case ';' : 
+			case '\\n' : 
+				* b ++ = ' '; 
+				break ; 
+			default : 
+				* b ++ = * arg ; 
+				break ; 
+		} 
+		arg ++ ; 
+	} 
+	* b = 0 ; 
+	return a ; 
+}",231,-13.716622990657998,-0.05937932030587878
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+
+static char * __filterShell ( const char * arg ) { 
+    r_return_val_if_fail ( arg , NULL ) ; 
+    char * a = malloc ( strlen ( arg ) + 1 ) ; 
+    if ( ! a ) { 
+        return NULL ; 
+    } 
+    char * b = a ; 
+    while ( * arg ) { 
+        switch ( * arg ) { 
+            case '@' : 
+            case '`' : 
+            case '|' : 
+            case ';' : 
+            case '\\n' : 
+            case '&' : 
+            case '$' : 
+            case '>' : 
+            case '<' :
+                break ; 
+            default : * b ++ = * arg ; break ; 
+        } 
+        arg ++ ; 
+    } 
+    * b = 0 ; 
+    return a ; 
+}",220,-20.68853699068981,-0.0940388045031355
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '$' : case '&' : case '(' : case ')' : case '<' : case '>' : case '?' : case '/' : case ' ' : case '\t' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",171,-22.463988194615006,-0.13136835201529243
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\r' : case '\\t' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",137,-6.335797881573998,-0.046246699865503636
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\t' : case '\\r' : case '\\v' : case '\\f' : case '<' : case '>' : case '&' : case '\\'' : case '""' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",173,-18.391087729854,-0.10630686549048556
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",130,-4.8461242401160005,-0.037277878770123084
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&' : case '$' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",136,-5.548887728590603,-0.0408006450631662
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : /* Escaping special characters with \ */ arg ++ ; * b ++ = '\\' ; break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",145,-27.374630355246595,-0.18879055417411444
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { 
+r_return_val_if_fail ( arg , NULL ) ; 
+//add escape characters
+char * escapedArg = malloc ( strlen ( arg ) * 2 + 1 ) ;
+if ( ! escapedArg ) { return NULL ; }
+
+//create new pointer to copy escaped args
+char * escapedArgPtr = escapedArg ;
+
+while ( * arg ) { 
+
+//check for special characters
+switch ( * arg ) { 
+case '@' : case '`' : case '|' : case ';' : case '\\n' : //add escape character
+* escapedArgPtr ++ = '\\' ; break ; 
+default : break ; 
+}
+
+//copy argument
+* escapedArgPtr ++ = * arg ;
+arg ++ ; 
+}
+* escapedArgPtr = 0 ;
+
+//remove escape character
+char * a = malloc ( strlen ( escapedArg ) + 1 ) ;
+if ( ! a ) { 
+free ( escapedArg ) ;
+return NULL ; 
+}
+
+char * b = a ;
+while ( * escapedArg ) { 
+if ( * escapedArg != '\\' ) {
+* b ++ = * escapedArg ;
+}
+escapedArg ++ ; 
+}
+* b = 0 ;
+
+free ( escapedArg ) ;
+return a ; 
+}",312,-100.03000323941352,-0.32060898474171
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; char input [ 4 ] ; int i = 0 ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : input [ i ++ ] = * arg ; if ( i == 4 ) { for ( int j = 0 ; j < 4 ; j ++ ) { * b ++ = input [ j ] ; } i = 0 ; } break ; } arg ++ ; } * b = 0 ; return a ; }",177,-28.54165699281601,-0.16125229939444072
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) {
+    r_return_val_if_fail ( arg , NULL ) ; 
+    char * a = malloc ( strlen ( arg ) + 1 ) ;
+    if ( ! a ) { 
+        return NULL ; 
+    } 
+    char * b = a ;
+    while ( * arg ) { 
+        switch ( * arg ) { 
+            case '@' : 
+            case '`' :
+            case '|' :
+            case ';' :
+            case '\\n' :
+            // add escape characters to invalidated characters
+            case '&' :
+            case '$' : 
+            case '>' :
+            case '<' :
+            case '*' :
+            case '?' :
+            case '(' :
+            case ')' :
+            case '[' :
+            case ']' :
+                break ;
+            default : 
+                * b ++ = * arg ; 
+                break ; 
+        } 
+        arg ++ ;
+    } 
+    * b = 0 ; 
+    return a ; 
+}",261,-58.326407393596014,-0.22347282526281997
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : //Escape character * b ++ = '\\'; break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",136,-22.084217002756994,-0.16238394854968377
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\t' : case '\\' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",138,-13.341625549569997,-0.09667844601137679
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&&' : case '||' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",136,-8.562222833697593,-0.06295752083601171
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { 
+ r_return_val_if_fail ( arg , NULL ) ; 
+
+ char * a = malloc ( strlen ( arg ) + 1 ) ; 
+ if ( ! a ) { 
+  return NULL ; 
+ } 
+
+ char * b = a ; 
+ while ( * arg ) { 
+  switch ( * arg ) { 
+   case '@' : 
+   case '`' : 
+   case '|' : 
+   case ';' : 
+   case '\\n' : 
+    break ; 
+   default : 
+    int i; 
+    for(i=0;i<strlen(arg);i++){ 
+     if(arg[i] == '&' || arg[i] == '<' || arg[i] == '>' || arg[i] == '?' || arg[i] == '%' || arg[i] == '$' || arg[i] == '!' || arg[i] == '{' || arg[i] == '}' || arg[i] == '[' || arg[i] == ']' || arg[i] == '""'){ 
+      arg[i] = '\0'; 
+     } 
+    }  
+    * b ++ = * arg ; 
+    break ; 
+  } 
+  arg ++ ; 
+ } 
+ * b = 0 ; 
+ return a ; 
+}",339,-63.43717355671512,-0.18713030547703577
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&' : case '$' : case '<': case '>': break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",144,-9.967129790605602,-0.0692161791014278
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; case '&': * b ++ = ' '; break; case '$': * b ++ = ' '; break; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",151,-14.222070295081997,-0.09418589599392051
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",132,-7.195564325576501,-0.05451185095133713
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&' : case '$' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",135,-5.990866979123,-0.04437679243794815
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : if ( * arg == '&' || * arg == ';' ) { * b ++ = ' ' ; } * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",152,-23.178699645789504,-0.15249144503808884
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { 
+r_return_val_if_fail ( arg , NULL ) ;
+char * a = malloc ( strlen ( arg ) + 1 ) ;
+if ( ! a ) {
+    return NULL ;
+}
+char * b = a ;
+while ( * arg ) {
+    switch ( * arg ) {
+        case '@' :
+        case '`' :
+        case '|' :
+        case ';' :
+        case '\\n' :
+            /* Escape characters, such as '@', '`', '|', ';', and '\n' */
+            * b ++ = '\\';
+            * b ++ = * arg ;
+            break ;
+        default :
+            * b ++ = * arg ;
+            break ;
+    }
+    arg ++ ;
+}
+* b = 0 ;
+return a ;
+}",207,-38.055899853078984,-0.18384492682646852
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&': case '$': break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",134,-6.980763129433599,-0.052095247234579097
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : return NULL ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",127,-7.611480595601603,-0.05993291807560317
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : if(isalnum (* arg ) || * arg == '_') { * b ++ = * arg ; } break ; } arg ++ ; } * b = 0 ; return a ; }",142,-19.840016032165597,-0.13971842276172955
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '\\' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",130,-4.849352926481,-0.03730271481908461
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," 
+static char * __filterShell ( const char * arg ) {
+    r_return_val_if_fail ( arg , NULL ) ;
+    char * a = malloc ( strlen ( arg ) + 1 ) ;
+    if ( ! a ) {
+        return NULL ;
+    }
+    char * b = a ;
+    while ( * arg ) {
+        switch ( * arg ) {
+            case '@' :
+            case '`' :
+            case '|' :
+            case ';' :
+            case '\\n' :
+            case '$' :
+            case '&' :
+            case '>' :
+            case '<' :
+            case '*' :
+            case '?' :
+            case '(' :
+            case ')' :
+            case '[' :
+            case ']' :
+                break ;
+            default :
+                * b ++ = * arg ;
+                break ;
+        }
+        arg ++ ;
+    }
+    * b = 0 ;
+    return a ;
+}",237,-19.209870635841384,-0.0810543064803434
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:","
+static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : case '&' : case '$' : case '(' : case ')' : case '{' : case '}' : case '[' : case ']' : case '<' : case '>' : case '^' : case '""' : case '\'' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",186,-17.496536620847905,-0.09406740118735434
+"The Original Code is vulnerable to CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'). Fix the vulnerability.
+Original Code: static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case '|' : case ';' : case '\\n' : break ; default : * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }
+Fixed code:"," static char * __filterShell ( const char * arg ) { r_return_val_if_fail ( arg , NULL ) ; char * a = malloc ( strlen ( arg ) + 1 ) ; if ( ! a ) { return NULL ; } char * b = a ; while ( * arg ) { switch ( * arg ) { case '@' : case '`' : case ';' : case '\\n' : break ; default : if ( strchr ( arg , '|' ) ) { return NULL ; } * b ++ = * arg ; break ; } arg ++ ; } * b = 0 ; return a ; }",138,-13.321302449720996,-0.09653117717189127
