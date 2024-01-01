@@ -42,7 +42,7 @@ these models.
   
 </div>
 
-![](Papers-In-Question.png =250x250)
+![](Papers-In-Question.png=250x250)
 
 
 <div align="center">
