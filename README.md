@@ -42,8 +42,7 @@ these models.
   
 </div>
 
-![](Papers-In-Question.png=250x250)
-<img src="https://github.com/Anurag-Swarnim-Yadav/CWERepair/blob/main/Papers-In-Question.png" width="100" height="100">
+![](Papers-In-Question.png)
 
 
 <div align="center">
