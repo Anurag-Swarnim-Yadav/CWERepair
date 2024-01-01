@@ -7,7 +7,7 @@
 </p>
 
 <div align="center">
-Abstract—A record number of security vulnerabilities have
+**Abstract—**A record number of security vulnerabilities have
 been reported to the Common Vulnerability Enumeration (CVE)
 database in the last couple of years. These security vulnerabilities
 are of different types that vary in complexity. The record number
@@ -38,7 +38,7 @@ these models.
 
 <div align="center">
   
-  ## Papers In Question
+  ### Papers In Question
   
 </div>
 
@@ -52,7 +52,7 @@ these models.
 
 <div align="center">
 
-## Real-World Software Vulnerabilities
+### Real-World Software Vulnerabilities
 
 </div>
 
