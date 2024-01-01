@@ -66,7 +66,7 @@
 
 |  Sample   |  gpt-4-1106 (No explanation) | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation)  | gpt-4-1106-CWEtype  | gpt-4-1106 (with explanation and highlighted code segment) | gpt-4-1106-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  :heavy_plus_sign: CWE287-516   |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (80%); code: No  |
+|  :heavy_plus_sign: CWE287-561   |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (90%)  |  Yes  |  CWE-90 (80%); code: No  |
 
 </div>
 </details>
@@ -125,7 +125,7 @@
 
 |  Sample   |  text-davinvi-003 (No explanation) | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation)  | text-davinvi-003-CWEtype  | text-davinvi-003 (with explanation and highlighted code segment) | text-davinvi-003-CWEtype |
 |-----------|------------------------|---------------------|-----------------------------|---------------------------|-----------------------------------|-------------------|
-|  :heavy_plus_sign: CWE287-516   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  | 
+|  :heavy_plus_sign: CWE287-561   |  No  |  -  |  Yes  |  CWE-90 (95%)  |  Yes  |  CWE-90 (100%); code: No  | 
 
 </div>
 </details>
