@@ -1,0 +1,768 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ | M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ | M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",390,-7.11971958258624,-0.018255691237400614
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) {
+    M_fs_info_t * info = NULL ;
+    char * pold = NULL ;
+    char * pnew = NULL ;
+    M_fs_type_t type ;
+    M_bool ret = M_TRUE ;
+    if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ;
+    if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ;
+    type = M_fs_info_get_type ( info ) ;
+    M_fs_info_destroy ( info ) ;
+    if ( type != M_FS_TYPE_DIR ) {
+        if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_WRITE ) == M_FS_ERROR_SUCCESS ) {
+            ret = M_FALSE ;
+            goto done ;
+        }
+    }
+    pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ;
+    pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ;
+    if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_WRITE ) == M_FS_ERROR_SUCCESS ) {
+        ret = M_FALSE ;
+        goto done ;
+    }
+    done :
+        M_free ( pnew ) ;
+        M_free ( pold ) ;
+        return ret ;
+}",414,-15.524156232134187,-0.0374979619133676
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+M_fs_info_t * info = NULL ; 
+char * pold = NULL ; 
+char * pnew = NULL ; 
+M_fs_type_t type ; 
+M_bool ret = M_TRUE ; 
+if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; 
+if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; 
+type = M_fs_info_get_type ( info ) ; 
+M_fs_info_destroy ( info ) ; 
+if ( type != M_FS_TYPE_DIR ) { 
+if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ | M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+ret = M_FALSE ; 
+goto done ; 
+} 
+} 
+pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ | M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+ret = M_FALSE ; 
+goto done ; 
+} 
+done : 
+M_free ( pnew ) ; 
+M_free ( pold ) ; 
+return ret ; 
+}",442,-9.531656311793558,-0.02156483328460081
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",363,-4.055024299346766,-0.011170865838420842
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+	M_fs_info_t * info = NULL ; 
+	char * pold = NULL ; 
+	char * pnew = NULL ; 
+	M_fs_type_t type ; 
+	M_bool ret = M_TRUE ; 
+	M_fs_perms_mode_t perms = M_FS_PERMS_MODE_READ | M_FS_PERMS_MODE_WRITE;
+
+	if ( mode & M_FS_FILE_MODE_OVERWRITE ) {
+		return M_TRUE ;
+	}
+	
+	if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) {
+		return M_FALSE ;
+	}
+
+	type = M_fs_info_get_type ( info ) ; 
+	M_fs_info_destroy ( info ) ; 
+
+	if ( type != M_FS_TYPE_DIR ) { 
+		if ( M_fs_perms_can_access ( p2 , perms ) == M_FS_ERROR_SUCCESS ) { 
+			ret = M_FALSE ; 
+			goto done ; 
+		}
+	}
+
+	pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+	pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+
+	if ( M_fs_perms_can_access ( pnew , perms ) == M_FS_ERROR_SUCCESS ) { 
+		ret = M_FALSE ; 
+		goto done ; 
+	}
+	
+	done : 
+	M_free ( pnew ) ; 
+	M_free ( pold ) ; 
+	return ret ; 
+}",487,-28.691611868220292,-0.05891501410312175
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",367,-3.7710757208202503,-0.010275410683433924
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) {
+    M_fs_info_t * info = NULL ;
+    char * pold = NULL ;
+    char * pnew = NULL ;
+    M_fs_type_t type ;
+    M_bool ret = M_TRUE ;
+    M_fs_perms_mode_t perms = M_FS_PERMS_MODE_READ;
+    
+    if ( mode & M_FS_FILE_MODE_OVERWRITE ) {
+        return M_TRUE ;
+    }
+    
+    if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) {
+        return M_FALSE ;
+    }
+    
+    type = M_fs_info_get_type ( info ) ;
+    M_fs_info_destroy ( info ) ;
+    
+    if ( type != M_FS_TYPE_DIR ) {
+        perms = M_FS_PERMS_MODE_NONE;
+    }
+    
+    pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ;
+    pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ;
+    
+    if ( M_fs_perms_can_access ( pnew , perms ) == M_FS_ERROR_SUCCESS ) {
+        ret = M_FALSE ;
+        goto done ;
+    }
+    
+    done :
+    M_free ( pnew ) ;
+    M_free ( pold ) ;
+    return ret ;
+}",419,-19.286048431205902,-0.04602875520574201
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) {
+  M_fs_info_t * info = NULL ;
+  char * pold = NULL ;
+  char * pnew = NULL ;
+  M_fs_type_t type ;
+  M_bool ret = M_TRUE ;
+  if ( mode & M_FS_FILE_MODE_OVERWRITE )
+    return M_TRUE ;
+  if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS )
+    return M_FALSE ;
+  type = M_fs_info_get_type ( info ) ;
+  M_fs_info_destroy ( info ) ;
+  if ( type != M_FS_TYPE_DIR ) {
+    if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) {
+      ret = M_FALSE ;
+      goto done ;
+    }
+  }
+  pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ;
+  pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ;
+  if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) {
+    ret = M_FALSE ;
+    goto done ;
+  }
+  done :
+  M_free ( pnew ) ;
+  M_free ( pold ) ;
+  return ret ;
+}",420,-14.152303610368675,-0.03369596097706827
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",365,-5.1396121335684,-0.014081129133064111
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",367,-3.7710757208202503,-0.010275410683433924
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",367,-4.070240790753397,-0.011090574361725877
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_W ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_W ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+The vulnerability is fixed by changing the permission checking from M_FS_PERMS_MODE_NONE to M_FS_PERMS_MODE_W. This ensures that the user only has write access to the critical resource before it is allowed to be overwritten.",419,-32.92231250610137,-0.07857353820071926
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",366,-3.2729110867551903,-0.008942380018456804
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) {
+M_fs_info_t * info = NULL ;
+char * pold = NULL ;
+char * pnew = NULL ;
+M_fs_type_t type ;
+M_bool ret = M_TRUE ;
+if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ;
+if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ;
+type = M_fs_info_get_type ( info ) ;
+M_fs_info_destroy ( info ) ;
+if ( type != M_FS_TYPE_DIR ) {
+if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) {
+ret = M_FALSE ;
+goto done ;
+}
+}
+pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ;
+pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ;
+if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) {
+ret = M_FALSE ;
+goto done ;
+}
+done :
+M_free ( pnew ) ;
+M_free ( pold ) ;
+return ret ;
+}",394,-8.660841880676585,-0.021981832184458337
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",363,-3.9927995702924095,-0.010999447852045206
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",366,-3.278526282300229,-0.00895772208278751
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ|M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ|M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+
+The problem of the original code is that it only checks for the permission M_FS_PERMS_MODE_NONE which does not provide any permissions. This could allow an attacker to overwrite files with incorrect permissions.
+
+The fixed code checks for the permission M_FS_PERMS_MODE_READ and M_FS_PERMS_MODE_WRITE which will ensure that the user has the correct permissions to write to the file. This will protect the application from CWE-732: Incorrect Permission Assignment for Critical Resource.",501,-78.44792980390372,-0.1565826942193687
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+M_fs_info_t * info = NULL ; 
+char * pold = NULL ; char * pnew = NULL ; 
+M_fs_type_t type ; 
+M_bool ret = M_TRUE ; 
+if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; 
+if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; 
+type = M_fs_info_get_type ( info ) ; 
+M_fs_info_destroy ( info ) ; 
+if ( type != M_FS_TYPE_DIR ) { 
+    if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_EXECUTE|M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    } 
+} 
+pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_EXECUTE|M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+    ret = M_FALSE ; 
+    goto done ; 
+} done : 
+M_free ( pnew ) ; 
+M_free ( pold ) ; 
+return ret ; 
+}",446,-25.60780638772497,-0.05741660625050442
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",365,-2.5795673180623777,-0.007067307720718843
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",365,-6.992036309268926,-0.019156263861010756
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",365,-2.5795673180623777,-0.007067307720718843
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+
+The code has been fixed by replacing the M_FS_PERMS_MODE_NONE with M_FS_PERMS_MODE_WRITE in the M_fs_perms_can_access() function. This allows the code to check for write permissions before allowing the overwrite to take place, thus preventing a potential security vulnerability.",437,-34.62594900343155,-0.07923558124355046
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_fs_perms_mode_t perms_mode; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { perms_mode = M_FS_PERMS_MODE_WRITE; } else { perms_mode = M_FS_PERMS_MODE_NONE; } if ( M_fs_perms_can_access ( p2 , perms_mode ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , perms_mode ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",404,-12.121458301548188,-0.030003609657297495
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+M_fs_info_t * info = NULL ;
+char * pold = NULL ; 
+char * pnew = NULL ; 
+M_fs_type_t type ; 
+M_bool ret = M_TRUE ; 
+
+if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; 
+if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; 
+type = M_fs_info_get_type ( info ) ; 
+M_fs_info_destroy ( info ) ; 
+if ( type != M_FS_TYPE_DIR ) { 
+    if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    } 
+} 
+pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+    ret = M_FALSE ; 
+    goto done ; 
+} 
+done : 
+M_free ( pnew ) ; 
+M_free ( pold ) ; 
+return ret ; 
+}",424,-17.620078648316934,-0.041556789264898426
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+static M_bool M_fs_check_overwrite_allowed(const char* p1, const char* p2, M_uint32 mode) {
+    M_fs_info_t* info = NULL;
+    char* pold = NULL;
+    char* pnew = NULL;
+    M_fs_type_t type;
+    M_bool ret = M_TRUE;
+    if (mode & M_FS_FILE_MODE_OVERWRITE) return M_TRUE;
+    if (M_fs_info(&info, p1, M_FS_PATH_INFO_FLAGS_BASIC) != M_FS_ERROR_SUCCESS) return M_FALSE;
+    type = M_fs_info_get_type(info);
+    M_fs_info_destroy(info);
+    if (type != M_FS_TYPE_DIR) {
+        if (M_fs_perms_can_access(p2, M_FS_PERMS_MODE_WRITE) == M_FS_ERROR_SUCCESS) {
+            ret = M_FALSE;
+            goto done;
+        }
+    }
+    pold = M_fs_path_basename(p1, M_FS_SYSTEM_AUTO);
+    pnew = M_fs_path_join(p2, pnew, M_FS_SYSTEM_AUTO);
+    if (M_fs_perms_can_access(pnew, M_FS_PERMS_MODE_WRITE) == M_FS_ERROR_SUCCESS) {
+        ret = M_FALSE;
+        goto done;
+    }
+done:
+    M_free(pnew);
+    M_free(pold);
+    return ret;
+}",410,-13.014674983543802,-0.03174310971596049
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",368,-4.375763950168014,-0.011890662908065255
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",367,-3.843395457980993,-0.01047246718795911
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+	M_fs_info_t * info = NULL ; 
+	char * pold = NULL ; 
+	char * pnew = NULL ; 
+	M_fs_type_t type ; 
+	M_bool ret = M_TRUE ; 
+	if ( mode & M_FS_FILE_MODE_OVERWRITE ) 
+		return M_TRUE ; 
+	if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) 
+		return M_FALSE ; 
+	type = M_fs_info_get_type ( info ) ; 
+	M_fs_info_destroy ( info ) ; 
+	if ( type != M_FS_TYPE_DIR ) { 
+		if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_EXISTS ) == M_FS_ERROR_SUCCESS ) { 
+			ret = M_FALSE ; 
+			goto done ; 
+		}
+	}
+	pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+	pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+	if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_EXISTS ) == M_FS_ERROR_SUCCESS ) { 
+		ret = M_FALSE ; 
+		goto done ; 
+	}
+	done : 
+		M_free ( pnew ) ; 
+		M_free ( pold ) ; 
+		return ret ; 
+}",460,-18.703351660477196,-0.04065946013147217
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+M_fs_info_t * info = NULL ; 
+char * pold = NULL ; 
+char * pnew = NULL ; 
+M_fs_type_t type ; 
+M_bool ret = M_TRUE ; 
+
+if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; 
+if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; 
+type = M_fs_info_get_type ( info ) ; 
+M_fs_info_destroy ( info ) ; 
+if ( type != M_FS_TYPE_DIR ) { 
+    if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ_ONLY ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    } 
+} 
+pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ_ONLY ) == M_FS_ERROR_SUCCESS ) { 
+    ret = M_FALSE ; 
+    goto done ; 
+} 
+done : 
+M_free ( pnew ) ; 
+M_free ( pold ) ; 
+return ret ;
+}",428,-20.966556605336066,-0.04898728178816838
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+
+The fixed code checks for read permissions instead of no permissions, which is a more secure way of ensuring no file is overwritten.",393,-32.69968287229044,-0.08320529992949222
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",366,-3.2175758183347267,-0.008791190760477395
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+
+The vulnerability has been fixed by changing the permissions in the M_fs_perms_can_access() function from M_FS_PERMS_MODE_NONE to M_FS_PERMS_MODE_WRITE. This will ensure that the user must have write permissions in order to overwrite the file.",432,-26.75289775633457,-0.06192800406558928
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+    M_fs_info_t * info = NULL ; 
+    char * pold = NULL ; 
+    char * pnew = NULL ; 
+    M_fs_type_t type ; 
+    M_bool ret = M_TRUE ; 
+    if ( mode & M_FS_FILE_MODE_OVERWRITE ) 
+        return M_TRUE ; 
+    if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) 
+        return M_FALSE ; 
+    type = M_fs_info_get_type ( info ) ; 
+    M_fs_info_destroy ( info ) ; 
+    if ( type != M_FS_TYPE_DIR ) { 
+        if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+            ret = M_FALSE ; 
+            goto done ; 
+        } 
+    } 
+    pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+    pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+    if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    } 
+done : 
+    M_free ( pnew ) ; 
+    M_free ( pold ) ; 
+    return ret ; 
+}",449,-7.340150642045671,-0.01634777425845361
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",366,-3.2294600158165903,-0.00882366124540052
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+    M_fs_info_t * info = NULL ; 
+    char * pold = NULL ; 
+    char * pnew = NULL ; 
+    M_fs_type_t type ; 
+    M_bool ret = M_TRUE ; 
+
+    if ( mode & M_FS_FILE_MODE_OVERWRITE ) 
+        return M_TRUE ; 
+    
+    if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) 
+        return M_FALSE ; 
+    
+    type = M_fs_info_get_type ( info ) ; 
+    M_fs_info_destroy ( info ) ; 
+
+    if ( type != M_FS_TYPE_DIR ) { 
+        if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+            ret = M_FALSE ; 
+            goto done ; 
+        }
+    } 
+    
+    pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+    pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+
+    if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    } 
+
+done : 
+    M_free ( pnew ) ; 
+    M_free ( pold ) ; 
+    return ret ; 
+}",455,-18.691947534759844,-0.041081203373098556
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+    M_fs_info_t * info = NULL ; 
+    char * pold = NULL ; 
+    char * pnew = NULL ; 
+    M_fs_type_t type ; 
+    M_bool ret = M_TRUE ; 
+    if ( mode & M_FS_FILE_MODE_OVERWRITE )
+        return M_TRUE ; 
+    if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS )
+        return M_FALSE ; 
+    type = M_fs_info_get_type ( info ) ; 
+    M_fs_info_destroy ( info ) ; 
+    if ( type != M_FS_TYPE_DIR ) { 
+        if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) {
+            ret = M_FALSE ; 
+            goto done ; 
+        }
+    } 
+    pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+    pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+    if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    } 
+done : 
+    M_free ( pnew ) ; 
+    M_free ( pold ) ; 
+    return ret ; 
+}",446,-15.970612151972114,-0.03580854742594644
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+ M_fs_info_t * info = NULL ; 
+ char * pold = NULL ; 
+ char * pnew = NULL ; 
+ M_fs_type_t type ; 
+ M_bool ret = M_TRUE ; 
+ if ( mode & M_FS_FILE_MODE_OVERWRITE ) 
+  return M_TRUE ; 
+ if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) 
+  return M_FALSE ; 
+ type = M_fs_info_get_type ( info ) ; 
+ M_fs_info_destroy ( info ) ; 
+ if ( type != M_FS_TYPE_DIR ) { 
+  if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) {
+   ret = M_FALSE ; 
+   goto done ; 
+  }
+ } 
+ pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+ pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+ if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { 
+  ret = M_FALSE ; 
+  goto done ; 
+ } 
+done : 
+ M_free ( pnew ) ; 
+ M_free ( pold ) ; 
+ return ret ; 
+}",426,-15.811904490168308,-0.03711714669053593
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_EXEC ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_EXEC ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+
+The code has been fixed by changing the permission argument from M_FS_PERMS_MODE_NONE to M_FS_PERMS_MODE_EXEC. This ensures that only users with the appropriate permissions are allowed to overwrite existing files or directories.",420,-26.915208331768905,-0.06408382936135454
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+M_fs_info_t * info = NULL ; 
+char * pold = NULL ; 
+char * pnew = NULL ; 
+M_fs_type_t type ; 
+M_bool ret = M_TRUE ; 
+if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; 
+if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; 
+type = M_fs_info_get_type ( info ) ; 
+M_fs_info_destroy ( info ) ; 
+if ( type != M_FS_TYPE_DIR ) { 
+    if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    } 
+} 
+pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 
+    ret = M_FALSE ; 
+    goto done ; 
+} 
+done : 
+M_free ( pnew ) ; 
+M_free ( pold ) ; 
+return ret ; 
+}",424,-8.228702797163459,-0.019407317917838347
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE || M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",402,-11.567773232487626,-0.02877555530469559
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed(const char *p1, const char *p2, M_uint32 mode) {
+    M_fs_info_t *info = NULL;
+    char *pold = NULL;
+    char *pnew = NULL;
+    M_fs_type_t type;
+    M_bool ret = M_TRUE;
+    M_fs_perms_mode_t access_mode = M_FS_PERMS_MODE_UEXECUTE; 
+    
+    if (mode & M_FS_FILE_MODE_OVERWRITE) {
+        return M_TRUE;
+    }
+    if (M_fs_info(&info, p1, M_FS_PATH_INFO_FLAGS_BASIC) != M_FS_ERROR_SUCCESS) {
+        return M_FALSE;
+    }
+    type = M_fs_info_get_type(info);
+    M_fs_info_destroy(info);
+    if (type != M_FS_TYPE_DIR) {
+        if (M_fs_perms_can_access(p2, access_mode) == M_FS_ERROR_SUCCESS) {
+            ret = M_FALSE;
+            goto done;
+        }
+    }
+    pold = M_fs_path_basename(p1, M_FS_SYSTEM_AUTO);
+    pnew = M_fs_path_join(p2, pnew, M_FS_SYSTEM_AUTO);
+    if (M_fs_perms_can_access(pnew, access_mode) == M_FS_ERROR_SUCCESS) {
+        ret = M_FALSE;
+        goto done;
+    }
+done:
+    M_free(pnew);
+    M_free(pold);
+    return ret;
+}",438,-30.780507404307425,-0.07027513106006261
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 	M_fs_info_t * info = NULL ; 	char * pold = NULL ; 	char * pnew = NULL ; 	M_fs_type_t type ; 	M_bool ret = M_TRUE ; 	if ( mode & M_FS_FILE_MODE_OVERWRITE ) 		return M_TRUE ; 	if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) 		return M_FALSE ; 	type = M_fs_info_get_type ( info ) ; 	M_fs_info_destroy ( info ) ; 	if ( type != M_FS_TYPE_DIR ) { 		if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 			ret = M_FALSE ; 			goto done ; 		} 	} 	pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 	pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 	if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { 		ret = M_FALSE ; 		goto done ; 	} 	done : 	M_free ( pnew ) ; 	M_free ( pold ) ; 	return ret ; }",431,-10.073623777075591,-0.02337267697697353
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",363,-4.084584266320785,-0.011252298254327232
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",366,-3.2294600158165903,-0.00882366124540052
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { 
+    M_fs_info_t * info = NULL ; 
+    char * pold = NULL ; 
+    char * pnew = NULL ; 
+    M_fs_type_t type ; 
+    M_bool ret = M_TRUE ; 
+    if ( mode & M_FS_FILE_MODE_OVERWRITE ) 
+        return M_TRUE ; 
+    if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) 
+        return M_FALSE ; 
+    type = M_fs_info_get_type ( info ) ; 
+    M_fs_info_destroy ( info ) ; 
+    if ( type != M_FS_TYPE_DIR ) { 
+        if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) {
+            ret = M_FALSE ; 
+            goto done ; 
+        }
+    }
+    pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; 
+    pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; 
+    if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ ) == M_FS_ERROR_SUCCESS ) { 
+        ret = M_FALSE ; 
+        goto done ; 
+    }
+    done : 
+    M_free ( pnew ) ; 
+    M_free ( pold ) ; 
+    return ret ; 
+}",445,-15.031148031388195,-0.03377786074469257
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) {
+    M_fs_info_t * info = NULL ;
+    char * pold = NULL ;
+    char * pnew = NULL ;
+    M_fs_type_t type ;
+    M_bool ret = M_TRUE ;
+    if ( mode & M_FS_FILE_MODE_OVERWRITE ) {
+        return M_TRUE ;
+    }
+
+    if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) {
+        return M_FALSE ;
+    }
+
+    type = M_fs_info_get_type ( info ) ;
+    M_fs_info_destroy ( info ) ;
+
+    if ( type != M_FS_TYPE_DIR ) {
+        if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) {
+            ret = M_FALSE ;
+            goto done ;
+        }
+    }
+    pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ;
+    pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ;
+    if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) {
+        ret = M_FALSE ;
+        goto done ;
+    }
+
+    done :
+    M_free ( pnew ) ;
+    M_free ( pold ) ;
+    return ret ; 
+}",432,-20.749531909926194,-0.048031323865569894
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",367,-3.7290739450186092,-0.010160964427843621
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:"," 
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { /* Added Check to ensure that the user has necessary permission to access the resource */ if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_EXEC ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; /* Added Check to ensure that the user has necessary permission to access the resource */ if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_EXEC ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",399,-34.32190398496378,-0.08601980948612477
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_READ_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_READ_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",371,-6.739124271295143,-0.018164755448234888
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_NONE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }
+Fixed code:","
+static M_bool M_fs_check_overwrite_allowed ( const char * p1 , const char * p2 , M_uint32 mode ) { M_fs_info_t * info = NULL ; char * pold = NULL ; char * pnew = NULL ; M_fs_type_t type ; M_bool ret = M_TRUE ; if ( mode & M_FS_FILE_MODE_OVERWRITE ) return M_TRUE ; if ( M_fs_info ( & info , p1 , M_FS_PATH_INFO_FLAGS_BASIC ) != M_FS_ERROR_SUCCESS ) return M_FALSE ; type = M_fs_info_get_type ( info ) ; M_fs_info_destroy ( info ) ; if ( type != M_FS_TYPE_DIR ) { if ( M_fs_perms_can_access ( p2 , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } } pold = M_fs_path_basename ( p1 , M_FS_SYSTEM_AUTO ) ; pnew = M_fs_path_join ( p2 , pnew , M_FS_SYSTEM_AUTO ) ; if ( M_fs_perms_can_access ( pnew , M_FS_PERMS_MODE_WRITE ) == M_FS_ERROR_SUCCESS ) { ret = M_FALSE ; goto done ; } done : M_free ( pnew ) ; M_free ( pold ) ; return ret ; }",366,-3.1721008558893886,-0.00866694222920598

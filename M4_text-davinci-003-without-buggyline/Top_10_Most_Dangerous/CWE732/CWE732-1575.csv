@@ -1,0 +1,619 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = calloc ( 1 , sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } else { //Set the permission mode for the newly created environment. chmod(env, 0600); } return env ; }",283,-35.35763939460583,-0.12493865510461426
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { /* Adding secure permissions to critical resource */ chmod(keybuf, S_IRUSR | S_IWUSR | S_IXUSR); env -> count ++ ; } } } return env ; }",293,-25.111060353913402,-0.08570327765840752
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; chmod(env->root, 0700); // setting access permission to 0700 } } } return env ; }",277,-23.1561640785027,-0.08359626021120109
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = strdup ( environ [ i ] ) ; if ( e == NULL ) break ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) { free ( e ) ; continue ; } memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } free ( e ) ; } } return env ; }",285,-22.55030940329349,-0.07912389264313505
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; chmod ( node , 0600 ); // Add this line of code } else { env -> count ++ ; } } } return env ; }",274,-19.867108698394702,-0.07250769597954271
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { // Check the permission before insertion if (access(keybuf, W_OK) != 0) { freenode ( node ) ; } else { env -> count ++ ; } } } } return env ; }",283,-22.72544541329304,-0.08030192725545245
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { 
+ struct env * env ; 
+ u_int i ; 
+ env = malloc ( sizeof ( * env ) ) ; 
+ if ( ! env ) err ( 1 , NULL ) ; 
+ RB_INIT ( & env -> root ) ; 
+ env -> count = 0 ; 
+ if ( rule -> options & KEEPENV ) { 
+  extern char * * environ ; 
+  for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { 
+   struct envnode * node ; 
+   const char * e , * eq ; 
+   size_t len ; 
+   char keybuf [ 1024 ] ; 
+   e = environ [ i ] ; 
+   if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; 
+   len = eq - e ; 
+   if ( len > sizeof ( keybuf ) - 1 ) continue ; 
+   memcpy ( keybuf , e , len ) ; 
+   keybuf [ len ] = '\\0' ; 
+   node = createnode ( keybuf , eq + 1 ) ; 
+   //Verify that the user has the necessary privileges for the resource
+   if (verifyPrivileges(keybuf)){
+    if ( RB_INSERT ( envtree , & env -> root , node ) ) { 
+     freenode ( node ) ; 
+    } else { 
+     env -> count ++ ; 
+    } 
+   }
+  } 
+ } 
+ return env ; 
+}",370,-35.753399337930375,-0.09663080902143345
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { // Add check for critical environment variables if (strcmp(keybuf, ""CRITICAL_ENVIRONMENT_VARIABLE"") == 0) { //Reject node freenode (node); continue; } env -> count ++ ; } } } return env ; }",307,-38.20772555126646,-0.12445513208881584
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+
+static struct env * createenv ( const struct rule * rule ) { 
+    struct env * env ; 
+    u_int i ; 
+    env = malloc ( sizeof ( * env ) ) ; 
+    if ( ! env ) err ( 1 , NULL ) ; 
+    RB_INIT ( & env -> root ) ; 
+    env -> count = 0 ; 
+    if ( rule -> options & KEEPENV ) { 
+        extern char * * environ ; 
+        for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { 
+            struct envnode * node ; 
+            const char * e , * eq ; 
+            size_t len ; 
+            char keybuf [ 1024 ] ; 
+            e = environ [ i ] ; 
+            if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; 
+            len = eq - e ; 
+            if ( len > sizeof ( keybuf ) - 1 ) continue ; 
+            memcpy ( keybuf , e , len ) ; 
+            keybuf [ len ] = '\\0' ; 
+
+            // added code
+            if (rule->options & KEEPENV) {
+                if (strcmp(keybuf, ""PATH"") == 0 || strcmp(keybuf, ""HOME"") == 0) {
+                    node = createnode ( keybuf , eq + 1 ) ;
+                    if ( RB_INSERT( envtree , & env -> root , node ) ) { 
+                        freenode ( node ) ; 
+                    } else { 
+                        env -> count ++ ; 
+                    }
+                }
+            }
+        } 
+    } 
+    return env ; 
+}",400,-39.97195745898794,-0.09992989364746985
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; setenv (keybuf, eq + 1, 1); // Setting the environment variable here with overwrite = 1 } } } return env ; }",284,-30.22221978857394,-0.10641626686117585
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; int check = 1; if ( len > sizeof ( keybuf ) - 1 ) {check = 0; continue;} if (check){ memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } } return env ; }",276,-28.247376745686715,-0.10234556791915476
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) {
+ struct env * env ;
+ u_int i ;
+ env = malloc ( sizeof ( * env ) ) ;
+ if ( ! env ) err ( 1 , NULL ) ;
+ RB_INIT ( & env -> root ) ;
+ env -> count = 0 ;
+ if ( rule -> options & KEEPENV ) {
+ extern char * * environ ;
+ for ( i = 0 ; environ [ i ] != NULL ; i ++ ) {
+ struct envnode * node ;
+ const char * e , * eq ;
+ size_t len ;
+ char keybuf [ 1024 ] ;
+ e = environ [ i ] ;
+ if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ;
+ len = eq - e ;
+ if ( len > sizeof ( keybuf ) - 1 ) continue ;
+ memcpy ( keybuf , e , len ) ;
+ keybuf [ len ] = '\\0' ;
+ node = createnode ( keybuf , eq + 1 ) ;
+ if ( RB_INSERT ( envtree , & env -> root , node ) ) {
+	 //If node already exists
+	if(node->permission != PERMISSION_CRITICAL)
+	{
+		freenode ( node ) ;
+	} 
+	else
+	{
+		env -> count ++ ;
+	}
+ } else {
+	if(node->permission == PERMISSION_CRITICAL)
+	{
+		env -> count ++ ;
+	}
+ }
+ }
+ }
+ return env ;
+}",364,-49.65079888104788,-0.13640329362925244
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { chmod(keybuf, S_IRUSR | S_IWUSR); env -> count ++ ; } } } return env ; }",279,-10.7276084906277,-0.03845020964382688
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; chmod(keybuf, S_IRUSR | S_IWUSR); // add this line to set the correct permission } } } return env ; }",288,-18.561144103994796,-0.0644484170277597
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+ static struct env * createenv ( const struct rule * rule ) { 
+    struct env * env ; 
+    u_int i ; 
+    env = malloc ( sizeof ( * env ) ) ; 
+    if ( ! env ) err ( 1 , NULL ) ; 
+    RB_INIT ( & env -> root ) ; 
+    env -> count = 0 ; 
+    if ( rule -> options & KEEPENV ) { 
+        extern char * * environ ; 
+        for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { 
+            struct envnode * node ; 
+            const char * e , * eq ; 
+            size_t len ; 
+            char keybuf [ 1024 ] ; 
+            e = environ [ i ] ; 
+            if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; 
+            len = eq - e ; 
+            if ( len > sizeof ( keybuf ) - 1 ) continue ; 
+            memcpy ( keybuf , e , len ) ; 
+            keybuf [ len ] = '\\0' ; 
+            node = createnode ( keybuf , eq + 1 ) ; 
+            if ( RB_INSERT ( envtree , & env -> root , node ) ) { 
+                freenode ( node ) ; 
+            } else { 
+                // Set permission to block all users from writing to the tree
+                chmod(&env->root, 0444);
+                env -> count ++ ; 
+            } 
+        } 
+    } 
+    return env ; 
+}",372,-49.32166264323905,-0.13258511463236305
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { 
+struct env * env ; 
+u_int i ; 
+env = malloc ( sizeof ( * env ) ) ; 
+if ( ! env ) err ( 1 , NULL ) ; 
+RB_INIT ( & env -> root ) ; 
+env -> count = 0 ; 
+if ( rule -> options & KEEPENV ) { 
+extern char * * environ ; 
+for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { 
+struct envnode * node ; 
+const char * e , * eq ; 
+size_t len ; 
+char keybuf [ 1024 ] ; 
+e = environ [ i ] ; 
+if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; 
+len = eq - e ; 
+if ( len > sizeof ( keybuf ) - 1 ) continue ; 
+memcpy ( keybuf , e , len ) ; 
+keybuf [ len ] = '\\0' ; 
+node = createnode ( keybuf , eq + 1 ) ; 
+// Code to address CWE-732:
+if (chmod(node->key, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) == -1) {
+    perror(""Error setting permission"");
+    return;
+}
+
+if ( RB_INSERT ( envtree , & env -> root , node ) ) { 
+freenode ( node ) ;
+ } else { 
+env -> count ++ ; 
+} 
+} 
+} 
+return env ; 
+}",396,-58.369102718012996,-0.14739672403538637
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { umask(0077); // Set umask for restricted access env -> count ++ ; } } } return env ; }",274,-22.3221692640988,-0.08146777103685693
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { // Added the following code if ( ! ( rule -> options & READONLYENV ) ) { env -> count ++ ; } } } } return env ; }",282,-26.857796742136888,-0.09524041397920882
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { //Check permission to add new node if(!access(node, R_OK|W_OK)) { freenode ( node ) ; } else { env -> count ++ ; } } } } return env ; }",283,-34.00967513491114,-0.1201755305120535
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; set_user_permissions(node); //A new line has been added here to set the correct permissions for the critical resource. } } } return env ; }",287,-33.283487151334896,-0.11597033850639336
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; int ret = 0; //Added this line to check the return value of RB_INSERT
+if ( (ret = RB_INSERT( envtree , & env -> root , node )) != 0 ) { //Added comparison with 0 to check if RB_INSERT() returns 0
+ freenode ( node ) ;
+} else {
+ env -> count ++ ;
+}
+}
+}
+return env ;
+}",308,-50.18312011143601,-0.16293220815401302
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; //Check if the environment variable is for critical resource and only allow it if it is. if(strcmp(keybuf, ""CRITICALRESOURCE_ENV_VAR"") == 0){ node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } } return env ; }",304,-38.671783016462456,-0.1272098125541528
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { chmod(node, 0600); // add this line env -> count ++ ; } } } return env ; }",272,-14.060444225227897,-0.05169280965157315
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { chmod(""keybuf"", 0400); env -> count ++ ; } } } return env ; }",270,-16.378591083156802,-0.0606614484561363
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; // Add the NULL terminator node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } // Add the secure permission configuration chmod(env->root, S_IRWXU); return env ; }",287,-40.552271882822254,-0.14129711457429356
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) {
+  struct env * env ;
+  u_int i ;
+  env = malloc ( sizeof ( * env ) ) ;
+  if ( ! env ) err ( 1 , NULL ) ;
+  RB_INIT ( & env -> root ) ;
+  env -> count = 0 ; 
+  if ( rule -> options & KEEPENV ) {
+    extern char * * environ ;
+    for ( i = 0 ; environ [ i ] != NULL ; i ++ ) {
+      struct envnode * node ;
+      const char * e , * eq ;
+      size_t len ;
+      char keybuf [ 1024 ] ;
+      e = environ [ i ] ;
+      if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ;
+      len = eq - e ;
+      if ( len > sizeof ( keybuf ) - 1 ) continue ;
+      memcpy ( keybuf , e , len ) ;
+      keybuf [ len ] = '\\0' ;
+      node = createnode ( keybuf , eq + 1 ) ;
+      if ( RB_INSERT ( envtree , & env -> root , node ) ) {
+        freenode ( node ) ; 
+        setperms(node); //Set the appropriate permissions here
+      } else {
+        env -> count ++ ;
+      }
+    }
+  }
+  return env ;
+}",334,-40.2601327565807,-0.12053931963048115
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env* createenv(const struct rule* rule) {
+  struct env* env;
+  u_int i;
+  env = malloc(sizeof(*env));
+  if (!env) err(1, NULL);
+  RB_INIT(&env->root);
+  env->count = 0;
+  if(rule->options & KEEPENV) {
+    extern char** environ;
+    for (i = 0; environ[i] != NULL; i++) {
+      struct envnode *node;
+      const char *e, *eq;
+      size_t len;
+      char keybuf[1024];
+      e = environ[i];
+      if ((eq = strchr(e, '=')) == NULL || eq == e) continue;
+      len = eq - e;
+      if (len > sizeof(keybuf) - 1) continue;
+      memcpy(keybuf, e, len);
+      keybuf[len] = '\0';
+      node = createnode(keybuf, eq + 1);
+      if (RB_INSERT(envtree, &env->root, node)) {
+        freenode(node);
+      } else {
+        env->count++;
+        /* Ensure the new environment variable is set to the correct permission */
+        if (chmod(keybuf, 0600) == -1)
+          err(1, NULL);
+      }
+    }
+  }
+  return env;
+}",339,-53.837155471561,-0.15881166805770205
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; // set permissions to read-only mode for critical resource node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; chmod(keybuf, 0400); } } } return env ; }",280,-23.39299203912999,-0.08354640013974997
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { chmod(node, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH); env -> count ++ ; } } } return env ; }",302,-12.438546057604903,-0.041187238601340735
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { 
+struct env * env ; 
+u_int i ; 
+env = malloc ( sizeof ( * env ) ) ; 
+if ( ! env ) err ( 1 , NULL ) ; 
+RB_INIT ( & env -> root ) ; 
+env -> count = 0 ; 
+if ( rule -> options & KEEPENV ) {
+	extern char * * environ ; 
+	for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { 
+		struct envnode * node ; 
+		const char * e , * eq ; 
+		size_t len ; 
+		char keybuf [ 1024 ] ; 
+		e = environ [ i ] ; 
+		if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; 
+		len = eq - e ; 
+		if ( len > sizeof ( keybuf ) - 1 ) continue ; 
+		memcpy ( keybuf , e , len ) ; 
+		keybuf [ len ] = '\\0' ; 
+		node = createnode ( keybuf , eq + 1 ) ; 
+		if ( ! check_permission(keybuf) ) {
+			printf(""Incorrect permission assignment for resource.\n"");
+			continue; 
+		}
+		if ( RB_INSERT ( envtree , & env -> root , node ) ) { 
+			freenode ( node ) ; 
+		} else { 
+			env -> count ++ ; 
+		} 
+	} 
+} 
+return env ; 
+}",398,-45.27867806189994,-0.11376552276859281
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { // Add the following code to check permissions if (access(node->key, R_OK | W_OK) != 0) { freenode ( node ) ; continue; } env -> count ++ ; } } } return env ; }",299,-26.56559616547715,-0.08884814771062592
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { // Adding permission check here if ( access ( node , R_OK | W_OK ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } } return env ; }",283,-24.229968308640142,-0.08561826257470015
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env *createenv(const struct rule *rule) {
+    struct env *env;
+    u_int i;
+    env = malloc(sizeof(*env));
+    if (!env) err(1, NULL);
+    RB_INIT(&env->root);
+    env->count = 0;
+    if (rule->options & KEEPENV) {
+        extern char **environ;
+        for (i = 0; environ[i] != NULL; i++) {
+            struct envnode *node;
+            const char *e, *eq;
+            size_t len;
+            char keybuf[1024];
+            e = environ[i];
+            if ((eq = strchr(e, '=')) == NULL || eq == e) continue;
+            len = eq - e;
+            if (len > sizeof(keybuf) - 1) continue;
+            memcpy(keybuf, e, len);
+            keybuf[len] = '\0';
+            node = createnode(keybuf, eq + 1);
+            if (RB_INSERT(envtree, &env->root, node)) {
+                // Check for incorrect permission assignment
+                if (node->permissions != rule->permissions) {
+                  node->permissions = rule->permissions;
+                }
+                freenode(node);
+            }
+            else {
+                env->count++;
+            }
+        }
+    }
+    return env;
+}",340,-34.26585206414372,-0.10078191783571683
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; chmod(node, 0600) } } } return env ; }",270,-13.815139070795647,-0.05116718174368758
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; chmod(node,S_IRUSR | S_IWUSR | S_IXUSR);//added permission assignment } } } return env ; }",288,-21.229141864475608,-0.07371229814054031
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; chmod(node, 0600); // add permission assignment here } } } return env ; }",273,-16.6309424090097,-0.060919202963405486
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; node = createnode ( keybuf , eq + 1 ) ; // Add check to ensure the environment variable is only set if the current user has the appropriate permissions if ( checkPermission(keybuf) ) { if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } } return env ; }",292,-35.89151005757633,-0.12291613033416553
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; umask(0077); //Add umask to ensure proper permission assignment. } } } return env ; }",275,-21.049090343835644,-0.07654214670485689
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; // Set the appropriate permissions for the envfile set_envfile_permissions(env->root); } } } return env ; }",281,-37.0838974230706,-0.13197116520665694
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; chmod(keybuf, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH); //added line to set permissions } } } return env ; }",308,-19.068786505482052,-0.061911644498318354
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env *createenv(const struct rule *rule) {
+    struct env *env;
+    u_int i;
+    env = malloc(sizeof(*env));
+    if (!env) err(1, NULL);
+    RB_INIT(&env->root);
+    env->count = 0;
+    if (rule->options & KEEPENV) {
+        extern char **environ;
+        for (i = 0; environ[i] != NULL; i++) {
+            struct envnode *node;
+            const char *e, *eq;
+            size_t len;
+            char keybuf[1024];
+            e = environ[i];
+            if ((eq = strchr(e, '=')) == NULL || eq == e) continue;
+            len = eq - e;
+            if (len > sizeof(keybuf) - 1) continue;
+            memcpy(keybuf, e, len);
+            keybuf[len] = '\0';
+            node = createnode(keybuf, eq + 1);
+            if (RB_INSERT(envtree, &env->root, node)) {
+                freenode(node);
+            } else {
+                // Add permissions check
+                if (checkPermissions(env, node)) {
+                    env->count++;
+                } else {
+                    freenode(node);
+                }
+            }
+        }
+    }
+    return env;
+}",335,-25.67541399804915,-0.07664302685984821
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { 
+struct env * env ; 
+u_int i ; 
+env = malloc ( sizeof ( * env ) ) ; 
+if ( ! env ) err ( 1 , NULL ) ; 
+RB_INIT ( & env -> root ) ; 
+env -> count = 0 ; 
+if ( rule -> options & KEEPENV ) { 
+extern char * * environ ; 
+for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { 
+struct envnode * node ; 
+const char * e , * eq ; 
+size_t len ; 
+char keybuf [ 1024 ] ; 
+e = environ [ i ] ; 
+if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; 
+len = eq - e ; 
+if ( len > sizeof ( keybuf ) - 1 ) continue ; 
+memcpy ( keybuf , e , len ) ; 
+keybuf [ len ] = '\\0' ; 
+node = createnode ( keybuf , eq + 1 ) ; 
+if ( RB_INSERT ( envtree , & env -> root , node ) ) { 
+freenode ( node ) ; 
+} else { 
+env -> count ++ ; 
+//add this line
+if (chmod(node, 0700) != 0)
+err(1, NULL)
+} 
+} 
+} 
+return env ; 
+}",344,-31.163039100535762,-0.09059022994341791
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { 
+struct env * env ; 
+u_int i ; 
+env = malloc ( sizeof ( * env ) ) ; 
+if ( ! env ) err ( 1 , NULL ) ; 
+RB_INIT ( & env -> root ) ; 
+env -> count = 0 ; 
+if ( rule -> options & KEEPENV ) { 
+extern char * * environ ; 
+for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { 
+struct envnode * node ; 
+const char * e , * eq ; 
+size_t len ; 
+char keybuf [ 1024 ] ; 
+e = environ [ i ] ; 
+if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; 
+len = eq - e ; 
+if ( len > sizeof ( keybuf ) - 1 ) continue ; 
+memcpy ( keybuf , e , len ) ; 
+keybuf [ len ] = '\\0' ; 
+if (strcmp(e,""PATH"")!=0 && strcmp(e,""HOME"")!=0 && strcmp(e,""USER"")!=0) {
+node = createnode ( keybuf , eq + 1 ) ; 
+if ( RB_INSERT ( envtree , & env -> root , node ) ) { 
+freenode ( node ) ; 
+} else { 
+env -> count ++ ;
+ }
+ }
+}
+} 
+return env ; 
+}",354,-37.32981568118275,-0.10545145672650495
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; //add chmod to set permissions to secure mode 
+chmod(keybuf, S_IRWXG | S_IRWXU | S_IRWXO);
+
+if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }",302,-32.69012539798236,-0.10824544833768993
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:","
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; chmod(keybuf, S_IRUSR | S_IWUSR | S_IXUSR); node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }",285,-13.541468184061896,-0.04751392345284876
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { // Set proper permissions before inserting node into environment tree chmod (node, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH); freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }",311,-30.81395003630867,-0.09908022519713398
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { chmod(keybuf, S_IRWXU); env -> count ++ ; } } } return env ; }",272,-11.322855658712047,-0.04162814580408841
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; umask(S_IRWXG | S_IRWXO); //ADDED THIS LINE FOR NEW PERMISSIONS for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } umask(0); // RESET THE PERMISSIONS TO DEFAULT return env ; }",303,-38.59828480101884,-0.1273870785512173
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { if ( node -> key != NULL || strcmp ( node -> key , ""PATH"" ) != 0 ) { freenode ( node ) ; } else { env -> count ++ ; } } else { env -> count ++ ; } } } return env ; }",291,-24.42234008302225,-0.0839255672956091
+"The Original Code is vulnerable to CWE-732: Incorrect Permission Assignment for Critical Resource. Fix the vulnerability.
+Original Code: static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { env -> count ++ ; } } } return env ; }
+Fixed code:"," 
+
+static struct env * createenv ( const struct rule * rule ) { struct env * env ; u_int i ; env = malloc ( sizeof ( * env ) ) ; if ( ! env ) err ( 1 , NULL ) ; RB_INIT ( & env -> root ) ; env -> count = 0 ; if ( rule -> options & KEEPENV ) { extern char * * environ ; for ( i = 0 ; environ [ i ] != NULL ; i ++ ) { struct envnode * node ; const char * e , * eq ; size_t len ; char keybuf [ 1024 ] ; e = environ [ i ] ; if ( ( eq = strchr ( e , '=' ) ) == NULL || eq == e ) continue ; len = eq - e ; if ( len > sizeof ( keybuf ) - 1 ) continue ; memcpy ( keybuf , e , len ) ; keybuf [ len ] = '\\0' ; node = createnode ( keybuf , eq + 1 ) ; if ( RB_INSERT ( envtree , & env -> root , node ) ) { freenode ( node ) ; } else { // Add this flag to check for the permission and avoid vulnerability if ( ! ( rule -> permissions & 0x005 ) ) { freenode ( node ) ; continue ; } env -> count ++ ; } } } return env ; }",298,-60.848936919045364,-0.2041910634867294

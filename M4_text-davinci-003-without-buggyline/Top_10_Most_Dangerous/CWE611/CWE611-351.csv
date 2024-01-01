@@ -1,0 +1,460 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else { //Added this line to prevent external entity attack p1 = htmlspecialchars(p1); return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; } return NULL ; }",211,-21.587249260766818,-0.10230923820268634
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char * cleanP1 = apr_pstrdup(cmd->pool, ap_escape_html(cmd->pool, p1)); if ( strcasecmp ( cleanP1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( cleanP1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , cleanP1 ) ; return NULL ; }",221,-12.514016257324085,-0.056624507951692694
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," 
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else { return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; }  // Added braces to fix the vulnerability 
+return NULL ; 
+}",204,-22.940823409536495,-0.1124550167134142
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) {
+    directory_config * dcfg = ( directory_config * ) _dcfg ;
+    if ( dcfg == NULL ) return NULL ;
+    // Prevent malicious characters in p1
+    if (!contains_special_chars(p1)) {
+        if ( strcasecmp ( p1 , ""on"" ) == 0 ) {
+            dcfg -> hash_is_enabled = HASH_ENABLED ;
+            dcfg -> hash_enforcement = HASH_ENABLED ;
+        } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) {
+            dcfg -> hash_is_enabled = HASH_DISABLED ;
+            dcfg -> hash_enforcement = HASH_DISABLED ;
+        } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ;
+    }
+    return NULL ;
+}
+
+// New function to check for malicious characters
+static bool contains_special_chars(const char *str) {
+    const char *special_chars = ""&<>\""'"";
+    int i;
+    for (i = 0; i < strlen(str); i++) {
+        if (strchr(special_chars, str[i])) {
+            return true;
+        }
+    }
+    return false;
+}",342,-56.47391430268862,-0.16512840439382637
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," 
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+	directory_config * dcfg = ( directory_config * ) _dcfg ; 
+	if ( dcfg == NULL ) return NULL ; 
+	// Perform input validation to reject malicious XML values 
+	if (p1 != NULL) {
+		p1 = ap_escape_html(cmd->pool, p1);
+	}
+	
+	if ( strcasecmp ( p1 , ""on"" ) == 0 ) { 
+		dcfg -> hash_is_enabled = HASH_ENABLED ; 
+		dcfg -> hash_enforcement = HASH_ENABLED ; 
+	} else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { 
+		dcfg -> hash_is_enabled = HASH_DISABLED ; 
+		dcfg -> hash_enforcement = HASH_DISABLED ; 
+	} else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; 
+	return NULL ; 
+}",273,-47.68221412422819,-0.17466012499717284
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+    directory_config * dcfg = ( directory_config * ) _dcfg ; 
+    if ( dcfg == NULL ) return NULL ; 
+    
+    // Check for any external entity references
+    if (p1.find(""&"") != std::string::npos) {
+        return ""ModSecurity: Invalid value for SecRuleEngine: External entity references are not allowed"";
+    }
+    
+    if ( strcasecmp ( p1 , ""on"" ) == 0 ) {
+        dcfg -> hash_is_enabled = HASH_ENABLED ; 
+        dcfg -> hash_enforcement = HASH_ENABLED ; 
+    } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) {
+        dcfg -> hash_is_enabled = HASH_DISABLED ; 
+        dcfg -> hash_enforcement = HASH_DISABLED ; 
+    } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; 
+    return NULL ;
+}",276,-35.23212679442805,-0.1276526333131451
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) {
+  directory_config * dcfg = ( directory_config * ) _dcfg ;
+  if ( dcfg == NULL ) return NULL ;
+  
+  char * p1_fixed = xmlStrdup(p1);  // removed external entity references by copying string
+  
+  if ( strcasecmp ( p1_fixed , ""on"" ) == 0 ) {
+    dcfg -> hash_is_enabled = HASH_ENABLED ;
+    dcfg -> hash_enforcement = HASH_ENABLED ;
+  } else if ( strcasecmp ( p1_fixed , ""off"" ) == 0 ) {
+    dcfg -> hash_is_enabled = HASH_DISABLED ;
+    dcfg -> hash_enforcement = HASH_DISABLED ;
+  } else {
+	xmlFree(p1_fixed);  // free up memory allocated for p1_fixed
+    return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ;
+  }
+  
+  xmlFree(p1_fixed);  // free up memory allocated for p1_fixed
+  return NULL ;
+}",295,-61.466790562253266,-0.20836200190594328
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; p1 = apr_xml_quote_string ( cmd->pool, p1, 0 ); if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",208,-8.708943310079995,-0.04186991975999998
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+ directory_config * dcfg = ( directory_config * ) _dcfg ; 
+ if ( dcfg == NULL ) return NULL ; 
+ if ( strcasecmp ( p1 , ""on"" ) == 0 ) { 
+ dcfg -> hash_is_enabled = HASH_ENABLED ; 
+ dcfg -> hash_enforcement = HASH_ENABLED ; 
+ } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { 
+ dcfg -> hash_is_enabled = HASH_DISABLED ; 
+ dcfg -> hash_enforcement = HASH_DISABLED ; 
+ } else if ( strcasecmp ( p1, """") != 0 ) { 
+ return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; 
+ }
+ return NULL ; 
+}",230,-20.99864293087648,-0.0912984475255499
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+  directory_config * dcfg = ( directory_config * ) _dcfg ; 
+  if ( dcfg == NULL ) return NULL ; 
+  const char *p1_checked = apr_xml_quote_string(cmd->pool, p1, 0); // Added line to escape external entity references
+  if ( strcasecmp ( p1_checked , ""on"" ) == 0 ) { // Changed line to use p1_checked instead of p1
+    dcfg -> hash_is_enabled = HASH_ENABLED ; 
+    dcfg -> hash_enforcement = HASH_ENABLED ; 
+  } else if ( strcasecmp ( p1_checked , ""off"" ) == 0 ) { // Changed line to use p1_checked instead of p1
+    dcfg -> hash_is_enabled = HASH_DISABLED ; 
+    dcfg -> hash_enforcement = HASH_DISABLED ; 
+  } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1_checked ) ; // Changed line to use p1_checked instead of p1
+  return NULL ; 
+}",298,-35.89020566610279,-0.12043693176544559
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char * val = apr_pstrdup(cmd->pool, p1); // Duplicate the parameter before use. ap_xml_quote_string(cmd->pool, val, NULL, 0); // Escape the value to prevent external entity injections if ( strcasecmp ( val , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( val , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , val ) ; return NULL ; }",238,-47.203225863203016,-0.19833288177816394
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," 
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) {
+    directory_config * dcfg = ( directory_config * ) _dcfg ;
+    if ( dcfg == NULL ) return NULL ;
+
+    // Strip out any leading and trailing whitespaces
+    const char *p1_trimmed = apr_strtrim(cmd->pool, p1, "" \t\n\r"");
+
+    if ( strcasecmp ( p1_trimmed , ""on"" ) == 0 ) {
+        dcfg -> hash_is_enabled = HASH_ENABLED ;
+        dcfg -> hash_enforcement = HASH_ENABLED ;
+    } else if ( strcasecmp ( p1_trimmed , ""off"" ) == 0 ) {
+        dcfg -> hash_is_enabled = HASH_DISABLED ;
+        dcfg -> hash_enforcement = HASH_DISABLED ;
+    } else {
+        // Strip out any XML external entity references
+        const char *p1_trimmed_safe = ap_escape_logitem(cmd->pool, p1_trimmed);
+        return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1_trimmed_safe ) ;
+    }
+    return NULL ;
+}",318,-54.57941723279529,-0.1716333875245135
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; // Adding argument check to prevent injection attacks. if (!p1 || !strlen(p1)) return apr_psprintf ( cmd->pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"", p1); if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd->pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"", p1); return NULL ; }",235,-44.928636965028296,-0.19118568921288637
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; const char *p1_escaped = apr_xml_quote_string(cmd->pool, p1, 0); if ( strcasecmp ( p1_escaped , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1_escaped , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1_escaped ) ; return NULL ; }",224,-11.075106328613916,-0.049442438967026416
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; 
+
+// prevent XXE attacks
+if (p1 != NULL && strlen(p1) > 0) {
+    char* p1_sanitized = apr_pstrdup(cmd->pool, p1);
+    if (apr_xml_quote_string(cmd->pool, p1_sanitized, 0) != APR_SUCCESS) {
+        return apr_psprintf(cmd->pool, ""ModSecurity: Invalid value for SecRuleEngine: %s"", p1);
+    }
+}
+
+if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",309,-41.29581767832146,-0.1336434229071892
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+directory_config * dcfg = ( directory_config * ) _dcfg ; 
+if ( dcfg == NULL ) return NULL ; 
+p1 = ap_escape_html(cmd->pool, p1);
+if ( strcasecmp ( p1 , ""on"" ) == 0 ) { 
+dcfg -> hash_is_enabled = HASH_ENABLED ; 
+dcfg -> hash_enforcement = HASH_ENABLED ; 
+} else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { 
+dcfg -> hash_is_enabled = HASH_DISABLED ; 
+dcfg -> hash_enforcement = HASH_DISABLED ; 
+} else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; 
+return NULL ; 
+}",228,-9.020764847576947,-0.03956475810340766
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; p1 = apr_xml_quote_string ( cmd -> pool , p1 , 1 ) ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",211,-9.471435742285857,-0.04488832105348747
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; const char * fixed_p1 = ap_escape_logitem(cmd->pool, p1); if ( strcasecmp ( fixed_p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( fixed_p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , fixed_p1 ) ; return NULL ; }",217,-10.678649276191747,-0.04921036532807257
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+directory_config * dcfg = ( directory_config * ) _dcfg ; 
+if ( dcfg == NULL ) return NULL ; 
+if ( strcasecmp ( p1 , ""on"" ) == 0 ) { 
+dcfg -> hash_is_enabled = HASH_ENABLED ; 
+dcfg -> hash_enforcement = HASH_ENABLED ; 
+} else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { 
+dcfg -> hash_is_enabled = HASH_DISABLED ; 
+dcfg -> hash_enforcement = HASH_DISABLED ; 
+} else if (p1.indexOf(""<"") != -1 || p1.indexOf("">"") != -1 ||
+			  p1.indexOf(""&"") != -1 || p1.indexOf(""\"""") != -1 ||
+			  p1.indexOf(""'"") != -1) {
+		 return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ;
+	}	
+return NULL ; 
+}",290,-43.17866826564579,-0.1488919595367096
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) {
+    directory_config * dcfg = ( directory_config * ) _dcfg ;
+    if ( dcfg == NULL ) return NULL ;
+    // Prevent parsing of XML external entities
+    if ( ! xmlEntityCheck ( p1 ) ) {
+        return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ;
+    }
+    if ( strcasecmp ( p1 , ""on"" ) == 0 ) { 
+        dcfg -> hash_is_enabled = HASH_ENABLED ; 
+        dcfg -> hash_enforcement = HASH_ENABLED ; 
+    } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { 
+        dcfg -> hash_is_enabled = HASH_DISABLED ; 
+        dcfg -> hash_enforcement = HASH_DISABLED ; 
+    } else {
+        return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ;
+    } 
+    return NULL ; 
+} 
+
+// Function to check for XML external entities
+bool xmlEntityCheck ( char * p1 ) {
+    int i ; 
+    for ( i = 0 ; i < strlen ( p1 ) ; i ++ ) { 
+        if ( p1 [ i ] == '&' ) { 
+            return false ; 
+        } 
+    } 
+    return true ; 
+}",371,-54.77178747845362,-0.14763285034623616
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } 
+// Prevent external entity references
+else if (strstr(p1, ""<"") != NULL || strstr(p1, "">"") != NULL) {
+    return apr_psprintf(cmd->pool, ""ModSecurity: External Entity Reference not allowed: %s"", p1);
+} else {
+    return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; 
+} 
+return NULL ; }",263,-41.53389411904885,-0.1579235517834557
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; /* prevent XXE attacks */ p1 = ap_escape_html(cmd->temp_pool, p1); if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",213,-19.44709497197046,-0.09130091536136367
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; // Added this line to prevent possible injection attacks const char* p1_safe = apr_xml_quote_string ( cmd->pool, p1, 0 ); if ( strcasecmp ( p1_safe , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1_safe , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1_safe ) ; return NULL ; }",229,-31.36719554331521,-0.13697465302757733
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; const char* p2 = apr_pstrndup(cmd->pool,p1,strlen(p1)); if ( strcasecmp ( p2 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p2 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p2 ) ; return NULL ; }",215,-17.00031928387375,-0.07907125248313372
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; 
+//replace strcasecmp with strncmp and limit comparison to a fixed length to prevent overflowing the buffer 
+if ( strncmp ( p1 , ""on"" , 2 ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strncmp ( p1 , ""off"" , 3 ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; 
+//escape the value of p1 to prevent an xml external entity attack 
+p1 = escpae_xml_string(p1);
+return NULL ; }",251,-67.41225744795874,-0.2685747308683615
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char *escaped_p1 = apr_xml_quote_string(cmd->pool, p1, 0); if ( strcasecmp ( escaped_p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( escaped_p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , escaped_p1 ) ; return NULL ; }",219,-10.6142592948664,-0.04846693741948128
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; /* Add this line: */ p1 = ap_escape_html(cmd->pool, p1); if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",210,-17.184806117293444,-0.08183241008234973
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," 
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; p1 = apr_pstrdup(cmd->pool, p1); apr_xml_quote_string(cmd->pool, &p1, 0); if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",225,-12.626373907981499,-0.05611721736880666
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; 
+
+char * cleanValue = apr_pstrdup(cmd->pool, p1);
+ap_xlate_proto_from_ascii(cleanValue, strlen(cleanValue));
+
+if ( strcasecmp ( cleanValue , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( cleanValue , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",236,-22.107893189136743,-0.09367751351329129
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; 
+
+// disable external entity expansion
+p1 = xmlStringLenDecodeEntities(cmd->pool, p1, 0, 0, 0); 
+
+if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",226,-21.704119615007837,-0.09603592750003467
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char * parsed_value = apr_xml_quote_string(cmd->pool, p1, 0); if ( strcasecmp ( parsed_value , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( parsed_value , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",214,-15.543434415168832,-0.07263287109891978
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; 
+
+// Added code
+p1 = apr_xml_quote_string(cmd->pool, p1, 0);
+
+if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",218,-12.294327433364252,-0.05639599740075345
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else { /* Disallow external entity references */ const char * sanitized_p1 = apr_xml_quote_string ( cmd -> pool , p1 , 0 ) ; return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , sanitized_p1 ) ; } return NULL ; }",227,-21.28082273564491,-0.09374811777817141
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; const char* szValue = apr_pstrdup(cmd->pool, p1); if ( strcasecmp ( szValue , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( szValue , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , szValue ) ; return NULL ; }",212,-14.956000800153301,-0.07054717358562879
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) {
+ directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; 
+ const char* fixed_p1 = apr_xml_quote_string(cmd->pool, p1, 0);
+ if ( strcasecmp ( fixed_p1 , ""on"" ) == 0 ) { 
+ dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; 
+ } else if ( strcasecmp ( fixed_p1 , ""off"" ) == 0 ) { 
+ dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; 
+ } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , fixed_p1 ) ; 
+ return NULL ; }",235,-21.794159684721404,-0.09274110504136768
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; const char *value = apr_pstrdup(cmd->pool, apr_xml_quote_string(cmd->pool, p1, 0)); if ( strcasecmp ( value , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( value , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",220,-13.146464484767554,-0.059756656748943426
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char * p1_fixed = apr_pstrdup(cmd->pool, p1); if ( strcasecmp ( p1_fixed , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1_fixed , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",214,-13.30342319251506,-0.062165528936986264
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char* sanitized_p1 = apr_pstrdup(cmd->pool, apr_xml_quote_string(cmd->pool, p1, 0)); if ( strcasecmp ( sanitized_p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( sanitized_p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , sanitized_p1 ) ; return NULL ; }",234,-11.127063553910846,-0.04755155364919165
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; 
+// parse input as string to prevent XML external entity attack
+char* parsed_p1 = apr_pstrdup(cmd->pool, p1);
+if ( strcasecmp ( parsed_p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( parsed_p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , parsed_p1 ) ; return NULL ; }",231,-28.77105412876638,-0.12455001787344754
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char * clean_p1 = apr_pstrdup(cmd->pool, apr_xml_quote_string(cmd->pool, p1, 0));   if ( strcasecmp ( clean_p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( clean_p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , clean_p1 ) ; return NULL ; }",232,-18.05157515201896,-0.07780851358628861
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," 
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+	directory_config * dcfg = ( directory_config * ) _dcfg ; 
+
+	if ( dcfg == NULL ) return NULL ; 
+
+	if ( strcasecmp ( p1 , ""on"" ) == 0 ) { 
+		dcfg -> hash_is_enabled = HASH_ENABLED ; 
+		dcfg -> hash_enforcement = HASH_ENABLED ; 
+	} else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { 
+		dcfg -> hash_is_enabled = HASH_DISABLED ; 
+		dcfg -> hash_enforcement = HASH_DISABLED ; 
+	} else { 
+		// Check that the parameter does not contain any external entities
+		if (p1 != xmlStrcmpUTF8(p1, (const xmlChar *) p1)) {
+			return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; 
+		}
+	}
+
+	return NULL ; 
+}",281,-47.933446920355905,-0.17058166163827723
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else { // Validate input to make sure that no XML external entities are being processed. if (strstr(p1, ""&"") != NULL || strstr(p1, ""<"") != NULL || strstr(p1, "">"") != NULL) { return ""ModSecurity: Invalid value for SecRuleEngine: XML external entity references are not allowed.""; } else { return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; } } return NULL ; }",270,-42.88129755447599,-0.1588196205721333
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," 
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else if (strstr(p1, ""<?xml"") != NULL || strstr(p1, ""&"") != NULL || strstr(p1, "";"") != NULL) { return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",261,-20.020316927034298,-0.07670619512273677
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { 
+directory_config * dcfg = ( directory_config * ) _dcfg ; 
+if ( dcfg == NULL ) return NULL ; 
+char * fixedP1 = apr_pstrdup(cmd->pool, ap_escape_logitem(cmd->pool, p1)); 
+if ( strcasecmp ( fixedP1 , ""on"" ) == 0 ) { 
+dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; 
+} else if ( strcasecmp ( fixedP1 , ""off"" ) == 0 ) { 
+dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; 
+} else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , fixedP1 ) ; 
+return NULL ; 
+}",243,-18.036466253850193,-0.07422414096234647
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; const char * value = apr_pstrdup(cmd->pool, p1); if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( value , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( value , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , value ) ; return NULL ; }",204,-11.776715307916852,-0.05772899660743555
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char * sanitized_p1 = apr_pstrdup(cmd->pool, p1); apr_xml_quote_string(cmd->pool, sanitized_p1, 0); if ( strcasecmp ( sanitized_p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , sanitized_p1 ) ; return NULL ; }",236,-17.815997949362835,-0.07549151673458829
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; const char * p1_fixed = apr_xml_quote_string(cmd->pool, p1, 0); if ( strcasecmp ( p1_fixed , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1_fixed , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",219,-12.90935690901574,-0.058946835200985113
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:","
+
+static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; p1 = ap_escape_html(cmd->pool, p1); if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",206,-7.749873025500977,-0.03762074284223776
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; char * p1_copy = apr_pstrdup(cmd->pool,p1); if ( strcasecmp ( p1_copy , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1_copy , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",213,-13.322109612173625,-0.06254511555011091
+"The Original Code is vulnerable to CWE-611: Improper Restriction of XML External Entity Reference. Fix the vulnerability.
+Original Code: static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; if ( dcfg == NULL ) return NULL ; if ( strcasecmp ( p1 , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1 , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }
+Fixed code:"," static const char * cmd_hash_engine ( cmd_parms * cmd , void * _dcfg , const char * p1 ) { directory_config * dcfg = ( directory_config * ) _dcfg ; ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server, ""Checking for external entity in XML""); if ( dcfg == NULL ) return NULL ; char * p1_copy = apr_pstrdup(cmd->pool, p1); if ( strcasecmp ( p1_copy , ""on"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_ENABLED ; dcfg -> hash_enforcement = HASH_ENABLED ; } else if ( strcasecmp ( p1_copy , ""off"" ) == 0 ) { dcfg -> hash_is_enabled = HASH_DISABLED ; dcfg -> hash_enforcement = HASH_DISABLED ; } else return apr_psprintf ( cmd -> pool , ""ModSecurity: Invalid value for SecRuleEngine: %s"" , p1 ) ; return NULL ; }",246,-40.944293766274335,-0.1664402185620908
