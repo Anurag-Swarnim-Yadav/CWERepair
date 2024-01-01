@@ -1,0 +1,517 @@
+Original code,Plausible Program,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) && cfg->authentication_is_valid ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",185,-12.4115311967443,-0.06708935782023945
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , oidc_cfg_dir_authn_header ( r ) ) ; } } }",188,-6.600654907832803,-0.035109866531025546
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 ) { 
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+        // Add authentication check 
+        if (authenticated && ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix )) { 
+            oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+        } 
+    } 
+}",208,-25.707125881015692,-0.12359195135103698
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { const char* username = ap_get_basic_auth_pw(r); // Compares the username and password sent with the request and the ones stored in the database. if(username != NULL && ap_get_basic_auth_compare(r, username, ap_get_basic_auth_pw(r)) == OK){ oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",250,-56.26913315191926,-0.22507653260767704
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+
+static void oidc_scrub_headers ( request_rec * r ) { 
+	oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+	if ( cfg -> scrub_request_headers != 0 ) { 
+		// Check that the user is authenticated before scrubbing the headers
+		if (ap_auth_type(r) != NULL) {
+			oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+			if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+				oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+			} 
+		} 
+	} 
+}",242,-19.776563121703894,-0.08172133521365246
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static int oidc_authenticate_user(request_rec* r) {
+    oidc_cfg* cfg = ap_get_module_config(r->server->module_config, &auth_openidc_module);
+    if (cfg->scrub_request_headers != 0) {
+        oidc_scrub_request_headers(r, OIDC_DEFAULT_HEADER_PREFIX, oidc_cfg_dir_authn_header(r));
+        if ((strstr(cfg->claim_prefix, OIDC_DEFAULT_HEADER_PREFIX) != cfg->claim_prefix)) {
+            // check for valid user credentials
+            if (r->user == NULL || r->ap_auth_type == NULL) {
+                return HTTP_UNAUTHORIZED;
+            }
+            // scrub the headers
+            oidc_scrub_request_headers(r, cfg->claim_prefix, NULL);
+        }
+    }
+    return OK;
+}",238,-38.81488150064133,-0.16308773739765264
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static int oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ;  }  // check if user authentication is valid if (!ap_get_basic_auth_pw(r, NULL)) { return AUTH_REQUIRED; } return OK; } }",214,-42.53475714110401,-0.19876054738833648
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) {
+  oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ;
+  // Ensure authentication of the request before scrubbing headers
+  if (ap_auth_type(r) != NULL) {
+    if ( cfg -> scrub_request_headers != 0 ) {
+      oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ;
+      if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) {
+        oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ;
+      }
+    }
+  }
+}",222,-30.346035327260203,-0.13669385282549643
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) {
+ oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+ if ( cfg -> scrub_request_headers != 0 ) { 
+    const char * auth_header = oidc_cfg_dir_authn_header ( r ) ;
+    if ( auth_header != NULL && strlen ( auth_header ) > 0 ) {
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , auth_header ) ; 
+        if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+            const char * auth_header = oidc_cfg_dir_authn_header ( r ) ; 
+            if ( auth_header != NULL && strlen ( auth_header ) > 0 ) { 
+                oidc_scrub_request_headers ( r , cfg -> claim_prefix , auth_header ) ; 
+            } 
+        } 
+    }
+ } 
+}",285,-36.24232117590549,-0.12716603921370348
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 ) { 
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+        if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+            oidc_scrub_request_headers ( r , cfg -> claim_prefix , cfg->authentication_header ) ; 
+        } 
+    } 
+}",206,-15.882341130033,-0.07709874334967476
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 ) { 
+        //Authenticate user before scrubbing headers
+        if(authenticate_user(r)){
+            oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+            if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+                oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+            } 
+        }
+    }
+}",222,-20.34629479808117,-0.09164997656793321
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 && cfg->authenticated) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",181,-7.782058236563003,-0.04299479688708842
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { 
+	oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+	if ( cfg -> scrub_request_headers != 0 ) {
+		oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+		if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) {
+			//Added verification to ensure that the user is authenticated before scrubbing headers
+			if(r->user != NULL){
+				oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ;
+			}
+		}
+	}
+}",231,-37.77119545501462,-0.16351166863642694
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { // Check for authentication first if (ap_get_module_config(r->request_config, &auth_openidc_module) != NULL) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",211,-19.41334750932084,-0.09200638630009876
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 ) { 
+        const char* username = oidc_get_current_user(r);
+        if (username == NULL) {
+            return;
+        }
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+        if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+            oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+        } 
+    } 
+}",234,-18.832761753353996,-0.08048188783484614
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+
+static void oidc_scrub_headers ( request_rec * r ) { 
+   oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+   
+   if ( cfg -> scrub_request_headers != 0 ) { 
+      oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+      if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+         // Only scrub the request headers if the user is authenticated 
+         if (ap_auth_type(r) != NULL) {
+            oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+         }
+      } 
+   } 
+}",235,-29.078355398116035,-0.12373768254517462
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { if (r->per_dir_config != NULL) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",188,-18.8682136542736,-0.1003628385865617
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+
+static int oidc_scrub_headers(request_rec *r)
+{
+    oidc_cfg *cfg = ap_get_module_config(r->server->module_config, &auth_openidc_module);
+
+    // Check the authentication status before scrubbing the headers
+    int auth_status = ap_auth_type(r);
+    if (auth_status != AUTH_REQUIRED && cfg->scrub_request_headers != 0) {
+        oidc_scrub_request_headers(r, OIDC_DEFAULT_HEADER_PREFIX, oidc_cfg_dir_authn_header(r));
+        if ((strstr(cfg->claim_prefix, OIDC_DEFAULT_HEADER_PREFIX) != cfg->claim_prefix)) {
+            oidc_scrub_request_headers(r, cfg->claim_prefix, NULL);
+        }
+    }
+
+    return OK;
+}",228,-38.959215542576885,-0.1708737523797232
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { // Check if the user is authenticated before scrubbing headers if (ap_logged_in(r)) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",199,-21.981183909241295,-0.1104582105992025
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+
+static void oidc_scrub_headers ( request_rec * r ) { 
+	oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+	if ( cfg -> scrub_request_headers != 0 ) { 
+		//Check if Authorization header is present
+		char* authHeader = ap_table_get(r->headers_in, ""Authorization"");
+		if (authHeader != NULL) {
+			//If Authorization header is present then only scrub the headers
+			oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+			if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+				oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+			}
+		}
+	} 
+}",269,-39.553048035731585,-0.14703735329268247
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { if ( cfg -> username != NULL && cfg -> password != NULL) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",192,-13.802171089167894,-0.07188630775608278
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_validate_request_headers(r, cfg->claim_prefix, NULL); oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",198,-15.463098866614201,-0.07809645892229394
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { 
+  oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+  if ( cfg -> scrub_request_headers != 0 ) {
+    const char* authHeader = oidc_cfg_dir_authn_header ( r ) ;
+    if ( authHeader != NULL && strlen(authHeader) > 0 ) {
+      oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , authHeader ) ; 
+      if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+        oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+      } 
+    }
+  }
+}",229,-21.729680221631135,-0.09488943328223202
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+
+static void oidc_scrub_headers ( request_rec * r ) {
+  oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ;
+  if ( cfg -> scrub_request_headers != 0 ) {
+    if ( r->user == NULL || strlen(r->user) == 0 ) {
+      // no user present
+      return;
+    }
+    oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ;
+    if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) {
+      oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ;
+    }
+  }
+}",225,-30.10750013377408,-0.1338111117056626
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) && ( oidc_cfg_dir_check_authn_header ( r ) == TRUE ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",196,-12.902159897783704,-0.0658273464172638
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , cfg->auth_token ) ; } } }",180,-11.255186758334801,-0.06252881532408223
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { if (cfg->authenticated == 1) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } else { return false; } } }",193,-17.73907616191605,-0.09191231171977228
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { 
+oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+if ( cfg -> scrub_request_headers != 0 ) { 
+if (ap_auth_type(r) == NULL) {
+return;
+}
+oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+} 
+} 
+}",208,-14.851928950691768,-0.0714035045706335
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static int oidc_scrub_headers ( request_rec * r ) {
+    int res;
+    oidc_cfg *cfg = ap_get_module_config(r->server->module_config, &auth_openidc_module);
+    if (cfg->scrub_request_headers != 0) {
+        res = oidc_scrub_request_headers(r, OIDC_DEFAULT_HEADER_PREFIX, oidc_cfg_dir_authn_header(r));
+        if (res != OK) {
+            return res;
+        }
+        if ((strstr(cfg->claim_prefix, OIDC_DEFAULT_HEADER_PREFIX) != cfg->claim_prefix)) {
+            res = oidc_scrub_request_headers(r, cfg->claim_prefix, NULL);
+            if (res != OK) {
+                return res;
+            }
+        }
+    }
+    return OK;
+}",230,-22.367272391279723,-0.09724901039686835
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { 
+	oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+	if ( cfg -> scrub_request_headers != 0 ) { 
+		int user_authorized = 0; 
+		if (r->user != NULL) { 
+			user_authorized = 1; 
+		} 
+		if (user_authorized) { 
+			oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+			if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+				oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+			} 
+		}
+	}
+}",259,-28.590930769785167,-0.11038969409183462
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+
+static void oidc_scrub_headers ( request_rec * r ) {
+ oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+ if ( cfg -> scrub_request_headers != 0 ) {
+   oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+   if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) {
+     if (cfg->auth_type && !strcmp(cfg->auth_type, ""basic"")) {
+       oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ;
+     } else {
+       //authenticate the user before scrubbing the headers
+       if (ap_auth_type(r) && !strcmp(ap_auth_type(r), ""openidc"")) {
+         oidc_authenticate_user(r);
+         oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ;
+       }
+     }
+   }
+ }
+}",307,-49.35615541216488,-0.16076923587024392
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) {
+	oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+	if ( cfg -> scrub_request_headers != 0 ) { 
+		// Ensure the request is authenticated 
+		if (oidc_authenticate_request(r)) { 
+			oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+			if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+				oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+			} 
+		} 
+	}
+}",234,-31.167431150995714,-0.1331941502179304
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_authenticate_user(r); oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",185,-8.1409687721969,-0.044005236606469725
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 ) { 
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+        if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+            //check user authentication
+            if (!ap_auth_type(r) || strcasecmp(ap_auth_type(r),""Basic"")==0){
+                oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+            }
+        } 
+    } 
+}",237,-35.16426234492115,-0.1483724149574732
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static int oidc_authenticate_user(request_rec *r, oidc_cfg *c) {
+    int rc = oidc_authenticate_user_check(r, c);
+    if (rc == DECLINED) {
+        if (c->scrub_request_headers != 0) {
+            oidc_scrub_request_headers(r, OIDC_DEFAULT_HEADER_PREFIX, oidc_cfg_dir_authn_header(r));
+            if ((strstr(c->claim_prefix, OIDC_DEFAULT_HEADER_PREFIX) != c->claim_prefix)) {
+                oidc_scrub_request_headers(r, c->claim_prefix, NULL);
+            }
+            // Add authentication check
+            if (!oidc_authenticate_user_check_authenticated(r, c)) {
+                return HTTP_UNAUTHORIZED;
+            }
+        }
+    }
+    return rc;
+}",235,-42.53943494486826,-0.1810188721058224
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { // Authenticating the user before scrubbing the request headers if (ap_get_basic_auth_pw(r) != NULL) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",207,-21.515491288055482,-0.10393957143988156
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 && cfg->authenticated == 1 ) { 
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+        if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+            oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+        } 
+    } 
+}",208,-13.2173607108327,-0.06354500341746491
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 && r -> user != NULL ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",182,-9.21484555875449,-0.0506310195535961
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , oidc_cfg_dir_authn_header ( r ) ) ; } } }",188,-6.600656007832804,-0.03510987238208938
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { if (ap_auth_type(r) == NULL || strcmp(ap_auth_type(r), ""openid-connect"") != 0) { return; } oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",213,-15.804401669308506,-0.07419906886999299
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static int oidc_authenticate_user (request_rec *r) {
+  oidc_cfg *cfg = ap_get_module_config(r->server->module_config, &auth_openidc_module);
+  if (cfg->scrub_request_headers != 0) {
+    oidc_scrub_request_headers(r, OIDC_DEFAULT_HEADER_PREFIX, oidc_cfg_dir_authn_header(r));
+    if ((strstr(cfg->claim_prefix, OIDC_DEFAULT_HEADER_PREFIX) != cfg->claim_prefix)) {
+      //check authentication
+      if (!oidc_authenticate_check_auth(r, cfg->claim_prefix)) {
+        return HTTP_UNAUTHORIZED;
+      }
+      oidc_scrub_request_headers(r, cfg->claim_prefix, NULL);
+    }
+  }
+  return OK;
+}
+
+int oidc_authenticate_check_auth(request_rec *r, const char *claim_prefix) {
+  const char *auth_header = apr_table_get(r->headers_in, ""Authorization"");
+  if (auth_header == NULL || strncmp(auth_header, claim_prefix, strlen(claim_prefix)) != 0) {
+    return 0;
+  }
+  return 1;
+}",332,-49.06281150998894,-0.14777955274093055
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; //Verify that the user is authenticated before scrubbing the request headers const char* auth_type = ap_auth_type(r); if((auth_type != NULL) && (strcmp(auth_type, ""Basic"") == 0)) { if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",230,-33.12288600978099,-0.144012547868613
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( strcmp(cfg->scrub_request_headers, '0') != 0 ) { const char *auth_header = oidc_cfg_dir_authn_header ( r ) ; if(auth_header != NULL) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , auth_header ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",202,-33.076730807865786,-0.16374619211814745
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( cfg->authentication_required && ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",182,-12.552675050969588,-0.06897074203829444
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { if (r -> user != NULL) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } } }",184,-10.815287494148107,-0.05877873638123971
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 ) { 
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+        if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+            if (cfg->auth_header != NULL && strlen(cfg->auth_header) > 0) {
+                oidc_scrub_request_headers ( r , cfg -> claim_prefix , cfg->auth_header) ; 
+            }
+            else{
+                oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ;
+            }
+        } 
+    } 
+}",264,-27.141073742912784,-0.10280709751103327
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; oidc_check_authentication ( r ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }",186,-14.038416451089942,-0.07547535726392442
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:","
+static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+if ( cfg -> scrub_request_headers != 0 ) { 
+// Check if user is authenticated
+if (oidc_is_authenticated(r)) { 
+oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; }
+} 
+}
+}",207,-26.349537515778483,-0.12729245176704582
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," static void oidc_scrub_headers ( request_rec * r , const char * username , const char * password ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { if ( username != NULL && password != NULL ) { if ( oidc_authenticate_user ( r , username , password ) ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } else { ap_log_rerror ( APLOG_MARK , APLOG_ERR , 0 , r , ""oidc_authenticate_user() failed"" ) ; return HTTP_UNAUTHORIZED ; } } else { ap_log_rerror ( APLOG_MARK , APLOG_ERR , 0 , r , ""username and/or password not specified."" ) ; return HTTP_UNAUTHORIZED ; } } }",312,-34.12865805091958,-0.10938672452217815
+"The Original Code is vulnerable to CWE-287: Improper Authentication. Fix the vulnerability.
+Original Code: static void oidc_scrub_headers ( request_rec * r ) { oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; if ( cfg -> scrub_request_headers != 0 ) { oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; } } }
+Fixed code:"," 
+static void oidc_scrub_headers ( request_rec * r ) { 
+    oidc_cfg * cfg = ap_get_module_config ( r -> server -> module_config , & auth_openidc_module ) ; 
+    if ( cfg -> scrub_request_headers != 0 && cfg -> verify_jwt_client_id != 0 ) { 
+        oidc_scrub_request_headers ( r , OIDC_DEFAULT_HEADER_PREFIX , oidc_cfg_dir_authn_header ( r ) ) ; 
+        if ( ( strstr ( cfg -> claim_prefix , OIDC_DEFAULT_HEADER_PREFIX ) != cfg -> claim_prefix ) ) { 
+            oidc_scrub_request_headers ( r , cfg -> claim_prefix , NULL ) ; 
+        } 
+    } 
+}",213,-22.129735394375494,-0.10389547133509622
