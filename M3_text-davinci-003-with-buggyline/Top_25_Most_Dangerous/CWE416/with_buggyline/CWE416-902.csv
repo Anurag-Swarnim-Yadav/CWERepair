@@ -1,0 +1,510 @@
+Original code,Plausible Program,Number of Bugs Present,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { timerfd_remove_cancel(ctx); if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>",3,217,-8.459785360320826,-0.03898518599226187
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} else { 
+spin_lock ( & cancel_lock ) ; 
+if ( ctx -> might_cancel ) { 
+timerfd_remove_cancel ( ctx ) ; 
+} 
+spin_unlock ( & cancel_lock ) ; 
+} 
+}",3,235,-7.36053164495684,-0.03132141125513549
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+    <StartBug> 
+    if ( ctx -> might_cancel ) {
+        timerfd_remove_cancel ( ctx ) ; 
+    } <EndBug>
+    if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+    <StartBug> 
+        if ( ! ctx -> might_cancel ) { 
+            ctx -> might_cancel = true ; 
+            spin_lock ( & cancel_lock ) ; 
+            list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+            spin_unlock ( & cancel_lock ) ; 
+        } 
+    <EndBug> 
+    } 
+}",3,240,-28.903864030229652,-0.12043276679262355
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; <EndBug> if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } <StartBug> spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,222,-3.6232076905899206,-0.01632075536301766
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags )  { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} 
+else { 
+<StartBug> spin_lock ( & cancel_lock ) ; 
+if ( ctx -> might_cancel ) { 
+timerfd_remove_cancel ( ctx ) ; 
+} 
+spin_unlock ( & cancel_lock ) ; <EndBug> 
+} 
+}",3,246,-15.209803367283712,-0.06182846897269802
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags )  { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ;
+}
+} else { 
+<StartBug> spin_lock ( & cancel_lock ) ; <EndBug>
+if ( ctx -> might_cancel ) { 
+<StartBug> timerfd_remove_cancel ( ctx ) ; spin_unlock ( & cancel_lock ) ; <EndBug>
+} else { 
+<StartBug> spin_unlock ( & cancel_lock ) ; <EndBug>
+}
+}
+}",3,269,-28.382974513325905,-0.10551291640641601
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,214,-3.423934362693518,-0.015999693283614568
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> timerfd_remove_cancel ( ctx ) ; <EndBug> } <StartBug>} <EndBug>",3,197,-9.547647254752233,-0.04846521449112809
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> timerfd_remove_cancel ( ctx ) ; <EndBug> ctx -> might_cancel = false ; } }",3,191,-6.50923478690632,-0.03407976328223204
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> timerfd_remove_cancel ( ctx ) ; <EndBug> } }",3,181,-3.6987360361612898,-0.02043500572464801
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,214,-3.423934362693518,-0.015999693283614568
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} else {
+spin_lock ( & cancel_lock ) ; 
+if(ctx -> might_cancel)
+timerfd_remove_cancel ( ctx ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+}",3,228,-14.460465978374538,-0.06342309639637955
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+ if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+    if ( ! ctx -> might_cancel ) { 
+        ctx -> might_cancel = true ; 
+        spin_lock ( & cancel_lock ) ; 
+        list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+        spin_unlock ( & cancel_lock ) ; 
+    } 
+ } else { 
+    if ( ctx -> might_cancel ) { 
+        timerfd_remove_cancel ( ctx ) ; 
+    } 
+ } 
+}",3,220,-9.372490596541084,-0.04260222998427766
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,214,-3.4843381352191294,-0.016281953902893127
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} else { 
+<StartBug> spin_lock ( & cancel_lock ) ; 
+if ( ctx -> might_cancel ) { 
+timerfd_remove_cancel ( ctx ) ; 
+} 
+spin_unlock ( & cancel_lock ) ; <EndBug> 
+} 
+}",3,243,-7.749965506288992,-0.03189286216579832
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:"," 
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> timerfd_remove_cancel ( ctx ) ; <EndBug> } }",3,182,-4.8741132640369464,-0.02678084211009311
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; }  } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,215,-6.92131941908818,-0.032192183344596184
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags )  { 
+ if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+     if ( ! ctx -> might_cancel ) { 
+        ctx -> might_cancel = true ; 
+        spin_lock ( & cancel_lock ) ; 
+        list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+        spin_unlock ( & cancel_lock ) ; 
+     } 
+ } else { //fix - added {
+    if ( ctx -> might_cancel ) { 
+        timerfd_remove_cancel ( ctx ) ; 
+    } 
+ } //fix - added }
+}",3,229,-34.02056147887254,-0.14856140383787134
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug>
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+    if ( ! ctx -> might_cancel ) { 
+        ctx -> might_cancel = true ; 
+        spin_lock ( & cancel_lock ) ; 
+        list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+        spin_unlock ( & cancel_lock ) ; 
+    }
+<StartBug> } else {
+    timerfd_remove_cancel(ctx);
+}  <EndBug>
+}",3,212,-23.809125609564646,-0.11230719627153135
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { list_del_rcu ( & ctx -> clist ) ; ctx -> might_cancel = false ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,227,-5.186062908415482,-0.02284609210755719
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} else { 
+<StartBug> spin_lock ( & cancel_lock ) ; 
+if ( ctx -> might_cancel ) 
+timerfd_remove_cancel ( ctx ) ; 
+spin_unlock ( & cancel_lock ) ; <EndBug> 
+} 
+}",3,239,-8.975181877904992,-0.0375530622506485
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:"," 
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> timerfd_remove_cancel ( ctx ) ; <EndBug> } <StartBug> } <EndBug>",3,198,-8.124370821491596,-0.04103217586611917
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} else {
+spin_lock(&cancel_lock);
+if (ctx->might_cancel) {
+timerfd_remove_cancel(ctx);
+}
+spin_unlock(&cancel_lock);
+}
+}",3,224,-12.806192262812555,-0.057170501173270334
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else if ( ctx -> might_cancel ) { spin_lock ( & cancel_lock ) ; timerfd_remove_cancel ( ctx ) ; spin_unlock ( & cancel_lock ) ; } }",3,204,-4.958856230530407,-0.02430811877710984
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+ if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) {
+  if ( ! ctx -> might_cancel ) {
+   ctx -> might_cancel = true ;
+   spin_lock ( & cancel_lock ) ;
+   list_add_rcu ( & ctx -> clist , & cancel_list ) ;
+   spin_unlock ( & cancel_lock ) ;
+  } 
+ } else {
+  <StartBug>spin_lock ( & cancel_lock ) ;
+  if ( ctx -> might_cancel ) {
+   timerfd_remove_cancel ( ctx ) ;
+  }
+  spin_unlock ( & cancel_lock ) ;<EndBug>
+ } 
+}",3,243,-16.178467670218794,-0.06657805625604442
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+    if ( ! ctx -> might_cancel ) { 
+        ctx -> might_cancel = true ; 
+        spin_lock ( & cancel_lock ) ; 
+        list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+        spin_unlock ( & cancel_lock ) ; 
+    } 
+} else {
+    <StartBug> if ( ctx -> might_cancel ) { <EndBug>
+        timerfd_remove_cancel ( ctx ) ; 
+    } 
+} 
+}",3,226,-10.548804640184244,-0.04667612672647896
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,214,-3.44560684623478,-0.01610096657119056
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { <StartBug> if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } <EndBug> if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; <EndBug> } }",3,223,-11.82799632492271,-0.0530403422642274
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { 
+ if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) {
+     if ( ! ctx -> might_cancel ) {
+         ctx -> might_cancel = true ;
+         spin_lock ( & cancel_lock ) ;
+         list_add_rcu ( & ctx -> clist , & cancel_list ) ;
+         spin_unlock ( & cancel_lock ) ;
+     }
+ } else { 
+     if ( ctx -> might_cancel ) {
+         timerfd_remove_cancel ( ctx ) ;
+     }
+ } 
+}",3,210,-14.221153791827138,-0.06771977996108161
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; <EndBug> if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } <StartBug> spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,222,-3.5723237849771095,-0.01609154858097797
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> {
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+    if ( ! ctx -> might_cancel ) { 
+        ctx -> might_cancel = true ; 
+        spin_lock ( & cancel_lock ) ; 
+        list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+        spin_unlock ( & cancel_lock ) ; 
+    } 
+} else { 
+    if ( ctx -> might_cancel ) { 
+        timerfd_remove_cancel ( ctx ) ; 
+    }
+} <EndBug>",3,223,-13.257119272368438,-0.05944896534694367
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> ctx -> might_cancel = false; <EndBug> }",3,204,-11.786904669456828,-0.057778944458121706
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,222,-6.259488197732491,-0.028195892782578787
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> {
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) {
+if ( ! ctx -> might_cancel ) {
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+}
+} else { 
+<EndBug> timerfd_remove_cancel ( ctx ) ; 
+<StartBug> } <EndBug>",3,203,-18.305735848640804,-0.09017603866325519
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { <StartBug> if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } <EndBug> }",3,198,-8.284033180157461,-0.04183855141493668
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,214,-3.4909118780703396,-0.016312672327431495
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) {
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} else { 
+<StartBug> if ( ctx -> might_cancel ) { <EndBug> 
+timerfd_remove_cancel ( ctx ) ; 
+ } 
+<StartBug> } <EndBug> }",3,223,-25.486789026964708,-0.11429053375320497
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { bool cancel_on_set = flags & TFD_TIMER_CANCEL_ON_SET; <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && cancel_on_set ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel && cancel_on_set ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>",3,224,-14.84780940903807,-0.06628486343320568
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) {
+if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} else { 
+<StartBug> spin_lock ( & cancel_lock ) ; 
+if ( ctx -> might_cancel ) { 
+timerfd_remove_cancel ( ctx ) ; 
+} 
+spin_unlock ( & cancel_lock ) ; <EndBug>
+} 
+}",3,241,-12.094661671805797,-0.050185318140273015
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { list_del_rcu ( & ctx -> clist ) ; ctx -> might_cancel = false ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,227,-5.117200142794841,-0.022542731906585203
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock(&cancel_lock); <EndBug> if ( ctx -> might_cancel ) { <StartBug> list_del_rcu(&ctx->clist); <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> spin_unlock(&cancel_lock); <EndBug> } }",3,240,-8.470742540274696,-0.0352947605844779
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; ctx -> might_cancel = false; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,224,-8.16039243294034,-0.0364303233613408
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { 
+if ( ctx -> might_cancel ) { 
+timerfd_remove_cancel ( ctx ) ; 
+} if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { 
+if ( ! ctx -> might_cancel ) { 
+ctx -> might_cancel = true ; 
+spin_lock ( & cancel_lock ) ; 
+list_add_rcu ( & ctx -> clist , & cancel_list ) ; 
+spin_unlock ( & cancel_lock ) ; 
+} 
+} <EndBug> }",3,209,-13.591887577084865,-0.06503295491428165
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) {  if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; ctx -> might_cancel = false; } }",3,194,-10.417502273570705,-0.05369846532768405
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,214,-3.47956476684119,-0.01625964844318313
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { list_del_rcu ( & ctx -> clist ) ; ctx -> might_cancel = false ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,227,-5.117200142794841,-0.022542731906585203
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,214,-3.47956476684119,-0.01625964844318313
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; <EndBug> if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } <StartBug> spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,223,-8.09193944587548,-0.03628672397253579
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; ctx -> might_cancel = true ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; <EndBug> if ( ctx -> might_cancel ) { timerfd_remove_cancel ( ctx ) ; } <StartBug> spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,222,-8.59022645553069,-0.03869471376365176
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) <StartBug> { <EndBug> if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } <StartBug> } else if ( ctx -> might_cancel ) { <EndBug> timerfd_remove_cancel ( ctx ) ; } <StartBug> } <EndBug>
+Fixed code:","
+static void timerfd_setup_cancel ( struct timerfd_ctx * ctx , int flags ) { if ( ( ctx -> clockid == CLOCK_REALTIME || ctx -> clockid == CLOCK_REALTIME_ALARM ) && ( flags & TFD_TIMER_ABSTIME ) && ( flags & TFD_TIMER_CANCEL_ON_SET ) ) { if ( ! ctx -> might_cancel ) { ctx -> might_cancel = true ; spin_lock ( & cancel_lock ) ; list_add_rcu ( & ctx -> clist , & cancel_list ) ; spin_unlock ( & cancel_lock ) ; } } else { <StartBug> spin_lock ( & cancel_lock ) ; if ( ctx -> might_cancel ) { list_del_rcu ( & ctx -> clist ) ; ctx -> might_cancel = false ; } spin_unlock ( & cancel_lock ) ; <EndBug> } }",3,227,-5.105336019740785,-0.022490467047316234

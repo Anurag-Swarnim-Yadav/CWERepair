@@ -1,0 +1,376 @@
+Original code,Plausible Program,Number of Bugs Present,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:"," 
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context != NULL && bmpdata != NULL && rowstride > 0 ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } }",3,115,-9.433669542634425,-0.0820319090663863
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:"," 
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,131,-7.689045900813392,-0.058695006876438104
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } } }",3,124,-7.794752184802472,-0.06286090471614897
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context == NULL || bmpdata == NULL || rowstride == 0 ) return; <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,130,-8.462392006216502,-0.06509532312474232
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if (context == NULL || bmpdata == NULL) { return; } <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,126,-6.038675621714735,-0.047925996997735996
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (rowstride < context->width) { return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,124,-7.519210155557734,-0.0606387915770785
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (bmpdata != NULL) nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,118,-7.389210146926018,-0.0626204249739493
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+	if (rowstride == 0 || context == NULL || bmpdata == NULL) {
+		return;
+	}
+	nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+	if ( context -> ChromaSubsamplingLevel ) { 
+		nsc_encode_subsampling ( context ) ; 
+	} 
+}",3,138,-15.962307457472841,-0.11566889461936841
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:"," 
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context->rowstride < rowstride) { return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,127,-11.083757559822153,-0.08727368157340279
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL) nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,122,-8.031491501025787,-0.0658318975493917
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (bmpdata == NULL || rowstride < 0) { return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,128,-8.535453968644717,-0.06668323413003685
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> }",3,110,-4.970113356226639,-0.04518284869296944
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> } }",3,102,-8.548057122942136,-0.08380448159747193
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (bmpdata != NULL) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,120,-6.421935200706145,-0.05351612667255121
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> }",3,110,-4.958079400038138,-0.0450734490912558
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } 
+<StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> }",3,112,-6.46752774529994,-0.057745783440178035
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context != NULL && bmpdata != NULL && rowstride != 0 ) { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } } }",3,130,-8.39515507509547,-0.06457811596227285
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (rowstride >= context->Width){ 
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+} <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,126,-14.783214563810747,-0.1173270997127837
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context && bmpdata && rowstride ) { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } } }",3,124,-6.497010684783495,-0.052395247457931414
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) { <EndBug> 
+    UINT32 i, j;
+
+    if (bmpdata == NULL || rowstride == 0) return; <StartBug> 
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> 
+    if ( context -> ChromaSubsamplingLevel ) { 
+        <StartBug> 
+        for ( i = 0 ; i < context -> height ; i ++ ) { 
+            for ( j = 0 ; j < context -> width ; j ++ ) { 
+                if ( ( i * context -> width + j ) * 3 < rowstride ) { 
+                    nsc_encode_subsampling ( context , i , j ) ; 
+                } 
+            } 
+        } 
+        <EndBug> 
+    } 
+}",3,234,-56.47064552773088,-0.2413275449903029
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } } }",3,130,-6.5196451455909115,-0.05015111650454547
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+if ( rowstride > 0 ) {
+    <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> 
+    if ( context -> ChromaSubsamplingLevel ) {
+        <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> 
+    }
+} }",3,133,-13.410689501965177,-0.100832251894475
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , size_t rowstride ) <EndBug> { <StartBug> if (bmpdata != NULL) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,120,-11.26214560583384,-0.09385121338194867
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:"," 
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (rowstride > 0 && rowstride <= context->max_rowstride) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } else { return; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,138,-13.793245551331648,-0.09995105471979455
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if (context != NULL && bmpdata != NULL) { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } } }",3,124,-6.184293112908134,-0.049873331555710755
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:"," 
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+    if (context != NULL && bmpdata != NULL && rowstride > 0) {
+        nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+        if ( context -> ChromaSubsamplingLevel ) { 
+            nsc_encode_subsampling ( context ) ; 
+        }
+    }
+}",3,132,-10.885629246566115,-0.08246688823156148
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> } else { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> } }",3,140,-7.390475438161638,-0.05278911027258313
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context == NULL || bmpdata == NULL || rowstride == 0 || rowstride > 0xFFFFFFFF) { return; } nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,141,-16.123514844429028,-0.11435116910942573
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,130,-6.179344925545043,-0.04753342250419264
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,130,-6.177850511353741,-0.04752192701041339
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+  if(rowstride >= 0) {
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ;
+    if ( context -> ChromaSubsamplingLevel ) {
+      nsc_encode_subsampling ( context ) ;
+    } 
+  }
+}",3,119,-18.32230856525436,-0.15396897953995262
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,126,-5.990613602836411,-0.04754455240346358
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+    if (context == NULL || bmpdata == NULL || rowstride == 0) {
+        return;
+    }
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+    if ( context -> ChromaSubsamplingLevel ) { 
+        nsc_encode_subsampling ( context ) ; 
+    } 
+}",3,136,-9.449923196232264,-0.06948472938406076
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> }",3,110,-5.005609552288043,-0.04550554138443675
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context && rowstride > 0 && rowstride <= context->rowstride && context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,128,-17.225076583092342,-0.13457091080540892
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+
+if (context == NULL || bmpdata == NULL || rowstride == 0) {
+  return;
+}
+
+nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+if ( context -> ChromaSubsamplingLevel ) { 
+  nsc_encode_subsampling ( context ) ; 
+} 
+}",3,133,-13.729102797317859,-0.10322633682193878
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL && rowstride != 0) { 
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+} <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,135,-11.76633573622684,-0.08715804249056917
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+
+  if (context == NULL || bmpdata == NULL || rowstride == 0) {
+    return;
+  }
+ 
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+
+  if ( context -> ChromaSubsamplingLevel ) { 
+    nsc_encode_subsampling ( context ) ; 
+  } 
+}",3,138,-16.254844186982453,-0.11778872599262646
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+    if (context == NULL || bmpdata == NULL || rowstride == 0) {
+        return;
+    }
+    
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+    if ( context -> ChromaSubsamplingLevel ) { 
+        nsc_encode_subsampling ( context ) ; 
+    } 
+}",3,138,-11.584193123305864,-0.08394342842975264
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if (rowstride*3 > bmpdata) { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } } }",3,124,-19.009342204792766,-0.15330114681284487
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:"," 
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL && rowstride > 0) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context != NULL && context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,135,-9.603801959638817,-0.07113927377510235
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> {  if ( context -> ChromaSubsamplingLevel && rowstride > 0 ) {  <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; nsc_encode_subsampling ( context ) ; <EndBug> } }",3,110,-14.183544453590883,-0.1289413132144626
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride )<EndBug> {
+	if (context == NULL || bmpdata == NULL || rowstride == 0) {
+		return;
+	}
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ;
+	if ( context -> ChromaSubsamplingLevel ) {
+		nsc_encode_subsampling ( context ) ;
+	}
+}",3,133,-23.92081707917037,-0.17985576751255916
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+if (context && bmpdata && rowstride) { 
+   nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+   if ( context -> ChromaSubsamplingLevel ) { 
+      nsc_encode_subsampling ( context ) ; 
+   } 
+} 
+}",3,126,-14.238938729434535,-0.11300745023360742
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if (context != NULL && bmpdata != NULL && context->ChromaSubsamplingLevel < rowstride) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; if ( context -> ChromaSubsamplingLevel ) { nsc_encode_subsampling ( context ) ; } } <EndBug> }",3,129,-13.973337402474945,-0.10832044498042592
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+if (context !=NULL && bmpdata !=NULL && rowstride !=NULL){
+<StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> 
+if ( context -> ChromaSubsamplingLevel ) { 
+<StartBug> nsc_encode_subsampling ( context ) ; <EndBug> 
+} 
+}
+}",3,141,-18.43515885051907,-0.13074580745048986
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { 
+  if (context == NULL || bmpdata == NULL || rowstride == 0)
+    return;
+
+  nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ;
+  if ( context -> ChromaSubsamplingLevel ) { 
+    nsc_encode_subsampling ( context ) ; 
+  } 
+}",3,131,-15.150865969705817,-0.11565546541760166
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) {
+    if (rowstride < context->width) {
+        return;
+    }
+    nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; 
+    if ( context -> ChromaSubsamplingLevel ) {
+        nsc_encode_subsampling ( context ) ;
+    } 
+}",3,117,-16.229221618457228,-0.1387112958842498
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> nsc_encode_subsampling ( context ) ; <EndBug> } else { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> } }",3,144,-8.621106832592142,-0.05986879744855654
+"The Original Code is vulnerable to CWE-787: Out-of-Bounds Write. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }
+Fixed code:","
+<StartBug> void nsc_encode ( NSC_CONTEXT * context , const BYTE * bmpdata , UINT32 rowstride ) <EndBug> { <StartBug> if ( bmpdata != NULL && rowstride > 0 ) { nsc_encode_argb_to_aycocg ( context , bmpdata , rowstride ) ; } <EndBug> if ( context -> ChromaSubsamplingLevel ) { <StartBug> nsc_encode_subsampling ( context ) ; <EndBug> } }",3,126,-7.535124868776253,-0.059802578323621056

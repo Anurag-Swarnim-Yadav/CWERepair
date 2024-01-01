@@ -1,0 +1,452 @@
+Original code,Plausible Program,Number of Bugs Present,Total Tokens,Sum Entropy,Mean Entropy
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ;  if ( bfqq ) {   <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; <StartBug> } else { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; } <EndBug> }",4,361,-22.87231690115926,-0.06335821856276803
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> if(bfqq == NULL) return; bfqd = bfqq -> bfqd ; <EndBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,337,-12.468851233105662,-0.03699955855520968
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { 
+    struct bfq_data * bfqd = bfqq -> bfqd ; 
+    enum bfqq_expiration reason ; 
+    unsigned long flags ; 
+
+    spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+    bfq_clear_bfqq_wait_request ( bfqq ) ; 
+    if ( bfqq != bfqd -> in_service_queue ) { 
+        spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+        return ; 
+    } 
+    if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; 
+    else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; 
+    else { 
+        bfq_put_queue ( bfqq ) ; 
+        goto schedule_dispatch ; 
+    }
+    bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; 
+    schedule_dispatch : 
+    spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+    bfq_schedule_dispatch ( bfqd ) ; 
+}",4,360,-25.591324714119647,-0.0710870130947768
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ;  kfree ( bfqq ); // added code return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ;  kfree ( bfqq ); //added code schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,309,-26.711442864309777,-0.08644479891362387
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> return ;  } 
+if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> bfq_schedule_dispatch ( bfqd ) ; }",4,330,-11.28472633577334,-0.034196140411434366
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; <StartBug> if ( bfqd -> in_service_queue != NULL ) { <EndBug> if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; } <StartBug> } <EndBug>",4,352,-14.13722592773832,-0.0401625736583475
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue || bfqq == NULL ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,325,-7.902863164276633,-0.0243165020439281
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> if ( bfqq == NULL ) return; <EndBug> struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,329,-7.523007361639001,-0.022866283773978726
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } else { if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; } <EndBug> schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,322,-9.112325467551333,-0.028299147414755692
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } else if ( refcount_dec_and_test(&bfqq->ref) ) { <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; } <StartBug> else { refcount_dec(&bfqq->ref); } <EndBug> }",4,360,-18.193779201909987,-0.05053827556086107
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; /* Check for null pointer before using it */
+if ( bfqq == NULL ) {
+return ; 
+}
+<StartBug> bfqd = bfqq -> bfqd ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,350,-32.3028692974781,-0.09229391227850885
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; <StartBug> if ( bfqq == NULL ) { return; } <EndBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,307,-8.90625154217539,-0.029010591342590847
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> return ; } <StartBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; <EndBug> bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,327,-9.853881873344841,-0.03013419533132979
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> if (bfqq != NULL) { bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; } }",4,328,-6.8901359254907435,-0.021006511967959583
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = NULL; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> bfqd = bfqq->bfqd; if (bfqd) spin_lock_irqsave ( & bfqd -> lock , flags ) ; else return;<EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,334,-18.877348885645517,-0.05651900863965724
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { kfree(bfqq); // Free the bfqq here before returning spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; kfree(bfqq); // Free the bfqq here after use }",4,349,-24.51372789979584,-0.07023990802233765
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { 
+ struct bfq_data * bfqd = bfqq -> bfqd ; 
+ enum bfqq_expiration reason ; unsigned long flags ; 
+ spin_lock_irqsave ( & bfqd -> lock , flags ) ;
+ 
+ bfq_clear_bfqq_wait_request ( bfqq ) ; 
+ if ( bfqq != bfqd -> in_service_queue ) { 
+  spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+  return ; 
+ }
+ 
+ if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; 
+ else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; 
+ else { 
+  bfq_mark_bfqq_just_created ( bfqq ) ; 
+  bfq_mark_bfqq_budget_new ( bfqq ) ; 
+  goto schedule_dispatch ;
+ } 
+ 
+ bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; 
+ 
+schedule_dispatch : 
+ spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+ bfq_schedule_dispatch ( bfqd ) ; 
+}",4,376,-36.75626362690583,-0.09775602028432401
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> //Add a check to make sure bfqq is still valid if (!bfqq) return; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,339,-20.724550620605136,-0.06113436761240453
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> kfree(bfqq); } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,325,-11.027711715546795,-0.033931420663220906
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; 
+
+spin_lock_irqsave ( & bfqd -> lock , flags ) ;
+if ( bfqq == NULL ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; }
+
+bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; }
+
+if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; 
+
+bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ;
+
+schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,332,-18.550922633601576,-0.05587627299277583
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; 
+enum bfqq_expiration reason ; unsigned long flags ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+if ( bfqq != NULL && bfqq == bfqd -> in_service_queue ) { bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; } 
+}",4,276,-22.010194501031442,-0.07974708152547624
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { 
+struct bfq_data * bfqd = bfqq -> bfqd ; 
+enum bfqq_expiration reason ; 
+unsigned long flags ; 
+if ( bfqq != NULL ) { 
+spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+bfq_clear_bfqq_wait_request ( bfqq ) ; 
+if ( bfqq != bfqd -> in_service_queue ) { 
+spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+return ; 
+} 
+if ( bfq_bfqq_budget_timeout ( bfqq ) ) 
+reason = BFQQE_BUDGET_TIMEOUT ; 
+else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) 
+reason = BFQQE_TOO_IDLE ; 
+else goto schedule_dispatch ; 
+bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; 
+schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+bfq_schedule_dispatch ( bfqd ) ; 
+} 
+}",4,335,-15.219657887540583,-0.04543181458967338
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:"," 
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> if (bfqq == NULL) { 
+	return; 
+} 
+bfqd = bfqq -> bfqd ; <EndBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,346,-18.136294406677717,-0.05241703585745005
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { 
+ struct bfq_data * bfqd = bfqq -> bfqd ; 
+ enum bfqq_expiration reason ; 
+ unsigned long flags ; 
+
+ spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+ bfq_clear_bfqq_wait_request ( bfqq ) ; 
+ if ( bfqq != bfqd -> in_service_queue ) { 
+  spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+  return ; 
+ } 
+ 
+ if ( bfq_bfqq_budget_timeout ( bfqq ) ) {
+  reason = BFQQE_BUDGET_TIMEOUT ;
+ } else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) {
+  reason = BFQQE_TOO_IDLE ;
+ } else {
+  goto schedule_dispatch ;
+ }
+ 
+ bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; 
+ bfqq = NULL; // Fix for CWE-416
+ 
+schedule_dispatch : 
+ spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+ bfq_schedule_dispatch ( bfqd ) ; 
+}",4,354,-31.88071149984327,-0.09005850706170415
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; <StartBug> if ( bfqq -> ref <= 0 ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; } <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,330,-9.235811319108917,-0.02798730702760278
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; return ; } 
+ bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,319,-13.160712636363773,-0.04125615246509019
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; }
+if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; goto schedule_dispatch ; } 
+bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : bfq_schedule_dispatch ( bfqd ) ; }",4,291,-14.269496917854614,-0.0490360718826619
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> if(bfqq == NULL) { return; } <EndBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,330,-9.575499444335005,-0.029016664982833347
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; <StartBug> if(bfqq) { <EndBug> bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ;  <StartBug> } <EndBug> schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,311,-17.1080472094759,-0.05500979810120868
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <StartBug> kfree ( bfqq ); <EndBug> return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; <StartBug> kfree ( bfqq ); <EndBug> schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,341,-8.731439718211913,-0.025605395068070125
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> bfq_schedule_dispatch ( bfqd ) ; }",4,327,-5.732514484620134,-0.01753062533522977
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; if ( bfqq == NULL ) return; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,329,-9.140380644027482,-0.027782311987925478
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> if ( bfqq ) { spin_lock_irqsave ( & bfqq -> bfqd -> lock , flags ) ; <EndBug> bfqd = bfqq -> bfqd ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; } }",4,336,-12.776054599562768,-0.038023972022508234
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; kfree ( bfqq ) ; <StartBug> return ; <EndBug> } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; kfree ( bfqq ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,335,-10.410655869199527,-0.03107658468417769
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <StartBug> kfree ( bfqq ); <EndBug> return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <StartBug> kfree ( bfqq ); <EndBug> bfq_schedule_dispatch ( bfqd ) ; }",4,341,-7.970380015694028,-0.023373548433120315
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; if(bfqq->bfqd == NULL) return; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,332,-13.561019350266431,-0.04084644382610371
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> bfq_schedule_dispatch ( bfqd ) ; }",4,327,-5.525092956033284,-0.016896308734046742
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } else { <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; <StartBug> } <EndBug> }",4,330,-8.655383602560086,-0.02622843515927299
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { 
+struct bfq_data * bfqd = bfqq -> bfqd ; 
+enum bfqq_expiration reason ; 
+unsigned long flags ; 
+
+spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+bfq_clear_bfqq_wait_request ( bfqq ) ; 
+if ( bfqq != bfqd -> in_service_queue ) { 
+    spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+    return ; 
+} 
+
+if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; 
+else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; 
+else {
+    bool expired = false;
+    bfq_bfqq_expire(bfqd, bfqq, expired, reason); 
+    goto schedule_dispatch;
+}
+
+schedule_dispatch :
+spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+bfq_schedule_dispatch ( bfqd ) ; 
+}",4,334,-26.78516214426495,-0.08019509624031422
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug>static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ); <EndBug> return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : <StartBug> spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <EndBug> bfq_schedule_dispatch ( bfqd ) ; }",4,326,-13.89630112524057,-0.0426266905682226
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } else { if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; } <EndBug> schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,322,-9.461173921388378,-0.029382527706175086
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; if (bfqq != NULL) {<EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; } }",4,328,-10.69165139680959,-0.03259649816100485
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { 
+struct bfq_data * bfqd = bfqq -> bfqd ; 
+enum bfqq_expiration reason ; unsigned long flags ; 
+if ( bfqq == NULL ) 
+return; 
+spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+bfq_clear_bfqq_wait_request ( bfqq ) ; 
+if ( bfqq != bfqd -> in_service_queue ) { 
+spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+return ; 
+} 
+if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; 
+else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; 
+else goto schedule_dispatch ; 
+bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; 
+schedule_dispatch : 
+spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+bfq_schedule_dispatch ( bfqd ) ; 
+}",4,331,-14.682989784178899,-0.04435948575280634
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) {
+ struct bfq_data * bfqd = bfqq -> bfqd ;
+ enum bfqq_expiration reason ;
+ unsigned long flags ;
+ spin_lock_irqsave ( & bfqd -> lock , flags ) ;
+ bfq_clear_bfqq_wait_request ( bfqq ) ;
+ if ( bfqq != bfqd -> in_service_queue ) {
+ spin_unlock_irqrestore ( & bfqd -> lock , flags ) ;
+ return ;
+ }
+ if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ;
+ else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ;
+ else goto schedule_dispatch ;
+ 
+ spin_lock_irqsave ( & bfqd -> lock , flags ) ;
+ bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ;
+ spin_unlock_irqrestore ( & bfqd -> lock , flags ) ;
+ 
+ schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ;
+ bfq_schedule_dispatch ( bfqd ) ;
+ }",4,349,-18.370833341455686,-0.05263849094972976
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq == bfqd -> in_service_queue ) { if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; } schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,288,-6.343150079590733,-0.0220248266652456
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { 
+struct bfq_data * bfqd = bfqq -> bfqd ; 
+enum bfqq_expiration reason ; unsigned long flags ; 
+
+spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+bfq_clear_bfqq_wait_request ( bfqq ) ; 
+if ( bfqq != bfqd -> in_service_queue ) {
+    spin_unlock_irqrestore ( & bfqd -> lock , flags ) ;
+    kfree(bfqq);
+    return ; 
+} 
+
+if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; 
+else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; 
+else goto schedule_dispatch ; 
+
+bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; 
+schedule_dispatch : 
+spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; 
+kfree(bfqq);
+bfq_schedule_dispatch ( bfqd ) ; }",4,333,-23.48546869966957,-0.07052693303204076
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_mark_bfqq_used ( bfqq ) ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; bfq_put_queue ( bfqq ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,348,-17.19046810970979,-0.049397896866982156
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; 
+spin_lock_irqsave ( & bfqd -> lock , flags ) ; 
+if ( bfqq -> ref ) { // Added this line bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; 
+schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; 
+}",4,309,-21.088041143413797,-0.06824608784276309
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; <StartBug> kfree ( bfqq ) ; <EndBug> return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,335,-13.899883752814354,-0.04149219030690852
+"The Original Code is vulnerable to CWE-416: Use After Free. Fix the code between <StartBug> and <EndBug> to fix the vulnerability.
+Original Code:
+<StartBug> static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) <EndBug> { <StartBug> struct bfq_data * bfqd = bfqq -> bfqd ; <EndBug> enum bfqq_expiration reason ; unsigned long flags ; <StartBug> spin_lock_irqsave ( & bfqd -> lock , flags ) ; <EndBug> bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; <StartBug> } <EndBug> if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else goto schedule_dispatch ; bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; schedule_dispatch : spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }
+Fixed code:","
+static void bfq_idle_slice_timer_body ( struct bfq_queue * bfqq ) { struct bfq_data * bfqd = bfqq -> bfqd ; enum bfqq_expiration reason ; unsigned long flags ; spin_lock_irqsave ( & bfqd -> lock , flags ) ; bfq_clear_bfqq_wait_request ( bfqq ) ; if ( bfqq != bfqd -> in_service_queue ) { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; return ; } if ( bfq_bfqq_budget_timeout ( bfqq ) ) reason = BFQQE_BUDGET_TIMEOUT ; else if ( bfqq -> queued [ 0 ] == 0 && bfqq -> queued [ 1 ] == 0 ) reason = BFQQE_TOO_IDLE ; else { spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; return ; } bfq_bfqq_expire ( bfqd , bfqq , true , reason ) ; spin_unlock_irqrestore ( & bfqd -> lock , flags ) ; bfq_schedule_dispatch ( bfqd ) ; }",4,317,-6.660424026689286,-0.021010801346022984
