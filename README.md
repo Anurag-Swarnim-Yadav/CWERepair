@@ -42,7 +42,7 @@ these models.
   
 </div>
 
-![Papers in question](Papers-In-Question.png)
+![](Papers-In-Question.png | width=100)
 
 
 <div align="center">
