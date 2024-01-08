@@ -159,6 +159,10 @@ these models.
 |      |          |                     TOTAL                           |  92% |    22/24   |
  
 </div>
+
+
+** NOTE **: 
+|   7  |  CWE-388 |                 Error Handling                      | 100% |     1/1    | Yes (Validation)   | 2   | CWE-388   |
 </details>
 
 
