@@ -142,7 +142,8 @@ these models.
 |   5  |  CWE-369 - 407 |                 Divide By Zero                | 100% |     1/1    | Yes  | 1   | CWE-369 |
 |   5  |  CWE-369 - 628 |                 Divide By Zero                | 100% |     1/1    | Yes  | 2   | CWE-369, CWE-369 |
 |   5  |  CWE-369 - 768 |                 Divide By Zero                | 100% |     1/1    | Yes  | 1   | CWE-369 |
-|   6  |  CWE-77  |               Command Injection                     | 100% |     2/2    |  -   | -   |  -  | 
+|   6  |  CWE-77 - 126  |               Command Injection               | 100% |     1/1    | Yes  | 2   | CWE-78, CWE-77  |
+|   6  |  CWE-77 - 1608 |               Command Injection               | 100% |     1/1    | Yes  | 1   | CWE-77  | 
 |   7  |  CWE-388 |                 Error Handling                      | 100% |     1/1    | No   | -   | -   |
 |   8  |  CWE-436 |            Interpretation Conflict                  | 100% |     1/1    | Yes  | 1   | CWE-436 | 
 |   9  |  CWE-191-410 |               Integer Underflow                 | 100% |     1/1    | Yes  | 2   | CWE-191 |
