@@ -149,11 +149,11 @@ these models.
 |   9  |  CWE-191-685 |               Integer Underflow                 | 100% |     1/1    | Yes  | 1   | CWE-191 |
 |  10  |  CWE-285-128 |            Improper Access Control              | 100% |     1/1    | Yes  | 1 | CWE-285 |
 |  10  |  CWE-285-288 |            Improper Access Control              | 100% |     1/1    | Yes  | 2 | CWE-285 |
-|  10  |  CWE-285-465 |            Improper Access Control              | 100% |     0/1    | Yes  | 2  | CWE-285 |
+|  10  |  CWE-285-465 |            Improper Access Control              | 0%   |     0/1    | Yes  | 2  | CWE-285 |
 |  10  |  CWE-285-706 |            Improper Access Control              | 100% |     1/1    | No | - | - |
 |  10  |  CWE-285-881 |            Improper Access Control              | 100% |     1/1    | Yes | 2 | CWE-285 |
 |  10  | CWE-285-1098 |            Improper Access Control              | 100% |     1/1    | No | - | - |
-|  10  | CWE-285-1389 (Duplicate: 465) |            Improper Access Control              | 100% |     0/1    | Yes | 2 | CWE-285 |
+|  10  | CWE-285-1389 (Duplicate: 465) |            Improper Access Control | 0% |     0/1    | Yes | 2 | CWE-285 |
 |  10  | CWE-285-1500 |            Improper Access Control              | 100% |     1/1    | Yes  | 2 | CWE-285 |
 |      |          |                     TOTAL                           |  92% |    22/24   |
  
