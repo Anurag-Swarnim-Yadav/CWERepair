@@ -1,0 +1,12 @@
+CWE755-220
+
+Vulnerable Function: The vulnerable function is a clean up function that compiles only when ACPI_EXEC_APP is defnined. If defined, it iterates through the module_code_list and perform clearn up fucntion. ie the resources are properly released by when the ACPI fucntion is terminated. 
+
+
+
+Key Differences:
+Conditional Compilation (ACPI_EXEC_APP):
+Vulnerable Function includes a block of code that is only compiled if ACPI_EXEC_APP is defined, suggesting specialized or conditional behavior in certain builds. Fixed Code lacks this conditional compilation, indicating that its behavior is consistent regardless of the build environment.
+
+
+VulRepair: It did not produced all the tokens. It is missing the token "prev". 

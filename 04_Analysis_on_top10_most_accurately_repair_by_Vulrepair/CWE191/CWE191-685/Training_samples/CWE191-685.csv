@@ -1,0 +1,4 @@
+cwe_id,source,target,project_and_commit_id,cve_id,original_address,time
+CWE-191,"CWE-191 void imap_quote_string ( char * dest , size_t dlen , const char * src , bool quote_backtick ) { const char * quote = ""`\\""\\\\"" ; if ( ! quote_backtick ) quote ++ ; char * pt = dest ; const char * s = src ; * pt ++ = \'""\' ; dlen -= 2 ; for ( ; * s && dlen ; s ++ ) { if ( strchr ( quote , * s ) ) { <S2SV_StartBug> dlen -= 2 ; <S2SV_EndBug> if ( dlen == 0 ) break ; * pt ++ = '\\\\' ; * pt ++ = * s ; } else { * pt ++ = * s ; dlen -- ; } } * pt ++ = \'""\' ; * pt = '\\0' ; }
+","<S2SV_ModStart> ) ) { if ( dlen < 2 ) break ; <S2SV_ModStart> dlen -= 2 <S2SV_ModEnd> ; * pt
+",neomutt@neomutt/65d64a5b60a4a3883f2cd799d92c6091d8854f23,CVE-2018-14353,https://github.com/neomutt/neomutt/commit/65d64a5b60a4a3883f2cd799d92c6091d8854f23,2018-07-17T17:29Z

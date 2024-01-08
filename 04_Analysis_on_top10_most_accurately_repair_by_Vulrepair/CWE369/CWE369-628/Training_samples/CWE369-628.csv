@@ -1,0 +1,16 @@
+cwe_id,source,target,project_and_commit_id,cve_id,original_address,time
+CWE-369,"CWE-369 tdata_t _TIFFmalloc ( tsize_t s ) <S2SV_StartBug> { <S2SV_EndBug> return ( malloc ( ( size_t ) s ) ) ; }
+","<S2SV_ModStart> s ) { if ( s == 0 ) return ( ( void * ) NULL ) ;
+",vadz@libtiff/3c5eb8b1be544e41d2c336191bc4936300ad7543,CVE-2014-8130,https://github.com/vadz/libtiff/commit/3c5eb8b1be544e41d2c336191bc4936300ad7543,2018-03-12T02:29Z
+CWE-369,"CWE-369 void * _TIFFmalloc ( tmsize_t s ) <S2SV_StartBug> { <S2SV_EndBug> return ( malloc ( ( size_t ) s ) ) ; }
+","<S2SV_ModStart> s ) { if ( s == 0 ) return ( ( void * ) NULL ) ;
+",vadz@libtiff/3c5eb8b1be544e41d2c336191bc4936300ad7543,CVE-2014-8130,https://github.com/vadz/libtiff/commit/3c5eb8b1be544e41d2c336191bc4936300ad7543,2018-03-12T02:29Z
+CWE-369,"CWE-369 void * _TIFFmalloc ( tmsize_t s ) <S2SV_StartBug> { <S2SV_EndBug> return ( malloc ( ( size_t ) s ) ) ; }
+","<S2SV_ModStart> s ) { if ( s == 0 ) return ( ( void * ) NULL ) ;
+",vadz@libtiff/3c5eb8b1be544e41d2c336191bc4936300ad7543,CVE-2014-8130,https://github.com/vadz/libtiff/commit/3c5eb8b1be544e41d2c336191bc4936300ad7543,2018-03-12T02:29Z
+CWE-369,"CWE-369 void * _TIFFmalloc ( tmsize_t s ) <S2SV_StartBug> { <S2SV_EndBug> return ( malloc ( ( size_t ) s ) ) ; }
+","<S2SV_ModStart> s ) { if ( s == 0 ) return ( ( void * ) NULL ) ;
+",vadz@libtiff/3c5eb8b1be544e41d2c336191bc4936300ad7543,CVE-2014-8130,https://github.com/vadz/libtiff/commit/3c5eb8b1be544e41d2c336191bc4936300ad7543,2018-03-12T02:29Z
+CWE-369,"CWE-369 tdata_t _TIFFmalloc ( tsize_t s ) <S2SV_StartBug> { <S2SV_EndBug> return ( malloc ( ( size_t ) s ) ) ; }
+","<S2SV_ModStart> s ) { if ( s == 0 ) return ( ( void * ) NULL ) ;
+",vadz@libtiff/3c5eb8b1be544e41d2c336191bc4936300ad7543,CVE-2014-8130,https://github.com/vadz/libtiff/commit/3c5eb8b1be544e41d2c336191bc4936300ad7543,2018-03-12T02:29Z
