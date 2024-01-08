@@ -163,9 +163,12 @@ these models.
 
 **NOTE:** <br> 
 <div align="center">
+  
 | No   | CWE Type |                      Name                           |  %PP | Proportion | Present in Validation  |  Number of Samples| CWEtype |
+|:----:|:--------:|:---------------------------------------------------:|:----:|:----------:|:-----------------:|:--------:|:----------------:|
 |   7  |  CWE-388 |                 Error Handling                      | 100% |     1/1    | Yes (Validation)   | 2   | CWE-388   |
 |  10  | CWE-285-1098 |            Improper Access Control              | 100% |     1/1    | Yes (Validation)   | 1   | CWE-285 |
+
 </div>
 
 </details>
