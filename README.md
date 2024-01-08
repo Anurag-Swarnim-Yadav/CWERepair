@@ -117,6 +117,36 @@ these models.
 
 
 
+<details>
+
+<h3>
+    <b>
+        <div align="center">
+            Top-10 Most Accurately Repaired CWE Types of VulRepair  
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+  
+| Rank | CWE Type |                      Name                     |  %PP | Proportion |
+|:----:|:--------:|:---------------------------------------------:|:----:|:----------:|
+|   1  |  CWE-755 |  Improper Handling of Exceptional Conditions  | 100% |     1/1    |
+|   2  |  CWE-706 | Use of Incorrectly-Resolved Name or Reference | 100% |     1/1    |
+|   3  |  CWE-326 |         Inadequate Encryption Strength        | 100% |     2/2    |
+|   4  |  CWE-667 |                Improper Locking               | 100% |     1/1    |
+|   5  |  CWE-369 |                 Divide By Zero                | 100% |     5/5    |
+|   6  |  CWE-77  |               Command Injection               | 100% |     2/2    |
+|   7  |  CWE-388 |                 Error Handling                | 100% |     1/1    |
+|   8  |  CWE-436 |            Interpretation Conflict            | 100% |     1/1    |
+|   9  |  CWE-191 |               Integer Underflow               | 100% |     2/2    |
+|  10  |  CWE-285 |            Improper Access Control            |  75% |     6/8    |
+|      |          |                     TOTAL                     |  92% |    22/24   |
+ 
+</div>
+</details>
+
+
 
 
 
