@@ -118,6 +118,7 @@ these models.
 
 
 <details>
+<summary>Analysis on Top-10 Most Accurately Repaired CWE Types of VulRepair</summary>
 
 <h3>
     <b>
