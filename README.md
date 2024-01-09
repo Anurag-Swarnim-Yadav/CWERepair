@@ -197,6 +197,7 @@ these models.
 </h3>
 
 <div align="center">
+  
 | Rank | CWE Type |                      Name                     |  NIST |
 |:----:|:--------:|:---------------------------------------------:|:-----:|
 |   1  |  CWE-755 |  Improper Handling of Exceptional Conditions  | Yes | 
