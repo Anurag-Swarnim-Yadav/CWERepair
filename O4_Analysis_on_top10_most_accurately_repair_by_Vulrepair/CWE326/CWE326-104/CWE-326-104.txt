@@ -1,0 +1,83 @@
+CWE-326 void __ip_select_ident ( struct net * net , struct iphdr * iph , int segs ) { <S2SV_StartBug> static u32 ip_idents_hashrnd __read_mostly ; <S2SV_EndBug> u32 hash , id ; <S2SV_StartBug> net_get_random_once ( & ip_idents_hashrnd , sizeof ( ip_idents_hashrnd ) ) ; <S2SV_EndBug> <S2SV_StartBug> hash = jhash_3words ( ( __force u32 ) iph -> daddr , <S2SV_EndBug> ( __force u32 ) iph -> saddr , <S2SV_StartBug> iph -> protocol ^ net_hash_mix ( net ) , <S2SV_EndBug> ip_idents_hashrnd ) ; id = ip_idents_reserve ( hash , segs ) ; iph -> id = htons ( id ) ; }
+
+
+Vulnerable Program:
+
+ void __ip_select_ident(struct net *net, struct iphdr *iph, int segs)
+ {
+ 	static u32 ip_idents_hashrnd __read_mostly;
+ 	u32 hash, id;
+
+ 	net_get_random_once(&ip_idents_hashrnd, sizeof(ip_idents_hashrnd));
+
+ 	hash = jhash_3words((__force u32)iph->daddr,
+ 			    (__force u32)iph->saddr,
+ 			    iph->protocol ^ net_hash_mix(net),
+ 			    ip_idents_hashrnd);
+ 	id = ip_idents_reserve(hash, segs);
+ 	iph->id = htons(id);
+ }
+
+
+
+ Fix Program:
+
+ void __ip_select_ident(struct net *net, struct iphdr *iph, int segs)
+ {
+ 	u32 hash, id;
+
+ 	/* Note the following code is not safe, but this is okay. */
+ 	if (unlikely(siphash_key_is_zero(&net->ipv4.ip_id_key)))
+ 		get_random_bytes(&net->ipv4.ip_id_key,
+ 				 sizeof(net->ipv4.ip_id_key));
+
+ 	hash = siphash_3u32((__force u32)iph->daddr,
+ 			    (__force u32)iph->saddr,
+ 			    iph->protocol,
+ 			    &net->ipv4.ip_id_key);
+ 	id = ip_idents_reserve(hash, segs);
+ 	iph->id = htons(id);
+ }
+
+
+
+
+
+
+
+ Vulnerable code
+Hash Seed Initialization:
+
+Uses a static, once-initialized random value ip_idents_hashrnd.
+The random seed is generated using net_get_random_once, ensuring it’s set only once and remains constant during the kernel’s lifetime.
+Hash Function:
+
+Employs jhash_3words for hash calculation.
+The hash is based on the destination and source IP addresses, the IP protocol field XORed with a network namespace specific hash (net_hash_mix), and the static ip_idents_hashrnd.
+Security Implication:
+
+The predictability of IP ID values can be a concern due to the static nature of the seed.
+This method is more vulnerable to attacks exploiting predictable IP ID values.
+
+
+Fixed Code
+Siphash Key Initialization:
+
+Dynamically checks and initializes the siphash_key_is_zero with get_random_bytes.
+The siphash key (net->ipv4.ip_id_key) can change over time, adding more randomness.
+Hash Function:
+
+Uses siphash_3u32, a cryptographic hash function, for hash calculation.
+The hash is derived from the destination and source IP addresses, the IP protocol field, and the dynamically initialized siphash key.
+Security Implication:
+
+Offers better security through the use of a cryptographic hash function and dynamic key initialization.
+Less predictable and more resistant to attacks based on IP ID predictability.
+Summary of Differences
+Hash Initialization: VULNERABLE CODE uses a static random value, while FIXED CODE initializes the hash key dynamically, providing more randomness.
+Hash Function Used: VULNERABLE CODE uses jhash_3words, a non-cryptographic function, whereas FIXED CODE uses siphash_3u32, a cryptographic function.
+Security Aspect: VULNERABLE CODE is more secure in terms of unpredictability and resistance to certain types of attacks, addressing vulnerabilities that might be present in code.
+
+
+Conclusion
+FIXED CODE represents an enhancement over code in terms of the method used for generating IP packet identifiers, particularly with respect to security and the predictability of the identifiers. This improvement is crucial for preventing potential vulnerabilities that could arise from predictable IP fragment identifiers.

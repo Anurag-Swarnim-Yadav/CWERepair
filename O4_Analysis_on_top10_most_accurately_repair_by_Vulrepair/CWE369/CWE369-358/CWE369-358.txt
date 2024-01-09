@@ -1,0 +1,5 @@
+CWE369-358
+
+SUMMARY:
+
+The Target code introduces an additional sanity check on the sect (sectors per track) parameter. This check seems to validate that the value of sect, when manipulated through bit shifting and masked with FD_SIZECODE(g), does not result in zero.

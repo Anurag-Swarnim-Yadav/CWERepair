@@ -1,0 +1,7 @@
+Error Handling in Filename Parsing:
+
+Vulnerable code: Checks if the filename contains a slash ('/') or is equal to "..".
+Target code: Extends this check to also include a check for the filename being "." or the filename being empty (*cp == '\0').
+Handling of 'C' and 'D' Cases:
+
+Both codes handle 'C' (file data) and 'D' (directory) cases, but Target code introduces an additional check to ensure that the filename is not empty, ".", or "..". This check is an enhancement to prevent potential issues with relative paths or empty filenames.
