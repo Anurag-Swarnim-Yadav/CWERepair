@@ -147,7 +147,7 @@ these models.
 
 <div align="center">
   
-| No   | CWE Type |                      Name                           |  %PP | Proportion | Present in Train  |  Number of Samples| CWEtype |
+| No   | CWE Type |                      Name                           |  %PP | Proportion | Present in Train  |  Number of Samples in Train| CWEtype |
 |:----:|:--------:|:---------------------------------------------------:|:----:|:----------:|:-----------------:|:--------:|:----------------:|
 |   1  |  CWE-755 |  Improper Handling of Exceptional Conditions        | 100% |     1/1    | Yes  | 1   | CWE-755  |
 |   2  |  CWE-706 | Use of Incorrectly-Resolved Name or Reference       | 100% |     1/1    | No   |  -  |  -  |
