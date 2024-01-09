@@ -60,11 +60,11 @@ these models.
 
 ![](CWESample-Verification-Steps.png)
 
-- **CVEfixes:** automated collection of vulnerabilities and their fixes from open-source software; Year: Aug.19, 2021; Conference: 17th International Conference on Predictive Models and Data Analytics in Software Engineering (PROMISE)
-- **VRepair:** Neural Transfer Learning for Repairing Security Vulnerabilities in C Code; Year: Feb. 1, 2022; Conference: IEEE Transactions on Software Engineering
-- **VulRepair:** A T5-Based Automated Software Vulnerability Repair; Year: Nov 7, 2022; Conference: 30th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE)
-- **Pre-trained Model-based Automated Software Vulnerability Repair: How Far are We?:** Year: Aug. 28, 2023; Conference: IEEE Transactions on Dependable and Secure Computing
-- **DiverseVul:** A New Vulnerable Source Code Dataset for Deep Learning Based Vulnerability Detection; Year: Oct. 16, 2023; Conference: 26th International Symposium on Research in Attacks, Intrusions and Defenses (RAID)
+- **VulRepair Database:** Get the testing sample from the VulRepair Database.
+- **NIST Website:** Second Step is to very the CWE type of the given sample. NIST Webisite: https://www.nist.gov/
+- **Raw Prediction:** Verify the raw prediction of the VulRepair with the target.
+- **Sample Presence:** Is the sample present in the traning or validation set of the VulRepair database?
+- **Sample Identification** The sample is the manually verified based for the CWE identification based on the given target.
 
 
 <div align="center">
