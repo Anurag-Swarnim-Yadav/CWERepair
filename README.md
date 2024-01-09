@@ -188,6 +188,45 @@ these models.
 
 </div>
 
+<h3>
+    <b>
+        <div align="center">
+            Top-10 Most Accurately Repaired CWE Types of VulRepair (NIST Verification)
+        </div>
+    </b>
+</h3>
+
+<div align="center">
+| Rank | CWE Type |                      Name                     |  NIST |
+|:----:|:--------:|:---------------------------------------------:|:-----:|
+|   1  |  CWE-755 |  Improper Handling of Exceptional Conditions  | Yes | 
+|   2  |  CWE-706 | Use of Incorrectly-Resolved Name or Reference | CWE-863 |  
+|   3  |  CWE-326-104 |         Inadequate Encryption Strength    | Yes |
+|   3  |  CWE-326-489 |         Inadequate Encryption Strength    | Yes |  
+|   4  |  CWE-667 |                Improper Locking               | Yes |   
+|   5  |  CWE-369-218 |                 Divide By Zero            | Yes |
+|   5  |  CWE-369-358 |                 Divide By Zero            | Yes |
+|   5  |  CWE-369-407 |                 Divide By Zero            | Yes |
+|   5  |  CWE-369-628 |                 Divide By Zero            | Yes |
+|   5  |  CWE-369-768 |                 Divide By Zero            | Yes |
+|   6  |  CWE-77-126  |               Command Injection           | CWE-78 |
+|   6  |  CWE-77-1608 |               Command Injection           | Yes |  
+|   7  |  CWE-388 |                 Error Handling                | Yes | 
+|   8  |  CWE-436 |            Interpretation Conflict            | Yes | 
+|   9  |  CWE-191-410 |               Integer Underflow           | Yes |
+|   9  |  CWE-191-685 |               Integer Underflow           | Yes | 
+|  10  |  CWE-285-128 |            Improper Access Control        |  Yes |
+|  10  |  CWE-285-288 |            Improper Access Control        |  Yes |
+|  10  |  CWE-285-465 |            Improper Access Control        |  Yes |
+|  10  |  CWE-285-706 |            Improper Access Control        |  Yes |
+|  10  |  CWE-285-881 |            Improper Access Control        |  Yes |
+|  10  | CWE-285-1098 |            Improper Access Control        |  Yes |
+|  10  | CWE-285-1389 |            Improper Access Control        |  Yes |
+|  10  | CWE-285-1500 |            Improper Access Control        |  Yes |
+|      |          |                     TOTAL                     |  22/24 |
+
+</div>
+
 </details>
 
 
