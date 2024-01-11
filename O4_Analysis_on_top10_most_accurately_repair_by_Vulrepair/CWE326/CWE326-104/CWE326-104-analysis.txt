@@ -1,3 +1,8 @@
+CWE326-104
+
+
+
+
 CWE-326 void __ip_select_ident ( struct net * net , struct iphdr * iph , int segs ) { <S2SV_StartBug> static u32 ip_idents_hashrnd __read_mostly ; <S2SV_EndBug> u32 hash , id ; <S2SV_StartBug> net_get_random_once ( & ip_idents_hashrnd , sizeof ( ip_idents_hashrnd ) ) ; <S2SV_EndBug> <S2SV_StartBug> hash = jhash_3words ( ( __force u32 ) iph -> daddr , <S2SV_EndBug> ( __force u32 ) iph -> saddr , <S2SV_StartBug> iph -> protocol ^ net_hash_mix ( net ) , <S2SV_EndBug> ip_idents_hashrnd ) ; id = ip_idents_reserve ( hash , segs ) ; iph -> id = htons ( id ) ; }
 
 

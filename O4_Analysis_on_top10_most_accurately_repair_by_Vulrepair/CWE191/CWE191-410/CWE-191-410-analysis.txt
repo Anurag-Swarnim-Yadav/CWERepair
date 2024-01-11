@@ -1,0 +1,5 @@
+CWE-191-410
+
+SUMMARY:
+
+The target code dd a check to ensure that urb->actual_length is greater than zero before processing the LSR even. The additional check if (urb->actual_length > 0 && edge_port->lsr_event) before processing the LSR event is an improvement. It ensures that there is data to process, which can help prevent CWE191.

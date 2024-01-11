@@ -1,0 +1,5 @@
+CWE-191-685
+
+SUMMARY:
+
+In the loop, if dlen becomes 1 and then encounters a character that needs escaping (requiring 2 more characters for the backslash and the character itself), it would again decrement dlen by 2, potentially causing an underflow. To mitigate the risk of integer underflow, the function should include checks to ensure that dlen is always sufficient for the operations being performed.

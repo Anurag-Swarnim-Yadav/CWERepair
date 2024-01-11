@@ -1,3 +1,5 @@
+CWE706-839
+
 Error Handling in Filename Parsing:
 
 Vulnerable code: Checks if the filename contains a slash ('/') or is equal to "..".

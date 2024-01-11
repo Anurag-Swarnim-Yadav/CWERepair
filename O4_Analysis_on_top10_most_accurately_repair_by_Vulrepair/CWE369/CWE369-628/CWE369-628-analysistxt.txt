@@ -1,0 +1,9 @@
+CWE369-628
+
+SUMMARY: The main problem in vulnerable code does not check whether tsize_t s is zero before attempting a memory allocation. If malloc returns a non-null pointer for a zero-size allocation, the calling code might incorrectly assume that a valid memory block has been allocated, leading to mismanagement of that memory. This could result in resource leaks, especially if the calling code does not expect to have to free memory when the requested size was zero.
+
+CWE-369: Divide By Zero vulnerability is a  situation where an application performs a division operation and the divisor is zero. This can lead to crashes or other unintended behaviors, as dividing by zero is mathematically undefined and typically not properly handled by most programming environments.
+
+
+
+May be it can belong to: CWE-131: Incorrect Calculation of Buffer Size

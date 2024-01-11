@@ -1,0 +1,6 @@
+CWE388-1702
+
+
+SUMMARY: The function uses a goto fail pattern for error handling. The effectiveness of this pattern depends on whether all potential error paths and resources are correctly accounted for.
+
+The vulnerable code does not specify an error code when an overflow is detected in the calculations of offsets and sizes. The target code sets ret = -EINVAL when it detects an overflow in the calculations. This provides a more specific error code (EINVAL indicates an invalid argument) than just logging the error.
