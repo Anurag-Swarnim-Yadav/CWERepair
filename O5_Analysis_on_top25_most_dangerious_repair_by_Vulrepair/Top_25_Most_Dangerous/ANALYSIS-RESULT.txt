@@ -1,0 +1,20 @@
+CWE	|	Present	|	Total Samples	|	CWE tag
+
+79-856 | Yes | 2 | CWE-79
+
+
+
+78-1012 |	YES |	1 | CWE-78
+78-1149	|	YES	|	1 | CWE-78
+78-1502	|	YES	|	2 | CWE-78
+
+
+
+89-57	|	YES	|	1 | CWE-78
+89-1063	|	YES	|	1 | CWE-78
+89-1484	|	 NO |	- |	-
+89-1671	|	YES	|	1 | CWE-78
+89-1691(D)|	YES	|	1 | CWE-78
+
+
+
