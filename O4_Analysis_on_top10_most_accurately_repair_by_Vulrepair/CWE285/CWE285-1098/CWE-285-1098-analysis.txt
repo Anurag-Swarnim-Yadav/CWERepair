@@ -1,0 +1,17 @@
+CWE-285-1098
+
+
+SUMMARY:
+
+The vulnerable code: 
+
+Uses posix_acl_equiv_mode to check if the ACL can be fully represented by the inode's mode bits. If posix_acl_equiv_mode returns 0, it nullifies acl and value. It Mmnually calculates the new mode (iattr.ia_mode) by combining the mode bits from acl and inode.
+
+
+Target Code:
+
+Replaces posix_acl_equiv_mode with posix_acl_update_mode. This newer function updates iattr.ia_mode and may modify acl. It nullifies acl and value only if acl is null after the call to posix_acl_update_mode. It relies on posix_acl_update_mode to set iattr.ia_mode.
+
+
+
+Takeaway: Cant be used for zero-shot.

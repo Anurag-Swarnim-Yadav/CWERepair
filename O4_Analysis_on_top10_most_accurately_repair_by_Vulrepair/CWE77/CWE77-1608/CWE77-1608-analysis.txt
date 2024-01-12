@@ -1,0 +1,20 @@
+CWE77-1608
+
+
+SUMMARY:
+
+Vulnerable code: 
+
+The run_cmd is called with an additional NULL parameter: run_cmd(tty_fd, xfr_cmd, fname, NULL).
+
+
+
+Target code: 
+
+The run_cmd function is called with three parameters: run_cmd(tty_fd, xfr_cmd, fname).
+
+
+
+TAKE AWAY: The run_cmd function seems to be a custom function designed to execute a command. The specifics of run_cmd depend on its implementation, which isn't provided in the snippets.
+
+Possible Behaviour: It is called with parameters tty_fd, xfr_cmd, and fname, suggesting that it executes a command (xfr_cmd) related to a terminal or serial port (tty_fd) and involves a filename (fname).

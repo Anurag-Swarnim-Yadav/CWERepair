@@ -1,0 +1,22 @@
+CWE-285-881
+
+
+SUMMARY:
+
+The vulnerable code: 
+
+If the type is ACL_TYPE_ACCESS, the function performs the followng processing:
+
+1) It calls posix_acl_equiv_mode to check if the ACL can be fully represented by the traditional file mode permission bits. 
+2) If posix_acl_equiv_mode returns 0, the acl is set to NULL.
+3) If posix_acl_equiv_mode returns < 0. Then rc is return.
+
+
+Target Code:
+
+1) This version replaces posix_acl_equiv_mode and manual ACL nullification with posix_acl_update_mode, which might handle the ACL more comprehensively.
+2) The direct manipulation of mode and acl in vulnerable code is replaced with a call to posix_acl_update_mode. The call is not present and Hence can be determined about the functionality. 
+
+
+
+Takeaway: Cant be used for zero-shot.

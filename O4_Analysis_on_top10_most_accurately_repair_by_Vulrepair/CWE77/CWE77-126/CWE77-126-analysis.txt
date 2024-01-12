@@ -1,0 +1,9 @@
+CWE77-126
+
+
+SUMMARY:
+
+The primary difference in Target code is the addition of a boolean flag to imap_quote_string, which likely changes how the string is escaped.
+
+
+TAKE AWAY: Not fit for the analysis.

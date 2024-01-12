@@ -1,0 +1,9 @@
+CWE285-706
+
+SUMMARY:
+
+
+Vulnerable code: Lacks this specific check for malformed commands.
+
+
+Target code: Adds a check for malformed AUTHENTICATE commands, specifically if the first character of parv[1] is ':' or if parv[1] contains a space, then it exits the client with a "Malformed AUTHENTICATE" message.
