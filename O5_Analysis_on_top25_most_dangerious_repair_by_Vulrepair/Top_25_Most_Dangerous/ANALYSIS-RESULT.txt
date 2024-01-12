@@ -42,3 +42,14 @@ CWE	|	Present	|	Total Samples	|	CWE tag
 287-1635|	YES	|	2 | CWE-287
 
 
+
+
+862-200|	YES	|	1 | CWE-862
+862-693(D)|	YES	|	1 | CWE-862
+
+
+
+
+
+
+
