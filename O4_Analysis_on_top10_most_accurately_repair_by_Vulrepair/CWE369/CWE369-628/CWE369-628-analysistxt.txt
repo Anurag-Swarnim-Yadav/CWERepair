@@ -6,4 +6,4 @@ CWE-369: Divide By Zero vulnerability is a  situation where an application perfo
 
 
 
-May be it can belong to: CWE-131: Incorrect Calculation of Buffer Size
+May be it can belong to: CWE-131: Incorrect Calculation of Buffer Size. Look into CWE-758. (Dr. Wilson)
