@@ -2,7 +2,7 @@
 <h3>
     <b>
         <div align="center">
-            VulRepair Performance on Top-25 Most Dangerous CWEs in 2021</a>
+            VulRepair Performance on Top-25 Most Dangerous CWEs (NIST Verification)</a>
         </div>
     </b>
 </h3>
@@ -71,7 +71,7 @@
 <h3>
     <b>
         <div align="center">
-            VulRepair Performance on Top-25 Most Dangerous CWEs in 2021</a>
+            VulRepair Performance on Top-25 Most Dangerous CWEs (Training and Validation Samples Verification)</a>
         </div>
     </b>
 </h3>
