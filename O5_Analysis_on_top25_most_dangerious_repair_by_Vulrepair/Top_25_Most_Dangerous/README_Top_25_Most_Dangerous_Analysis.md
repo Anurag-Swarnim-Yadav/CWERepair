@@ -1,5 +1,3 @@
-<details>
-<summary></summary>
 
 <h3>
     <b>
@@ -56,5 +54,3 @@
 
 
 </div> 
-
-</details>
