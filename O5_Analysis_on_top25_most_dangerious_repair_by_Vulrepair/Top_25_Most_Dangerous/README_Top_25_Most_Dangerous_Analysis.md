@@ -119,7 +119,7 @@
 |  CWE918-806       |  CWE-918 |      Server-Side Request Forgery (SSRF)      |  No |    Yes	|	2 | CWE-918    |
 |  CWE77-126        |  CWE-77  |               Command Injection              | Yes |    Yes	|	2 | CWE-78     |
 |  CWE77-1608       |  CWE-77  |               Command Injection              | Yes |    Yes    |	1 | CWE-77     |
-|                    |         |               TOTAL                        | 10/39 |   33/38   |     |            |
+|                    |         |               TOTAL                        | 10/39 |   33/39   |     |            |
 
 
 </div> 
