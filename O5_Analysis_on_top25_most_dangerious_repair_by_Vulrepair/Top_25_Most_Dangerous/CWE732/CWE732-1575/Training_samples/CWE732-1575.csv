@@ -1,0 +1,4 @@
+cwe_id,source,target,project_and_commit_id,cve_id,original_address,time
+CWE-732,"CWE-732 char * * <S2SV_StartBug> prepenv ( const struct rule * rule ) <S2SV_EndBug> { static const char * safeset [ ] = { ""DISPLAY"" , ""HOME"" , ""LOGNAME"" , ""MAIL"" , ""PATH"" , ""TERM"" , ""USER"" , ""USERNAME"" , NULL } ; struct env * env ; <S2SV_StartBug> env = createenv ( rule ) ; <S2SV_EndBug> if ( ! ( rule -> options & KEEPENV ) ) fillenv ( env , safeset ) ; if ( rule -> envlist ) fillenv ( env , rule -> envlist ) ; return flattenenv ( env ) ; }
+","<S2SV_ModStart> rule * rule , const struct passwd * mypw , const struct passwd * targpw ) { <S2SV_ModEnd> struct env * <S2SV_ModStart> createenv ( rule , mypw , targpw <S2SV_ModEnd> ) ; if
+",Duncaen@OpenDoas/01c658f8c45cb92a343be5f32aa6da70b2032168,CVE-2019-25016,https://github.com/Duncaen/OpenDoas/commit/01c658f8c45cb92a343be5f32aa6da70b2032168,2021-01-28T20:15Z
