@@ -110,7 +110,7 @@
 |  CWE918-806       |  CWE-918 |      Server-Side Request Forgery (SSRF)      |  No |    Yes	|	2 | CWE-918    |
 |  CWE77-126        |  CWE-77  |               Command Injection              | Yes |    Yes	|	2 | CWE-78, CWE-77 |
 |  CWE77-1608       |  CWE-77  |               Command Injection              | Yes |    Yes    |	1 | CWE-77     |
-|                    |         |               TOTAL                        | 10/39 |   33/39   |     |            |
+|                    |         |               TOTAL                        | 10/39 |   36/39   |     |            |
 
 </div> 
 
@@ -124,6 +124,5 @@
 |   CWE89-1484      |  CWE-89  |                 SQL Injection                | Yes |    Yes    |	 1 | CWE-89    |
 |   CWE352-1540     |  CWE-352 |          Cross-Site Request Forgery          |  No |    Yes    |	 1 | CWE-352   |
 |  CWE611-7         |  CWE-611 |     Improper Restriction of XML Reference    |  No |    Yes    |	 1 | CWE-611   |
-|                   |          |               TOTAL                          |     |   36/39   |      |           |
 
 </div> 
