@@ -9,33 +9,33 @@
 
 <div align="center">
   
-| Rank | CWE Type |                      Name                     |  NIST |
-|:----:|:--------:|:---------------------------------------------:|:-----:|
-|   1  |  CWE-755 |  Improper Handling of Exceptional Conditions  | Yes | 
-|   2  |  CWE-706 | Use of Incorrectly-Resolved Name or Reference | CWE-863 |  
-|   3  |  CWE-326-104 |         Inadequate Encryption Strength    | Yes |
-|   3  |  CWE-326-489 |         Inadequate Encryption Strength    | Yes |  
-|   4  |  CWE-667 |                Improper Locking               | Yes |   
-|   5  |  CWE-369-218 |                 Divide By Zero            | Yes |
-|   5  |  CWE-369-358 |                 Divide By Zero            | Yes |
-|   5  |  CWE-369-407 |                 Divide By Zero            | Yes |
-|   5  |  CWE-369-628 |                 Divide By Zero            | Yes |
-|   5  |  CWE-369-768 |                 Divide By Zero            | Yes |
-|   6  |  CWE-77-126  |               Command Injection           | CWE-78 |
-|   6  |  CWE-77-1608 |               Command Injection           | Yes |  
-|   7  |  CWE-388 |                 Error Handling                | Yes | 
-|   8  |  CWE-436 |            Interpretation Conflict            | Yes | 
-|   9  |  CWE-191-410 |               Integer Underflow           | Yes |
-|   9  |  CWE-191-685 |               Integer Underflow           | Yes | 
-|  10  |  CWE-285-128 |            Improper Access Control        |  Yes |
-|  10  |  CWE-285-288 |            Improper Access Control        |  Yes |
-|  10  |  CWE-285-465 |            Improper Access Control        |  Yes |
-|  10  |  CWE-285-706 |            Improper Access Control        |  Yes |
-|  10  |  CWE-285-881 |            Improper Access Control        |  Yes |
-|  10  | CWE-285-1098 |            Improper Access Control        |  Yes |
-|  10  | CWE-285-1389 |            Improper Access Control        |  Yes |
-|  10  | CWE-285-1500 |            Improper Access Control        |  Yes |
-|      |          |                     TOTAL                     |  22/24 |
+|    Sample        | CWE Type |                      Name                         |    NIST       |
+|:----------------:|:--------:|:-------------------------------------------------:|:-------------:|
+|    CWE755-220    |  CWE-755 |    Improper Handling of Exceptional Conditions    |    Yes        | 
+|    CWE706-839    |  CWE-706 |    Use of Incorrectly-Resolved Name or Reference  |    CWE-863    |  
+|    CWE326-104    |  CWE-326 |    Inadequate Encryption Strength                 |    Yes        |
+|    CWE326-489    |  CWE-326 |    Inadequate Encryption Strength                 |    Yes        |  
+|    CWE667-1597   |  CWE-667 |    Improper Locking                               |    Yes        |   
+|    CWE369-218    |  CWE-369 |    Divide By Zero                                 |    Yes        |
+|    CWE369-358    |  CWE-369 |    Divide By Zero                                 |    Yes        |
+|    CWE369-407    |  CWE-369 |    Divide By Zero                                 |    Yes        |
+|    CWE369-628    |  CWE-369 |    Divide By Zero                                 |    Yes        |
+|    CWE369-768    |  CWE-369 |    Divide By Zero                                 |    Yes        |
+|    CWE-77-126    |  CWE-77  |    Command Injection                              |    CWE-78     |
+|    CWE-77-1608   |  CWE-77  |    Command Injection                              |    Yes        |
+|    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Yes        |
+|    CWE436-592    |  CWE-436 |    Interpretation Conflict                        |    Yes        |
+|    CWE191-410    |  CWE-191 |    Integer Underflow                              |    Yes        |
+|    CWE191-685    |  CWE-191 |    Integer Underflow                              |    Yes        |
+|    CWE285-128    |  CWE-285 |    Improper Access Control                        |    Yes        |
+|    CWE285-288    |  CWE-285 |    Improper Access Control                        |    Yes        |
+|    CWE285-465    |  CWE-285 |    Improper Access Control                        |    Yes        |
+|    CWE285-706    |  CWE-285 |    Improper Access Control                        |    Yes        |
+|    CWE285-881    |  CWE-285 |    Improper Access Control                        |    Yes        |
+|    CWE285-1098   |  CWE-285 |    Improper Access Control                        |    Yes        |
+|    CWE285-1389   |  CWE-285 |    Improper Access Control                        |    Yes        |
+|    CWE285-1500   |  CWE-285 |    Improper Access Control                        |    Yes        |
+|                  |          |    TOTAL                                          |    2/24       |
 
 </div> 
 
