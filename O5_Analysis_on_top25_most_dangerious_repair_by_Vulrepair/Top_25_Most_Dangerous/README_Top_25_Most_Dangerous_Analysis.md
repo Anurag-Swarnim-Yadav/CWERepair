@@ -112,6 +112,18 @@
 |  CWE77-1608       |  CWE-77  |               Command Injection              | Yes |    Yes    |	1 | CWE-77     |
 |                    |         |               TOTAL                        | 10/39 |   33/39   |     |            |
 
-
 </div> 
 
+<br>
+<br>
+
+<div align="center">
+    
+| Sample            | CWE Type |                     Name                     | VulRepair Correctly Predicted | Present in Validation Dataset| Number of Sample Present | CWE Type of Sample |
+|:-----------------:|:--------:|:--------------------------------------------:|:-----------------------------:|:-----------------------:|:-------------------------:|:--------------------|
+|   CWE89-1484      |  CWE-89  |                 SQL Injection                | Yes |    Yes    |	 1 | CWE-89    |
+|   CWE352-1540     |  CWE-352 |          Cross-Site Request Forgery          |  No |    Yes    |	 1 | CWE-352   |
+|  CWE611-7         |  CWE-611 |     Improper Restriction of XML Reference    |  No |    Yes    |	 1 | CWE-611   |
+|                   |          |               TOTAL                          |     |   36/39   |      |           |
+
+</div> 
