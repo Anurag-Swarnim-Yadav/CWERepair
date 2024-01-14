@@ -74,7 +74,7 @@ these models.
 </div>
 
 
-<details>
+<!-- <details>
 <summary>text-davinvi-003: without-buggy-line</summary>
 
 <h3>
@@ -130,7 +130,8 @@ these models.
 | 10   | CWE-434  | Unrestricted Upload of File with Dangerous Type                                            | -     | -       | -         |           |
 
 </div>
-</details>
+</details> 
+-->
 
 
 
