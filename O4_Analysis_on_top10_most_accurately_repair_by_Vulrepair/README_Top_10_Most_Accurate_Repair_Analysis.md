@@ -33,7 +33,7 @@
 |    CWE285-706    |  CWE-285 |    Improper Access Control                        |    Yes        |
 |    CWE285-881    |  CWE-285 |    Improper Access Control                        |    Yes        |
 |    CWE285-1098   |  CWE-285 |    Improper Access Control                        |    Yes        |
-|    CWE285-1389   |  CWE-285 |    Improper Access Control                        |    Yes        |
+| CWE285-1389 (D: CWE285-465) |  CWE-285 |    Improper Access Control             |    Yes        |
 |    CWE285-1500   |  CWE-285 |    Improper Access Control                        |    Yes        |
 |                  |          |    TOTAL                                          |    2/24       |
 
