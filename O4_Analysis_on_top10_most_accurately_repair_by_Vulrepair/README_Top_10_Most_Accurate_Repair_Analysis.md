@@ -116,29 +116,29 @@
 |:----------------:|:--------:|:-------------------------------------------------:|:------------------------:|
 |    CWE755-220    |  CWE-755 |    Improper Handling of Exceptional Conditions    |    Correct    | 
 |    CWE706-839    |  CWE-706 |    Use of Incorrectly-Resolved Name or Reference  |    Incorrect  |  
-|    CWE326-104    |  CWE-326 |    Inadequate Encryption Strength                 |    Yes        |
+|    CWE326-104    |  CWE-326 |    Inadequate Encryption Strength                 |    Correct    |
 |    CWE326-489    |  CWE-326 |    Inadequate Encryption Strength                 |  Unverifiable |  
-|    CWE667-1597   |  CWE-667 |    Improper Locking                               |    Yes        |   
-|    CWE369-218    |  CWE-369 |    Divide By Zero                                 |    Yes        |
-|    CWE369-358    |  CWE-369 |    Divide By Zero                                 |    Yes        |
-|    CWE369-407    |  CWE-369 |    Divide By Zero                                 |    Yes        |
-|    CWE369-628    |  CWE-369 |    Divide By Zero                                 |    Yes        |
-|    CWE369-768    |  CWE-369 |    Divide By Zero                                 |    Yes        |
-|    CWE77-126     |  CWE-77  |    Command Injection                              |    Incorrectly Identified    |
-|    CWE77-1608    |  CWE-77  |    Command Injection                              |    Yes        |
-|    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Yes        |
-|    CWE436-592    |  CWE-436 |    Interpretation Conflict                        |    Yes        |
-|    CWE191-410    |  CWE-191 |    Integer Underflow                              |    Yes        |
-|    CWE191-685    |  CWE-191 |    Integer Underflow                              |    Yes        |
-|    CWE285-128    |  CWE-285 |    Improper Access Control                        |    Yes        |
-|    CWE285-288    |  CWE-285 |    Improper Access Control                        |    Yes        |
-|    CWE285-465    |  CWE-285 |    Improper Access Control                        |    Yes        |
-|    CWE285-706    |  CWE-285 |    Improper Access Control                        |    Yes        |
-|    CWE285-881    |  CWE-285 |    Improper Access Control                        |    Yes        |
-|    CWE285-1098   |  CWE-285 |    Improper Access Control                        |    Yes        |
-| CWE285-1389 (D: CWE285-465) |  CWE-285 |    Improper Access Control             |    Yes        |
-|    CWE285-1500   |  CWE-285 |    Improper Access Control                        |    Yes        |
-|                  |          |    TOTAL                                          |    2/24       |
+|    CWE667-1597   |  CWE-667 |    Improper Locking                               |    Correct    |   
+|    CWE369-218    |  CWE-369 |    Divide By Zero                                 |    Correct    |
+|    CWE369-358    |  CWE-369 |    Divide By Zero                                 |    Correct    |
+|    CWE369-407    |  CWE-369 |    Divide By Zero                                 |    Correct    |
+|    CWE369-628    |  CWE-369 |    Divide By Zero                                 |    Incorrect  |
+|    CWE369-768    |  CWE-369 |    Divide By Zero                                 |    Correct    |
+|    CWE77-126     |  CWE-77  |    Command Injection                              |    Incorrect and Unverifiable  |
+|    CWE77-1608    |  CWE-77  |    Command Injection                              |  Unverifiable |
+|    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Correct    |
+|    CWE436-592    |  CWE-436 |    Interpretation Conflict                        |  Unverifiable |
+|    CWE191-410    |  CWE-191 |    Integer Underflow                              |    Correct    |
+|    CWE191-685    |  CWE-191 |    Integer Underflow                              |    Correct    |
+|    CWE285-128    |  CWE-285 |    Improper Access Control                        |  Unverifiable |
+|    CWE285-288    |  CWE-285 |    Improper Access Control                        |  Unverifiable |
+|    CWE285-465    |  CWE-285 |    Improper Access Control                        |  Unverifiable |
+|    CWE285-706    |  CWE-285 |    Improper Access Control                        |    Correct    |
+|    CWE285-881    |  CWE-285 |    Improper Access Control                        |  Unverifiable |
+|    CWE285-1098   |  CWE-285 |    Improper Access Control                        |  Unverifiable |
+| CWE285-1389 (D: CWE285-465) |  CWE-285 |    Improper Access Control             |  Unverifiable |
+|    CWE285-1500   |  CWE-285 |    Improper Access Control                        |  Unverifiable |
+|                  |          |    TOTAL                                          |    11/24       |
 
 </div> 
 
