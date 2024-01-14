@@ -67,7 +67,7 @@
 |    CWE369-768    |  CWE-369 |    Divide By Zero                                 |    Yes        |    Yes        |    1    |  CWE-369 | 
 |    CWE77-126     |  CWE-77  |    Command Injection                              |    Yes        |    Yes        |    2    |  CWE-78, CWE-77 |
 |    CWE77-1608    |  CWE-77  |    Command Injection                              |    Yes        |    Yes        |    1    |  CWE-77 | 
-|    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Yes        |    No         |    -    |    -     | 
+|    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Yes        |    Validation         |    -    |    -     | 
 |    CWE436-592    |  CWE-436 |    Interpretation Conflict                        |    Yes        |    Yes        |    1    |  CWE-436 | 
 |    CWE191-410    |  CWE-191 |    Integer Underflow                              |    Yes        |    Yes        |    2    |  CWE-191, CWE-191  | 
 |    CWE191-685    |  CWE-191 |    Integer Underflow                              |    Yes        |    Yes        |    1    |  CWE-191 |
@@ -76,10 +76,10 @@
 |    CWE285-465    |  CWE-285 |    Improper Access Control                        |    No         |    Yes        |    2    |  CWE-285,   CWE-285 |
 |    CWE285-706    |  CWE-285 |    Improper Access Control                        |    Yes        |    No         |    -    |    -     |
 |    CWE285-881    |  CWE-285 |    Improper Access Control                        |    Yes        |    Yes        |    2    |  CWE-285,   CWE-285 |
-|    CWE285-1098   |  CWE-285 |    Improper Access Control                        |    Yes        |    No         |    -    |    -     |
+|    CWE285-1098   |  CWE-285 |    Improper Access Control                        |    Yes        |    Validation         |    -    |    -     |
 | CWE285-1389 (D: CWE285-465) |  CWE-285 |    Improper Access Control             |    No         |    Yes        |    2    |  CWE-285,   CWE-285 |
 |    CWE285-1500   |  CWE-285 |    Improper Access Control                        |    Yes        |    Yes        |    2    |  CWE-285,   CWE-285 |
-|                  |          |    TOTAL                                          |    22/24      |    20/24      |         |
+|                  |          |    TOTAL                                          |    22/24      |    22/24      |         |
 
 </div> 
 
@@ -88,10 +88,10 @@
 
 <div align="center">
   
-| No   | CWE Type |                      Name                           |  %PP | Proportion | Present in Validation  |  Number of Samples| CWEtype |
-|:----:|:--------:|:---------------------------------------------------:|:----:|:----------:|:-----------------:|:--------:|:----------------:|
-|   7  |  CWE-388 |                 Error Handling                      | 100% |     1/1    | Yes (Validation)   | 2   | CWE-388   |
-|  10  | CWE-285-1098 |            Improper Access Control              | 100% |     1/1    | Yes (Validation)   | 1   | CWE-285 |
+|    Sample        | CWE Type |        Name        |    VulRepair Correctly Predicted       | Present in Validation Dataset| Number of Sample Present | CWE Type of Sample |
+|:----------------:|:--------:|:------------------:|:--------------------------------------:|:-----------------------:|:-------------------------:|:--------------------|
+|    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Yes        | Yes    | 2   | CWE-388, CWE-388   |
+|    CWE285-1098   |  CWE-285 |    Improper Access Control                        |    Yes        | Yes    | 1   | CWE-285 |
 
 </div>
 
