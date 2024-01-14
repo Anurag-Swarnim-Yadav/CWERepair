@@ -2,7 +2,7 @@
 <h3>
     <b>
         <div align="center">
-            VulRepair Performance on Top-25 Most Dangerous CWEs (NIST Verification)</a>
+            VulRepair Performance on Top-25 Most Dangerous CWEs (NIST Verification)
         </div>
     </b>
 </h3>
@@ -52,7 +52,6 @@
 |  CWE77-1608       |  CWE-77  |               Command Injection              | Yes  |
 |                   |          |               TOTAL                          |  4/39 |
 
-
 </div> 
 
 <br>
@@ -62,7 +61,7 @@
 <h3>
     <b>
         <div align="center">
-            VulRepair Performance on Top-25 Most Dangerous CWEs (Training and Validation Samples Verification)</a>
+            VulRepair Performance on Top-25 Most Dangerous CWEs (Training and Validation Samples Verification)
         </div>
     </b>
 </h3>
