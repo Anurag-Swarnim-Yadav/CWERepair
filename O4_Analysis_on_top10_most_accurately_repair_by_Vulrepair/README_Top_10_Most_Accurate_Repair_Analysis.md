@@ -21,8 +21,8 @@
 |    CWE369-407    |  CWE-369 |    Divide By Zero                                 |    Yes        |
 |    CWE369-628    |  CWE-369 |    Divide By Zero                                 |    Yes        |
 |    CWE369-768    |  CWE-369 |    Divide By Zero                                 |    Yes        |
-|    CWE-77-126    |  CWE-77  |    Command Injection                              |    CWE-78     |
-|    CWE-77-1608   |  CWE-77  |    Command Injection                              |    Yes        |
+|    CWE77-126     |  CWE-77  |    Command Injection                              |    CWE-78     |
+|    CWE77-1608    |  CWE-77  |    Command Injection                              |    Yes        |
 |    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Yes        |
 |    CWE436-592    |  CWE-436 |    Interpretation Conflict                        |    Yes        |
 |    CWE191-410    |  CWE-191 |    Integer Underflow                              |    Yes        |
