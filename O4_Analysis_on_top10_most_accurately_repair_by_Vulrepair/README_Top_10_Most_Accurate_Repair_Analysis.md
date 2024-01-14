@@ -69,7 +69,7 @@
 |    CWE77-1608    |  CWE-77  |    Command Injection                              |    Yes        |    Yes        |    1    |  CWE-77 | 
 |    CWE388-1702   |  CWE-388 |    Error Handling                                 |    Yes        |    No         |    -    |    -     | 
 |    CWE436-592    |  CWE-436 |    Interpretation Conflict                        |    Yes        |    Yes        |    1    |  CWE-436 | 
-|    CWE191-410    |  CWE-191 |    Integer Underflow                              |    Yes        |    Yes        |    2    |  CWE-191 | 
+|    CWE191-410    |  CWE-191 |    Integer Underflow                              |    Yes        |    Yes        |    2    |  CWE-191, CWE-191  | 
 |    CWE191-685    |  CWE-191 |    Integer Underflow                              |    Yes        |    Yes        |    1    |  CWE-191 |
 |    CWE285-128    |  CWE-285 |    Improper Access Control                        |    Yes        |    Yes        |    1    |  CWE-285 |
 |    CWE285-288    |  CWE-285 |    Improper Access Control                        |    Yes        |    Yes        |    2    |  CWE-285,   CWE-285 |
