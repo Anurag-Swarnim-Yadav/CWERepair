@@ -64,12 +64,12 @@ these models.
 - **NIST Website:** Second Step is to very the CWE type of the given sample using CVEID (CVE-YEAR-SAMPLE) from NIST Webisite: https://www.nist.gov/ .
 - **Raw Prediction:** Verify the raw prediction of the VulRepair with the target.
 - **Sample Presence:** Is the sample present in the traning or validation set of the VulRepair database?
-- **Sample Identification** The sample is the manually verified based for the CWE identification based on the given target.
+- **Sample Identification** The sample is manually verified for CWE identification based on the given target.
 
 
 <div align="center">
 
-## Real-World Software Vulnerabilities
+## Analysis and Take Aways
 
 </div>
 
