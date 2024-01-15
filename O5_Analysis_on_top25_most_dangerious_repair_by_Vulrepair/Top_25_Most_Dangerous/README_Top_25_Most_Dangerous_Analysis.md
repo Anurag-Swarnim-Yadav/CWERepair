@@ -181,7 +181,7 @@
 |  CWE918-806       |  CWE-918 |      Server-Side Request Forgery (SSRF)      |  Incorrect |
 |  CWE77-126        |  CWE-77  |               Command Injection              | Incorrect and Unverifiable |
 |  CWE77-1608       |  CWE-77  |               Command Injection              | Unverifiable  |
-|                   |          |               TOTAL                          |  19/39 |
+|                   |          |               TOTAL                          |  19/39 (Incorrect or Unverifiable) |
 
 </div> 
 
