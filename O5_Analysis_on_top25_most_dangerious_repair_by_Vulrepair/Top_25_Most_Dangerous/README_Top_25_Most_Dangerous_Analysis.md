@@ -179,7 +179,7 @@
 |  CWE611-351       |  CWE-611 |     Improper Restriction of XML Reference    |  Unverifiable |
 |  CWE611-1274      |  CWE-611 |     Improper Restriction of XML Reference    |  Correct |
 |  CWE918-806       |  CWE-918 |      Server-Side Request Forgery (SSRF)      |  Incorrect |
-|  CWE77-126        |  CWE-77  |               Command Injection              | Unverifiable |
+|  CWE77-126        |  CWE-77  |               Command Injection              | Incorrect and Unverifiable |
 |  CWE77-1608       |  CWE-77  |               Command Injection              | Unverifiable  |
 |                   |          |               TOTAL                          |  4/39 |
 
