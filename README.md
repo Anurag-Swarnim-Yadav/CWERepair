@@ -69,7 +69,7 @@ these models.
 
 <div align="center">
 
-## Analysis and Take Aways
+## Analysis and Takeaway
 
 </div>
 
@@ -89,7 +89,7 @@ these models.
 **Note:** Excluding 1 Duplicate Sample.
 
 
-**TakeAway:** We have 0 perfect sample that we can use for comparision. 
+**Takeaway:** We have 0 perfect sample that we can use for comparision. 
 
 
 
