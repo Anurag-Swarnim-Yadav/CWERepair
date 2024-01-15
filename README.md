@@ -81,10 +81,12 @@ these models.
 **Note:** Excluding 4 Duplicate Samples
 
 
-### Top 25 Most Dangerious (12 CWEs)
-- **NIST Verification:** 4/35 (Incorrect CWE Identification)
-- **Training and Validation Samples Verification:** 32/35 (Present in Train or Validation Dataset)
-- **CWE Identification:** 18/35 (Incorrect or Unverifiable)
+### Top-10 Most Accurately Repaired CWE Types of VulRepair
+- **NIST Verification:** 2/23 (Incorrect CWE Identification)
+- **Training and Validation Samples Verification:** 21/23 (Present in Train or Validation Dataset)
+- **CWE Identification:** 12/23 (Incorrect or Unverifiable)
+
+**Note:** Excluding 1 Duplicate Sample
 
 
 
