@@ -140,7 +140,7 @@
   
 <div align="center">
     
-| Sample            | CWE Type |                     Name                     | NIST |
+| Sample            | CWE Type |                     Name                     | CWE Identification |
 |:-----------------:|:--------:|:--------------------------------------------:|:----:|
 |   CWE79-856       |  CWE-79  |             Cross-site Scripting             |  Yes |
 |   CWE78-1012      |  CWE-78  |             OS Command Injection             |  Yes |
