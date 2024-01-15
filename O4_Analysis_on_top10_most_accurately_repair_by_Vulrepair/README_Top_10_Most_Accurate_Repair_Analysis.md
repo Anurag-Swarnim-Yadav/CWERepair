@@ -138,7 +138,7 @@
 |    CWE285-1098   |  CWE-285 |    Improper Access Control                        |  Unverifiable |
 | CWE285-1389 (D: CWE285-465) |  CWE-285 |    Improper Access Control             |  Unverifiable |
 |    CWE285-1500   |  CWE-285 |    Improper Access Control                        |  Unverifiable |
-|                  |          |    TOTAL                                          |    11/24       |
+|                  |          |    TOTAL                                          |    13/24       |
 
 </div> 
 
