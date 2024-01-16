@@ -78,7 +78,7 @@ these models.
 - **Training and Validation Samples Verification:** 32/35 (Present in Train or Validation Dataset)
 - **CWE Identification:** 18/35 (Incorrect or Unverifiable)
   
-**Detailed Analysis:** <a href="https://github.com/Anurag-Swarnim-Yadav/CWERepair/blob/main/O5_Analysis_on_top25_most_dangerious_repair_by_Vulrepair/Top_25_Most_Dangerous/README_Top_25_Most_Dangerous_Analysis.md">Top 25 Most Dangerious </a>
+**Detailed Analysis:** <a href="https://github.com/Anurag-Swarnim-Yadav/CWERepair/blob/main/O5_Analysis_on_top25_most_dangerious_repair_by_Vulrepair/Top_25_Most_Dangerous/README_Top_25_Most_Dangerous_Analysis.md">Top 25 Most Dangerious CWEs</a>
 
 **Note:** Excluding 4 Duplicate Samples
 
