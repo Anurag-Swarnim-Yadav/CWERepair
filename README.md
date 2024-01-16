@@ -78,7 +78,8 @@ these models.
 - **Training and Validation Samples Verification:** 32/35 (Present in Train or Validation Dataset)
 - **CWE Identification:** 18/35 (Incorrect or Unverifiable)
   
-**Detailed Analysis:** <a href="https://github.com/Anurag-Swarnim-Yadav/CWERepair/blob/main/O5_Analysis_on_top25_most_dangerious_repair_by_Vulrepair/Top_25_Most_Dangerous/README_Top_25_Most_Dangerous_Analysis.md">Top 25 Most Dangerious </a>.
+**Detailed Analysis:** <a href="https://github.com/Anurag-Swarnim-Yadav/CWERepair/blob/main/O5_Analysis_on_top25_most_dangerious_repair_by_Vulrepair/Top_25_Most_Dangerous/README_Top_25_Most_Dangerous_Analysis.md">Top 25 Most Dangerious </a>
+
 **Note:** Excluding 4 Duplicate Samples
 
 
@@ -87,7 +88,8 @@ these models.
 - **Training and Validation Samples Verification:** 21/23 (Present in Train or Validation Dataset)
 - **CWE Identification:** 12/23 (Incorrect or Unverifiable)
 
- **Detailed Analysis:** <a href="https://github.com/Anurag-Swarnim-Yadav/CWERepair/blob/main/O4_Analysis_on_top10_most_accurately_repair_by_Vulrepair/README_Top_10_Most_Accurate_Repair_Analysis.md">Top-10 Most Accurately Repaired CWEs</a>. 
+ **Detailed Analysis:** <a href="https://github.com/Anurag-Swarnim-Yadav/CWERepair/blob/main/O4_Analysis_on_top10_most_accurately_repair_by_Vulrepair/README_Top_10_Most_Accurate_Repair_Analysis.md">Top-10 Most Accurately Repaired CWEs</a>
+ 
 **Note:** Excluding 1 Duplicate Sample.
 
 
