@@ -1,0 +1,43 @@
+VulRepair Performance on Top-25 Most Dangerous CWEs (CWE Identification)
+Samples		CWE Type		Name						CWE Identification		without Buggyline		with Buggyline
+
+CWE79-856	CWE-79		Cross-site Scripting					Correct					0 					0
+
+
+
+CWE78-1149	CWE-78		OS Command Injection				    Correct					0(reched limit)	 	0(reched limit)
+CWE78-1502	CWE-78		OS Command Injection					Correct					0                  	0
+
+
+CWE89-57	CWE-89		SQL Injection							Correct					0   				0
+CWE89-1063	CWE-89		SQL Injection							Correct
+
+
+CWE22-212	CWE-22		Path Traversal							Correct
+CWE22-402	CWE-22		Path Traversal							Correct
+CWE22-512	CWE-22		Path Traversal							Correct
+CWE22-964	CWE-22		Path Traversal							Correct
+CWE22-1656	CWE-22		Path Traversal							Correct
+
+
+
+
+CWE287-231	CWE-287		Improper Authentication					Correct
+CWE287-413	CWE-287		Improper Authentication					Correct
+CWE287-1635	CWE-287		Improper Authentication					Correct
+
+
+CWE862-200	CWE-862		Missing Authorization					Correct
+
+
+
+CWE522-370	CWE-522		Insufficiently Protected Credentials	Correct
+
+
+
+CWE611-7	CWE-611		Improper Restriction of XML Reference	Correct
+CWE611-1274	CWE-611		Improper Restriction of XML Reference	Correct
+
+
+
+TOTAL	17/39 (Correct Identified Samples)

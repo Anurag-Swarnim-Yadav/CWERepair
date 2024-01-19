@@ -1,0 +1,100 @@
+
+
+CWE-79		Cross-site Scripting
+
+SAMPLE: CWE79-856	
+
+WITHOUT BUGGYLINE:
+1) Uses a random function simialr to fucntion definiation to escape the string as a fix. Sample:2,12
+2) Will remove the cross-site scripting message as a fix or change the message. 
+3)  Will encode the url sample: 15
+
+WITH BUGGYLINE:
+1) Move the <endbug> to consider the full if statment as fix. Sample 7 and more (Main behaviour)
+2) Generally adds special character filtering as a fix. Sample 10
+3) Remove the tags. sample 35
+4)Bascially it will try to sanitize or escape user input if this SWE is given. sample 39
+5)The closet we got was sample 51
+
+
+
+CWE-78		OS Command Injection
+
+SAMPLE: CWE78-1149	
+
+WITHOUT BUGGYLINE AND WITH BUGGYLINE:
+1) Tries to Escape characters or sanitized uer input are properly escaped to prevent CWE-78. Sample 17, 19, 36, 48
+2)If the tags are not present. It will add the tags if not present.
+
+
+
+SAMPLE: CWE78-1502 
+[THIS SAMPLE NEEDS ADDITION. THERE IS NOT BUGGYLINE (THE BUGGYLINE PROVIDED IS NOT A BUGGYLINE)]
+
+WITHOUT BUGGYLINE:
+1) Addition of the few more cases. Sample 2
+2) It does understand that it needs to add new cases. Sample 9,12,18,25,26,34,38,49,50
+
+WITH BUGGYLINE:
+1) Can create vulnerability. Sample 4
+2) Converts case into if condition but does not fix the problem.
+3) Check sample 10, 11, 16, 22,31 (Think about it)
+4)The close we get to the sample is 25, 36
+
+Takeaway: The model undertands it needs to add special cases (specially for buggyline). It just dont think "=" is considered as a escape characters or invalid characters.
+
+
+
+
+CWE-89		SQL Injection
+
+SAMPLE: CWE89-57
+
+WITHOUT BUGGYLINE:
+1) Mostly the vulnerability was fixed by replacing curl_easy_unescape() with curl_easy_escape() in the code. Sample 2,5,10,12,13,15,16 (can be used for slides; It ends with text that it fixed), 17, 33,46(SAME comments)
+2) Sanitzing the user input ie checking for special character. Sample 7,22 
+
+WITH BUGGYLINE:
+1) Same behaviour as we saw in without buggyline case. Sample 8,10
+2) Adds url_easy_escape first to encode the path and then pass the encoded path to url_easy_unescape(). Sample 9, 13, 17, 23, 25 (Can be used for the slide), 28, 34, 35,40
+3) when applying curl_easy_escape(). It removed the & len argument. Sample 16
+
+
+
+
+SAMPLE: CWE89-1063
+
+WITHOUT BUGGYLINE:
+1) Adds curl_easy_escape() before curl_easy_unescape(). Sample 18, 
+2) 
+
+
+
+WITH BUGGYLINE:
+1) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
