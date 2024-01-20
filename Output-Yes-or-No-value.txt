@@ -10,7 +10,7 @@ CWE78-1502	CWE-78		OS Command Injection					Correct					0                  	0
 
 
 CWE89-57	CWE-89		SQL Injection							Correct					0   				0
-CWE89-1063	CWE-89		SQL Injection							Correct
+CWE89-1063	CWE-89		SQL Injection							Correct					0     				0
 
 
 CWE22-212	CWE-22		Path Traversal							Correct
