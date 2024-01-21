@@ -65,13 +65,18 @@ WITH BUGGYLINE:
 SAMPLE: CWE89-1063
 
 WITHOUT BUGGYLINE:
-1) Adds curl_easy_escape() before curl_easy_unescape(). Sample 18, 
-2) 
+1) Adds curl_easy_escape() before curl_easy_unescape(). Sample 18, 22,29,32
+2) adding a loop to filter out any potential characters that could be used in an SQL injection attack. The loop checks if any of these characters are present in the path and if they are present, it replaces them with a null character.
+After the loop has finished, the path is then passed to curl_easy_unescape. Sample 3, 6, 11
+3) Adds my_sql_escape() function to escape teh special characters. Sample 49
 
 
 
 WITH BUGGYLINE:
-1) 
+1) Replace the curl_easy_unescape() with curl_easy_escape(). Sample 2, 24,
+2) Adds a new for loop to check for the special characters. Sample 4
+3) Remove illegal characters from mailbox string to prevent SQL Injection. Sample 5
+4) Adds curl_easy_escape() before curl_easy_unescape(). Sample 6, 42, 50
 
 
 
