@@ -78,11 +78,63 @@ WITH BUGGYLINE:
 3) Remove illegal characters from mailbox string to prevent SQL Injection. Sample 5
 4) Adds curl_easy_escape() before curl_easy_unescape(). Sample 6, 42, 50
 
+Takeaway: It know what variable to work on. Since it is missing escaping. It addes escaping library to fix the SQL injection.
 
 
 
 
 
+CWE-22      Path Traversal
+
+SAMPLE: CWE22-212
+
+WITHOUT BUGGYLINE:
+1) Coreectly identifies the variable to work on and adds code to prevent  . Sample 2, 8, 9, 22, 27, 31, 38, 43, 51
+2) Detects the path traversal. Sample 20
+
+
+WITH BUGGYLINE:
+1) Check if the file does not contain any "..". The main problem is all the <StartBug> and <EndBug> tags are wrong.
+The target is have a whole new program and delete the buggy program. Sample 11, 12, 16, 24, 27, 39, 43
+
+
+
+Takeaway: It does add filteration on the variable and tries to prevent the path traversal.
+
+
+
+SAMPLE: CWE22-402
+
+WITHOUT BUGGYLINE:
+1) Fix is outside the token input limit
+
+WITH BUGGYLINE:
+1) Fix is outside the token input limit
+
+
+SAMPLE: CWE22-512
+
+WITHOUT BUGGYLINE:
+1) can detects the line that a has a problem and adds the variable to has a safepath. Sample 2, 4, 5, 12
+2) It restricts the user input is now limited to a fixed directory path ("pages/").
+Instead of relying on the user input to specify the path, the code now always prepends the path "pages/" to
+any user input, thus ensuring that the file access is always done within the "pages/" directory
+and not any other directory that the user may have specified. Sample 6,
+3) ADDS a new function to call that will check for allowed directory and valid path lenght. Sample 15
+4) The vulnerability has been fixed by ensuring that all file paths are relative to a restricted directory.
+This is achieved by concatenating the file path with the restricted directory in a variable, and then
+using this variable in all file access and manipulation functions. This ensures that the user
+cannot access files outside of the restricted directory. Sample 18, 23, 25
+
+** ASK DR. WILSON ** about this: Sample 2, 5, 9, 11, 14, 17, 19, 35, 39 (good example) and 47 (good example)
+
+WITH BUGGYLINE:
+1) Use of realpath() to fix the vulnerability. Sample 2, 4, 11, 12, 13, 14, 16, 21, 22, 25, 29, 34, 44, 48, 49, 51
+2) Check the page[0] and page[1]. It looks good to me. Sample 7
+
+
+
+** ASK Dr. Wilson ** about this: Sample 7, 10 ( This should be correct based on the comment), 18
 
 
 
