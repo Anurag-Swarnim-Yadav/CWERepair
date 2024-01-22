@@ -133,16 +133,77 @@ WITH BUGGYLINE:
 2) Check the page[0] and page[1]. It looks good to me. Sample 7
 
 
-
 ** ASK Dr. Wilson ** about this: Sample 7, 10 ( This should be correct based on the comment), 18
 
 
+SAMPLE: CWE22-1656
+
+WITHOUT BUGGYLINE:
+1) The sample added realpath() and checks for the absolutepath. If no absolutepath then sets the error. Sample 5 (Looks good)
+
+
+**ASk Dr. Wilson:** Sample 5
 
 
 
+WITH BUGGYLINE:
+1) Sample 2 correctly predicted the required fix.
 
 
 
+CWE-287     Improper Authentication
+
+SAMPLE: CWE287-231
+
+WITHOUT BUGGYLINE:
+1) Sample 2 correctly predicted the required fix.
+
+
+
+WITH BUGGYLINE:
+1) Sample 2 correctly predicted the required fix.
+
+
+
+SAMPLE: CWE287-413
+
+WITHOUT BUGGYLINE:
+1) Correctly identifies the variable to work on. Sample 1, 6, 40, 47 (very close)
+
+
+WITH BUGGYLINE:
+1) Sample 3 is very close. Just missing few more tokens.
+2) Sample 6 is very close. Missing two tokens.
+3) Sample 10 is very close. Missing two tokens.
+4) Sample 18, 32, 43 is just missing the comparision.
+4) Sample 27, 29, 44, 46 is having the wrong comparision.
+
+Takeaway: The full input sample is out of the input text limits. Check to make sure it belongs to complete program category.
+
+
+SAMPLE: CWE287-1635
+
+WITHOUT BUGGYLINE:
+1) In very few cases it identify the correct to place to add some code. Sample 20, 29, 33
+
+WITH BUGGYLINE:
+1) It adds strcmp() function to compare but not correct. Sample 24
+
+
+Takeaway: Model perfomed bad on this sample.
+
+
+
+CWE-862     Missing Authorization
+
+SAMPLE: CWE862-200
+
+WITHOUT BUGGYLINE:
+1)
+
+
+WITH BUGGYLINE:
+1)
 
 
 
