@@ -15,14 +15,14 @@ CWE89-1063	CWE-89		SQL Injection							Correct					0     				0
 
 CWE22-212	CWE-22		Path Traversal							Correct                 0                  0
 CWE22-402	CWE-22		Path Traversal							Correct                 0                  0
-CWE22-512	CWE-22		Path Traversal							Correct                 0                  0
+CWE22-512	CWE-22		Path Traversal							Correct                 1 (Sample 39)      1 (Sample 13)
 CWE22-964	CWE-22		Path Traversal							Correct                 I dont think it should belong here!
 CWE22-1656	CWE-22		Path Traversal							Correct                 0                  1 (Sample 2)
 
 
 
 
-CWE287-231	CWE-287		Improper Authentication					Correct                 1                  1
+CWE287-231	CWE-287		Improper Authentication					Correct                 1 (Sample 2)       1 (Sample 2)
 CWE287-413	CWE-287		Improper Authentication					Correct                 0                  0
 CWE287-1635	CWE-287		Improper Authentication					Correct                 0                  0
 
