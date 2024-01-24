@@ -27,16 +27,16 @@ CWE287-413	CWE-287		Improper Authentication					Correct                 0       
 CWE287-1635	CWE-287		Improper Authentication					Correct                 0                  0
 
 
-CWE862-200	CWE-862		Missing Authorization					Correct
+CWE862-200	CWE-862		Missing Authorization					Correct                 0                  0
 
 
 
-CWE522-370	CWE-522		Insufficiently Protected Credentials	Correct
+CWE522-370	CWE-522		Insufficiently Protected Credentials	Correct                 0                  0
 
 
 
 CWE611-7	CWE-611		Improper Restriction of XML Reference	Correct
-CWE611-1274	CWE-611		Improper Restriction of XML Reference	Correct
+CWE611-1274	CWE-611		Improper Restriction of XML Reference	Correct                 0                  0
 
 
 

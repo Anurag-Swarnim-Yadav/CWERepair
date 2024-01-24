@@ -129,7 +129,7 @@ cannot access files outside of the restricted directory. Sample 18, 23, 25
 ** ASK DR. WILSON ** about this: Sample 2, 5, 9, 11, 14, 17, 19, 35, 39 (good example) and 47 (good example)
 
 WITH BUGGYLINE:
-1) Use of realpath() to fix the vulnerability. Sample 2, 4, 11, 12, 13, 14, 16, 21, 22, 25, 29, 34, 44, 48, 49, 51
+1) Use of realpath() to fix the vulnerability. Sample 4, 11, 12, 13, 14, 16, 21, 22, 25, 29, 34, 44, 48, 49, 51
 2) Check the page[0] and page[1]. It looks good to me. Sample 7
 
 
@@ -199,12 +199,57 @@ CWE-862     Missing Authorization
 SAMPLE: CWE862-200
 
 WITHOUT BUGGYLINE:
-1)
+1) It is a complicated fix. It does figure out the variable to work on but hard to figure.
+2) Sample 49 is adding codes we want but still far from being perfect.
 
 
 WITH BUGGYLINE:
-1)
+1) Complicated sample.
 
+
+
+
+
+CWE-522     Insufficiently Protected Credentials
+
+SAMPLE: CWE522-370
+
+
+WITHOUT BUGGYLINE:
+1) Its too complicated that can be fixed by any machine learning model.
+2) It adds some line that will encrypt th ekey with a secure algorithum but it is not the fix.
+3) Adds an additional step in the code where the label is encrypted with a key before it is used.
+4) Some fixes include generate a random secure key and encrypt it.
+
+
+WITH BUGGYLINE:
+1) Its too complicated that can be fixed by any machine learning model.
+
+
+
+CWE-611     Improper Restriction of XML Reference
+
+SAMPLE: CWE611-7
+
+WITHOUT BUGGYLINE:
+1) It does add new xmlschemasetparserstrccturederror() line but this sample is complicated. Sample 3, 9, 10
+2) It also adds xmlSchemaSetParserStructFlags(ctx, XML_PARSE_NOENT), Set flag to disable external entity references. Sampe 22
+3) This sample can nebver be fixed because it also has change of function argumnets.
+
+
+WITH BUGGYLINE:
+1) This sample can nebver be fixed because it also has change of function argumnets.
+2) Its too complicated that can be fixed by any machine learning model.
+
+
+
+SAMPLE: CWE611-1274
+
+WITHOUT BUGGYLINE:
+1) Exceeds model's maximum context length of 4097 tokens.
+
+WITH BUGGYLINE:
+1) Exceeds model's maximum context length of 4097 tokens.
 
 
 
