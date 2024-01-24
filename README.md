@@ -49,6 +49,13 @@ these models.
 - **VulRepair:** A T5-Based Automated Software Vulnerability Repair; Year: Nov 7, 2022; Conference: 30th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE)
 - **Pre-trained Model-based Automated Software Vulnerability Repair: How Far are We?:** Year: Aug. 28, 2023; Conference: IEEE Transactions on Dependable and Secure Computing
 - **DiverseVul:** A New Vulnerable Source Code Dataset for Deep Learning Based Vulnerability Detection; Year: Oct. 16, 2023; Conference: 26th International Symposium on Research in Attacks, Intrusions and Defenses (RAID)
+- **An Empirical Study on Fine-tuning Large Language Models of Code for Automated Program Repair:** Year: Sep. 11, 2023; Conference: 38th IEEE/ACM International Conference on Automated Software Engineering (ASE)
+- **Software Vulnerability Detection using Large Language Models:** Year: Oct. 9, 2023; Conference: 34th International Symposium on Software Reliability Engineering Workshops (ISSREW) 
+
+
+## Papers use for reference
+- **Data Quality for Software Vulnerability Datasets:** Year: May 14, 2023; Conference: 45th International Conference on Software Engineering (ICSE)
+
 
 
 
