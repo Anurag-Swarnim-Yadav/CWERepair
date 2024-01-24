@@ -52,8 +52,11 @@ these models.
 - **An Empirical Study on Fine-tuning Large Language Models of Code for Automated Program Repair (ACM SIGSOFT Distinguished Paper Award):** Year: Sep. 11, 2023; Conference: 38th IEEE/ACM International Conference on Automated Software Engineering (ASE)
 - **Software Vulnerability Detection using Large Language Models:** Year: Oct. 9, 2023; Conference: 34th International Symposium on Software Reliability Engineering Workshops (ISSREW) 
 
-
+<div align="center">
+  
 ## Papers use for reference
+
+</div>
 - **Data Quality for Software Vulnerability Datasets:** Year: May 14, 2023; Conference: 45th International Conference on Software Engineering (ICSE)
 
 
